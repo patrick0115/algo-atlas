@@ -9,9 +9,11 @@ npm install
 npm run dev        # 開發模式,http://localhost:5173
 npm test           # 型別檢查 + 全部測試
 npm run build      # 產生靜態網站到 dist/
+npm run build:offline  # 產生單一檔案 LeetCode演算法圖鑑.html,雙擊即可離線開啟
 ```
 
-複習進度存在瀏覽器的 localStorage,只在本機。
+離線檔把所有程式與題庫內嵌在一個 HTML 裡,不需要網路或伺服器(題目連結點下去才會連到 LeetCode)。
+複習進度存在瀏覽器的 localStorage,只在本機;同一個檔案換位置或換瀏覽器開,進度會分開。
 
 ## 結構
 
