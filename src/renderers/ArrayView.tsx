@@ -1,10 +1,11 @@
 import type { ArrayViewData } from '../types'
 
-const CELL = 52 // px,和 CSS 的 --cell 一致
 const BAR_H = 150
 
-export function ArrayView({ data }: { data: ArrayViewData }) {
+export function ArrayView({ data, maxLen }: { data: ArrayViewData; maxLen: number }) {
   const { values, pointers = [], range, highlight = [], compare = [], done = [], dim = [], mode = 'cells' } = data
+  // 同一幀裡最長的陣列超過 10 格就整幀一起縮小,多排陣列才會對齊;CSS 透過 --cell 讀同一個值
+  const CELL = maxLen > 10 ? 40 : 52
   const ids = data.ids ?? values.map((_, i) => i)
   const hasRange = range && range[1] >= range[0]
   const bars = mode === 'bars'
@@ -25,7 +26,7 @@ export function ArrayView({ data }: { data: ArrayViewData }) {
   const order = values.map((v, i) => ({ v, i, id: ids[i] })).sort((a, b) => String(a.id).localeCompare(String(b.id)))
 
   return (
-    <div className="array-view">
+    <div className="array-view" style={{ ['--cell' as string]: `${CELL}px` }}>
       {data.label && <div className="view-label">{data.label}</div>}
       <div className={`array-track${bars ? ' bars' : ''}`} style={{ width, height: bars ? BAR_H + 4 : undefined }}>
         {hasRange && (

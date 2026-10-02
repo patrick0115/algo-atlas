@@ -5,8 +5,10 @@ import { slidingWindow } from './sliding-window'
 import { TREES } from './trees'
 import { LISTS } from './lists'
 import { GRAPHS } from './graphs'
+import { DP } from './dp'
+import { MISC } from './misc'
 
 // 新增演算法:寫好 Pattern 後加進這個陣列(id 要和 data/categories.ts 一致)。
-const ALL: Pattern[] = [...SORTING, ...ARRAYS, slidingWindow, ...LISTS, ...TREES, ...GRAPHS]
+const ALL: Pattern[] = [...SORTING, ...ARRAYS, slidingWindow, ...LISTS, ...TREES, ...GRAPHS, ...DP, ...MISC]
 
 export const PATTERNS: Record<string, Pattern> = Object.fromEntries(ALL.map((p) => [p.id, p]))

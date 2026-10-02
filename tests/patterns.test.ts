@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { PATTERNS } from '../src/patterns'
-import { findStub } from '../src/data/categories'
+import { CATEGORIES, findStub } from '../src/data/categories'
 import { LANGS, type Frame } from '../src/types'
+import { collectFrames } from '../src/engine/frames'
 
 const TAG = /\s*(?:#|\/\/)@([\w-]+)\s*$/
 const tagsOf = (src: string) => new Set(src.split('\n').map((l) => l.match(TAG)?.[1]).filter(Boolean))
@@ -53,3 +54,22 @@ for (const p of Object.values(PATTERNS)) {
     }
   })
 }
+
+describe('涵蓋', () => {
+  it('地圖上每個演算法都有動畫講義', () => {
+    const missing = CATEGORIES.flatMap((c) => c.patterns.map((p) => p.id)).filter((id) => !PATTERNS[id])
+    expect(missing).toEqual([])
+  })
+})
+
+describe('快照', () => {
+  it('播放器收到的每一步都是當下狀態(不會被之後的步驟改掉)', () => {
+    for (const p of Object.values(PATTERNS)) {
+      const defaults = Object.fromEntries(p.demo.inputs.map((i) => [i.key, i.default]))
+      const atYield: string[] = []
+      for (const f of p.demo.run(defaults)) atYield.push(JSON.stringify(f))
+      const { frames } = collectFrames(p.demo, defaults)
+      expect(frames.map((f) => JSON.stringify(f)), p.id).toEqual(atYield)
+    }
+  })
+})

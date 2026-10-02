@@ -154,7 +154,7 @@ table.grid th { color: var(--muted); font-weight: 400; font-size: 11px; padding:
 .g-done, .g-visited { background: var(--done); color: var(--done-text); }
 .g-path { background: var(--mid); }
 .g-wall { background: repeating-linear-gradient(45deg, var(--mid) 0 3px, var(--bg) 3px 7px); color: var(--muted); }
-.g-land { background: var(--soft); font-weight: 700; }
+.g-land { background: var(--mid); font-weight: 700; }
 .g-dim { opacity: .3; }
 
 /* 圖 */

@@ -1,22 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
-import type { Demo, Frame, Lang } from '../types'
-import { renderView } from '../renderers'
+import type { Demo, Lang } from '../types'
+import { collectFrames } from './frames'
+import { maxArrayLen, renderView } from '../renderers'
 import { CodePanel } from '../components/CodePanel'
-
-const MAX_FRAMES = 2000
-
-function collect(demo: Demo, values: Record<string, string>): { frames: Frame[]; error?: string } {
-  try {
-    const frames: Frame[] = []
-    for (const f of demo.run(values)) {
-      frames.push(f)
-      if (frames.length >= MAX_FRAMES) break
-    }
-    return { frames }
-  } catch (e) {
-    return { frames: [], error: e instanceof Error ? e.message : String(e) }
-  }
-}
 
 const SPEEDS = [0.5, 1, 2, 4]
 
@@ -24,7 +10,7 @@ export function Player({ demo, lang, onLang }: { demo: Demo; lang: Lang; onLang:
   const defaults = useMemo(() => Object.fromEntries(demo.inputs.map((i) => [i.key, i.default])), [demo])
   const [draft, setDraft] = useState(defaults)
   const [values, setValues] = useState(defaults)
-  const { frames, error } = useMemo(() => collect(demo, values), [demo, values])
+  const { frames, error } = useMemo(() => collectFrames(demo, values), [demo, values])
 
   const [step, setStep] = useState(0)
   const [playing, setPlaying] = useState(false)
@@ -90,7 +76,7 @@ export function Player({ demo, lang, onLang }: { demo: Demo; lang: Lang; onLang:
       ) : (
         <div className="player-body">
           <div className="player-stage">
-            <div className="stage-views">{frame?.views.map((v, i) => renderView(v, i))}</div>
+            <div className="stage-views">{frame && frame.views.map((v, i) => renderView(v, i, maxArrayLen(frame.views)))}</div>
             <div className="stage-note">{frame?.note}</div>
             {frame?.vars && (
               <div className="stage-vars">

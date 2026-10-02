@@ -97,6 +97,7 @@ export const CATEGORIES: Category[] = [
     id: 'dp',
     name: '動態規劃',
     patterns: [
+      { id: 'dp-general', name: 'DP 入門 / 其他' },
       { id: 'dp-1d', name: '一維 DP' },
       { id: 'dp-grid', name: '網格 DP' },
       { id: 'knapsack', name: '背包' },
@@ -105,7 +106,6 @@ export const CATEGORIES: Category[] = [
       { id: 'interval-dp', name: '區間 DP' },
       { id: 'state-machine-dp', name: '狀態機 DP' },
       { id: 'bitmask-dp', name: '位元 DP' },
-      { id: 'dp-general', name: 'DP(其他)' },
     ],
   },
   {

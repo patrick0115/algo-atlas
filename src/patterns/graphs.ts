@@ -413,6 +413,7 @@ function* ufRun(v: Record<string, string>): Generator<Frame> {
   for (let k = 0; k < edges.length; k++) {
     curEdge = k
     const [a, b] = edges[k]
+    hl.splice(0, hl.length, a, b)
     yield f('edge', `處理邊 ${a} — ${b}:它們在同一組嗎?`)
     const ra = yield* find(a)
     const rb = yield* find(b)
@@ -577,7 +578,7 @@ function* dijkstraRun(v: Record<string, string>): Generator<Frame> {
         sub: (i) => `d=${show(dist[i])}`,
         ecls: (k) => (k === hlEdge ? 'hl' : via.includes(k) ? 'done' : undefined),
       }),
-      arr(pq.map(([d, u]) => `${u}:${d}`), { label: '優先佇列(節點:距離,由小到大)' }),
+      arr([...pq].sort((x, y) => x[0] - y[0] || x[1] - y[1]).map(([d, u]) => `${u}:${d}`), { label: '優先佇列(節點:距離,由小到大)' }),
     ],
   })
   dist[src] = 0
