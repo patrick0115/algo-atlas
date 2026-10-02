@@ -955,7 +955,7 @@ function* spiralRun(v: Record<string, string>): Generator<Frame> {
     note,
     vars: answer !== undefined ? { answer } : { top, bottom, left, right },
     views: [
-      { kind: 'grid', label: '淡色 = 已經走過 · 黑色 = 這一步走的 · 斜線外框外 = 邊界已經往內縮', cells: g, marks: { done: seen, hl: cur, dim: g.flatMap((r, i) => r.map((_, j) => [i, j] as Cell)).filter(([i, j]) => (i < top || i > bottom || j < left || j > right) && !seen.some(([a, b]) => a === i && b === j)) } },
+      { kind: 'grid', label: '黑色 = 這一步走的 · 淡灰 = 已經走過', cells: g, marks: { done: seen, hl: cur, dim: g.flatMap((r, i) => r.map((_, j) => [i, j] as Cell)).filter(([i, j]) => (i < top || i > bottom || j < left || j > right) && !seen.some(([a, b]) => a === i && b === j)) } },
       arr(out, { label: '輸出順序' }),
     ],
   })
@@ -1025,14 +1025,23 @@ export const simulation: Pattern = {
     code: {
       python: `def spiral_order(m):
     res = []
-    top, bottom, left, right = 0, len(m) - 1, 0, len(m[0]) - 1  #@init
+    top, bottom = 0, len(m) - 1                 #@init
+    left, right = 0, len(m[0]) - 1              #@init
     while top <= bottom and left <= right:
-        res += [m[top][j] for j in range(left, right + 1)]; top += 1         #@right
-        res += [m[i][right] for i in range(top, bottom + 1)]; right -= 1     #@down
+        for j in range(left, right + 1):        #@right
+            res.append(m[top][j])               #@right
+        top += 1                                #@right
+        for i in range(top, bottom + 1):        #@down
+            res.append(m[i][right])             #@down
+        right -= 1                              #@down
         if top <= bottom:
-            res += [m[bottom][j] for j in range(right, left - 1, -1)]; bottom -= 1  #@left
+            for j in range(right, left - 1, -1):    #@left
+                res.append(m[bottom][j])        #@left
+            bottom -= 1                         #@left
         if left <= right:
-            res += [m[i][left] for i in range(bottom, top - 1, -1)]; left += 1      #@up
+            for i in range(bottom, top - 1, -1):    #@up
+                res.append(m[i][left])          #@up
+            left += 1                           #@up
     return res                                  #@done`,
       c: `int* spiralOrder(int** m, int R, int* colSize, int* retSize) {
     int C = colSize[0], *res = malloc(R * C * sizeof(int)), k = 0;

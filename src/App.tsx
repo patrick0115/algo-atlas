@@ -4,6 +4,7 @@ import { PROBLEMS, problemsOf } from './data/problems'
 import { PATTERNS } from './patterns'
 import { Player } from './engine/Player'
 import { ProblemList } from './components/ProblemList'
+import { Review } from './components/Review'
 import { useLang, useProgress } from './engine/progress'
 
 function useHash() {
@@ -24,6 +25,9 @@ function Sidebar({ current }: { current: string }) {
     <nav className="sidebar">
       <a href="#/" className="brand">
         LeetCode 演算法圖鑑
+      </a>
+      <a href="#/review" className={`side-link${current === 'review' ? ' active' : ''}`}>
+        複習
       </a>
       <a href="#/problems" className={`side-link${current === 'problems' ? ' active' : ''}`}>
         全部題目
@@ -150,7 +154,7 @@ function PatternPage({ id }: { id: string }) {
 export default function App() {
   const hash = useHash()
   const m = hash.match(/^\/p\/([\w-]+)/)
-  const current = m ? m[1] : hash === '/problems' ? 'problems' : ''
+  const current = m ? m[1] : hash === '/problems' ? 'problems' : hash === '/review' ? 'review' : ''
 
   return (
     <div className="layout">
@@ -158,6 +162,8 @@ export default function App() {
       <main>
         {m ? (
           <PatternPage id={m[1]} />
+        ) : hash === '/review' ? (
+          <Review />
         ) : hash === '/problems' ? (
           <div className="page">
             <h1>全部題目</h1>
