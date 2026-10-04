@@ -91,6 +91,7 @@ export function ProblemList({ problems, showPatterns = false, defaultScope = 'fo
         <span className="muted">{shown.length} 題</span>
       </div>
 
+      <div className="table-scroll">
       <table>
         <thead>
           <tr>
@@ -151,6 +152,7 @@ export function ProblemList({ problems, showPatterns = false, defaultScope = 'fo
           })}
         </tbody>
       </table>
+      </div>
       {shown.length > limit && (
         <button className="more" onClick={() => setLimit(limit + PAGE * 2)}>
           再顯示更多(還有 {shown.length - limit} 題)
