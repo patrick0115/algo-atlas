@@ -19,6 +19,7 @@
   color: var(--text);
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%; /* iPhone 轉橫放時不要自動放大字 */
 }
 :root[data-theme="light"] {
   color-scheme: light;
@@ -216,7 +217,7 @@ td.status button { padding: 1px 7px; margin-right: 2px; font-size: 12px; color: 
 td.status button.on { background: var(--strong); color: var(--on-strong); border-color: var(--strong); }
 .more { margin-top: 12px; }
 
-@media (max-width: 760px) {
+@media (max-width: 760px), (max-height: 500px) {
   .layout { flex-direction: column; }
   .sidebar { width: 100%; height: auto; position: sticky; top: 0; z-index: 20; background: var(--bg); border-right: none; border-bottom: 1px solid var(--border); padding: 10px 12px; }
   .brand { margin-bottom: 0; }
@@ -333,3 +334,26 @@ button:disabled:hover { border-color: var(--border); }
 .tk-c { color: var(--muted); font-style: italic; }
 .tk-s { color: var(--muted); }
 .table-scroll { overflow-x: auto; }
+
+/* ---- 手機:直放、橫放 ---- */
+/* 單欄播放器(窄螢幕):播放鍵黏在畫面底部,捲到動畫任何位置都按得到 */
+@media (max-width: 1050px) {
+  .controls { position: sticky; bottom: 0; z-index: 5; background: var(--bg); padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); }
+}
+/* 手指操作:按鈕加大到好點的尺寸;沒有鍵盤就不顯示快捷鍵說明 */
+@media (pointer: coarse) {
+  .controls button { min-width: 44px; min-height: 40px; }
+  .controls select { min-height: 40px; }
+}
+@media (hover: none) {
+  .kbd-hint { display: none; }
+}
+/* 橫放(螢幕矮):頂欄不固定、目錄列貼齊頂端,把高度留給動畫 */
+@media (max-height: 500px) {
+  .sidebar { position: static; }
+  .toc { top: 0; }
+  .sec { scroll-margin-top: 50px; }
+  .page { padding-top: 12px; }
+  h1 { font-size: 24px; }
+  .stage-views { min-height: 0; }
+}
