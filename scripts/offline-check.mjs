@@ -17,6 +17,11 @@ for (const id of ['bubble-sort', 'dijkstra', 'knapsack', 'trie']) {
   for (let i = 0; i < 5; i++) await page.keyboard.press('ArrowRight')
   console.log(`${id}:`, await page.locator('.step-count').textContent())
 }
+await page.goto(`${url}#/s/sorting`)
+await page.waitForSelector('.sum-table')
+console.log('總結頁標題:', await page.locator('h1').textContent())
+await page.goto(`${url}#/p/bubble-sort`)
+await page.waitForSelector('.player')
 await page.locator('td.status button', { hasText: '模糊' }).first().click()
 await page.reload()
 await page.waitForSelector('.problem-list')

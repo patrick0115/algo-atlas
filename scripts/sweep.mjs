@@ -18,6 +18,15 @@ for (const id of ids) {
   if (err) errors.push(`${id}: 預設輸入顯示錯誤`)
   process.stdout.write(`${id}(${total}) `)
 }
+const sums = [...readFileSync('src/data/summaries.ts', 'utf8').matchAll(/^  ([\w-]+): \{$/gm)].map((m) => m[1])
+for (const id of sums) {
+  await page.goto(`http://localhost:4173/#/s/${id}`)
+  await page.waitForSelector('.sum-table')
+  for (const tab of await page.locator('.tabs button').all()) await tab.click()
+  await page.locator('.sq-opts >> nth=0').locator('button >> nth=0').click()
+  if (!(await page.locator('.sq-why').count())) errors.push(`s/${id}: 測驗點了沒有揭曉`)
+  process.stdout.write(`s/${id} `)
+}
 await page.goto('http://localhost:4173/#/problems')
 await page.waitForSelector('.problem-list')
 await page.selectOption('.filters select >> nth=0', 'all')

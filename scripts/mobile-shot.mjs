@@ -3,7 +3,7 @@
 import { chromium, devices } from 'playwright-core'
 import { mkdirSync } from 'node:fs'
 const [outDir = 'mobile-shots', ...args] = process.argv.slice(2)
-const hashes = args.length ? args : ['', 'p/sliding-window', 'p/bubble-sort', 'p/tree-dfs', 'p/graph-traversal', 'p/dp-grid', 'p/lcs', 'p/hash-map', 'problems', 'review']
+const hashes = args.length ? args : ['', 'p/sliding-window', 'p/bubble-sort', 'p/tree-dfs', 'p/graph-traversal', 'p/dp-grid', 'p/lcs', 'p/hash-map', 's/sorting', 'problems', 'review']
 mkdirSync(outDir, { recursive: true })
 const phone = devices['iPhone 13']
 const sizes = { portrait: phone.viewport, landscape: { width: 844, height: 340 } }

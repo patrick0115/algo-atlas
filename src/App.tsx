@@ -6,6 +6,9 @@ import { PATTERNS } from './patterns'
 import { Player } from './engine/Player'
 import { ProblemList } from './components/ProblemList'
 import { Review } from './components/Review'
+import { SummaryPage } from './components/SummaryPage'
+import { Toc } from './components/Toc'
+import { SUMMARIES } from './data/summaries'
 import { highlight } from './engine/code'
 import { useLang, useProgress } from './engine/progress'
 
@@ -23,6 +26,35 @@ function useHash() {
 }
 
 const ORDER = CATEGORIES.flatMap((c) => c.patterns)
+/** 上一章 / 下一章的順序:每個分類的演算法,有總結章的話排在該分類最後 */
+const CHAPTERS = CATEGORIES.flatMap((c) => [
+  ...c.patterns.map((p) => ({ key: p.id, href: `#/p/${p.id}`, name: p.name })),
+  ...(SUMMARIES[c.id] ? [{ key: `s/${c.id}`, href: `#/s/${c.id}`, name: `${c.name}總結` }] : []),
+])
+
+function Pager({ at }: { at: string }) {
+  const idx = CHAPTERS.findIndex((c) => c.key === at)
+  const prev = CHAPTERS[idx - 1]
+  const next = CHAPTERS[idx + 1]
+  return (
+    <nav className="pager">
+      {prev ? (
+        <a href={prev.href}>
+          <span className="muted">← 上一章</span>
+          {prev.name}
+        </a>
+      ) : (
+        <span />
+      )}
+      {next && (
+        <a href={next.href} className="next">
+          <span className="muted">下一章 →</span>
+          {next.name}
+        </a>
+      )}
+    </nav>
+  )
+}
 const nameOf = (id: string) => findStub(id)?.stub.name ?? id
 
 function LevelBadge({ id }: { id: string }) {
@@ -74,6 +106,11 @@ function Sidebar({ current }: { current: string }) {
                   <i className={`dot lv-dot-${PRO[p.id]?.level ?? 0}`} />
                 </a>
               ))}
+              {SUMMARIES[c.id] && !kw && (
+                <a href={`#/s/${c.id}`} className={`side-link side-sum${current === `s/${c.id}` ? ' active' : ''}`}>
+                  {c.name}總結
+                </a>
+              )}
             </div>
           )
         })}
@@ -137,6 +174,12 @@ function Home() {
                   </li>
                 )
               })}
+              {SUMMARIES[c.id] && (
+                <li className="cat-sum">
+                  <a href={`#/s/${c.id}`}>{c.name}總結</a>
+                  <span className="muted">比較 · 怎麼選 · 測驗</span>
+                </li>
+              )}
             </ul>
           </section>
         ))}
@@ -154,35 +197,6 @@ const SECTIONS = [
   { id: 'sec-pro', label: '④ 專業' },
   { id: 'sec-problems', label: '⑤ 題目' },
 ]
-
-function Toc() {
-  const [active, setActive] = useState(SECTIONS[0].id)
-  useEffect(() => {
-    const els = SECTIONS.map((s) => document.getElementById(s.id)).filter((e): e is HTMLElement => !!e)
-    const io = new IntersectionObserver(
-      (entries) => {
-        const vis = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
-        if (vis[0]) setActive(vis[0].target.id)
-      },
-      { rootMargin: '-60px 0px -60% 0px' },
-    )
-    els.forEach((e) => io.observe(e))
-    return () => io.disconnect()
-  }, [])
-  return (
-    <div className="toc" role="navigation" aria-label="本頁段落">
-      {SECTIONS.map((s) => (
-        <button
-          key={s.id}
-          className={active === s.id ? 'on' : ''}
-          onClick={() => document.getElementById(s.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-        >
-          {s.label}
-        </button>
-      ))}
-    </div>
-  )
-}
 
 function ProSection({ pro }: { pro: ProNote }) {
   const [showTpl, setShowTpl] = useState(true)
@@ -247,9 +261,6 @@ function PatternPage({ id }: { id: string }) {
   const pro = PRO[id]
   const found = findStub(id)
   const problems = problemsOf(id)
-  const idx = ORDER.findIndex((p) => p.id === id)
-  const prev = ORDER[idx - 1]
-  const next = ORDER[idx + 1]
 
   if (!found) return <div className="page">找不到這個演算法。</div>
 
@@ -273,7 +284,7 @@ function PatternPage({ id }: { id: string }) {
         <p className="lead muted">這個演算法的動畫講義還在製作中,下面先列出相關題目。</p>
       ) : (
         <>
-          <Toc />
+          <Toc sections={SECTIONS} />
 
           <section id="sec-plain" className="sec">
             <p className="lead">{pattern.summary}</p>
@@ -336,22 +347,7 @@ function PatternPage({ id }: { id: string }) {
         {problems.length ? <ProblemList key={id} problems={problems} /> : <p className="muted">還沒收錄題目。</p>}
       </section>
 
-      <nav className="pager">
-        {prev ? (
-          <a href={`#/p/${prev.id}`}>
-            <span className="muted">← 上一章</span>
-            {prev.name}
-          </a>
-        ) : (
-          <span />
-        )}
-        {next && (
-          <a href={`#/p/${next.id}`} className="next">
-            <span className="muted">下一章 →</span>
-            {next.name}
-          </a>
-        )}
-      </nav>
+      <Pager at={id} />
     </div>
   )
 }
@@ -359,7 +355,9 @@ function PatternPage({ id }: { id: string }) {
 export default function App() {
   const hash = useHash()
   const m = hash.match(/^\/p\/([\w-]+)/)
-  const current = m ? m[1] : hash === '/problems' ? 'problems' : hash === '/review' ? 'review' : ''
+  const sm = hash.match(/^\/s\/([\w-]+)/)
+  const sumCat = sm && SUMMARIES[sm[1]] ? CATEGORIES.find((c) => c.id === sm[1]) : undefined
+  const current = m ? m[1] : sm ? `s/${sm[1]}` : hash === '/problems' ? 'problems' : hash === '/review' ? 'review' : ''
 
   return (
     <div className="layout">
@@ -367,6 +365,8 @@ export default function App() {
       <main>
         {m ? (
           <PatternPage key={m[1]} id={m[1]} />
+        ) : sumCat ? (
+          <SummaryPage key={sumCat.id} cat={sumCat} sum={SUMMARIES[sumCat.id]} pager={<Pager at={`s/${sumCat.id}`} />} />
         ) : hash === '/review' ? (
           <Review />
         ) : hash === '/problems' ? (
