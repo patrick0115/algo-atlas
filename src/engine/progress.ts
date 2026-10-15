@@ -8,6 +8,7 @@ const KEY = 'lcv:progress:v1'
 export interface Record_ {
   status: Status
   at: number // 最後標記時間 (ms)
+  first?: number // 第一次標記時間 (ms);舊資料沒有,視同 at
 }
 
 type Store = Record<number, Record_>
@@ -35,7 +36,8 @@ export function useProgress() {
 
   const mark = useCallback((id: number, status: Status | null) => {
     const next = load()
-    if (status) next[id] = { status, at: Date.now() }
+    const prev = next[id]
+    if (status) next[id] = { status, at: Date.now(), first: prev ? (prev.first ?? prev.at) : Date.now() }
     else delete next[id]
     try {
       localStorage.setItem(KEY, JSON.stringify(next))

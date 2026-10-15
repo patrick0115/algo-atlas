@@ -155,6 +155,8 @@ export interface Problem {
   curated: boolean
   /** 一句話解題關鍵(只有精標題才有) */
   key?: string
+  /** LeetCode 通過率(%),同一級難度內用來排先後 */
+  acRate: number
 }
 
 export type Status = 'ok' | 'fuzzy' | 'no'

@@ -10,6 +10,8 @@
 
 每頁標有難度(入門 / 中階 / 進階)與先修演算法。
 
+另有「刷題藍圖」頁(`#/plan`):把 NeetCode 150 排成每週 N 題的路線,每天一鍵挑題、連到 LeetCode 寫,寫完標記就進複習排程。
+
 ## 使用
 
 ```bash
@@ -30,6 +32,7 @@ npm run build:offline  # 產生單一檔案 LeetCode演算法圖鑑.html,雙擊�
 | `src/patterns/*.ts` | 每個演算法的講義與動畫(generator 吐出 Frame 快照) |
 | `src/renderers/` | 通用渲染器:陣列 / 長條、網格表格、節點圖(樹、圖、串列)、Hash 表 |
 | `src/engine/` | 播放器、快照收集、輸入解析、樹的排版、複習排程 |
+| `src/engine/plan.ts` | 刷題藍圖:NeetCode 150 的路線排序(階段 → 先修 → 難度 / 通過率,Hard 最後)與每週排程 |
 | `src/data/pro.ts` | 講義的專業層:難度、先修、不變量、模板、變形、比較、面試重點 |
 | `src/data/categories.ts` | 演算法地圖 + 官方標籤 → 演算法的自動歸類規則 |
 | `src/data/curated.ts` | 人工精標:題號 → 演算法 + 一句話解題關鍵 |

@@ -4,6 +4,7 @@ import { PROBLEMS, problemsOf } from './data/problems'
 import { LEVEL_NAME, PRO, type ProNote } from './data/pro'
 import { PATTERNS } from './patterns'
 import { Player } from './engine/Player'
+import { Plan } from './components/Plan'
 import { ProblemList } from './components/ProblemList'
 import { Review } from './components/Review'
 import { SummaryPage } from './components/SummaryPage'
@@ -84,6 +85,9 @@ function Sidebar({ current }: { current: string }) {
       </div>
       <div className="side-body">
         <input className="side-search" type="search" placeholder="搜尋演算法…" value={q} onChange={(e) => setQ(e.target.value)} />
+        <a href="#/plan" className={`side-link${current === 'plan' ? ' active' : ''}`}>
+          刷題藍圖
+        </a>
         <a href="#/review" className={`side-link${current === 'review' ? ' active' : ''}`}>
           複習
         </a>
@@ -157,6 +161,10 @@ function Home() {
         {ORDER.length} 個演算法 · 收錄 {PROBLEMS.length} 題 · 你標記「會」的有 {done} 題 · 難度標記:
         <span className="lv lv-1">入門</span> <span className="lv lv-2">中階</span> <span className="lv lv-3">進階</span>
         · 新手建議先讀完所有「入門」,再依分類往下
+      </p>
+
+      <p className="home-plan">
+        <a href="#/plan">刷題藍圖 →</a> <span className="muted">NeetCode 150 排成每週進度,每天挑題、寫完標記</span>
       </p>
       <div className="cat-grid">
         {CATEGORIES.map((c) => (
@@ -357,7 +365,7 @@ export default function App() {
   const m = hash.match(/^\/p\/([\w-]+)/)
   const sm = hash.match(/^\/s\/([\w-]+)/)
   const sumCat = sm && SUMMARIES[sm[1]] ? CATEGORIES.find((c) => c.id === sm[1]) : undefined
-  const current = m ? m[1] : sm ? `s/${sm[1]}` : hash === '/problems' ? 'problems' : hash === '/review' ? 'review' : ''
+  const current = m ? m[1] : sm ? `s/${sm[1]}` : hash === '/problems' ? 'problems' : hash === '/review' ? 'review' : hash === '/plan' ? 'plan' : ''
 
   return (
     <div className="layout">
@@ -367,6 +375,8 @@ export default function App() {
           <PatternPage key={m[1]} id={m[1]} />
         ) : sumCat ? (
           <SummaryPage key={sumCat.id} cat={sumCat} sum={SUMMARIES[sumCat.id]} pager={<Pager at={`s/${sumCat.id}`} />} />
+        ) : hash === '/plan' ? (
+          <Plan />
         ) : hash === '/review' ? (
           <Review />
         ) : hash === '/problems' ? (
