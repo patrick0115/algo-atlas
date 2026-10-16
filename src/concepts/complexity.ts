@@ -129,6 +129,12 @@ function hasDuplicate(a) {              // O(n²)
           t: 'p',
           text: '下面列出刷題最常見的九個等級,從快到慢。點不同的 n,看哪些等級還在 1 秒內(粗估判題機一秒跑 10⁸ 次簡單運算):',
         },
+        {
+          t: 'note',
+          kind: 'tip',
+          title: '第一次看到 log n',
+          text: 'log n 先理解成「n 一直砍半,砍到 1 要砍幾次」:n = 1000 約 10 次、n = 10⁶ 約 20 次,所以它非常小。下一章 [[c:complexity-analysis]] 會解釋它從哪裡來。表格裡還沒學過的名字(Hash 表、heap、二元搜尋樹、DP)先記住它們「有多快」就好,[[c:ds-overview]] 和演算法章會一一介紹。',
+        },
         { t: 'widget', id: 'growth' },
         {
           t: 'table',
@@ -136,6 +142,7 @@ function hasDuplicate(a) {              // O(n²)
           rows: [
             ['O(1)', '常數', '陣列用索引取值、Hash 表查找(平均)、堆疊 push / pop'],
             ['O(log n)', '對數', '[[p:binary-search]]、平衡二元搜尋樹的查找、[[p:heap]] 的 push / pop'],
+            ['O(√n)', '平方根', '試除法判斷質數(只要試到 √n)、[[p:math]] 的因數列舉'],
             ['O(n)', '線性', '掃一遍、[[p:two-pointers]]、[[p:sliding-window]]、[[p:prefix-sum]]'],
             ['O(n log n)', '線性對數', '排序([[p:merge-sort]]、內建 sort)、n 次 heap 操作'],
             ['O(n²)', '平方', '雙層迴圈、二維 [[p:dp-general]]'],
@@ -355,6 +362,12 @@ for (int right = 0; right < n; right++) {   // right 走 n 步
           text: '遞迴的時間 = 「總共呼叫幾次」×「每次呼叫自己做多少事(不含子呼叫)」。畫出遞迴樹,數節點數和每層的工作量:',
         },
         {
+          t: 'note',
+          kind: 'tip',
+          title: '還沒學過遞迴?',
+          text: '遞迴(函式呼叫自己)在 [[c:recursion]] 才會詳細講。第一次讀可以先跳過這一節,只記住最後那張表的結論;讀完遞迴那章再回來看,會清楚很多。',
+        },
+        {
           t: 'code',
           title: '同一題的兩種寫法:費氏數列',
           code: {
@@ -536,7 +549,7 @@ const spaceComplexity: Concept = {
       blocks: [
         {
           t: 'p',
-          text: '很多優化其實是在做交易。用 [[p:hash-map]] 多花 O(n) 空間,把查找從 O(n) 變 O(1);反過來,DP 如果只依賴上一列,就能把 O(n·m) 的表壓成 O(m) 的兩列,叫做**滾動陣列**:',
+          text: '很多優化其實是在做交易。用 [[p:hash-map]] 多花 O(n) 空間,把查找從 O(n) 變 O(1);反過來,DP(把每個子問題的答案存進一張表,演算法章的動態規劃分類會教)如果每一列只依賴上一列,就能把 O(n·m) 的表壓成 O(m) 的兩列,叫做**滾動陣列**:',
         },
         {
           t: 'code',

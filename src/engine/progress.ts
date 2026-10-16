@@ -50,21 +50,34 @@ export function useProgress() {
   return { store, mark }
 }
 
+// 語言偏好:同一頁有好幾個程式碼框時,切一個就全部一起切
+let langNow: Lang = (() => {
+  try {
+    return (localStorage.getItem('lcv:lang') as Lang) || 'python'
+  } catch {
+    return 'python'
+  }
+})()
+const langListeners = new Set<(l: Lang) => void>()
+
 export function useLang(): [Lang, (l: Lang) => void] {
-  const [lang, setLang] = useState<Lang>(() => {
-    try {
-      return (localStorage.getItem('lcv:lang') as Lang) || 'python'
-    } catch {
-      return 'python'
+  const [lang, setLang] = useState<Lang>(langNow)
+
+  useEffect(() => {
+    langListeners.add(setLang)
+    return () => {
+      langListeners.delete(setLang)
     }
-  })
-  const set = (l: Lang) => {
-    setLang(l)
+  }, [])
+
+  const set = useCallback((l: Lang) => {
+    langNow = l
     try {
       localStorage.setItem('lcv:lang', l)
     } catch {
       /* ignore */
     }
-  }
+    langListeners.forEach((f) => f(l))
+  }, [])
   return [lang, set]
 }

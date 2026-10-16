@@ -572,6 +572,10 @@ int mostFrequent(int *nums, int n) {
       title: 'Heap 怎麼用(或怎麼自己寫)',
       blocks: [
         {
+          t: 'p',
+          text: 'Python、C++、Java 有內建 heap,直接用;C 和 JavaScript 要自己寫。自己寫的版本就是 [[c:ds-overview]] 講的「放入時往上浮、取出時往下沉」,用陣列存、`(i − 1) / 2` 找爸爸、`2i + 1` 和 `2i + 2` 找孩子:',
+        },
+        {
           t: 'code',
           title: '最小堆積:放入、看最小、取出',
           code: {

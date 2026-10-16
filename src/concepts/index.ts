@@ -27,16 +27,16 @@ export const UNITS: Unit[] = [
     concepts: LANGUAGE,
   },
   {
-    id: 'toolbox',
-    name: '各語言工具箱',
-    desc: 'C 的函式簽名與記憶體配置、C++ STL,以及五種語言的容器與 API 對照 —— 選定一種語言後,寫題時隨手查。',
-    concepts: TOOLBOX,
-  },
-  {
     id: 'structures',
     name: '資料結構總覽',
     desc: '每種資料結構擅長什麼、各操作多快;雜湊表為什麼是 O(1);樹和圖在題目裡怎麼表示。',
     concepts: STRUCTURES,
+  },
+  {
+    id: 'toolbox',
+    name: '各語言工具箱',
+    desc: 'C 的函式簽名與記憶體配置、C++ STL,以及五種語言的容器與 API 對照 —— 把上一單元的資料結構對應到你選的語言,寫題時隨手查。',
+    concepts: TOOLBOX,
   },
   {
     id: 'thinking',

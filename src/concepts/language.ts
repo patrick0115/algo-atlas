@@ -28,7 +28,7 @@ const memoryModel: Concept = {
             ['堆疊(stack)', '函式的參數、區域變數', '函式回傳時自動回收', '很快,但空間小(通常幾 MB);遞迴太深會用完'],
             ['堆積(heap)', '`new` / `malloc` 出來的東西;Python、Java、JS 的物件與陣列', 'C 要自己 `free`;C++ 自己 `delete`;其他語言由垃圾回收(GC)自動回收', '空間大,存活時間不受函式限制'],
           ],
-          note: '這裡的「堆積」和資料結構的 [[p:heap]] 只是同名,沒有關係。',
+          note: '「堆疊區」叫 stack,是因為函式呼叫「後呼叫的先結束」,和資料結構的堆疊(後進先出)是同一個道理,[[c:recursion]] 會一步步看。「堆積區」和資料結構的 heap 則只是同名,沒有關係。',
         },
       ],
     },
@@ -909,7 +909,7 @@ const integers: Concept = {
   level: 2,
   prereq: ['arrays-strings'],
   lead:
-    '電腦的整數有位數上限:32 位元的 `int` 最大約 21 億。超過就會「溢位」,在 C / C++ 裡可能變成負數、甚至是未定義行為。' +
+    '電腦的整數有位數上限:32 位元的 `int` 最大約 21 億。超過就會「溢位」,在 C / C++ 裡可能變成負數,甚至是**未定義行為**(標準沒規定結果,編譯器怎麼處理都算對,所以每次跑出來可能不一樣)。' +
     '刷題最常見的整數 bug 有四種:相加或相乘溢位、二分搜尋的 mid 溢位、負數的除法與取餘、以及「答案對 10⁹ + 7 取模」寫錯。',
   sections: [
     {
@@ -1292,6 +1292,87 @@ ans = fact(3)`,
       ],
     },
     {
+      title: '重複子問題:為什麼要記憶化',
+      blocks: [
+        {
+          t: 'p',
+          text: '費氏數列 `fib(n) = fib(n−1) + fib(n−2)` 照定義直接寫成遞迴,看起來很漂亮,但畫出呼叫的樹就會發現:同一個 `fib(k)` 被算了好多次。',
+        },
+        {
+          t: 'pre',
+          text: `                    fib(5)
+              ┌───────┴───────┐
+           fib(4)           fib(3)        ← fib(3) 在這裡算一次
+          ┌──┴──┐          ┌──┴──┐
+       fib(3) fib(2)    fib(2) fib(1)     ← 左邊又算一次 fib(3)
+       ┌─┴─┐  ┌─┴─┐     ┌─┴─┐
+   fib(2) f(1) f(1) f(0) f(1) f(0)
+    ┌─┴─┐
+  f(1) f(0)
+
+fib(5) 共呼叫 15 次;fib(30) 要呼叫約 270 萬次,fib(50) 要好幾百億次`,
+          caption: 'n 每加 1,呼叫次數大約乘 1.6 倍,所以是指數時間。但不同的子問題其實只有 fib(0)…fib(n) 這 n + 1 個。',
+        },
+        {
+          t: 'p',
+          text: '解法很直接:**算過的就記下來,下次直接查**。這叫**記憶化**(memoization)。每個 `fib(k)` 只真正算一次,總共 n 個子問題 → O(n)。把「記下來」改成「由小到大填一張表」,就是**動態規劃**(DP)。',
+        },
+        {
+          t: 'code',
+          title: '費氏數列:加上記憶化',
+          code: {
+            python: `memo = {}
+def fib(n):
+    if n < 2:
+        return n
+    if n in memo:                  # 算過了,直接查
+        return memo[n]
+    memo[n] = fib(n - 1) + fib(n - 2)
+    return memo[n]
+
+# 也可以用內建的裝飾器自動記憶化:
+# from functools import cache
+# @cache
+# def fib(n): ...`,
+            c: `long long memo[100];               // 全域陣列自動是 0,0 代表還沒算
+long long fib(int n) {
+    if (n < 2) return n;
+    if (memo[n]) return memo[n];
+    return memo[n] = fib(n - 1) + fib(n - 2);
+}`,
+            cpp: `unordered_map<int, long long> memo;
+long long fib(int n) {
+    if (n < 2) return n;
+    if (memo.count(n)) return memo[n];
+    return memo[n] = fib(n - 1) + fib(n - 2);
+}`,
+            java: `Map<Integer, Long> memo = new HashMap<>();
+long fib(int n) {
+    if (n < 2) return n;
+    if (memo.containsKey(n)) return memo.get(n);
+    long r = fib(n - 1) + fib(n - 2);
+    memo.put(n, r);
+    return r;
+}`,
+            javascript: `const memo = new Map();
+function fib(n) {
+  if (n < 2) return n;
+  if (memo.has(n)) return memo.get(n);
+  const r = fib(n - 1) + fib(n - 2);
+  memo.set(n, r);
+  return r;
+}`,
+          },
+        },
+        {
+          t: 'note',
+          kind: 'key',
+          title: '看到「同一個子問題被算很多次」',
+          text: '這就是 DP 的訊號。演算法章的 [[p:dp-1d]] 從爬樓梯開始,正是這個想法的延伸。',
+        },
+      ],
+    },
+    {
       title: '遞迴改成迭代',
       blocks: [
         {
@@ -1561,6 +1642,12 @@ public:
           text: '排序區間要照起點、排序字串要先比長度再比字典序 —— 都要自訂規則。各語言的慣例:Python 用 **key**(把每個元素換成一個可比較的值);其他語言用**比較函式**(給兩個元素,回傳誰該在前面)。',
         },
         {
+          t: 'note',
+          kind: 'tip',
+          title: '先看懂匿名函式(lambda)',
+          text: '比較規則通常只用一次,所以會當場寫一個沒有名字的小函式,叫做 lambda。下面的 `lambda x: (x[0], -x[1])`(Python)、`[](const vector<int>& a, const vector<int>& b) { ... }`(C++)、`(a, b) -> { ... }`(Java)、`(a, b) => ...`(JavaScript)都是「參數 → 回傳值」的意思,和另外寫一個具名函式再傳進去完全一樣。C 沒有 lambda,要另外寫一個函式。',
+        },
+        {
           t: 'code',
           title: '區間照起點排;起點相同時照終點由大到小',
           code: {
@@ -1588,11 +1675,12 @@ qsort(intervals, intervalsSize, sizeof(int *), cmp);`,
           cols: ['語言', '比較函式的約定', '陷阱'],
           rows: [
             ['C `qsort`', '回傳負數 / 0 / 正數;參數是指向元素的指標', '`return a - b` 在大正數減大負數時溢位'],
-            ['C++ `sort`', '回傳 `bool`:a 是否**嚴格**在 b 前面', '寫成 `<=` 會違反嚴格弱序,可能當掉'],
+            ['C++ `sort`', '回傳 `bool`:a 是否**嚴格**在 b 前面', '寫成 `<=` 會違反「嚴格弱序」(兩個相等的元素,`cmp(a, b)` 和 `cmp(b, a)` 都必須是 false),可能當掉'],
             ['Java', '回傳負數 / 0 / 正數;只能排物件陣列(`int[][]`、`Integer[]`)', '`int[]` 不能傳比較函式;`a - b` 會溢位,用 `Integer.compare`'],
             ['JavaScript', '回傳負數 / 0 / 正數', '**不給比較函式時按字串排序**:`[10, 9, 1].sort()` 得到 `[1, 10, 9]`'],
             ['Python', '`key=` 一個函式;要反序加 `reverse=True` 或對數字取負', '`cmp` 風格要用 `functools.cmp_to_key`'],
           ],
+          note: '**穩定排序**:比較結果相等的元素,排序後維持原本的先後順序。Python、Java(物件)、JavaScript 的內建排序是穩定的;C++ `sort` 和 C `qsort` 不保證,C++ 要穩定就用 `stable_sort`。需要「先照 A 排、A 相同時維持原順序」時就要注意這點。',
         },
       ],
     },
