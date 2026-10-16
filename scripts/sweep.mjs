@@ -27,6 +27,28 @@ for (const id of sums) {
   if (!(await page.locator('.sq-why').count())) errors.push(`s/${id}: 測驗點了沒有揭曉`)
   process.stdout.write(`s/${id} `)
 }
+// 基礎篇:每章翻完所有記憶體圖、點一次互動元件、作答第一題測驗
+const concepts = ['start', 'complexity', 'language', 'toolbox', 'structures', 'thinking'].flatMap((f) =>
+  [...readFileSync(`src/concepts/${f}.ts`, 'utf8').matchAll(/^  id: '([\w-]+)',$/gm)].map((m) => m[1]),
+)
+for (const id of concepts) {
+  await page.goto(`http://localhost:4173/#/c/${id}`)
+  await page.waitForSelector('.concept h1')
+  for (const mem of await page.locator('.mem').all()) {
+    const next = mem.locator('button.primary')
+    while (await next.isEnabled()) await next.click()
+  }
+  for (const w of await page.locator('.widget').all()) {
+    for (const b of await w.locator('.widget-ctl button').all()) await b.click()
+    if (!(await w.locator('.gw-row').count())) errors.push(`c/${id}: 互動元件沒有畫出長條`)
+  }
+  for (const tab of await page.locator('.c-codebox .tabs button').all()) await tab.click()
+  await page.locator('.sq-opts >> nth=0').locator('button >> nth=0').click()
+  if (!(await page.locator('.sq-why').count())) errors.push(`c/${id}: 測驗點了沒有揭曉`)
+  const broken = await page.locator('.concept a[href^="#/"]').evaluateAll((as) => as.filter((a) => !a.textContent.trim()).length)
+  if (broken) errors.push(`c/${id}: ${broken} 個空連結`)
+  process.stdout.write(`c/${id} `)
+}
 await page.goto('http://localhost:4173/#/problems')
 await page.waitForSelector('.problem-list')
 await page.selectOption('.filters select >> nth=0', 'all')

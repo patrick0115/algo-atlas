@@ -10,6 +10,8 @@ import { Review } from './components/Review'
 import { SummaryPage } from './components/SummaryPage'
 import { Toc } from './components/Toc'
 import { SUMMARIES } from './data/summaries'
+import { ConceptPage } from './components/ConceptPage'
+import { CONCEPTS, CONCEPT_ORDER, UNITS, conceptsFor } from './concepts'
 import { highlight } from './engine/code'
 import { useLang, useProgress } from './engine/progress'
 
@@ -27,11 +29,14 @@ function useHash() {
 }
 
 const ORDER = CATEGORIES.flatMap((c) => c.patterns)
-/** 上一章 / 下一章的順序:每個分類的演算法,有總結章的話排在該分類最後 */
-const CHAPTERS = CATEGORIES.flatMap((c) => [
-  ...c.patterns.map((p) => ({ key: p.id, href: `#/p/${p.id}`, name: p.name })),
-  ...(SUMMARIES[c.id] ? [{ key: `s/${c.id}`, href: `#/s/${c.id}`, name: `${c.name}總結` }] : []),
-])
+/** 上一章 / 下一章的順序:先走完基礎篇,再進每個分類的演算法;有總結章的話排在該分類最後 */
+const CHAPTERS = [
+  ...CONCEPT_ORDER.map((c) => ({ key: `c/${c.id}`, href: `#/c/${c.id}`, name: c.name })),
+  ...CATEGORIES.flatMap((c) => [
+    ...c.patterns.map((p) => ({ key: p.id, href: `#/p/${p.id}`, name: p.name })),
+    ...(SUMMARIES[c.id] ? [{ key: `s/${c.id}`, href: `#/s/${c.id}`, name: `${c.name}總結` }] : []),
+  ]),
+]
 
 function Pager({ at }: { at: string }) {
   const idx = CHAPTERS.findIndex((c) => c.key === at)
@@ -94,6 +99,22 @@ function Sidebar({ current }: { current: string }) {
         <a href="#/problems" className={`side-link${current === 'problems' ? ' active' : ''}`}>
           全部題目
         </a>
+        {UNITS.map((u) => {
+          const cs = u.concepts.filter(match)
+          if (!cs.length) return null
+          return (
+            <div key={u.id} className="side-group">
+              <div className="side-cat">基礎 · {u.name}</div>
+              {cs.map((c) => (
+                <a key={c.id} href={`#/c/${c.id}`} className={`side-link${current === `c/${c.id}` ? ' active' : ''}`}>
+                  {c.name}
+                  <i className={`dot lv-dot-${c.level}`} />
+                </a>
+              ))}
+            </div>
+          )
+        })}
+        <div className="side-part">演算法</div>
         {CATEGORIES.map((c) => {
           const ps = c.patterns.filter(match)
           if (!ps.length) return null
@@ -158,10 +179,32 @@ function Home() {
       </div>
 
       <p className="legend">
-        {ORDER.length} 個演算法 · 收錄 {PROBLEMS.length} 題 · 你標記「會」的有 {done} 題 · 難度標記:
+        {CONCEPT_ORDER.length} 章基礎觀念 · {ORDER.length} 個演算法 · 收錄 {PROBLEMS.length} 題 · 你標記「會」的有 {done} 題 · 難度標記:
         <span className="lv lv-1">入門</span> <span className="lv lv-2">中階</span> <span className="lv lv-3">進階</span>
         · 新手建議先讀完所有「入門」,再依分類往下
       </p>
+      <section className="base-path">
+        <h2>
+          基礎篇 <span className="muted">第一次刷題從這裡讀起;已經熟的單元可以跳過</span>
+        </h2>
+        <ol className="unit-list">
+          {UNITS.map((u) => (
+            <li key={u.id}>
+              <div className="unit-head">
+                <b>{u.name}</b>
+                <span className="muted">{u.desc}</span>
+              </div>
+              <div className="unit-chips">
+                {u.concepts.map((c) => (
+                  <a key={c.id} href={`#/c/${c.id}`} className="chip">
+                    {c.name}
+                  </a>
+                ))}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
 
       <p className="home-plan">
         <a href="#/plan">刷題藍圖 →</a> <span className="muted">NeetCode 150 排成每週進度,每天挑題、寫完標記</span>
@@ -269,6 +312,7 @@ function PatternPage({ id }: { id: string }) {
   const pro = PRO[id]
   const found = findStub(id)
   const problems = problemsOf(id)
+  const basics = conceptsFor(id)
 
   if (!found) return <div className="page">找不到這個演算法。</div>
 
@@ -284,6 +328,16 @@ function PatternPage({ id }: { id: string }) {
           {pro.prereq.map((p) => (
             <a key={p} href={`#/p/${p}`} className="chip">
               {nameOf(p)}
+            </a>
+          ))}
+        </p>
+      )}
+      {basics.length > 0 && (
+        <p className="prereq">
+          需要的基礎觀念:
+          {basics.map((c) => (
+            <a key={c.id} href={`#/c/${c.id}`} className="chip chip-base">
+              {c.name}
             </a>
           ))}
         </p>
@@ -364,8 +418,10 @@ export default function App() {
   const hash = useHash()
   const m = hash.match(/^\/p\/([\w-]+)/)
   const sm = hash.match(/^\/s\/([\w-]+)/)
+  const cm = hash.match(/^\/c\/([\w-]+)/)
+  const concept = cm ? CONCEPTS[cm[1]] : undefined
   const sumCat = sm && SUMMARIES[sm[1]] ? CATEGORIES.find((c) => c.id === sm[1]) : undefined
-  const current = m ? m[1] : sm ? `s/${sm[1]}` : hash === '/problems' ? 'problems' : hash === '/review' ? 'review' : hash === '/plan' ? 'plan' : ''
+  const current = m ? m[1] : cm ? `c/${cm[1]}` : sm ? `s/${sm[1]}` : hash === '/problems' ? 'problems' : hash === '/review' ? 'review' : hash === '/plan' ? 'plan' : ''
 
   return (
     <div className="layout">
@@ -373,6 +429,8 @@ export default function App() {
       <main>
         {m ? (
           <PatternPage key={m[1]} id={m[1]} />
+        ) : concept ? (
+          <ConceptPage key={concept.id} c={concept} pager={<Pager at={`c/${concept.id}`} />} />
         ) : sumCat ? (
           <SummaryPage key={sumCat.id} cat={sumCat} sum={SUMMARIES[sumCat.id]} pager={<Pager at={`s/${sumCat.id}`} />} />
         ) : hash === '/plan' ? (

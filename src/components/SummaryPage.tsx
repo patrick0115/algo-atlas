@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react'
-import type { Category } from '../data/categories'
+import { findStub, type Category } from '../data/categories'
 import { PROBLEMS } from '../data/problems'
 import { LEVEL_NAME, PRO } from '../data/pro'
 import type { Summary } from '../data/summaries'
@@ -9,6 +9,7 @@ import { LANGS } from '../types'
 import { PATTERNS } from '../patterns'
 import { Race } from './Race'
 import { Toc } from './Toc'
+import { rich } from './Blocks'
 
 const SECTIONS = [
   { id: 'sum-table', label: '① 總表' },
@@ -16,7 +17,7 @@ const SECTIONS = [
   { id: 'sum-decide', label: '③ 怎麼選' },
   { id: 'sum-family', label: '④ 家族' },
   { id: 'sum-insight', label: '⑤ 觀念' },
-  { id: 'sum-builtin', label: '⑥ 內建排序' },
+  { id: 'sum-builtin', label: '⑥ 內建' },
   { id: 'sum-uses', label: '⑦ 怎麼考' },
   { id: 'sum-quiz', label: '⑧ 自我測驗' },
 ]
@@ -31,7 +32,7 @@ function racers(cat: Category) {
 const byId = new Map(PROBLEMS.map((p) => [p.id, p]))
 
 export function SummaryPage({ cat, sum, pager }: { cat: Category; sum: Summary; pager: ReactNode }) {
-  const nameOf = (id: string) => cat.patterns.find((p) => p.id === id)?.name ?? id
+  const nameOf = (id: string) => findStub(id)?.stub.name ?? id
   const Chip = ({ id }: { id: string }) => (
     <a href={`#/p/${id}`} className="chip">
       {nameOf(id)}
@@ -42,9 +43,14 @@ export function SummaryPage({ cat, sum, pager }: { cat: Category; sum: Summary; 
     <div className="page">
       <div className="crumb">{cat.name} · 總結</div>
       <h1>{cat.name}總結</h1>
-      <Toc sections={SECTIONS.filter((s) => s.id !== 'sum-race' || sum.race)} />
+      <Toc
+        sections={SECTIONS.filter((s) => (s.id !== 'sum-race' || sum.race) && (s.id !== 'sum-builtin' || sum.builtins)).map((s, i) => ({
+          ...s,
+          label: `${'①②③④⑤⑥⑦⑧'[i]} ${s.id === 'sum-builtin' && sum.builtins ? sum.builtins.title : s.label.slice(2)}`,
+        }))}
+      />
 
-      <p className="lead">{sum.lead}</p>
+      <p className="lead">{rich(sum.lead)}</p>
 
       <section id="sum-table" className="sec">
         <h2>一張表看完</h2>
@@ -97,9 +103,9 @@ export function SummaryPage({ cat, sum, pager }: { cat: Category; sum: Summary; 
             <li key={d.q}>
               <div className="decide-q">{d.q}</div>
               <div className="decide-a">
-                <span className="muted">是 →</span> {d.id ? <Chip id={d.id} /> : <b>語言內建 sort</b>}
+                <span className="muted">是 →</span> {d.id ? <Chip id={d.id} /> : <b>{sum.fallback}</b>}
               </div>
-              <div className="decide-why muted">{d.why}</div>
+              <div className="decide-why muted">{rich(d.why)}</div>
             </li>
           ))}
         </ol>
@@ -119,7 +125,7 @@ export function SummaryPage({ cat, sum, pager }: { cat: Category; sum: Summary; 
                   </span>
                 ))}
               </div>
-              <p>{f.desc}</p>
+              <p>{rich(f.desc)}</p>
             </div>
           ))}
         </div>
@@ -130,15 +136,17 @@ export function SummaryPage({ cat, sum, pager }: { cat: Category; sum: Summary; 
         {sum.insights.map((t) => (
           <div key={t.title} className="pro-block">
             <h3>{t.title}</h3>
-            <p>{t.body}</p>
+            <p>{rich(t.body)}</p>
           </div>
         ))}
       </section>
 
-      <section id="sum-builtin" className="sec">
-        <h2>內建排序:實際寫題時用的是它</h2>
-        <Builtins sum={sum} />
-      </section>
+      {sum.builtins && (
+        <section id="sum-builtin" className="sec">
+          <h2>{sum.builtins.title}:實際寫題時用的是它</h2>
+          <Builtins sum={sum} />
+        </section>
+      )}
 
       <section id="sum-uses" className="sec">
         <h2>LeetCode 怎麼考{cat.name}</h2>
@@ -146,7 +154,7 @@ export function SummaryPage({ cat, sum, pager }: { cat: Category; sum: Summary; 
           {sum.uses.map((u) => (
             <div key={u.title} className="family">
               <h3>{u.title}</h3>
-              <p>{u.desc}</p>
+              <p>{rich(u.desc)}</p>
               <ul className="use-problems">
                 {u.problems.map((n) => {
                   const p = byId.get(n)
@@ -175,7 +183,7 @@ export function SummaryPage({ cat, sum, pager }: { cat: Category; sum: Summary; 
         <h2>面試時怎麼講</h2>
         <ul className="sum-interview">
           {sum.interview.map((t) => (
-            <li key={t}>{t}</li>
+            <li key={t}>{rich(t)}</li>
           ))}
         </ul>
       </section>
@@ -187,7 +195,8 @@ export function SummaryPage({ cat, sum, pager }: { cat: Category; sum: Summary; 
 
 function Builtins({ sum }: { sum: Summary }) {
   const [lang, setLang] = useLang()
-  const b = sum.builtins.find((x) => x.lang === lang)
+  const items = sum.builtins?.items ?? []
+  const b = items.find((x) => x.lang === lang)
   return (
     <>
       <div className="table-scroll">
@@ -201,7 +210,7 @@ function Builtins({ sum }: { sum: Summary }) {
             </tr>
           </thead>
           <tbody>
-            {sum.builtins.map((x) => (
+            {items.map((x) => (
               <tr key={x.lang} className={x.lang === lang ? 'on' : ''}>
                 <td>{LANGS.find((l) => l.id === x.lang)?.label}</td>
                 <td>
@@ -215,26 +224,28 @@ function Builtins({ sum }: { sum: Summary }) {
         </table>
       </div>
 
-      <div className="pro-block">
-        <h3>
-          範例 <span className="muted">{sum.example.title}</span>
-        </h3>
-        <div className="code-panel">
-          <div className="tabs">
-            {LANGS.map((l) => (
-              <button key={l.id} className={l.id === lang ? 'active' : ''} onClick={() => setLang(l.id)}>
-                {l.label}
-              </button>
-            ))}
+      {sum.example && (
+        <div className="pro-block">
+          <h3>
+            範例 <span className="muted">{sum.example.title}</span>
+          </h3>
+          <div className="code-panel">
+            <div className="tabs">
+              {LANGS.map((l) => (
+                <button key={l.id} className={l.id === lang ? 'active' : ''} onClick={() => setLang(l.id)}>
+                  {l.label}
+                </button>
+              ))}
+            </div>
+            <pre className="tpl">
+              {sum.example.code[lang].split('\n').map((l, i) => (
+                <div key={i}>{l ? highlight(l, lang) : ' '}</div>
+              ))}
+            </pre>
           </div>
-          <pre className="tpl">
-            {sum.example.code[lang].split('\n').map((l, i) => (
-              <div key={i}>{l ? highlight(l, lang) : ' '}</div>
-            ))}
-          </pre>
+          {b && <p className="muted small-note">{b.note}</p>}
         </div>
-        {b && <p className="muted small-note">{b.note}</p>}
-      </div>
+      )}
     </>
   )
 }
@@ -274,7 +285,7 @@ function Quiz({ sum, cat }: { sum: Summary; cat: Category }) {
               </div>
               {mine && (
                 <p className="sq-why">
-                  <b>{mine === q.a ? '答對 ✓' : '答錯 ✗'}</b> {q.why}
+                  <b>{mine === q.a ? '答對 ✓' : '答錯 ✗'}</b> {rich(q.why)}
                 </p>
               )}
             </li>

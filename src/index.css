@@ -484,3 +484,96 @@ button:disabled:hover { border-color: var(--border); }
   .plan-week li .plan-act { grid-column: 2; grid-row: 1 / span 2; }
   .plan-today-mark .mark-buttons button, .plan-quick button, .plan button.small { min-height: 36px; }
 }
+
+/* ---- 基礎篇:側欄、首頁路線 ---- */
+.side-part { font-size: 11px; color: var(--muted); margin: 22px 8px 0; padding-top: 10px; border-top: 1px solid var(--border); letter-spacing: .08em; }
+.base-path { margin: 28px 0 8px; max-width: 1000px; }
+.base-path h2 { margin: 0 0 6px; font-size: 18px; }
+.base-path h2 .muted { font-weight: 400; font-size: 13px; margin-left: 6px; }
+.unit-list { list-style: none; counter-reset: u; padding: 0; margin: 0; }
+.unit-list > li { counter-increment: u; position: relative; padding: 12px 0 12px 40px; border-top: 1px solid var(--border); }
+.unit-list > li::before { content: counter(u); position: absolute; left: 0; top: 12px; width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--strong); display: grid; place-items: center; font-size: 13px; font-weight: 600; }
+.unit-head { display: flex; flex-wrap: wrap; gap: 2px 12px; align-items: baseline; }
+.unit-head .muted { font-size: 13px; line-height: 1.6; }
+.unit-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.chip.todo { color: var(--muted); }
+.chip-base { border-style: dashed; }
+
+/* ---- 觀念章 ---- */
+.c-sec > h2 { margin-bottom: 14px; }
+.c-p { margin: 0 0 14px; line-height: 1.85; font-size: 15.5px; max-width: 860px; }
+.c-list { margin: 0 0 16px; padding-left: 22px; line-height: 1.85; font-size: 15px; max-width: 860px; }
+.c-list li + li { margin-top: 2px; }
+.concept code, .c-note code { font-family: Consolas, 'Cascadia Code', monospace; font-size: .9em; background: var(--soft); padding: 1px 5px; border-radius: 3px; }
+.concept pre code { background: none; padding: 0; border-radius: 0; font-size: inherit; }
+.c-table { margin: 0 0 18px; max-width: 980px; }
+.c-table .sum-table td { white-space: normal; min-width: 90px; line-height: 1.6; }
+.c-table .sum-table td:first-child { white-space: nowrap; font-weight: 600; }
+.c-note { margin: 0 0 18px; padding: 10px 14px; border: 1px solid var(--border); border-left: 3px solid var(--strong); border-radius: 0 6px 6px 0; max-width: 860px; }
+.c-note-warn { border-left-style: double; border-left-width: 5px; }
+.c-note-key { background: var(--soft); }
+.c-note b { font-size: 14px; }
+.c-note p { margin: 4px 0 0; line-height: 1.75; font-size: 15px; }
+.c-codebox { margin: 0 0 18px; max-width: 860px; }
+.c-code-title { text-align: right; font-size: 12px; color: var(--muted); align-self: center; padding-right: 8px; }
+pre.c-code { margin: 0; background: var(--soft); padding: 10px 0; overflow-x: auto; font-size: 13px; line-height: 1.6; border-radius: 0 0 6px 6px; }
+
+/* 記憶體逐步圖 */
+.mem { border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin: 0 0 18px; max-width: 1000px; }
+.mem-title { font-weight: 600; margin-bottom: 10px; }
+.mem-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 16px; }
+.mem-body pre.c-code { border-radius: 6px; align-self: start; }
+.mem-side { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.mem-regions { display: flex; flex-wrap: wrap; gap: 10px; min-height: 120px; align-items: flex-start; }
+.mem-region { border: 1px solid var(--border); border-radius: 6px; padding: 6px; min-width: 150px; flex: 1 1 150px; display: flex; flex-direction: column; gap: 4px; }
+.mem-region-name { font-size: 12px; color: var(--muted); font-family: Consolas, 'Cascadia Code', monospace; }
+.mem-cell { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; gap: 0 8px; padding: 4px 8px; border: 1px solid var(--border); border-radius: 4px; font-family: Consolas, 'Cascadia Code', monospace; font-size: 13px; transition: border-color .2s; }
+.mem-name { font-weight: 700; }
+.mem-addr { color: var(--muted); font-size: 11px; text-align: right; }
+.mem-val { grid-column: 1 / -1; word-break: break-all; }
+.mem-ref { color: var(--muted); }
+.mem-cell.hl { border: 2px solid var(--strong); background: var(--soft); }
+.mem-cell.pointed { outline: 2px dashed var(--strong); outline-offset: 2px; }
+.mem .controls { position: static; border-top: none; padding: 0; }
+@media (max-width: 900px) { .mem-body { grid-template-columns: 1fr; } }
+
+/* 互動元件:成長比較、時間預算 */
+.widget { border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin: 0 0 18px; max-width: 980px; }
+.widget-head { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.widget-head .muted { font-size: 13px; }
+.widget-ctl { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 12px 0; }
+.widget-ctl button { font-size: 13px; padding: 3px 10px; font-variant-numeric: tabular-nums; }
+.gw-input { display: flex; align-items: center; gap: 6px; margin-right: 6px; }
+.gw-input input { width: 13em; padding: 5px 8px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); }
+.gw-headline { margin: 4px 0 12px; font-size: 16px; line-height: 1.6; }
+.gw-headline .muted { font-size: 14px; }
+.gw-rows { display: flex; flex-direction: column; }
+.gw-row { display: grid; grid-template-columns: 6.5em minmax(0, 1fr) 6.5em 5.5em; gap: 10px; align-items: center; padding: 4px 4px; font-size: 13px; border-radius: 4px; cursor: default; }
+.gw-row.on { background: var(--soft); }
+.gw-name { font-family: Consolas, 'Cascadia Code', monospace; font-weight: 600; }
+.gw-track { position: relative; height: 14px; background: var(--soft); border-radius: 0 4px 4px 0; }
+.gw-row.on .gw-track { background: var(--bg); }
+.gw-bar { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 0 4px 4px 0; transition: width .35s; }
+.gw-ok { background: var(--strong); }
+.gw-tight { background: var(--mid); border: 1px solid var(--strong); }
+.gw-no { background: repeating-linear-gradient(45deg, var(--mid) 0 3px, transparent 3px 7px); border: 1px solid var(--mid); }
+.gw-sec { position: absolute; top: -4px; bottom: -4px; width: 0; border-left: 2px dashed var(--text); }
+.gw-num { text-align: right; font-variant-numeric: tabular-nums; }
+.gw-v { font-size: 12px; white-space: nowrap; }
+.gw-v-no, .gw-v-tight { color: var(--muted); }
+.gw-scale { position: relative; height: 18px; margin: 4px calc(12em + 24px) 0 calc(6.5em + 14px); font-size: 11px; color: var(--muted); }
+.gw-scale span { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+.gw-scale span:first-child { transform: none; }
+.gw-scale span:last-child { transform: translateX(-100%); }
+.gw-detail { margin: 10px 0 0; min-height: 3em; font-size: 14px; line-height: 1.6; }
+@media (max-width: 760px) {
+  .gw-row { grid-template-columns: 5.5em minmax(0, 1fr) 5.5em; }
+  .gw-v { display: none; }
+  .gw-scale { margin: 4px calc(5.5em + 14px) 0 calc(5.5em + 14px); }
+  .widget-ctl button { min-height: 36px; }
+  .gw-input input { width: 100%; }
+  .gw-input { flex: 1 1 100%; }
+}
+.c-fig { margin: 0 0 18px; max-width: 860px; }
+.c-fig pre { margin: 0; padding: 12px 16px; background: var(--soft); border-radius: 6px; overflow-x: auto; font-family: Consolas, 'Cascadia Code', monospace; font-size: 13px; line-height: 1.45; }
+.c-fig figcaption { font-size: 13px; margin-top: 6px; line-height: 1.6; }

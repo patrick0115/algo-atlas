@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { CATEGORIES } from '../src/data/categories'
+import { CATEGORIES, findStub } from '../src/data/categories'
 import { PROBLEMS } from '../src/data/problems'
 import { SUMMARIES } from '../src/data/summaries'
 import { collectFrames } from '../src/engine/frames'
@@ -20,19 +20,24 @@ describe('分類總結章', () => {
       for (const r of s.table.rows) expect(r.cells.length, r.id).toBe(s.table.cols.length)
     })
 
-    it(`${catId}:引用的演算法都屬於這個分類`, () => {
-      const refs = [...s.decide.flatMap((d) => (d.id ? [d.id] : [])), ...s.families.flatMap((f) => f.ids), ...s.quiz.map((q) => q.a)]
+    it(`${catId}:怎麼選與測驗的答案都屬於這個分類`, () => {
+      const refs = [...s.decide.flatMap((d) => (d.id ? [d.id] : [])), ...s.quiz.map((q) => q.a)]
       expect(refs.filter((id) => !own.has(id))).toEqual([])
+    })
+
+    it(`${catId}:家族可以跨分類,但演算法要存在,且至少有一個屬於這個分類`, () => {
+      expect(s.families.flatMap((f) => f.ids).filter((id) => !findStub(id))).toEqual([])
+      for (const f of s.families) expect(f.ids.some((id) => own.has(id)), f.name).toBe(true)
     })
 
     it(`${catId}:題號都在題庫裡`, () => {
       expect(s.uses.flatMap((u) => u.problems).filter((n) => !problemIds.has(n))).toEqual([])
     })
 
-    it(`${catId}:五種語言都有內建說明與範例`, () => {
+    it(`${catId}:有內建說明的話,五種語言都要有`, () => {
       for (const l of LANGS) {
-        expect(s.builtins.some((b) => b.lang === l.id), l.id).toBe(true)
-        expect(s.example.code[l.id]?.trim().length, l.id).toBeGreaterThan(20)
+        if (s.builtins) expect(s.builtins.items.some((b) => b.lang === l.id), l.id).toBe(true)
+        if (s.example) expect(s.example.code[l.id]?.trim().length, l.id).toBeGreaterThan(20)
       }
     })
 
