@@ -25,15 +25,27 @@ export interface Approach {
   code: Record<Lang, string>
 }
 
+/** 測資裡要轉成節點的參數:list = 陣列轉 ListNode 串列,tree = 層序陣列(null 表示空)轉 TreeNode */
+export type NodeKind = 'list' | 'tree'
+
 /**
  * 測試:把 JavaScript 版的程式碼拿來跑這些例子。
  * fn 是函式名稱;compare 決定怎麼比答案:
- * exact 完全相同 · sorted 一維陣列排序後相同(答案順序不限)· groups 每組內排序、組間排序後相同
+ * exact 完全相同 · sorted 一維陣列排序後相同(答案順序不限)· groups 每組內排序、組間排序後相同 · close 浮點數誤差 1e-5 內
+ * argKinds / ret 標出哪些參數、回傳值是串列或樹;inplace 是「沒有回傳、直接改參數」的題目要檢查第幾個參數
  * class 是設計題:照 ops 依序呼叫,第一個 op 是建構子,out 對應每次呼叫的回傳值(建構子與沒有回傳的放 null)
  */
 export type Check =
-  | { kind: 'fn'; fn: string; compare?: 'exact' | 'sorted' | 'groups'; cases: { args: unknown[]; out: unknown }[] }
-  | { kind: 'class'; cls: string; cases: { ops: string[]; args: unknown[][]; out: unknown[] }[] }
+  | {
+      kind: 'fn'
+      fn: string
+      compare?: 'exact' | 'sorted' | 'groups' | 'close'
+      argKinds?: (NodeKind | null)[]
+      ret?: NodeKind
+      inplace?: number
+      cases: { args: unknown[]; out: unknown }[]
+    }
+  | { kind: 'class'; cls: string; compare?: 'exact' | 'close'; cases: { ops: string[]; args: unknown[][]; out: unknown[] }[] }
 
 export interface Solution {
   id: number
