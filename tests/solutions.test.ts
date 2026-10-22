@@ -125,7 +125,7 @@ function graphNodes(start: GNode | null): GNode[] {
 const fromGraph = (start: GNode | null) => graphNodes(start).map((n) => n.neighbors.map((x) => x.val))
 
 const toNode = (v: unknown, kind: string | null | undefined) =>
-  kind === 'graph' ? toGraph(v as number[][]) : kind === 'cycleList' ? toCycleList(v as [number[], number]) : kind === 'list' ? toList(v as number[]) : kind === 'tree' ? toTree(v as (number | null)[]) : kind === 'randomList' ? toRandomList(v as [number, number | null][]) : v
+  kind === 'graph' ? toGraph(v as number[][]) : kind === 'cycleList' ? toCycleList(v as [number[], number]) : kind === 'list' ? toList(v as number[]) : kind === 'listArr' ? (v as number[][]).map(toList) : kind === 'tree' ? toTree(v as (number | null)[]) : kind === 'randomList' ? toRandomList(v as [number, number | null][]) : v
 const fromNode = (v: unknown, kind: string | null | undefined) =>
   kind === 'graph' ? fromGraph(v as GNode | null) : kind === 'list' ? fromList(v as LNode | null) : kind === 'tree' ? fromTree(v as TNode | null) : kind === 'randomList' ? fromRandomList(v as RNode | null) : v
 

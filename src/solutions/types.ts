@@ -31,9 +31,10 @@ export interface Approach {
  * cycleList = [陣列, pos] 轉成 ListNode 串列,尾巴接回第 pos 個節點(pos = -1 表示沒有環,141 / 142 題),
  * nodeIn0 = 一個值,換成第 0 個參數(樹)裡值等於它的那個節點(235 / 236 題的 p、q);
  * 當作 ret 時表示回傳的是樹節點,比較它的值
- * graph = 鄰接串列(第 i 個是節點 i+1 的鄰居),轉成有 neighbors 的 Node,傳入節點 1(133 題)
+ * graph = 鄰接串列(第 i 個是節點 i+1 的鄰居),轉成有 neighbors 的 Node,傳入節點 1(133 題),
+ * listArr = 陣列裡每個元素都是一條串列(23 題的 lists)
  */
-export type NodeKind = 'list' | 'tree' | 'randomList' | 'cycleList' | 'nodeIn0' | 'graph'
+export type NodeKind = 'list' | 'listArr' | 'tree' | 'randomList' | 'cycleList' | 'nodeIn0' | 'graph'
 
 /**
  * 測試:把 JavaScript 版的程式碼拿來跑這些例子。

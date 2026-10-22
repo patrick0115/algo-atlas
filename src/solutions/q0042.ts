@@ -190,7 +190,7 @@ export const q0042: Solution = {
       steps: ['`for i`:`while stack and h[i] > h[stack[-1]]`', '`bottom = pop()`;堆疊空了就 break', '`left = stack[-1]`;`w = i − left − 1`;`total += (min(h[left], h[i]) − h[bottom]) × w`', '`push(i)`'],
       figure: { title: `height = [${H}]`, steps: stackFig() },
       complexity: { time: 'O(n)', space: 'O(n)', why: '每個索引進出堆疊各一次。' },
-      verdict: '一層一層橫著算水,[[p:monotonic-stack]]的經典應用;和 84. Largest Rectangle in Histogram 是同一類想法。',
+      verdict: '一層一層橫著算水,[[p:monotonic-stack]]的經典應用;和 [84. Largest Rectangle in Histogram](#/q/84) 是同一類想法。',
       code: {
         python: `def trap(height):
     stack, total = [], 0
