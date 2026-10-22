@@ -166,6 +166,7 @@ table.grid th { color: var(--muted); font-weight: 400; font-size: 11px; padding:
 .g-dim { opacity: .3; }
 .g-cmp { background: var(--mid); color: var(--text); outline: 2px solid var(--strong); outline-offset: -2px; }
 .g-dep { outline: 2px dashed var(--strong); outline-offset: -3px; }
+.g-water { background: var(--soft); color: var(--muted); }
 .g-hl, .g-cur { background: var(--strong); color: var(--on-strong); }
 
 /* 圖 */
@@ -593,3 +594,4 @@ pre.c-code { margin: 0; background: var(--soft); padding: 10px 0; overflow-x: au
 .q-index li { display: flex; justify-content: space-between; gap: 4px 12px; flex-wrap: wrap; padding: 8px 0; border-bottom: 1px solid var(--border); }
 .q-index a { font-weight: 600; }
 .tag.q-tag { border-color: var(--strong); color: var(--text); margin-left: 6px; }
+.q-page li code, .q-page p code, .q-page dd code, .q-page dt code, .q-page td code { overflow-wrap: anywhere; }
