@@ -136,10 +136,20 @@ return ${check.fn};`)() as (...a: unknown[]) => unknown
     const cmp = check.compare ?? 'exact'
     for (const c of check.cases) {
       const args = clone(c.args).map((a, i) => toNode(a, check.argKinds?.[i]))
+      // nodeIn0:換成第 0 個參數(樹)裡值相同的節點
+      const findIn = (n: TNode | null, v: number): TNode | null => (!n ? null : n.val === v ? n : findIn(n.left, v) ?? findIn(n.right, v))
+      check.argKinds?.forEach((k, i) => {
+        if (k === 'nodeIn0') args[i] = findIn(args[0] as TNode | null, c.args[i] as number)
+      })
       const ret = fn(...args)
       // 複製題:回傳的節點不能是原本的節點
       if (check.ret === 'randomList') for (const n of nodesOf(ret)) expect(nodesOf(args[0]).has(n), '回傳了原串列的節點,不是複製').toBe(false)
-      const got = check.inplace !== undefined ? fromNode(args[check.inplace], check.argKinds?.[check.inplace]) : fromNode(ret, check.ret)
+      const got =
+        check.inplace !== undefined
+          ? fromNode(args[check.inplace], check.argKinds?.[check.inplace])
+          : check.ret === 'nodeIn0'
+            ? ((ret as TNode | null)?.val ?? null)
+            : fromNode(ret, check.ret)
       expect(normalize(got, cmp), JSON.stringify(c.args)).toEqual(normalize(c.out, cmp))
     }
     return

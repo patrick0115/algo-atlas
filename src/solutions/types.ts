@@ -28,9 +28,11 @@ export interface Approach {
 /**
  * 測資裡要轉成節點的參數:list = 陣列轉 ListNode 串列,tree = 層序陣列(null 表示空)轉 TreeNode,
  * randomList = [[值, random 指向的索引或 null], ...] 轉成有 random 指標的 Node 串列(138 題),
- * cycleList = [陣列, pos] 轉成 ListNode 串列,尾巴接回第 pos 個節點(pos = -1 表示沒有環,141 / 142 題)
+ * cycleList = [陣列, pos] 轉成 ListNode 串列,尾巴接回第 pos 個節點(pos = -1 表示沒有環,141 / 142 題),
+ * nodeIn0 = 一個值,換成第 0 個參數(樹)裡值等於它的那個節點(235 / 236 題的 p、q);
+ * 當作 ret 時表示回傳的是樹節點,比較它的值
  */
-export type NodeKind = 'list' | 'tree' | 'randomList' | 'cycleList'
+export type NodeKind = 'list' | 'tree' | 'randomList' | 'cycleList' | 'nodeIn0'
 
 /**
  * 測試:把 JavaScript 版的程式碼拿來跑這些例子。
