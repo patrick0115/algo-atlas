@@ -104,10 +104,30 @@ function toCycleList([a, pos]: [number[], number]): LNode | null {
   return head
 }
 
+// 133 題的圖節點:val / neighbors
+const GRAPH_NODE = 'function Node(val, neighbors) { this.val = val === undefined ? 0 : val; this.neighbors = neighbors === undefined ? [] : neighbors; }'
+type GNode = { val: number; neighbors: GNode[] }
+const GNodeCtor = new Function(`${GRAPH_NODE}; return Node;`)() as new (v: number) => GNode
+function toGraph(adj: number[][]): GNode | null {
+  if (!adj.length) return null
+  const ns = adj.map((_, i) => new GNodeCtor(i + 1))
+  adj.forEach((nb, i) => (ns[i].neighbors = nb.map((v) => ns[v - 1])))
+  return ns[0]
+}
+/** 從節點 1 走 BFS 收集所有節點,依 val 排好,輸出鄰接串列 */
+function graphNodes(start: GNode | null): GNode[] {
+  if (!start) return []
+  const seen = new Set<GNode>([start])
+  const q = [start]
+  for (let h = 0; h < q.length; h++) for (const nb of q[h].neighbors) if (!seen.has(nb)) (seen.add(nb), q.push(nb))
+  return q.sort((a, b) => a.val - b.val)
+}
+const fromGraph = (start: GNode | null) => graphNodes(start).map((n) => n.neighbors.map((x) => x.val))
+
 const toNode = (v: unknown, kind: string | null | undefined) =>
-  kind === 'cycleList' ? toCycleList(v as [number[], number]) : kind === 'list' ? toList(v as number[]) : kind === 'tree' ? toTree(v as (number | null)[]) : kind === 'randomList' ? toRandomList(v as [number, number | null][]) : v
+  kind === 'graph' ? toGraph(v as number[][]) : kind === 'cycleList' ? toCycleList(v as [number[], number]) : kind === 'list' ? toList(v as number[]) : kind === 'tree' ? toTree(v as (number | null)[]) : kind === 'randomList' ? toRandomList(v as [number, number | null][]) : v
 const fromNode = (v: unknown, kind: string | null | undefined) =>
-  kind === 'list' ? fromList(v as LNode | null) : kind === 'tree' ? fromTree(v as TNode | null) : kind === 'randomList' ? fromRandomList(v as RNode | null) : v
+  kind === 'graph' ? fromGraph(v as GNode | null) : kind === 'list' ? fromList(v as LNode | null) : kind === 'tree' ? fromTree(v as TNode | null) : kind === 'randomList' ? fromRandomList(v as RNode | null) : v
 
 function round(x: unknown): unknown {
   if (typeof x === 'number') return Math.round(x * 1e5) / 1e5
@@ -128,7 +148,7 @@ function normalize(v: unknown, compare: 'exact' | 'sorted' | 'groups' | 'close')
 function run(code: string, check: Check) {
   if (check.kind === 'fn') {
     const kinds = [...(check.argKinds ?? []), check.ret]
-    const extra = kinds.includes('randomList') ? RANDOM_NODE : ''
+    const extra = kinds.includes('randomList') ? RANDOM_NODE : kinds.includes('graph') ? GRAPH_NODE : ''
     const fn = new Function(`${PRELUDE}
 ${extra}
 ${code}
@@ -144,6 +164,10 @@ return ${check.fn};`)() as (...a: unknown[]) => unknown
       const ret = fn(...args)
       // 複製題:回傳的節點不能是原本的節點
       if (check.ret === 'randomList') for (const n of nodesOf(ret)) expect(nodesOf(args[0]).has(n), '回傳了原串列的節點,不是複製').toBe(false)
+      if (check.ret === 'graph') {
+        const old = new Set(graphNodes(args[0] as GNode | null))
+        for (const n of graphNodes(ret as GNode | null)) expect(old.has(n), '回傳了原本的圖節點,不是複製').toBe(false)
+      }
       const got =
         check.inplace !== undefined
           ? fromNode(args[check.inplace], check.argKinds?.[check.inplace])
