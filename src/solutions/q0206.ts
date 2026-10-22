@@ -87,7 +87,7 @@ export const q0206: Solution = {
       steps: ['`prev = null`、`cur = head`', '`next = cur.next`(先存起來)', '`cur.next = prev`(箭頭反過來)', '`prev = cur`、`cur = next`(往前走一步)', '`cur` 是 null 時,`prev` 就是新的頭'],
       figure: { title: 'head = [1,2,3,4]', steps: iterFig() },
       complexity: { time: 'O(n)', space: 'O(1)', why: '每個節點只改一次箭頭,只用三個指標變數。' },
-      verdict: '標準解,一定要背熟。很多鏈結串列題都會用到「反轉一段」:143. Reorder List、25. Reverse Nodes in k-Group、234. Palindrome Linked List。',
+      verdict: '標準解,一定要背熟。很多鏈結串列題都會用到「反轉一段」:[143. Reorder List](#/q/143)、[25. Reverse Nodes in k-Group](#/q/25)、234. Palindrome Linked List。',
       code: {
         python: `def reverseList(head):
     prev, cur = None, head
@@ -258,7 +258,7 @@ export const q0206: Solution = {
   ],
   followUp: [
     { q: '只反轉第 left 到第 right 個?', a: '92. Reverse Linked List II:先走到 left 前一個節點,中間那段用同樣的三指標反轉,再把頭尾接回去。' },
-    { q: '每 k 個一組反轉?', a: '25. Reverse Nodes in k-Group:每次先確認剩下夠 k 個,再反轉這一段並接上。' },
+    { q: '每 k 個一組反轉?', a: '[25. Reverse Nodes in k-Group](#/q/25):每次先確認剩下夠 k 個,再反轉這一段並接上。' },
   ],
   check: {
     kind: 'fn',

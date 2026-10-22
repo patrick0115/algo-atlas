@@ -75,7 +75,7 @@ export const q0167: Solution = {
       name: '暴力:試每一對',
       idea: '兩層迴圈,和等於 `target` 就回傳。沒有用到「有序」。',
       steps: ['`i` 從 0 開始,`j` 從 `i+1` 開始', '`numbers[i] + numbers[j] == target` → 回傳 `[i+1, j+1]`'],
-      figure: { title: `numbers = [${A.join(',')}], target = ${T}`, steps: [{ note: '和 1. Two Sum 的暴力法一樣:每一對都試,最多 n(n−1)/2 對', views: [arr(A, { label: 'numbers' })] }, { note: `一路試到 4 + 10?沒有 10;……最後試到 3 + 11 = ${T}`, views: [arr(A, { label: 'numbers', highlight: [1, 5] })] }] },
+      figure: { title: `numbers = [${A.join(',')}], target = ${T}`, steps: [{ note: '和 [1. Two Sum](#/q/1) 的暴力法一樣:每一對都試,最多 n(n−1)/2 對', views: [arr(A, { label: 'numbers' })] }, { note: `一路試到 4 + 10?沒有 10;……最後試到 3 + 11 = ${T}`, views: [arr(A, { label: 'numbers', highlight: [1, 5] })] }] },
       complexity: { time: 'O(n²)', space: 'O(1)', why: '最多比 n(n−1)/2 對。' },
       verdict: 'n = 3·10⁴ 會超時。只當起點。',
       code: {
@@ -202,7 +202,7 @@ export const q0167: Solution = {
       steps: ['`L = 0`、`R = n − 1`', '`s = numbers[L] + numbers[R]`', '`s == target` → 回傳 `[L+1, R+1]`', '`s < target` → `L++`;`s > target` → `R--`'],
       figure: { title: `numbers = [${A.join(',')}], target = ${T}`, steps: twoPtrFig() },
       complexity: { time: 'O(n)', space: 'O(1)', why: '每一步 L 右移或 R 左移,兩者最多合計走 n 步。' },
-      verdict: '標準解。「為什麼可以丟掉」是面試重點:和太小時,`numbers[L]` 配目前最大的數都不夠,配其他(更小的)數只會更小,所以它不可能在答案裡。15. 3Sum 就是外面再套一層迴圈。',
+      verdict: '標準解。「為什麼可以丟掉」是面試重點:和太小時,`numbers[L]` 配目前最大的數都不夠,配其他(更小的)數只會更小,所以它不可能在答案裡。[15. 3Sum](#/q/15) 就是外面再套一層迴圈。',
       code: {
         python: `def twoSum(numbers, target):
     l, r = 0, len(numbers) - 1
@@ -269,7 +269,7 @@ export const q0167: Solution = {
   ],
   followUp: [
     { q: '如果陣列沒排序?', a: '回到 [1. Two Sum](#/q/1):Hash Map O(n)。或者先排序再雙指針,但要帶著原索引。' },
-    { q: '如果要找三個數?', a: '15. 3Sum:排序後固定第一個數,剩下的就是這題。' },
+    { q: '如果要找三個數?', a: '[15. 3Sum](#/q/15):排序後固定第一個數,剩下的就是這題。' },
   ],
   check: {
     kind: 'fn',

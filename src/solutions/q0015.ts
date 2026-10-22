@@ -27,7 +27,7 @@ function bruteFig(): FigStep[] {
 
 function hashFig(): FigStep[] {
   const s = [...A].sort((a, b) => a - b)
-  const out: FigStep[] = [{ note: '排序後固定第一個數 s[i],剩下就是「在 i 右邊找兩數和為 −s[i]」,用 Hash Set 邊走邊查(就是 1. Two Sum)', views: [arr(s, { label: '排序後' })] }]
+  const out: FigStep[] = [{ note: '排序後固定第一個數 s[i],剩下就是「在 i 右邊找兩數和為 −s[i]」,用 Hash Set 邊走邊查(就是 [1. Two Sum](#/q/1))', views: [arr(s, { label: '排序後' })] }]
   const res: string[] = []
   for (let i = 0; i < s.length && s[i] <= 0; i++) {
     if (i > 0 && s[i] === s[i - 1]) {

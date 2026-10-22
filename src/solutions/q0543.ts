@@ -202,7 +202,7 @@ private int dfs(TreeNode n) {
     'C / Java 用全域變數記答案時,每次呼叫要記得重設成 0(LeetCode 會在同一個程式裡跑很多筆測資)',
   ],
   followUp: [
-    { q: '路徑上的節點有權重,要最大和?', a: '124. Binary Tree Maximum Path Sum:同樣的套路,回傳「往下單邊的最大和」,順便用「左 + 右 + 自己」更新答案;負的貢獻要砍成 0。' },
+    { q: '路徑上的節點有權重,要最大和?', a: '[124. Binary Tree Maximum Path Sum](#/q/124):同樣的套路,回傳「往下單邊的最大和」,順便用「左 + 右 + 自己」更新答案;負的貢獻要砍成 0。' },
   ],
   check: {
     kind: 'fn',

@@ -11,7 +11,7 @@ const same = (a: FNode | null, b: FNode | null): boolean => (!a && !b) || (!!a &
 function eachFig(): FigStep[] {
   const root = buildTree(R)
   const sub = buildTree(S)
-  const out: FigStep[] = [{ note: 'subRoot 是 root 的子樹 ⇔ root 裡有某個節點,「從它往下的整棵樹」和 subRoot 一模一樣。所以對 root 的每個節點都做一次 [100. Same Tree]', views: [tree(R, { label: 'root' }), tree(S, { label: 'subRoot' })] }]
+  const out: FigStep[] = [{ note: 'subRoot 是 root 的子樹 ⇔ root 裡有某個節點,「從它往下的整棵樹」和 subRoot 一模一樣。所以對 root 的每個節點都做一次 [100. Same Tree](#/q/100)', views: [tree(R, { label: 'root' }), tree(S, { label: 'subRoot' })] }]
   const stack: (FNode | null)[] = [root]
   while (stack.length) {
     const n = stack.pop()

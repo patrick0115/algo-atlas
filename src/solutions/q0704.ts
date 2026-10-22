@@ -235,7 +235,7 @@ export const q0704: Solution = {
   ],
   followUp: [
     { q: '如果陣列有重複,要找第一次出現的位置?', a: '閉區間版本找到時不能直接回傳;直接用方法三的下界版本,它本來就回傳「第一個」。最後一次出現 = 第一個 > target 的位置 − 1(34. Find First and Last Position)。' },
-    { q: '二分還能用在哪?', a: '不一定要在陣列上:只要「答案越大越容易成立」這種單調性存在,就能對答案二分(875. Koko Eating Bananas,見[[p:binary-search-answer]])。' },
+    { q: '二分還能用在哪?', a: '不一定要在陣列上:只要「答案越大越容易成立」這種單調性存在,就能對答案二分([875. Koko Eating Bananas](#/q/875),見[[p:binary-search-answer]])。' },
   ],
   check: {
     kind: 'fn',

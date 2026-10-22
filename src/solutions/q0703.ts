@@ -283,7 +283,7 @@ public:
     '初始化時 nums 可能少於 k 個(題目保證第一次 add 之後就夠),不能在建構子裡就假設堆有 k 個',
     'JavaScript 手寫堆時 `h[0] = h.pop()`:堆只剩一個元素時 pop 出來又放回 h[0],結果不變,邏輯仍正確',
   ],
-  followUp: [{ q: '如果要的是「目前的中位數」?', a: '295. Find Median from Data Stream:兩個堆(左半最大堆、右半最小堆),見[[p:two-heaps]]。' }],
+  followUp: [{ q: '如果要的是「目前的中位數」?', a: '[295. Find Median from Data Stream](#/q/295):兩個堆(左半最大堆、右半最小堆),見[[p:two-heaps]]。' }],
   check: {
     kind: 'class',
     cls: 'KthLargest',

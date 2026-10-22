@@ -223,7 +223,7 @@ private int f(int i) {
     'dp 的定義搞混:「到達 i 時已經付了 cost[i]」和「還沒付」兩種定義的初始值、答案位置都不一樣,挑一種寫清楚',
     '直接遞迴不記憶化:n = 1000 時是 2¹⁰⁰⁰ 次呼叫',
   ],
-  followUp: [{ q: '只問有幾種爬法?', a: '70. Climbing Stairs:dp[i] = dp[i−1] + dp[i−2](費氏數列),見[[p:dp-1d]]。' }],
+  followUp: [{ q: '只問有幾種爬法?', a: '[70. Climbing Stairs](#/q/70):dp[i] = dp[i−1] + dp[i−2](費氏數列),見[[p:dp-1d]]。' }],
   check: {
     kind: 'fn',
     fn: 'minCostClimbingStairs',

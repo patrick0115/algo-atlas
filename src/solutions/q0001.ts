@@ -305,7 +305,7 @@ int *twoSum(int *nums, int numsSize, int target, int *returnSize) {
   ],
   followUp: [
     { q: '如果陣列已經排序?', a: '167. Two Sum II:直接左右雙指針,O(n) 時間、O(1) 空間,不需要 Hash Map。' },
-    { q: '如果要找所有和為 0 的三元組?', a: '15. 3Sum:排序後固定第一個數,剩下兩個用雙指針 —— 這就是為什麼方法二值得學。' },
+    { q: '如果要找所有和為 0 的三元組?', a: '[15. 3Sum](#/q/15):排序後固定第一個數,剩下兩個用雙指針 —— 這就是為什麼方法二值得學。' },
   ],
   check: {
     kind: 'fn',

@@ -179,7 +179,7 @@ private void dfs(int[] c, int start, int left, List<Integer> cur, List<List<Inte
       steps: ['`dp[0] = [[]]`,其他是空的', '對每個數 `c`:`a` 從 c 到 target:把 `dp[a − c]` 的每個組合加上 c,放進 `dp[a]`', '回傳 `dp[target]`'],
       figure: { title: `candidates = [${C.join(',')}], target = ${T}`, steps: dpFig() },
       complexity: { time: 'O(n · target · 答案大小)', space: 'O(target · 答案大小)', why: '每個金額要存所有組合。target 只有 40,很快。' },
-      verdict: '如果只問「有幾種組合」,這就是 518. Coin Change II 的標準 DP(只存數量)。兩題對照,能看出回溯和 DP 的關係。',
+      verdict: '如果只問「有幾種組合」,這就是 [518. Coin Change II](#/q/518) 的標準 DP(只存數量)。兩題對照,能看出回溯和 DP 的關係。',
       code: {
         python: `def combinationSum(candidates, target):
     dp = [[] for _ in range(target + 1)]
@@ -261,8 +261,8 @@ int **combinationSum(int *candidates, int candidatesSize, int target, int *retur
     'DP 版外層放金額、內層放數:會把不同順序當成不同組合(那是 377 題「排列數」)',
   ],
   followUp: [
-    { q: '每個數只能用一次、而且陣列有重複?', a: '40. Combination Sum II:遞迴傳 `i + 1`,並且同一層跳過和前一個相同的數。' },
-    { q: '只要組合數量?', a: '518. Coin Change II:dp[a] += dp[a − c],外層是硬幣、內層是金額。' },
+    { q: '每個數只能用一次、而且陣列有重複?', a: '[40. Combination Sum II](#/q/40):遞迴傳 `i + 1`,並且同一層跳過和前一個相同的數。' },
+    { q: '只要組合數量?', a: '[518. Coin Change II](#/q/518):dp[a] += dp[a − c],外層是硬幣、內層是金額。' },
   ],
   check: {
     kind: 'fn',

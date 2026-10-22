@@ -285,7 +285,7 @@ private boolean dfs(char[][] b, String w, int r, int c, int k) {
     '用一個全域的 visited 卻在每個起點之間沒有清乾淨(用「暫時改掉格子再改回來」就沒有這個問題)',
     '先檢查 `k == len − 1` 再檢查字母相不相等:會把最後一個字母不對的情況也當成成功',
   ],
-  followUp: [{ q: '要在同一個盤面找很多個單字?', a: '212. Word Search II:把單字建成 Trie,一次 DFS 同時找所有單字,沿著 Trie 走不下去就剪枝。' }],
+  followUp: [{ q: '要在同一個盤面找很多個單字?', a: '[212. Word Search II](#/q/212):把單字建成 Trie,一次 DFS 同時找所有單字,沿著 Trie 走不下去就剪枝。' }],
   check: {
     kind: 'fn',
     fn: 'exist',

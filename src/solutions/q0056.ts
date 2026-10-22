@@ -250,7 +250,7 @@ int **merge(int **intervals, int intervalsSize, int *intervalsColSize, int *retu
     '端點相接算重疊:條件是 `s <= last.end`,不是 `<`',
     '掃描線同一個位置要先處理「開始」,不然 [1,4]、[4,5] 會被切成兩段',
   ],
-  followUp: [{ q: '把一個新區間插進已經排好、不重疊的區間裡?', a: '57. Insert Interval:分三段處理 —— 完全在左邊的、和新區間重疊的(合併)、完全在右邊的,O(n)。' }],
+  followUp: [{ q: '把一個新區間插進已經排好、不重疊的區間裡?', a: '[57. Insert Interval](#/q/57):分三段處理 —— 完全在左邊的、和新區間重疊的(合併)、完全在右邊的,O(n)。' }],
   check: {
     kind: 'fn',
     fn: 'merge',

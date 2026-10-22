@@ -131,7 +131,7 @@ private int nxt(int x) {
       steps: ['`slow = n`、`fast = 平方和(n)`', '`while fast != 1 and slow != fast`:`slow` 走一步、`fast` 走兩步', '回傳 `fast == 1`'],
       figure: { title: 'n = 2', steps: floydFig(2) },
       complexity: { time: 'O(log n)', space: 'O(1)', why: '和 set 版走的步數同量級,但只用兩個變數。' },
-      verdict: 'O(1) 空間。示範「序列 = 隱形的鏈結串列」這個觀念,287. Find the Duplicate Number 也是同一招。',
+      verdict: 'O(1) 空間。示範「序列 = 隱形的鏈結串列」這個觀念,[287. Find the Duplicate Number](#/q/287) 也是同一招。',
       code: {
         python: `def isHappy(n):
     def nxt(x):

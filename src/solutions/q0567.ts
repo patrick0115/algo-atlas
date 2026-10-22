@@ -211,7 +211,7 @@ bool checkInclusion(char *s1, char *s2) {
       steps: ['先算好第一個視窗的 `win`,和 `matches`', '`add(c)` / `remove(c)`:改 `win[c]` 前,`win[c] == need[c]` → `matches--`;改完後相等 → `matches++`', '每滑一格:`add(s2[r])`、`remove(s2[r − m])`', '`matches == 26` → `true`'],
       figure: { title: `s1 = "${S1}", s2 = "${S2}"`, steps: countFig(true) },
       complexity: { time: 'O(n)', space: 'O(1)', why: '每滑一格只動兩格、O(1) 更新 matches,完全不用掃 26 格。' },
-      verdict: '真正的 O(n),字母表很大(例如 Unicode 改用 Hash Map)時差別才明顯。76. Minimum Window Substring 用的是同樣的「需要幾種還沒湊齊」計數器。',
+      verdict: '真正的 O(n),字母表很大(例如 Unicode 改用 Hash Map)時差別才明顯。[76. Minimum Window Substring](#/q/76) 用的是同樣的「需要幾種還沒湊齊」計數器。',
       code: {
         python: `def checkInclusion(s1, s2):
     m, n = len(s1), len(s2)
@@ -323,7 +323,7 @@ bool checkInclusion(char *s1, char *s2) {
   ],
   followUp: [
     { q: '要回傳所有起點?', a: '438. Find All Anagrams in a String:同一份程式,找到時把 `r − m + 1` 記下來而不是回傳。' },
-    { q: '視窗長度不固定、只要「包含」所有字元?', a: '76. Minimum Window Substring:可變長度的視窗,右端擴張到湊齊、再縮左端求最短。' },
+    { q: '視窗長度不固定、只要「包含」所有字元?', a: '[76. Minimum Window Substring](#/q/76):可變長度的視窗,右端擴張到湊齊、再縮左端求最短。' },
   ],
   check: {
     kind: 'fn',

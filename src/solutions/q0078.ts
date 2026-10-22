@@ -278,7 +278,7 @@ private void dfs(int[] nums, int i, List<Integer> cur, List<List<Integer>> res) 
     '空集合 `[]` 也是子集,不能漏掉',
   ],
   followUp: [
-    { q: '有重複的數?', a: '90. Subsets II:先排序,同一層遇到和前一個相同的數就跳過。' },
+    { q: '有重複的數?', a: '[90. Subsets II](#/q/90):先排序,同一層遇到和前一個相同的數就跳過。' },
     { q: '只要大小剛好 k 的子集?', a: '77. Combinations:回溯時 cur 長度到 k 就收,也可以剪掉「剩下的數不夠湊到 k」的分支。' },
   ],
   check: {

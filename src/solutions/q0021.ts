@@ -58,7 +58,7 @@ export const q0021: Solution = {
       steps: ['`dummy = Node()`、`tail = dummy`', '`while list1 and list2`:較小的那個接到 `tail.next`,它所在的串列往前一步', '`tail = tail.next`', '迴圈結束:`tail.next = list1 or list2`(剩下的直接接上)', '回傳 `dummy.next`'],
       figure: { title: `list1 = [${A.join(',')}], list2 = [${B.join(',')}]`, steps: mergeFig(false) },
       complexity: { time: 'O(m + n)', space: 'O(1)', why: '每個節點被接一次;只是改指標,沒有建新節點。' },
-      verdict: '標準解,一定要熟。23. Merge k Sorted Lists、148. Sort List(鏈結串列的合併排序)都會用到它。',
+      verdict: '標準解,一定要熟。[23. Merge k Sorted Lists](#/q/23)、148. Sort List(鏈結串列的合併排序)都會用到它。',
       code: {
         python: `def mergeTwoLists(list1, list2):
     dummy = tail = ListNode()
@@ -186,7 +186,7 @@ export const q0021: Solution = {
     '其中一條是空串列:迭代版直接接上另一條;遞迴版第一行就回傳',
   ],
   followUp: [
-    { q: '合併 k 條排好的串列?', a: '23. Merge k Sorted Lists:用最小堆每次取 k 個頭裡最小的,O(N log k);或兩兩合併(分治),也是 O(N log k)。' },
+    { q: '合併 k 條排好的串列?', a: '[23. Merge k Sorted Lists](#/q/23):用最小堆每次取 k 個頭裡最小的,O(N log k);或兩兩合併(分治),也是 O(N log k)。' },
   ],
   check: {
     kind: 'fn',

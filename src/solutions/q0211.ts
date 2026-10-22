@@ -200,7 +200,7 @@ public:
       steps: ['`addWord`:同 208 的 insert', '`dfs(node, i)`:`i == len` → 回傳 `node.isEnd`', '`word[i] == "."` → 對每個不是空的孩子 `dfs(child, i + 1)`,任一 true 就 true', '否則 → 走 `children[word[i]]`,沒有就 false'],
       figure: { title: `addWord ${WORDS.map((w) => `"${w}"`).join('、')},search("b.d")`, steps: dfsFig('b.d') },
       complexity: { time: 'addWord O(L),search O(26^d · L)', space: 'O(總字母數 × 26)', why: 'd 是 "." 的個數(最多 2)。沒有 "." 時就是 O(L)。' },
-      verdict: '標準解,[[p:trie]] + [[p:backtracking]]。「遇到不確定的就每條路都試」這個想法,在 212. Word Search II 會再用到。',
+      verdict: '標準解,[[p:trie]] + [[p:backtracking]]。「遇到不確定的就每條路都試」這個想法,在 [212. Word Search II](#/q/212) 會再用到。',
       code: {
         python: `class WordDictionary:
     def __init__(self):
@@ -356,7 +356,7 @@ public:
     '遇到 `.` 只試第一個孩子:要全部試,有任何一條成功才算成功',
     'Python 巢狀 dict 版遇到 `.` 時,要跳過結尾標記 `"$"` 那個 key,不然會把 True 當成節點',
   ],
-  followUp: [{ q: '如果 `*` 可以代表任意長度?', a: '那就變成字串配對的 DP:44. Wildcard Matching、10. Regular Expression Matching。' }],
+  followUp: [{ q: '如果 `*` 可以代表任意長度?', a: '那就變成字串配對的 DP:44. Wildcard Matching、[10. Regular Expression Matching](#/q/10)。' }],
   check: {
     kind: 'class',
     cls: 'WordDictionary',

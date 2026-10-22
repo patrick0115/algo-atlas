@@ -190,7 +190,7 @@ export const q0125: Solution = {
   ],
   followUp: [
     { q: '如果最多可以刪掉一個字元?', a: '680. Valid Palindrome II:雙指針遇到第一個不同時,分別試「跳過左邊」或「跳過右邊」,剩下的部分是不是迴文。' },
-    { q: '找最長的迴文子字串?', a: '5. Longest Palindromic Substring:改成「從中心往外擴」的雙指針,每個中心試一次。' },
+    { q: '找最長的迴文子字串?', a: '[5. Longest Palindromic Substring](#/q/5):改成「從中心往外擴」的雙指針,每個中心試一次。' },
   ],
   check: {
     kind: 'fn',

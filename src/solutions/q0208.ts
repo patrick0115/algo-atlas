@@ -563,7 +563,7 @@ public:
   ],
   followUp: [
     { q: '支援萬用字元 `.`?', a: '211. Design Add and Search Words:search 遇到 `.` 就對所有孩子 DFS。' },
-    { q: '在網格裡找很多個單字?', a: '212. Word Search II:把單字建成 Trie,在網格 DFS 時沿著 Trie 走,走不下去就剪枝。' },
+    { q: '在網格裡找很多個單字?', a: '[212. Word Search II](#/q/212):把單字建成 Trie,在網格 DFS 時沿著 Trie 走,走不下去就剪枝。' },
   ],
   check: {
     kind: 'class',

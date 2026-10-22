@@ -275,7 +275,7 @@ export const q0739: Solution = {
   ],
   followUp: [
     { q: '溫度是環狀的(最後一天之後接回第一天)?', a: '503. Next Greater Element II:把陣列走兩圈(索引取 mod n),一樣用單調堆疊。' },
-    { q: '還有哪些題用單調堆疊?', a: '[84. Largest Rectangle in Histogram](#/p/monotonic-stack)(找左右第一個更矮的)、901. Online Stock Span、42. Trapping Rain Water。' },
+    { q: '還有哪些題用單調堆疊?', a: '[84. Largest Rectangle in Histogram](#/p/monotonic-stack)(找左右第一個更矮的)、901. Online Stock Span、[42. Trapping Rain Water](#/q/42)。' },
   ],
   check: {
     kind: 'fn',

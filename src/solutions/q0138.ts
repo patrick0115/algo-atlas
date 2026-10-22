@@ -67,7 +67,7 @@ export const q0138: Solution = {
       steps: ['`map = {null: null}`', '第一輪:對每個舊節點 `old`,`map[old] = Node(old.val)`', '第二輪:`map[old].next = map[old.next]`、`map[old].random = map[old.random]`', '回傳 `map[head]`'],
       figure: { title: 'head = [[7,null],[13,0],[11,4],[10,2],[1,0]]', steps: mapFig() },
       complexity: { time: 'O(n)', space: 'O(n)', why: '走兩遍;map 存 n 對。' },
-      verdict: '標準解,最好懂。「舊 → 新」的 map 也是 133. Clone Graph(複製圖)的核心。',
+      verdict: '標準解,最好懂。「舊 → 新」的 map 也是 [133. Clone Graph](#/q/133)(複製圖)的核心。',
       code: {
         python: `def copyRandomList(head):
     old_to_new = {None: None}
@@ -243,7 +243,7 @@ struct Node *copyRandomList(struct Node *head) {
     '交錯版最後沒有把原串列拆回去:題目要求不能改壞原串列',
   ],
   followUp: [
-    { q: '同一招用在圖上?', a: '133. Clone Graph:一樣用「舊 → 新」的 map,搭配 DFS / BFS 走過所有節點,也順便防止重複複製。' },
+    { q: '同一招用在圖上?', a: '[133. Clone Graph](#/q/133):一樣用「舊 → 新」的 map,搭配 DFS / BFS 走過所有節點,也順便防止重複複製。' },
   ],
   check: {
     kind: 'fn',

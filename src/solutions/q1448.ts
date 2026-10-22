@@ -206,7 +206,7 @@ def goodNodes(root):
     '初始的 mx 用 0:值可能是負的(`-10⁴`),要用根的值或負無限大',
   ],
   followUp: [
-    { q: '同樣「往下傳狀態」的題目?', a: '98. Validate Binary Search Tree(往下傳上下界)、112. Path Sum(往下傳剩下的目標和)、129. Sum Root to Leaf Numbers(往下傳目前組成的數字)。' },
+    { q: '同樣「往下傳狀態」的題目?', a: '[98. Validate Binary Search Tree](#/q/98)(往下傳上下界)、112. Path Sum(往下傳剩下的目標和)、129. Sum Root to Leaf Numbers(往下傳目前組成的數字)。' },
   ],
   check: {
     kind: 'fn',
