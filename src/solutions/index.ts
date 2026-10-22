@@ -3,21 +3,28 @@ import { q0001 } from './q0001'
 import { q0011 } from './q0011'
 import { q0015 } from './q0015'
 import { q0020 } from './q0020'
+import { q0033 } from './q0033'
 import { q0036 } from './q0036'
 import { q0049 } from './q0049'
+import { q0074 } from './q0074'
 import { q0125 } from './q0125'
 import { q0128 } from './q0128'
+import { q0150 } from './q0150'
+import { q0153 } from './q0153'
+import { q0155 } from './q0155'
 import { q0167 } from './q0167'
 import { q0217 } from './q0217'
 import { q0238 } from './q0238'
 import { q0242 } from './q0242'
 import { q0347 } from './q0347'
+import { q0704 } from './q0704'
+import { q0981 } from './q0981'
 import { q2013 } from './q2013'
 
 // 新增一題:寫 src/solutions/q<四位題號>.ts,匯出一個 Solution,加進 ALL。
 
 const ALL: Solution[] = [
-  q0001, q0011, q0015, q0020, q0036, q0049, q0125, q0128, q0167, q0217, q0238, q0242, q0347, q2013,
+  q0001, q0011, q0015, q0020, q0033, q0036, q0049, q0074, q0125, q0128, q0150, q0153, q0155, q0167, q0217, q0238, q0242, q0347, q0704, q0981, q2013,
 ]
 
 export const SOLUTIONS: Record<number, Solution> = Object.fromEntries(ALL.map((s) => [s.id, s]))
