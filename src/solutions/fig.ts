@@ -50,3 +50,18 @@ export function chain(vals: (number | string)[], opt: ChainOpt = {}): GraphViewD
   if (used.has('nullL') || opt.subs?.[-2]) nodes.push({ id: 'nullL', label: '∅', x: -1.3, y: 0, cls: 'dim', sub: opt.subs?.[-2] })
   return { kind: 'graph', label: opt.label, nodes, edges }
 }
+
+/** 有環的串列:環之前的節點排成一排,環上的節點排成一圈,尾巴接回第 pos 個 */
+export function loopChain(vals: (number | string)[], pos: number, opt: Pick<ChainOpt, 'label' | 'subs' | 'cls'> = {}): GraphViewData {
+  const k = vals.length - pos
+  const r = Math.max(0.9, (k * 1.3) / (2 * Math.PI))
+  const cx = pos * 1.3 + r
+  const nodes: GraphNode[] = vals.map((v, i) => {
+    if (i < pos) return { id: i, label: v, x: i * 1.3, y: r, sub: opt.subs?.[i], cls: opt.cls?.[i] }
+    const a = Math.PI - (2 * Math.PI * (i - pos)) / k
+    return { id: i, label: v, x: cx + r * Math.cos(a), y: r - r * Math.sin(a), sub: opt.subs?.[i], cls: opt.cls?.[i] }
+  })
+  const edges: GraphEdge[] = vals.slice(1).map((_, i) => ({ from: i, to: i + 1, directed: true }))
+  edges.push({ from: vals.length - 1, to: pos, directed: true, cls: 'hl' })
+  return { kind: 'graph', label: opt.label, nodes, edges }
+}

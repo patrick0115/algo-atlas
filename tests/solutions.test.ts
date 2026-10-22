@@ -91,8 +91,21 @@ function nodesOf(h: unknown): Set<unknown> {
   return s
 }
 
+function toCycleList([a, pos]: [number[], number]): LNode | null {
+  const head = toList(a)
+  if (pos < 0) return head
+  let tail = head!
+  let at: LNode | null = null
+  for (let i = 0, n: LNode | null = head; n; n = n.next, i++) {
+    if (i === pos) at = n
+    tail = n
+  }
+  tail.next = at
+  return head
+}
+
 const toNode = (v: unknown, kind: string | null | undefined) =>
-  kind === 'list' ? toList(v as number[]) : kind === 'tree' ? toTree(v as (number | null)[]) : kind === 'randomList' ? toRandomList(v as [number, number | null][]) : v
+  kind === 'cycleList' ? toCycleList(v as [number[], number]) : kind === 'list' ? toList(v as number[]) : kind === 'tree' ? toTree(v as (number | null)[]) : kind === 'randomList' ? toRandomList(v as [number, number | null][]) : v
 const fromNode = (v: unknown, kind: string | null | undefined) =>
   kind === 'list' ? fromList(v as LNode | null) : kind === 'tree' ? fromTree(v as TNode | null) : kind === 'randomList' ? fromRandomList(v as RNode | null) : v
 

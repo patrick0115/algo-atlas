@@ -27,9 +27,10 @@ export interface Approach {
 
 /**
  * 測資裡要轉成節點的參數:list = 陣列轉 ListNode 串列,tree = 層序陣列(null 表示空)轉 TreeNode,
- * randomList = [[值, random 指向的索引或 null], ...] 轉成有 random 指標的 Node 串列(138 題)
+ * randomList = [[值, random 指向的索引或 null], ...] 轉成有 random 指標的 Node 串列(138 題),
+ * cycleList = [陣列, pos] 轉成 ListNode 串列,尾巴接回第 pos 個節點(pos = -1 表示沒有環,141 / 142 題)
  */
-export type NodeKind = 'list' | 'tree' | 'randomList'
+export type NodeKind = 'list' | 'tree' | 'randomList' | 'cycleList'
 
 /**
  * 測試:把 JavaScript 版的程式碼拿來跑這些例子。
