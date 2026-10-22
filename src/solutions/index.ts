@@ -48,7 +48,9 @@ import { q0199 } from './q0199'
 import { q0200 } from './q0200'
 import { q0202 } from './q0202'
 import { q0206 } from './q0206'
+import { q0207 } from './q0207'
 import { q0208 } from './q0208'
+import { q0210 } from './q0210'
 import { q0211 } from './q0211'
 import { q0215 } from './q0215'
 import { q0217 } from './q0217'
@@ -68,11 +70,15 @@ import { q0567 } from './q0567'
 import { q0572 } from './q0572'
 import { q0621 } from './q0621'
 import { q0678 } from './q0678'
+import { q0684 } from './q0684'
 import { q0695 } from './q0695'
 import { q0703 } from './q0703'
 import { q0704 } from './q0704'
 import { q0739 } from './q0739'
+import { q0743 } from './q0743'
+import { q0746 } from './q0746'
 import { q0763 } from './q0763'
+import { q0787 } from './q0787'
 import { q0846 } from './q0846'
 import { q0853 } from './q0853'
 import { q0875 } from './q0875'
@@ -81,13 +87,14 @@ import { q0981 } from './q0981'
 import { q0994 } from './q0994'
 import { q1046 } from './q1046'
 import { q1448 } from './q1448'
+import { q1584 } from './q1584'
 import { q1899 } from './q1899'
 import { q2013 } from './q2013'
 
 // 新增一題:寫 src/solutions/q<四位題號>.ts,匯出一個 Solution,加進 ALL。
 
 const ALL: Solution[] = [
-  q0001, q0002, q0003, q0011, q0015, q0017, q0019, q0020, q0021, q0022, q0033, q0036, q0039, q0040, q0045, q0046, q0049, q0055, q0056, q0057, q0074, q0078, q0079, q0090, q0098, q0100, q0102, q0104, q0105, q0110, q0121, q0125, q0128, q0130, q0131, q0133, q0134, q0138, q0141, q0143, q0146, q0150, q0153, q0155, q0167, q0199, q0200, q0202, q0206, q0208, q0211, q0215, q0217, q0226, q0230, q0235, q0238, q0242, q0287, q0347, q0355, q0417, q0424, q0435, q0543, q0567, q0572, q0621, q0678, q0695, q0703, q0704, q0739, q0763, q0846, q0853, q0875, q0973, q0981, q0994, q1046, q1448, q1899, q2013,
+  q0001, q0002, q0003, q0011, q0015, q0017, q0019, q0020, q0021, q0022, q0033, q0036, q0039, q0040, q0045, q0046, q0049, q0055, q0056, q0057, q0074, q0078, q0079, q0090, q0098, q0100, q0102, q0104, q0105, q0110, q0121, q0125, q0128, q0130, q0131, q0133, q0134, q0138, q0141, q0143, q0146, q0150, q0153, q0155, q0167, q0199, q0200, q0202, q0206, q0207, q0208, q0210, q0211, q0215, q0217, q0226, q0230, q0235, q0238, q0242, q0287, q0347, q0355, q0417, q0424, q0435, q0543, q0567, q0572, q0621, q0678, q0684, q0695, q0703, q0704, q0739, q0743, q0746, q0763, q0787, q0846, q0853, q0875, q0973, q0981, q0994, q1046, q1448, q1584, q1899, q2013,
 ]
 
 export const SOLUTIONS: Record<number, Solution> = Object.fromEntries(ALL.map((s) => [s.id, s]))

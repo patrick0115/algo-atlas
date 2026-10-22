@@ -1,5 +1,5 @@
 import type { GraphEdge, GraphNode, GraphViewData, GridViewData, KVViewData } from '../types'
-import { treeLayout } from '../engine/helpers'
+import { circleLayout, treeLayout } from '../engine/helpers'
 
 // 題解圖示的小工具。陣列用 engine/helpers 的 arr()。
 
@@ -201,5 +201,35 @@ export function intervalsView(iv: number[][], opt: { label?: string; cls?: Recor
     rowLabels: opt.rowLabels ?? iv.map(([a, b]) => `[${a},${b}]`),
     colLabels: Array.from({ length: cols }, (_, k) => String(k + lo)),
     marks,
+  }
+}
+
+export interface GraphOpt {
+  label?: string
+  /** 節點編號從幾開始(0 或 1) */
+  base?: number
+  directed?: boolean
+  /** 節點的 class / 下方小字,key 是節點編號 */
+  cls?: Record<number, string>
+  subs?: Record<number, string | number>
+  /** 邊的 class,key 是邊在陣列裡的位置 */
+  edgeCls?: Record<number, string>
+  /** 自訂座標(節點編號 → x, y);不給就排成一圈 */
+  pos?: Record<number, { x: number; y: number }>
+}
+
+/** 一般的圖:edges 是 [u, v] 或 [u, v, 權重] */
+export function graphView(n: number, edges: number[][], opt: GraphOpt = {}): GraphViewData {
+  const base = opt.base ?? 0
+  const circle = circleLayout(n, Math.max(1.2, n * 0.32))
+  return {
+    kind: 'graph',
+    label: opt.label,
+    nodes: Array.from({ length: n }, (_, i) => {
+      const id = i + base
+      const p = opt.pos?.[id] ?? circle[i]
+      return { id, label: id, x: p.x, y: p.y, cls: opt.cls?.[id], sub: opt.subs?.[id] }
+    }),
+    edges: edges.map((e, k) => ({ from: e[0], to: e[1], label: e[2], directed: opt.directed, cls: opt.edgeCls?.[k] })),
   }
 }
