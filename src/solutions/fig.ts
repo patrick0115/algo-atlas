@@ -1,4 +1,5 @@
 import type { GraphEdge, GraphNode, GraphViewData, GridViewData, KVViewData } from '../types'
+import { treeLayout } from '../engine/helpers'
 
 // 題解圖示的小工具。陣列用 engine/helpers 的 arr()。
 
@@ -64,4 +65,75 @@ export function loopChain(vals: (number | string)[], pos: number, opt: Pick<Chai
   const edges: GraphEdge[] = vals.slice(1).map((_, i) => ({ from: i, to: i + 1, directed: true }))
   edges.push({ from: vals.length - 1, to: pos, directed: true, cls: 'hl' })
   return { kind: 'graph', label: opt.label, nodes, edges }
+}
+
+/** 圖示用的樹節點:i 是它在層序陣列裡的位置,畫圖時用來標顏色 */
+export interface FNode {
+  i: number
+  val: number
+  left: FNode | null
+  right: FNode | null
+}
+
+/** LeetCode 層序陣列(null 表示空)→ 樹;每個節點記住自己在陣列裡的位置 */
+export function buildTree(level: (number | null)[]): FNode | null {
+  if (!level.length || level[0] === null) return null
+  const root: FNode = { i: 0, val: level[0], left: null, right: null }
+  const q = [root]
+  for (let k = 1, h = 0; k < level.length; h++) {
+    const n = q[h]
+    if (level[k] !== null && level[k] !== undefined) q.push((n.left = { i: k, val: level[k]!, left: null, right: null }))
+    k++
+    if (k < level.length && level[k] !== null) q.push((n.right = { i: k, val: level[k]!, left: null, right: null }))
+    k++
+  }
+  return root
+}
+
+export interface TreeOpt {
+  label?: string
+  /** key 是節點的 i(建樹時在層序陣列裡的位置,節點被搬動也不會變) */
+  cls?: Record<number, string>
+  subs?: Record<number, string | number>
+  /** 指向某個節點的那條邊的 class,key 是子節點的 i */
+  edgeCls?: Record<number, string>
+}
+
+/** 把樹畫出來(層序陣列版) */
+export function tree(level: (number | null)[], opt: TreeOpt = {}): GraphViewData {
+  return treeOf(buildTree(level), opt)
+}
+
+/** 把樹畫出來(節點版,樹的形狀改過之後用這個) */
+export function treeOf(root: FNode | null, opt: TreeOpt = {}): GraphViewData {
+  // treeLayout 用「完整二元樹」的索引排位置(i 的孩子是 2i+1、2i+2)
+  const full: (number | null)[] = []
+  const idAt = new Map<number, number>()
+  const walk = (n: FNode | null, at: number) => {
+    if (!n) return
+    while (full.length <= at) full.push(null)
+    full[at] = n.val
+    idAt.set(at, n.i)
+    walk(n.left, 2 * at + 1)
+    walk(n.right, 2 * at + 2)
+  }
+  walk(root, 0)
+  const { nodes, edges } = treeLayout(full)
+  return {
+    kind: 'graph',
+    label: opt.label,
+    nodes: nodes.map((n) => {
+      const i = idAt.get(Number(n.id))!
+      return { ...n, id: i, cls: opt.cls?.[i], sub: opt.subs?.[i] }
+    }),
+    edges: edges.map((e) => {
+      const to = idAt.get(Number(e.to))!
+      return { from: idAt.get(Number(e.from))!, to, cls: opt.edgeCls?.[to] }
+    }),
+  }
+}
+
+/** 複製一棵圖示用的樹 */
+export function cloneTree(n: FNode | null): FNode | null {
+  return n ? { i: n.i, val: n.val, left: cloneTree(n.left), right: cloneTree(n.right) } : null
 }
