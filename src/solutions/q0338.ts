@@ -45,7 +45,7 @@ export const q0338: Solution = {
       steps: ['`for i in 0..n`', '`c = 0; x = i; while x: x &= x − 1; c += 1`', '`ans[i] = c`'],
       figure: { title: '`i & (i − 1)` 的作用', steps: lowbitFig() },
       complexity: { time: 'O(n log n)', space: 'O(1)', why: '每個數最多 log n 個 1(不算答案陣列)。' },
-      verdict: '直覺,也是 191. Number of 1 Bits 的解法;這題的 follow-up 要求更好。',
+      verdict: '直覺,也是 [191. Number of 1 Bits](#/q/191) 的解法;這題的 follow-up 要求更好。',
       code: {
         python: `def countBits(n):
     ans = []
@@ -137,7 +137,7 @@ export const q0338: Solution = {
     '`ans[i >> 1] + i & 1`:`+` 的優先順序比 `&` 高,要加括號',
     '陣列長度開成 n:題目要 0..n 共 n + 1 個',
   ],
-  followUp: [{ q: '還有哪些 `i & (i − 1)` 的用法?', a: '判斷 2 的冪次(`n > 0 and n & (n − 1) == 0`)、191 數 1 的個數、樹狀陣列(BIT)用的 lowbit `i & −i`。' }],
+  followUp: [{ q: '還有哪些 `i & (i − 1)` 的用法?', a: '判斷 2 的冪次(`n > 0 and n & (n − 1) == 0`)、[191](#/q/191) 數 1 的個數、樹狀陣列(BIT)用的 lowbit `i & −i`。' }],
   check: {
     kind: 'fn',
     fn: 'countBits',
