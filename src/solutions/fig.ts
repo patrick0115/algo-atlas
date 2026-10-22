@@ -183,3 +183,23 @@ export function recView(nodes: RNode[], pos: { x: number; y: number }[], upto: n
     edges: shown.flatMap((n, i) => (n.parent >= 0 ? [{ from: n.parent, to: i, cls: n.kind === 'cut' ? 'dim' : undefined }] : [])),
   }
 }
+
+/** 區間畫成時間軸:每個區間一列,[a, b] 範圍的格子塗色。cls 的 key 是區間在陣列裡的位置 */
+export function intervalsView(iv: number[][], opt: { label?: string; cls?: Record<number, 'hl' | 'done' | 'dim' | 'cmp'>; rowLabels?: string[] } = {}): GridViewData {
+  const lo = Math.min(0, ...iv.map((x) => x[0]))
+  const hi = Math.max(...iv.map((x) => x[1]))
+  const cols = hi - lo + 1
+  const marks: Record<string, [number, number][]> = { path: [], hl: [], done: [], dim: [], cmp: [] }
+  iv.forEach(([a, b], r) => {
+    const cls = opt.cls?.[r] ?? 'path'
+    for (let x = a; x <= b; x++) marks[cls].push([r, x - lo])
+  })
+  return {
+    kind: 'grid',
+    label: opt.label ?? '區間(每列一個,塗色的是它涵蓋的範圍)',
+    cells: iv.map(([a, b]) => Array.from({ length: cols }, (_, k) => (k + lo === a || k + lo === b ? k + lo : ''))),
+    rowLabels: opt.rowLabels ?? iv.map(([a, b]) => `[${a},${b}]`),
+    colLabels: Array.from({ length: cols }, (_, k) => String(k + lo)),
+    marks,
+  }
+}
