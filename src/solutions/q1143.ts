@@ -284,7 +284,7 @@ private int f(int i, int j) {
   ],
   followUp: [
     { q: '要最長公共子字串(連續)?', a: '718. Maximum Length of Repeated Subarray:相同 → 左上 + 1,不同 → 0,答案是整張表的最大值。' },
-    { q: '還有哪些題是同一張表?', a: '[72. Edit Distance](#/q/72)、583、712、[97. Interleaving String](#/q/97)、115 Distinct Subsequences。' },
+    { q: '還有哪些題是同一張表?', a: '[72. Edit Distance](#/q/72)、583、712、[97. Interleaving String](#/q/97)、[115. Distinct Subsequences](#/q/115)。' },
   ],
   check: {
     kind: 'fn',
