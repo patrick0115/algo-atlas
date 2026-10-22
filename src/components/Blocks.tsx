@@ -119,7 +119,7 @@ export function CodeLines({ code, lang, active }: { code: string; lang: Lang; ac
   )
 }
 
-function MultiCode({ title, code }: { title?: string; code: Partial<Record<Lang, string>> }) {
+export function MultiCode({ title, code }: { title?: string; code: Partial<Record<Lang, string>> }) {
   const [pref, setLang] = useLang()
   const langs = LANGS.filter((l) => code[l.id] !== undefined)
   const lang = code[pref] !== undefined ? pref : langs[0].id

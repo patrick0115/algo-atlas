@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { Difficulty, ListId, Problem, Status } from '../types'
 import { useProgress } from '../engine/progress'
 import { findStub } from '../data/categories'
+import { hasSolution } from '../solutions'
 
 const DIFFS: Difficulty[] = ['Easy', 'Medium', 'Hard']
 const LIST_LABEL: Record<ListId, string> = { blind75: 'Blind 75', neetcode150: 'NeetCode 150', neetcode450: 'NeetCode 450' }
@@ -115,6 +116,11 @@ export function ProblemList({ problems, showPatterns = false, defaultScope = 'fo
                   </a>
                   {p.paid && <span className="muted"> 🔒</span>}
                   <div className="tags">
+                    {hasSolution(p.id) && (
+                      <a className="tag q-tag" href={`#/q/${p.id}`}>
+                        題解
+                      </a>
+                    )}
                     {p.lists
                       .filter((l) => l !== 'neetcode450' || p.lists.length === 1)
                       .map((l) => (

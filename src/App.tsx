@@ -11,6 +11,8 @@ import { SummaryPage } from './components/SummaryPage'
 import { Toc } from './components/Toc'
 import { SUMMARIES } from './data/summaries'
 import { ConceptPage } from './components/ConceptPage'
+import { SolutionIndex, SolutionPage } from './components/SolutionPage'
+import { SOLUTIONS } from './solutions'
 import { CONCEPTS, CONCEPT_ORDER, UNITS, conceptsFor } from './concepts'
 import { highlight } from './engine/code'
 import { useLang, useProgress } from './engine/progress'
@@ -92,6 +94,9 @@ function Sidebar({ current }: { current: string }) {
         <input className="side-search" type="search" placeholder="搜尋演算法…" value={q} onChange={(e) => setQ(e.target.value)} />
         <a href="#/plan" className={`side-link${current === 'plan' ? ' active' : ''}`}>
           刷題藍圖
+        </a>
+        <a href="#/q" className={`side-link${current === 'q' ? ' active' : ''}`}>
+          題解
         </a>
         <a href="#/review" className={`side-link${current === 'review' ? ' active' : ''}`}>
           複習
@@ -419,9 +424,11 @@ export default function App() {
   const m = hash.match(/^\/p\/([\w-]+)/)
   const sm = hash.match(/^\/s\/([\w-]+)/)
   const cm = hash.match(/^\/c\/([\w-]+)/)
+  const qm = hash.match(/^\/q\/(\d+)/)
+  const sol = qm ? SOLUTIONS[Number(qm[1])] : undefined
   const concept = cm ? CONCEPTS[cm[1]] : undefined
   const sumCat = sm && SUMMARIES[sm[1]] ? CATEGORIES.find((c) => c.id === sm[1]) : undefined
-  const current = m ? m[1] : cm ? `c/${cm[1]}` : sm ? `s/${sm[1]}` : hash === '/problems' ? 'problems' : hash === '/review' ? 'review' : hash === '/plan' ? 'plan' : ''
+  const current = m ? m[1] : qm || hash === '/q' ? 'q' : cm ? `c/${cm[1]}` : sm ? `s/${sm[1]}` : hash === '/problems' ? 'problems' : hash === '/review' ? 'review' : hash === '/plan' ? 'plan' : ''
 
   return (
     <div className="layout">
@@ -433,6 +440,10 @@ export default function App() {
           <ConceptPage key={concept.id} c={concept} pager={<Pager at={`c/${concept.id}`} />} />
         ) : sumCat ? (
           <SummaryPage key={sumCat.id} cat={sumCat} sum={SUMMARIES[sumCat.id]} pager={<Pager at={`s/${sumCat.id}`} />} />
+        ) : sol ? (
+          <SolutionPage key={sol.id} sol={sol} />
+        ) : hash === '/q' || qm ? (
+          <SolutionIndex />
         ) : hash === '/plan' ? (
           <Plan />
         ) : hash === '/review' ? (

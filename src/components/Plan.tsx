@@ -3,6 +3,7 @@ import type { Status } from '../types'
 import { PROBLEMS } from '../data/problems'
 import { findStub } from '../data/categories'
 import { useProgress } from '../engine/progress'
+import { hasSolution } from '../solutions'
 import { dueProblems } from '../engine/review'
 import { addDays, buildPlan, EXTRA_STAGE, extraPool, extrasFor, nextUp, schedule, weekStart, weeksLeft, type PlanItem } from '../engine/plan'
 
@@ -76,6 +77,11 @@ function ProblemTitle({ it }: { it: PlanItem }) {
         {p.id}. {p.title}
       </a>
       {p.paid && <span className="muted"> 🔒</span>}
+      {hasSolution(p.id) && (
+        <a className="tag q-tag" href={`#/q/${p.id}`} title="多種解法、圖示與複雜度">
+          題解
+        </a>
+      )}
     </span>
   )
 }
