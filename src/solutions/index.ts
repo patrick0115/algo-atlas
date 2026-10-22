@@ -7,10 +7,14 @@ import { q0015 } from './q0015'
 import { q0019 } from './q0019'
 import { q0020 } from './q0020'
 import { q0021 } from './q0021'
+import { q0022 } from './q0022'
 import { q0033 } from './q0033'
 import { q0036 } from './q0036'
+import { q0039 } from './q0039'
+import { q0046 } from './q0046'
 import { q0049 } from './q0049'
 import { q0074 } from './q0074'
+import { q0078 } from './q0078'
 import { q0098 } from './q0098'
 import { q0100 } from './q0100'
 import { q0102 } from './q0102'
@@ -50,6 +54,9 @@ import { q0572 } from './q0572'
 import { q0621 } from './q0621'
 import { q0703 } from './q0703'
 import { q0704 } from './q0704'
+import { q0739 } from './q0739'
+import { q0853 } from './q0853'
+import { q0875 } from './q0875'
 import { q0973 } from './q0973'
 import { q0981 } from './q0981'
 import { q1046 } from './q1046'
@@ -59,7 +66,7 @@ import { q2013 } from './q2013'
 // 新增一題:寫 src/solutions/q<四位題號>.ts,匯出一個 Solution,加進 ALL。
 
 const ALL: Solution[] = [
-  q0001, q0002, q0003, q0011, q0015, q0019, q0020, q0021, q0033, q0036, q0049, q0074, q0098, q0100, q0102, q0104, q0105, q0110, q0121, q0125, q0128, q0138, q0141, q0143, q0146, q0150, q0153, q0155, q0167, q0199, q0202, q0206, q0208, q0211, q0215, q0217, q0226, q0230, q0235, q0238, q0242, q0287, q0347, q0355, q0424, q0543, q0567, q0572, q0621, q0703, q0704, q0973, q0981, q1046, q1448, q2013,
+  q0001, q0002, q0003, q0011, q0015, q0019, q0020, q0021, q0022, q0033, q0036, q0039, q0046, q0049, q0074, q0078, q0098, q0100, q0102, q0104, q0105, q0110, q0121, q0125, q0128, q0138, q0141, q0143, q0146, q0150, q0153, q0155, q0167, q0199, q0202, q0206, q0208, q0211, q0215, q0217, q0226, q0230, q0235, q0238, q0242, q0287, q0347, q0355, q0424, q0543, q0567, q0572, q0621, q0703, q0704, q0739, q0853, q0875, q0973, q0981, q1046, q1448, q2013,
 ]
 
 export const SOLUTIONS: Record<number, Solution> = Object.fromEntries(ALL.map((s) => [s.id, s]))

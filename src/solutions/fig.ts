@@ -137,3 +137,49 @@ export function treeOf(root: FNode | null, opt: TreeOpt = {}): GraphViewData {
 export function cloneTree(n: FNode | null): FNode | null {
   return n ? { i: n.i, val: n.val, left: cloneTree(n.left), right: cloneTree(n.right) } : null
 }
+
+/** 遞迴 / 回溯的決策樹節點:parent = -1 是根;依「被走到的順序」放進陣列 */
+export interface RNode {
+  parent: number
+  label: string | number
+  /** 節點下方的小字(例如目前選了什麼) */
+  sub?: string
+  /** 這個節點的結果:ok = 找到答案、cut = 被剪掉 */
+  kind?: 'ok' | 'cut'
+}
+
+/** 先用整棵樹算好位置(葉子由左到右排),之後每一步只畫出已經走到的節點,位置不會跳動 */
+export function recLayout(nodes: RNode[]): { x: number; y: number }[] {
+  const kids = nodes.map(() => [] as number[])
+  nodes.forEach((n, i) => n.parent >= 0 && kids[n.parent].push(i))
+  const pos = nodes.map(() => ({ x: 0, y: 0 }))
+  let leaf = 0
+  const place = (i: number, d: number): number => {
+    let x: number
+    if (kids[i].length) {
+      const xs = kids[i].map((k) => place(k, d + 1))
+      x = (xs[0] + xs[xs.length - 1]) / 2
+    } else x = leaf++
+    pos[i] = { x, y: d }
+    return x
+  }
+  nodes.forEach((n, i) => n.parent < 0 && place(i, 0))
+  return pos
+}
+
+export function recView(nodes: RNode[], pos: { x: number; y: number }[], upto: number, label = '決策樹(綠色 = 找到答案,淡色 = 剪掉)'): GraphViewData {
+  const shown = nodes.slice(0, upto + 1)
+  return {
+    kind: 'graph',
+    label,
+    nodes: shown.map((n, i) => ({
+      id: i,
+      label: n.label,
+      x: pos[i].x * 1.05,
+      y: pos[i].y * 1.25,
+      sub: n.sub,
+      cls: i === upto ? 'hl' : n.kind === 'ok' ? 'done' : n.kind === 'cut' ? 'dim' : undefined,
+    })),
+    edges: shown.flatMap((n, i) => (n.parent >= 0 ? [{ from: n.parent, to: i, cls: n.kind === 'cut' ? 'dim' : undefined }] : [])),
+  }
+}
