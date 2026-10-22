@@ -68,6 +68,7 @@ function lowerFig(): FigStep[] {
 
 export const q0704: Solution = {
   id: 704,
+  plain: '在一排**已經排好**的數字裡找某個數。每次看中間那個:太大就丟掉右半邊,太小就丟掉左半邊,像翻字典找字一樣。',
   statement: '給一個**由小到大排好、沒有重複**的整數陣列 `nums` 和 `target`,如果 `target` 在陣列裡就回傳它的索引,不在就回傳 `-1`。要 O(log n)。',
   examples: [
     { input: 'nums = [-1,0,3,5,9,12], target = 9', output: '4' },

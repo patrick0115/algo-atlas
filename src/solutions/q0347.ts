@@ -108,6 +108,7 @@ function bucketFig(): FigStep[] {
 
 export const q0347: Solution = {
   id: 347,
+  plain: '找出出現次數最多的前 k 個數字。像統計班上最多人喜歡的前 3 種水果。',
   statement: '給一個整數陣列 `nums` 和整數 `k`,回傳**出現次數最多**的前 `k` 個數(順序不限)。題目保證答案唯一。',
   examples: [
     { input: 'nums = [1,1,1,2,2,3], k = 2', output: '[1,2]', note: '1 出現 3 次、2 出現 2 次' },

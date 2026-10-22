@@ -51,6 +51,7 @@ function bsFig(): FigStep[] {
 
 export const q0981: Solution = {
   id: 981,
+  plain: '做一個會記「時間」的筆記本:同一個名字在不同時間可以記不同內容;查詢時給一個時間,要回答「在那個時間點以前,最新記的是什麼」。',
   statement:
     '設計一個「有時間的」key-value 儲存:`set(key, value, timestamp)` 記下某個時間點的值;`get(key, timestamp)` 回傳這個 key 在**時間 ≤ timestamp** 的那些紀錄裡,**最新**的那個值;沒有就回傳空字串 `""`。',
   examples: [

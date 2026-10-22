@@ -47,6 +47,7 @@ function twoPtrFig(): FigStep[] {
 
 export const q0011: Solution = {
   id: 11,
+  plain: '一排高低不同的柱子,挑兩根當水桶的左右兩邊,水只能裝到**比較矮那根**的高度。挑哪兩根能裝最多水?',
   statement: '給 n 條直立的線,第 `i` 條高 `height[i]`。挑兩條線和 x 軸組成一個容器,能裝的水 = **較矮那條的高度 × 兩條線的距離**。回傳最多能裝多少水。',
   examples: [
     { input: 'height = [1,8,6,2,5,4,8,3,7]', output: '49', note: '第 1 條(高 8)和第 8 條(高 7):min(8, 7) × 7 = 49' },

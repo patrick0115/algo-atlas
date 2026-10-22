@@ -49,6 +49,7 @@ function twoPtrFig(): FigStep[] {
 
 export const q0125: Solution = {
   id: 125,
+  plain: '只看英文字母和數字、不分大小寫,檢查一句話是不是**正著念和倒著念一樣**(迴文),像「A man, a plan, a canal: Panama」。',
   statement: '給一個字串 `s`,只看**英文字母和數字**、並且**不分大小寫**,判斷它正著讀和反著讀是否一樣(迴文)。',
   examples: [
     { input: 's = "A man, a plan, a canal: Panama"', output: 'true', note: '整理後是 "amanaplanacanalpanama"' },

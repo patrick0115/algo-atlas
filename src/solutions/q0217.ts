@@ -55,6 +55,7 @@ function setFig(): FigStep[] {
 
 export const q0217: Solution = {
   id: 217,
+  plain: '檢查一堆數字裡有沒有**任何一個重複出現**。像點名時有沒有人被叫到兩次。',
   statement: '給一個整數陣列 `nums`,只要有任何一個數**出現至少兩次**就回傳 `true`;每個數都只出現一次則回傳 `false`。',
   examples: [
     { input: 'nums = [1,2,3,1]', output: 'true', note: '1 出現了兩次' },

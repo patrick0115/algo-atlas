@@ -25,8 +25,11 @@ export interface Approach {
   code: Record<Lang, string>
 }
 
-/** 測資裡要轉成節點的參數:list = 陣列轉 ListNode 串列,tree = 層序陣列(null 表示空)轉 TreeNode */
-export type NodeKind = 'list' | 'tree'
+/**
+ * 測資裡要轉成節點的參數:list = 陣列轉 ListNode 串列,tree = 層序陣列(null 表示空)轉 TreeNode,
+ * randomList = [[值, random 指向的索引或 null], ...] 轉成有 random 指標的 Node 串列(138 題)
+ */
+export type NodeKind = 'list' | 'tree' | 'randomList'
 
 /**
  * 測試:把 JavaScript 版的程式碼拿來跑這些例子。
@@ -49,6 +52,8 @@ export type Check =
 
 export interface Solution {
   id: number
+  /** 白話:一兩句話講這題在做什麼,最好帶一個生活比喻,給第一次看的人 */
+  plain: Rich
   /** 題意(自己的話) */
   statement: Rich
   examples: { input: string; output: string; note?: Rich }[]

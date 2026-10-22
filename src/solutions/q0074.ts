@@ -95,6 +95,7 @@ function twoFig(): FigStep[] {
 
 export const q0074: Solution = {
   id: 74,
+  plain: '一個表格,每一列從左到右變大,而且下一列整列都比上一列大。要很快地判斷某個數在不在表格裡 —— 其實把表格一列一列接起來,就是一條排好的長隊伍。',
   statement: '給一個 `m × n` 的整數矩陣:**每一列由左到右遞增**,而且**每一列的第一個數都比上一列的最後一個數大**。判斷 `target` 在不在矩陣裡,要 O(log(m·n))。',
   examples: [
     { input: 'matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3', output: 'true' },

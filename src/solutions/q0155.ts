@@ -87,6 +87,7 @@ function diffFig(): FigStep[] {
 
 export const q0155: Solution = {
   id: 155,
+  plain: '做一個「疊盤子」的容器,除了放上去、拿最上面的,還要**隨時立刻**說出目前所有盤子裡最小的那個。',
   statement: '設計一個堆疊,除了 `push`、`pop`、`top` 以外,還要能用 **O(1)** 時間回答 `getMin`(目前堆疊裡的最小值)。保證 `pop`、`top`、`getMin` 呼叫時堆疊不是空的。',
   examples: [
     {

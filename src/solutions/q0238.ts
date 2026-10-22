@@ -60,6 +60,7 @@ function o1Fig(): FigStep[] {
 
 export const q0238: Solution = {
   id: 238,
+  plain: '對每個位置,算出「除了它自己以外,其他所有數相乘」的結果,而且不准用除法。訣竅:答案 = 它左邊全部相乘 × 它右邊全部相乘。',
   statement: '給一個整數陣列 `nums`,回傳陣列 `answer`,其中 `answer[i]` 是 `nums` 裡**除了 `nums[i]` 以外**所有數的乘積。要 O(n) 時間,而且**不能用除法**。',
   examples: [
     { input: 'nums = [1,2,3,4]', output: '[24,12,8,6]', note: '24 = 2×3×4、12 = 1×3×4……' },

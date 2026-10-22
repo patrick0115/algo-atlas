@@ -159,6 +159,10 @@ export function SolutionPage({ sol }: { sol: Solution }) {
 
       <section id="qs-desc" className="sec q-sec">
         <h2>題意</h2>
+        <p className="analogy">
+          <b>白話</b>
+          {rich(sol.plain)}
+        </p>
         <p className="lead">{rich(sol.statement)}</p>
         <div className="q-examples">
           {sol.examples.map((e, i) => (

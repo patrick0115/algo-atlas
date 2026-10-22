@@ -52,6 +52,7 @@ function twoPtrFig(): FigStep[] {
 
 export const q0167: Solution = {
   id: 167,
+  plain: '和 Two Sum 一樣找兩個數加起來等於目標,但這次數字**已經從小排到大**。可以從兩頭往中間夾:太大就把右邊換小一點,太小就把左邊換大一點。',
   statement:
     '給一個**由小到大排好**的整數陣列 `numbers` 和目標 `target`,找兩個不同位置的數加起來等於 `target`,回傳它們的位置(**從 1 開始算**,小的在前)。保證剛好一組答案。只能用常數的額外空間。',
   examples: [

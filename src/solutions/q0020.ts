@@ -48,6 +48,7 @@ function stackFig(): FigStep[] {
 
 export const q0020: Solution = {
   id: 20,
+  plain: '檢查括號有沒有「成對、而且順序正確」。像穿衣服:最後穿上的外套要最先脫,不能還沒脫外套就先脫裡面的衣服。',
   statement: '給一個只含 `()[]{}` 的字串 `s`,判斷括號是否正確配對:每個左括號都要被**同種類**的右括號關閉,而且關閉的順序要正確(後開的先關)。',
   examples: [
     { input: 's = "()[]{}"', output: 'true' },

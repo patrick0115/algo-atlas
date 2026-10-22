@@ -60,6 +60,7 @@ function mapFig(): FigStep[] {
 
 export const q0242: Solution = {
   id: 242,
+  plain: '檢查兩個單字是不是用**完全一樣的字母**拼成的(每個字母用的次數也要一樣),只是順序不同,例如 listen 和 silent。',
   statement:
     '給兩個字串 `s` 和 `t`,判斷 `t` 是不是 `s` 的**字母異位詞**(anagram):把 `s` 的字母重新排列就能得到 `t`,每個字母用的次數都一樣。',
   examples: [

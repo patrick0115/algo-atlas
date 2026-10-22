@@ -79,6 +79,7 @@ function mapFig(): FigStep[] {
 
 export const q0128: Solution = {
   id: 128,
+  plain: '給一堆亂排的數字,找出最長的「連續整數」有幾個,例如裡面有 1、2、3、4 就是 4 個。數字原本的位置不重要。',
   statement: '給一個**沒有排序**的整數陣列 `nums`,找出「值連續」的最長序列有多長(例如 1, 2, 3, 4)。數字在陣列裡的位置不重要,只看值。要求 O(n) 時間。',
   examples: [
     { input: 'nums = [100,4,200,1,3,2]', output: '4', note: '1, 2, 3, 4' },

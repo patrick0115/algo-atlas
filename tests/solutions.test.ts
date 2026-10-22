@@ -68,10 +68,33 @@ function fromTree(root: TNode | null): (number | null)[] {
   while (out.length && out[out.length - 1] === null) out.pop()
   return out
 }
+// 138 題的 Node:val / next / random。LeetCode 也把它叫 Node,只在用到的題目才放進程式碼前面
+const RANDOM_NODE = 'function Node(val, next, random) { this.val = val; this.next = next === undefined ? null : next; this.random = random === undefined ? null : random; }'
+type RNode = { val: number; next: RNode | null; random: RNode | null }
+const RNodeCtor = new Function(`${RANDOM_NODE}; return Node;`)() as new (v: number) => RNode
+function toRandomList(a: [number, number | null][]): RNode | null {
+  const ns = a.map(([v]) => new RNodeCtor(v))
+  ns.forEach((n, i) => {
+    n.next = ns[i + 1] ?? null
+    n.random = a[i][1] === null ? null : ns[a[i][1]!]
+  })
+  return ns[0] ?? null
+}
+function fromRandomList(h: RNode | null): [number, number | null][] {
+  const ns: RNode[] = []
+  for (let n = h; n && ns.length < 10000; n = n.next) ns.push(n)
+  return ns.map((n) => [n.val, n.random ? ns.indexOf(n.random) : null])
+}
+function nodesOf(h: unknown): Set<unknown> {
+  const s = new Set<unknown>()
+  for (let n = h as RNode | null; n && s.size < 10000; n = n.next) s.add(n)
+  return s
+}
+
 const toNode = (v: unknown, kind: string | null | undefined) =>
-  kind === 'list' ? toList(v as number[]) : kind === 'tree' ? toTree(v as (number | null)[]) : v
+  kind === 'list' ? toList(v as number[]) : kind === 'tree' ? toTree(v as (number | null)[]) : kind === 'randomList' ? toRandomList(v as [number, number | null][]) : v
 const fromNode = (v: unknown, kind: string | null | undefined) =>
-  kind === 'list' ? fromList(v as LNode | null) : kind === 'tree' ? fromTree(v as TNode | null) : v
+  kind === 'list' ? fromList(v as LNode | null) : kind === 'tree' ? fromTree(v as TNode | null) : kind === 'randomList' ? fromRandomList(v as RNode | null) : v
 
 function round(x: unknown): unknown {
   if (typeof x === 'number') return Math.round(x * 1e5) / 1e5
@@ -91,13 +114,18 @@ function normalize(v: unknown, compare: 'exact' | 'sorted' | 'groups' | 'close')
 /** 照 LeetCode 的方式跑 JavaScript 版:函式題直接呼叫,設計題依 ops 依序呼叫方法 */
 function run(code: string, check: Check) {
   if (check.kind === 'fn') {
+    const kinds = [...(check.argKinds ?? []), check.ret]
+    const extra = kinds.includes('randomList') ? RANDOM_NODE : ''
     const fn = new Function(`${PRELUDE}
+${extra}
 ${code}
 return ${check.fn};`)() as (...a: unknown[]) => unknown
     const cmp = check.compare ?? 'exact'
     for (const c of check.cases) {
       const args = clone(c.args).map((a, i) => toNode(a, check.argKinds?.[i]))
       const ret = fn(...args)
+      // 複製題:回傳的節點不能是原本的節點
+      if (check.ret === 'randomList') for (const n of nodesOf(ret)) expect(nodesOf(args[0]).has(n), '回傳了原串列的節點,不是複製').toBe(false)
       const got = check.inplace !== undefined ? fromNode(args[check.inplace], check.argKinds?.[check.inplace]) : fromNode(ret, check.ret)
       expect(normalize(got, cmp), JSON.stringify(c.args)).toEqual(normalize(c.out, cmp))
     }
@@ -123,6 +151,7 @@ describe('題解', () => {
 
       it('欄位齊全:至少兩種解法,每種都有圖示、複雜度與五種語言的程式碼', () => {
         expect(sol.statement.length).toBeGreaterThan(10)
+        expect(sol.plain.length, '白話').toBeGreaterThan(10)
         expect(sol.examples.length).toBeGreaterThan(0)
         expect(sol.insight.length).toBeGreaterThan(0)
         expect(sol.pitfalls.length).toBeGreaterThan(0)

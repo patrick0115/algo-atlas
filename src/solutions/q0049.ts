@@ -45,6 +45,7 @@ function countKey(w: string): string {
 
 export const q0049: Solution = {
   id: 49,
+  plain: '把字母一樣、只是順序不同的單字分到同一組。像 eat、tea、ate 都是用 a、e、t 三個字母拼的,就放同一組。',
   statement: '給一個字串陣列 `strs`,把**互為字母異位詞**的字串分到同一組(用的字母和次數完全相同,只是順序不同)。回傳所有組,組的順序、組內的順序都不限。',
   examples: [
     { input: 'strs = ["eat","tea","tan","ate","nat","bat"]', output: '[["bat"],["nat","tan"],["ate","eat","tea"]]' },
