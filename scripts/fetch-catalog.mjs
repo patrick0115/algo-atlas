@@ -3,7 +3,7 @@
 import { writeFileSync } from 'node:fs'
 
 const Q = `query q($skip:Int,$limit:Int){ questionList(categorySlug:"", limit:$limit, skip:$skip, filters:{}){
-  total: totalNum data { id: questionFrontendId title titleSlug difficulty acRate isPaidOnly topicTags { slug } } } }`
+  total: totalNum data { id: questionFrontendId title titleSlug difficulty acRate isPaidOnly likes dislikes topicTags { slug } } } }`
 
 async function page(skip, limit) {
   const res = await fetch('https://leetcode.com/graphql', {
@@ -39,7 +39,7 @@ const problems = all
     if (n?.neetcode150) lists.push('neetcode150')
     if (n?.blind75) lists.push('blind75')
     if (n) lists.push('neetcode450')
-    return [Number(q.id), q.title, q.titleSlug, D[q.difficulty], q.isPaidOnly ? 1 : 0, q.topicTags.map((t) => tags.indexOf(t.slug)), lists, n?.pattern ?? '', Math.round(q.acRate * 10) / 10]
+    return [Number(q.id), q.title, q.titleSlug, D[q.difficulty], q.isPaidOnly ? 1 : 0, q.topicTags.map((t) => tags.indexOf(t.slug)), lists, n?.pattern ?? '', Math.round(q.acRate * 10) / 10, q.likes, q.dislikes]
   })
   .sort((a, b) => a[0] - b[0])
 

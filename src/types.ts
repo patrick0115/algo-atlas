@@ -157,6 +157,9 @@ export interface Problem {
   key?: string
   /** LeetCode 通過率(%),同一級難度內用來排先後 */
   acRate: number
+  /** LeetCode 讚 / 倒讚數,用來排「延伸題庫」的熱門度 */
+  likes?: number
+  dislikes?: number
 }
 
 export type Status = 'ok' | 'fuzzy' | 'no'

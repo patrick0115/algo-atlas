@@ -4,14 +4,14 @@ import { CURATED } from './curated'
 import { autoPatterns } from './categories'
 
 // catalog.json 由 scripts/fetch-catalog.mjs 從 LeetCode 官方抓取(只有中繼資料,不含題目內文)。
-// 每列:[id, title, slug, 難度 E/M/H, paidOnly, tag 索引[], 清單[], NeetCode 分類, 通過率 %]
-type Row = [number, string, string, 'E' | 'M' | 'H', number, number[], string[], string, number]
+// 每列:[id, title, slug, 難度 E/M/H, paidOnly, tag 索引[], 清單[], NeetCode 分類, 通過率 %, 讚, 倒讚]
+type Row = [number, string, string, 'E' | 'M' | 'H', number, number[], string[], string, number, number?, number?]
 
 const DIFF: Record<string, Difficulty> = { E: 'Easy', M: 'Medium', H: 'Hard' }
 
 export const CATALOG_DATE: string = catalog.fetchedAt
 
-export const PROBLEMS: Problem[] = (catalog.problems as Row[]).map(([id, title, slug, d, paid, tagIdx, lists, , acRate]) => {
+export const PROBLEMS: Problem[] = (catalog.problems as Row[]).map(([id, title, slug, d, paid, tagIdx, lists, , acRate, likes = 0, dislikes = 0]) => {
   const tags = tagIdx.map((i) => catalog.tags[i])
   const c = CURATED[id]
   return {
@@ -26,6 +26,8 @@ export const PROBLEMS: Problem[] = (catalog.problems as Row[]).map(([id, title, 
     curated: !!c,
     key: c?.k,
     acRate,
+    likes,
+    dislikes,
   }
 })
 

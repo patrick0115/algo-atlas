@@ -5,7 +5,7 @@ import { findStub } from '../data/categories'
 import { useProgress } from '../engine/progress'
 import { hasSolution } from '../solutions'
 import { dueProblems } from '../engine/review'
-import { addDays, buildPlan, EXTRA_STAGE, extraPool, extrasFor, nextUp, schedule, weekStart, weeksLeft, type PlanItem } from '../engine/plan'
+import { addDays, buildPlan, EXTENDED_STAGE, extendedPool, EXTRA_STAGE, extraPool, extrasFor, nextUp, schedule, weekStart, weeksLeft, type PlanItem } from '../engine/plan'
 
 // 刷題藍圖頁:上面挑今天要寫的題目,下面是整條路線的每週排程。
 // 設定與「今天」清單存在 localStorage,只在本機。
@@ -31,6 +31,8 @@ const STATUS: { id: Status; label: string }[] = [
 const STATUS_LABEL = Object.fromEntries(STATUS.map((s) => [s.id, s.label])) as Record<Status, string>
 
 const SHOW_WEEKS = 4
+/** 延伸題庫一次列出幾題 */
+const SHOW_EXTENDED = 10
 
 const pad = (n: number) => String(n).padStart(2, '0')
 const ymd = (t: number) => {
@@ -111,9 +113,15 @@ export function Plan() {
 
   const plan = useMemo(() => buildPlan(PROBLEMS, { skipPaid: settings.skipPaid }), [settings.skipPaid])
   const pool = useMemo(() => extraPool(PROBLEMS, { skipPaid: settings.skipPaid }), [settings.skipPaid])
+  const ext = useMemo(() => extendedPool(PROBLEMS, { skipPaid: settings.skipPaid }).map((problem) => ({ problem, stage: EXTENDED_STAGE })), [settings.skipPaid])
   const byId = useMemo(
-    () => new Map<number, PlanItem>([...pool.map((problem) => [problem.id, { problem, stage: EXTRA_STAGE }] as const), ...plan.map((it) => [it.problem.id, it] as const)]),
-    [plan, pool],
+    () =>
+      new Map<number, PlanItem>([
+        ...ext.map((it) => [it.problem.id, it] as const),
+        ...pool.map((problem) => [problem.id, { problem, stage: EXTRA_STAGE }] as const),
+        ...plan.map((it) => [it.problem.id, it] as const),
+      ]),
+    [plan, pool, ext],
   )
   const sch = schedule(plan, store, now, settings.perWeek)
   const extras = extrasFor(sch.weeks, pool, store, now)
@@ -137,6 +145,9 @@ export function Plan() {
   const due = dueProblems(PROBLEMS, store, now).length
   const upcoming = nextUp(plan, store, todayIds, 1)
   const nextExtra = extras.flat().find((it) => !store[it.problem.id] && !todayIds.includes(it.problem.id))
+  const extDone = ext.filter((it) => store[it.problem.id]).length
+  const extNext = ext.filter((it) => !store[it.problem.id]).slice(0, SHOW_EXTENDED)
+  const extWritten = ext.filter((it) => hasSolution(it.problem.id)).length
 
   const toggleReveal = (id: number) => {
     const next = new Set(revealed)
@@ -351,6 +362,18 @@ export function Plan() {
           {sch.weeks.slice(SHOW_WEEKS).map((w, i) => weekCard(w, i + SHOW_WEEKS))}
         </details>
       )}
+
+      <h2>延伸題庫</h2>
+      <p className="muted">
+        NeetCode 450 以外的題目,依 LeetCode 熱門度(讚數、好評比例)由高到低排。核心路線寫完、或想多練時從這裡往下挑。
+        已寫 {extDone}/{ext.length} 題 · 本站題解 {extWritten} 題
+      </p>
+      <section className="plan-week">
+        <header>
+          <b>接下來的 {extNext.length} 題</b>
+        </header>
+        <ol>{extNext.map(routeRow)}</ol>
+      </section>
     </div>
   )
 }

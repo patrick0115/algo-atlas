@@ -151,6 +151,24 @@ export function extraPool(problems: Problem[], { skipPaid }: { skipPaid: boolean
     .sort((a, b) => rankOf(a) - rankOf(b) || byEase(a, b))
 }
 
+// ---- 延伸題庫(NeetCode 450 以外) ----
+
+export const EXTENDED_STAGE = { id: 'extended', name: '延伸題庫' }
+
+/** 熱門度:讚數 × 好評比例,讚多但倒讚也多的題目往後排 */
+export const popularity = (p: Problem) => {
+  const l = p.likes ?? 0
+  const d = p.dislikes ?? 0
+  return l + d ? (l * l) / (l + d) : 0
+}
+
+/** NeetCode 450 以外的題目,依熱門度由高到低 */
+export function extendedPool(problems: Problem[], { skipPaid }: { skipPaid: boolean }): Problem[] {
+  return problems
+    .filter((p) => !p.lists.includes('neetcode450') && !(skipPaid && p.paid))
+    .sort((a, b) => popularity(b) - popularity(a) || a.id - b.id)
+}
+
 /**
  * 每週配 perWeek 題同主題加練,依那週核心題的演算法挑,先易後難,同一題只出現在一週。
  * 本週寫過的加練留在本週;更早寫過的不再出現。寫不寫都不影響核心進度。
