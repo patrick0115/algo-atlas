@@ -633,3 +633,12 @@ pre.c-code { margin: 0; background: var(--soft); padding: 10px 0; overflow-x: au
 @media (max-width: 760px) {
   .rhythm-two { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* 側欄:七卷,每卷可收合 */
+.side-vol { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border); }
+.side-vol > summary { cursor: pointer; font-size: 13px; font-weight: 700; padding: 2px 8px; list-style-position: inside; }
+.side-vol > summary a { text-decoration: none; }
+.side-vol > summary a.active { text-decoration: underline; }
+.side-vol .side-group { margin-top: 8px; }
+.side-link.side-book { font-weight: 600; }
+.side-link.side-entry { padding-left: 18px; font-size: 13px; }

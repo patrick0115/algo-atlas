@@ -1,0 +1,231 @@
+// 原 SemiDrill 講義(git 歷史裡的 public/semi/ 原檔)搬進百科的資料;內容是原講義的 HTML 片段,改這裡就是改講義。
+import type { Book } from '../types'
+
+export const book: Book = {
+  "id": "D",
+  "file": "D-package.html",
+  "title": "封裝與測試：晶圓做完之後，晶片怎麼交到客戶手上",
+  "lead": "晶圓廠交出來的是一整片晶圓。後段要做三件事：<b>先挑出壞的（測試）→ 切開、接線、包起來（封裝）→ 再測一次、證明能用很多年（可靠度）</b>。",
+  "note": "<p class=\"muted small\">對應 taxonomy D01～D05。難度標籤：<span class=\"lv\">L1</span>是什麼　<span class=\"lv l2\">L2</span>為什麼　<span class=\"lv l3\">L3</span>出問題怎麼辦。晶圓本身怎麼做見 <a href=\"B-process.html\">B 前段製程</a>。</p>",
+  "front": [
+    {
+      "id": "flow",
+      "title": "主軸：一步一步看",
+      "blocks": [
+        {
+          "t": "html",
+          "html": "<p class=\"muted small\">以「打線＋BGA」這條最典型的路線為例。覆晶、WLCSP、COF／COG 的差別見 <a href=\"#d01\">D01</a> 與 <a href=\"#d02\">D02</a>。</p>"
+        },
+        {
+          "t": "widget",
+          "id": "D.flow",
+          "html": "<ul class=\"steps\" id=\"steps\"></ul>\n<div class=\"stage\">\n      <svg class=\"fig\" id=\"xsec\" viewBox=\"0 0 640 300\" role=\"img\" aria-label=\"封裝流程示意圖\">\n        <defs>\n          <marker id=\"ah\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"6\" markerHeight=\"6\" orient=\"auto\"><path d=\"M0,0 L10,5 L0,10 z\" class=\"arrow-head\"></path></marker>\n        </defs>\n        <g id=\"layers\"></g>\n      </svg>\n      <div class=\"legend\">\n        <span><i style=\"background:var(--m-sub)\"></i>矽晶片</span>\n        <span><i style=\"background:var(--m-tape)\"></i>切割膠帶</span>\n        <span><i style=\"background:var(--m-pcb)\"></i>封裝基板</span>\n        <span><i style=\"background:var(--m-glue)\"></i>黏晶膠</span>\n        <span><i style=\"background:var(--m-cu)\"></i>導線</span>\n        <span><i style=\"background:var(--m-mold)\"></i>封膠</span>\n        <span><i style=\"background:var(--m-solder)\"></i>錫球</span>\n      </div>\n      <div class=\"controls\" style=\"margin:16px 0 0\">\n        <button class=\"btn\" id=\"prev\">← 上一步</button>\n        <button class=\"btn primary\" id=\"next\">下一步 →</button>\n        <span class=\"muted small\" id=\"phase\"></span>\n      </div>\n      <div class=\"stage-info\">\n        <h3 id=\"stTitle\"></h3>\n        <p id=\"stWhat\"></p>\n        <p class=\"muted small\" id=\"stWhy\"></p>\n      </div>\n    </div>"
+        }
+      ]
+    }
+  ],
+  "entries": [
+    {
+      "id": "D01",
+      "anchor": "d01",
+      "tag": "D01",
+      "name": "封裝型態",
+      "sub": "包成什麼樣",
+      "blocks": [
+        {
+          "t": "html",
+          "html": "<p><b>一句話：</b>封裝決定晶片「有多少腳、腳排在哪、怎麼散熱、多少錢」。主要分兩派：<b>腳排在四周的導線架（lead frame）</b>和<b>腳排成整面陣列的基板（substrate）</b>。</p>\n<figure>\n      <svg class=\"fig\" viewBox=\"0 0 900 200\" role=\"img\" aria-label=\"顯示驅動 IC 的 COG 與 COF 比較\">\n        <text x=\"10\" y=\"18\" class=\"t-strong\">COG：IC 直接黏在面板玻璃上</text>\n        <rect class=\"m-ild\" x=\"10\" y=\"110\" width=\"400\" height=\"24\"></rect>\n        <text x=\"20\" y=\"150\" class=\"t-small\">面板玻璃（走線是 ITO 等透明導線）</text>\n        <rect class=\"m-sub\" x=\"150\" y=\"80\" width=\"120\" height=\"22\"></rect>\n        <rect class=\"m-dep\" x=\"150\" y=\"102\" width=\"120\" height=\"8\"></rect>\n        <text x=\"180\" y=\"96\" class=\"t-small\">Driver IC</text>\n        <text x=\"280\" y=\"108\" class=\"t-small\">← ACF 壓合</text>\n        <rect class=\"m-tape\" x=\"340\" y=\"100\" width=\"60\" height=\"10\"></rect>\n        <text x=\"300\" y=\"80\" class=\"t-small\">FPC 接主板</text>\n\n        <text x=\"470\" y=\"18\" class=\"t-strong\">COF：IC 黏在軟性薄膜上，薄膜再接面板</text>\n        <rect class=\"m-ild\" x=\"470\" y=\"140\" width=\"150\" height=\"24\"></rect>\n        <text x=\"476\" y=\"180\" class=\"t-small\">面板玻璃</text>\n        <path class=\"m-tape\" d=\"M590,130 L640,130 Q680,130 690,100 L700,70 L880,70 L880,80 L708,80 Q694,140 640,140 L590,140 Z\"></path>\n        <rect class=\"m-sub\" x=\"740\" y=\"48\" width=\"100\" height=\"22\"></rect>\n        <text x=\"762\" y=\"64\" class=\"t-small\">Driver IC</text>\n        <text x=\"740\" y=\"100\" class=\"t-small\">ILB：IC → 薄膜（Au–Sn 熱壓）</text>\n        <text x=\"560\" y=\"124\" class=\"t-small\">OLB：薄膜 → 面板（ACF）</text>\n        <text x=\"10\" y=\"196\" class=\"t-small\">COG 省料、便宜，適合中小尺寸；COF 可以把 IC 折到面板背後（窄邊框），訊號品質較好，適合大尺寸、高解析度。</text>\n      </svg>\n    </figure>"
+        },
+        {
+          "t": "lv",
+          "lv": 1,
+          "title": "是什麼",
+          "html": "<div class=\"table-wrap\"><table>\n        <tbody><tr><th>型態</th><th>長怎樣</th><th>常用在</th></tr>\n        <tr><td>QFN</td><td>晶片黏在金屬導線架上、打線、封膠；底面四周是 pad，中間露出一塊散熱 pad（約七成的熱從這裡走）</td><td>腳數少（約 100 以下）的小晶片，比 BGA 便宜</td></tr>\n        <tr><td>BGA</td><td>晶片放在多層有機基板上，底面整面排滿錫球。標準球距 1.27／1.0／0.8 mm，細間距 0.65／0.5 mm，最細 0.4／0.35 mm</td><td>高腳數：CPU、GPU、SoC</td></tr>\n        <tr><td>CSP（晶片尺寸封裝）</td><td>封裝面積不超過晶片的 1.2 倍</td><td>手機等空間有限的產品</td></tr>\n        <tr><td>WLCSP</td><td>直接在晶圓上做重布線層（RDL）與錫球，不另外封膠，封裝≈晶片大小</td><td>最小尺寸的 PMIC、感測器</td></tr>\n        <tr><td>COG（Chip on Glass）</td><td>Driver IC 的金凸塊用 ACF 直接覆晶接到面板玻璃</td><td>中小尺寸面板</td></tr>\n        <tr><td>COF（Chip on Film）</td><td>Driver IC 接在 PI 軟性薄膜上，薄膜再接到面板。IC 到薄膜（ILB）是金凸塊對鍍錫銅腳熱壓；薄膜到面板（OLB）才用 ACF</td><td>大尺寸、高解析度、窄邊框面板</td></tr>\n        <tr><td>導線架 vs 基板</td><td>導線架：銅框、便宜、導熱好，但腳只能排在周邊；基板：多層有機板，可整面出球、繞線複雜，但貴</td><td>見上</td></tr>\n      </tbody></table></div>",
+          "anchor": "d01-l1"
+        },
+        {
+          "t": "lv",
+          "lv": 2,
+          "title": "為什麼",
+          "html": "<ul>\n        <li><b>為什麼高腳數要用 BGA？</b>腳排在周邊，腳數只跟周長成正比；排成整面陣列，腳數跟面積成正比。腳數一多，周邊排不下。</li>\n        <li><b>為什麼 QFN 散熱好？</b>晶片直接黏在露出底面的金屬 pad 上，焊到 PCB 後熱可以直接傳下去，路徑短。</li>\n        <li><b>為什麼球距越小越難上板？</b>0.5 mm 以下的球距，一般 PCB 的走線拉不出來，要用 HDI（雷射微孔）板，錫膏印刷和貼片的容許誤差也更小。</li>\n        <li><b>COG vs COF 怎麼選？</b>COG 少一層薄膜，便宜，但 IC 佔掉玻璃邊緣（邊框寬），玻璃上的走線電阻高；COF 可以把 IC 折到背後做窄邊框，薄膜上的銅線訊號較好，bonding 失敗時也不會直接毀掉整片面板。</li>\n        <li><b>為什麼 driver IC 的晶片做成細長條？</b>一顆 source driver 有上千個輸出通道，每個通道都要一個凸塊接到面板。把凸塊沿著長邊排成一兩排，晶片自然就細長；長邊也剛好對齊面板邊緣的走線。</li>\n        <li><b>COG 為什麼會讓面板出現 mura？</b>壓合要加熱，IC（矽）和玻璃的熱膨脹係數不同，冷卻後互相拉扯，玻璃局部翹曲、液晶間隙改變，就會看到亮度不均。IC 越長越明顯。</li>\n        <li><b>WLCSP 的代價？</b>沒有封膠保護、錫球直接長在矽上，矽和 PCB 的熱膨脹差全由錫球吃，所以晶片不能太大。</li>\n      </ul>",
+          "anchor": "d01-l2"
+        },
+        {
+          "t": "lv",
+          "lv": 3,
+          "title": "出問題怎麼辦",
+          "html": "<div class=\"table-wrap\"><table>\n        <tbody><tr><th>現象</th><th>最可能原因</th><th>對策</th></tr>\n        <tr><td>BGA 回焊後錫球沒和錫膏熔在一起（head-in-pillow）</td><td>封裝在回焊高溫下翹曲，把球抬離錫膏；球面氧化</td><td>量測回焊溫度下的翹曲（shadow moiré）、調 reflow profile、選低翹曲的基板與封膠</td></tr>\n        <tr><td>封裝翹曲超規</td><td>矽（約 3 ppm/°C）、基板（16～18 ppm/°C）、封膠的熱膨脹係數不一樣；封膠固化收縮</td><td>調整封膠與基板材料（CTE、Tg）、加補強框（stiffener）、優化固化條件</td></tr>\n        <tr><td>QFN 晶片過熱</td><td>散熱 pad 焊接空洞太多，主要散熱路徑被擋住</td><td>X-ray 檢查空洞、調整鋼板開孔、PCB 加散熱孔</td></tr>\n        <tr><td>0.4 mm 球距的 BGA／WLCSP 上板良率差</td><td>製程窗口太窄</td><td>改 HDI 板、收緊錫膏印刷與貼片管控</td></tr>\n        <tr><td>COG 壓合後面板在 IC 附近出現 mura、玻璃翹曲</td><td>IC 與玻璃熱膨脹差：壓合高溫冷卻後殘留應力</td><td>降低壓合溫度（低溫 ACF）、IC 薄化或縮短長度、調整壓合頭的溫度分布</td></tr>\n        <tr><td>WLCSP 掉落或撞擊後錫球裂</td><td>沒有封膠與基板緩衝，衝擊與熱膨脹差全由錫球承受</td><td>板級 underfill 或角落點膠；晶片太大時改用有基板的封裝（取捨成本與尺寸）</td></tr>\n      </tbody></table></div>",
+          "anchor": "d01-l3"
+        }
+      ]
+    },
+    {
+      "id": "D02",
+      "anchor": "d02",
+      "tag": "D02",
+      "name": "接合技術",
+      "sub": "晶片怎麼接出去",
+      "blocks": [
+        {
+          "t": "html",
+          "html": "<p><b>一句話：</b>晶片上的 pad 要接到外面，有兩條路：<b>打線</b>（晶片正面朝上，用細金屬線拉出去）和<b>覆晶</b>（晶片翻過來，用凸塊直接壓下去）。間距越小、要的頻寬越高，就越往凸塊、微凸塊、混合鍵合走。</p>\n<figure>\n      <svg class=\"fig\" viewBox=\"0 0 900 190\" role=\"img\" aria-label=\"打線、覆晶、混合鍵合的比較\">\n        <text x=\"10\" y=\"18\" class=\"t-strong\">打線</text>\n        <rect class=\"m-pcb\" x=\"10\" y=\"120\" width=\"260\" height=\"20\"></rect>\n        <rect class=\"m-glue\" x=\"80\" y=\"112\" width=\"120\" height=\"8\"></rect>\n        <rect class=\"m-sub\" x=\"80\" y=\"82\" width=\"120\" height=\"30\"></rect>\n        <path class=\"wire\" d=\"M90,82 Q80,50 40,120\"></path><path class=\"wire\" d=\"M190,82 Q200,50 240,120\"></path>\n        <text x=\"10\" y=\"170\" class=\"t-small\">晶片正面朝上，接點在周邊</text>\n\n        <text x=\"320\" y=\"18\" class=\"t-strong\">覆晶（flip chip）</text>\n        <rect class=\"m-pcb\" x=\"320\" y=\"120\" width=\"260\" height=\"20\"></rect>\n        <rect class=\"m-dep\" x=\"380\" y=\"104\" width=\"140\" height=\"16\"></rect>\n        <circle class=\"m-solder\" cx=\"395\" cy=\"112\" r=\"6\"></circle><circle class=\"m-solder\" cx=\"425\" cy=\"112\" r=\"6\"></circle><circle class=\"m-solder\" cx=\"455\" cy=\"112\" r=\"6\"></circle><circle class=\"m-solder\" cx=\"485\" cy=\"112\" r=\"6\"></circle><circle class=\"m-solder\" cx=\"505\" cy=\"112\" r=\"6\"></circle>\n        <rect class=\"m-sub\" x=\"380\" y=\"74\" width=\"140\" height=\"30\"></rect>\n        <text x=\"530\" y=\"116\" class=\"t-small\">underfill</text>\n        <text x=\"320\" y=\"170\" class=\"t-small\">晶片翻過來，整面都是接點</text>\n\n        <text x=\"630\" y=\"18\" class=\"t-strong\">混合鍵合（hybrid bonding）</text>\n        <rect class=\"m-sub\" x=\"640\" y=\"100\" width=\"220\" height=\"34\"></rect>\n        <rect class=\"m-sub\" x=\"640\" y=\"64\" width=\"220\" height=\"34\"></rect>\n        <rect class=\"m-cu\" x=\"660\" y=\"90\" width=\"14\" height=\"18\"></rect><rect class=\"m-cu\" x=\"700\" y=\"90\" width=\"14\" height=\"18\"></rect><rect class=\"m-cu\" x=\"740\" y=\"90\" width=\"14\" height=\"18\"></rect><rect class=\"m-cu\" x=\"780\" y=\"90\" width=\"14\" height=\"18\"></rect><rect class=\"m-cu\" x=\"820\" y=\"90\" width=\"14\" height=\"18\"></rect>\n        <text x=\"630\" y=\"170\" class=\"t-small\">銅對銅、氧化層對氧化層直接黏，沒有錫</text>\n      </svg>\n    </figure>"
+        },
+        {
+          "t": "lv",
+          "lv": 1,
+          "title": "是什麼",
+          "html": "<div class=\"table-wrap\"><table>\n        <tbody><tr><th>名詞</th><th>意思</th></tr>\n        <tr><td>打線（wire bonding）</td><td>用金線或銅線把晶片 pad 接到基板。最常見的是熱超音波法：加熱（一般約 100～150 °C，金線可到 250 °C）＋壓力＋超音波</td></tr>\n        <tr><td>ball bond／wedge bond</td><td>第一點在晶片 pad 上燒出一顆球壓下去（ball）；第二點在基板上壓扁拉斷（stitch／wedge）。粗鋁線、功率元件常全用 wedge</td></tr>\n        <tr><td>金線 → 銅線</td><td>銅便宜、導電好，但硬度約金的 2 倍、容易氧化，要更大能量和保護氣體</td></tr>\n        <tr><td>覆晶（flip chip）、C4 bump</td><td>晶片 pad 上長錫凸塊，翻過來對準基板，回焊接合</td></tr>\n        <tr><td>underfill</td><td>覆晶後灌進晶片和基板之間的膠，分散熱膨脹差造成的應力，讓凸塊的熱疲勞壽命提升約 10 倍</td></tr>\n        <tr><td>銅柱凸塊（Cu pillar）</td><td>銅柱＋薄錫帽，比純錫凸塊可以做更細的間距、不易橋接，抗電遷移也較好</td></tr>\n        <tr><td>ACF（異方性導電膠）</td><td>樹脂裡散布 3～10 µm 的導電粒子，密度低到橫向碰不到。加熱加壓後，被凸塊和 pad 夾住的粒子導通上下（Z 方向），橫向仍絕緣。本壓約 150～220 °C</td></tr>\n        <tr><td>TSV（矽穿孔）</td><td>在矽裡垂直打穿的銅孔，讓訊號上下穿過晶片。via-first（FEOL 前）、via-middle（FEOL 後、BEOL 前，主流，HBM 用這個）、via-last（BEOL 後）</td></tr>\n        <tr><td>TSV 製作步驟</td><td>① 深反應離子蝕刻（DRIE，Bosch 製程）挖出高深寬比的盲孔 → ② 長氧化層當絕緣襯層 → ③ 鍍阻障層（Ta／TaN 或 Ti／TiN）與銅晶種層 → ④ 電鍍填銅、CMP 磨平 → ⑤ 正面製程做完後貼暫時載板，晶背研磨薄化把銅柱露出來，再做背面凸塊。難點：填銅不能留空洞；銅與矽熱膨脹差會造成應力，TSV 周圍要留 keep-out zone 不放電晶體</td></tr>\n        <tr><td>微凸塊（micro bump）</td><td>2.5D／3D 用的小凸塊，間距約 40 µm（Intel Foveros 36 µm），往 20、10 µm 走</td></tr>\n        <tr><td>混合鍵合（hybrid bonding）</td><td>銅與介電層同時直接接合，不用錫，間距可以小於 10 µm</td></tr>\n      </tbody></table></div>",
+          "anchor": "d02-l1"
+        },
+        {
+          "t": "lv",
+          "lv": 2,
+          "title": "為什麼",
+          "html": "<ul>\n        <li><b>覆晶比打線好在哪？</b>接點可以排滿整面（不只周邊），腳數多；路徑短，電感小、速度快；晶片背面朝上，可以直接貼散熱片。代價是基板較貴、要 underfill。</li>\n        <li><b>為什麼覆晶一定要 underfill？</b>矽約 3 ppm/°C、有機基板約 18 ppm/°C，溫度一變兩邊伸縮量不同，應力全集中在角落的凸塊。灌膠後由整片一起分擔，凸塊才不會疲勞裂開。</li>\n        <li><b>ACF 為什麼只有上下導通？</b>粒子很稀，橫向互相碰不到；只有被凸塊和 pad 夾扁的那幾顆才同時接觸上下兩面。粒子太少會開路，太多會被樹脂沖到凸塊之間造成短路。</li>\n        <li><b>為什麼間距要一直縮？</b>晶片之間的頻寬 ≈ 每平方毫米的接點數 × 每個接點的速度。間距縮一半，接點密度變四倍。錫凸塊縮到約 10 µm 以下會橋接、錫量也不夠，所以改用不用錫的混合鍵合。</li>\n        <li><b>COF 的 ILB 為什麼用金錫熱壓，不用 ACF？</b>金凸塊和鍍錫銅腳在高溫下形成金錫共晶，是真正的金屬接合：電阻低、強度高，而且不靠「剛好夾到幾顆粒子」，間距再細也不怕粒子不夠或橋接。</li>\n        <li><b>混合鍵合的代價？</b>沒有錫可以「吃掉」高低差，所以兩個表面必須極平（CMP 控制到奈米級）、極乾淨（一顆微粒就是一個空洞），對準精度也要更高；良率和成本是目前最大的門檻。</li>\n        <li><b>為什麼 HBM 用 via-middle？</b>via-first 多半用多晶矽填（電阻較高）；via-last 要在做好的金屬層上打孔，容易傷電路。via-middle 在電晶體做完、金屬層之前打孔填銅，兩邊的缺點都避開。</li>\n      </ul>",
+          "anchor": "d02-l2"
+        },
+        {
+          "t": "lv",
+          "lv": 3,
+          "title": "出問題怎麼辦",
+          "html": "<div class=\"table-wrap\"><table>\n        <tbody><tr><th>現象</th><th>最可能原因</th><th>對策</th></tr>\n        <tr><td>打線的球黏不上 pad、一拉就掉（ball lift／NSOP）</td><td>pad 表面污染（光阻殘留、氟、氧化）、參數不當、CP 針測扎太多次傷了 pad</td><td>電漿清洗 pad、重調壓力／超音波／溫度、限制針測次數與針痕</td></tr>\n        <tr><td>拉線測試時連下面的矽一起拔起來（cratering）</td><td>打線能量太大；銅線硬，更容易發生</td><td>降低壓力與超音波能量、最佳化銅線參數、加強 pad 下方結構</td></tr>\n        <tr><td>高溫儲存後，金線接鋁 pad 的電阻上升甚至斷開</td><td>金鋁互相擴散速度不同，形成空洞（Kirkendall void，俗稱紫斑）與介金屬過度成長</td><td>控制高溫時間、改用合適的金屬組合</td></tr>\n        <tr><td>覆晶 underfill 裡有空洞</td><td>晶片下的助焊劑沒洗乾淨、點膠路徑讓氣泡被包住、吸濕後固化放氣</td><td>徹底清助焊劑、改單邊或 L 型點膠、預烘除濕、真空輔助填膠</td></tr>\n        <tr><td>溫度循環後角落的凸塊或錫球先裂</td><td>熱膨脹差的應力集中在角落；underfill 空洞處先分層</td><td>確保 underfill 沒有空洞、選熱膨脹係數匹配的 underfill</td></tr>\n        <tr><td>COG／COF 壓合後開路或接觸電阻高</td><td>凸塊和 pad 之間夾到的粒子太少、粒子分布不均、凸塊高度不一（共面度差）</td><td>提高粒子密度或改小粒徑、加大凸塊面積、控制凸塊共面度、調整溫度壓力</td></tr>\n        <tr><td>COG／COF 壓合後相鄰凸塊短路</td><td>粒子太密，壓合時被樹脂沖到凸塊之間聚成一串</td><td>降低粒子密度、改小粒徑、用雙層 ACF（下層不含粒子的樹脂先填空間）或粒子排列型 ACF、調整壓合條件讓樹脂流動變小</td></tr>\n      </tbody></table></div>",
+          "anchor": "d02-l3"
+        }
+      ]
+    },
+    {
+      "id": "D03",
+      "anchor": "d03",
+      "tag": "D03",
+      "name": "先進封裝",
+      "sub": "多顆晶片拼一起",
+      "blocks": [
+        {
+          "t": "html",
+          "html": "<p><b>一句話：</b>一顆晶片做太大會良率差、成本高，所以把它拆成幾顆小晶片（chiplet），再用<b>中介層並排（2.5D）</b>或<b>直接疊起來（3D）</b>，讓它們像一顆晶片一樣快速溝通。</p>\n<figure>\n      <svg class=\"fig\" viewBox=\"0 0 900 220\" role=\"img\" aria-label=\"2.5D 與 3D 封裝比較\">\n        <text x=\"10\" y=\"18\" class=\"t-strong\">2.5D：並排在矽中介層上（例：CoWoS）</text>\n        <rect class=\"m-pcb\" x=\"10\" y=\"160\" width=\"420\" height=\"22\"></rect>\n        <circle class=\"m-solder\" cx=\"40\" cy=\"190\" r=\"6\"></circle><circle class=\"m-solder\" cx=\"100\" cy=\"190\" r=\"6\"></circle><circle class=\"m-solder\" cx=\"160\" cy=\"190\" r=\"6\"></circle><circle class=\"m-solder\" cx=\"220\" cy=\"190\" r=\"6\"></circle><circle class=\"m-solder\" cx=\"280\" cy=\"190\" r=\"6\"></circle><circle class=\"m-solder\" cx=\"340\" cy=\"190\" r=\"6\"></circle><circle class=\"m-solder\" cx=\"400\" cy=\"190\" r=\"6\"></circle>\n        <rect class=\"m-ild\" x=\"40\" y=\"136\" width=\"360\" height=\"20\"></rect>\n        <text x=\"300\" y=\"150\" class=\"t-small\">矽中介層（含 TSV）</text>\n        <rect class=\"m-sub\" x=\"60\" y=\"80\" width=\"150\" height=\"52\"></rect><text x=\"98\" y=\"110\">GPU／SoC</text>\n        <rect class=\"m-poly\" x=\"230\" y=\"104\" width=\"70\" height=\"8\"></rect><rect class=\"m-poly\" x=\"230\" y=\"94\" width=\"70\" height=\"8\"></rect><rect class=\"m-poly\" x=\"230\" y=\"84\" width=\"70\" height=\"8\"></rect><rect class=\"m-poly\" x=\"230\" y=\"114\" width=\"70\" height=\"8\"></rect><rect class=\"m-poly\" x=\"230\" y=\"124\" width=\"70\" height=\"8\"></rect>\n        <text x=\"236\" y=\"76\" class=\"t-small\">HBM（DRAM 疊層）</text>\n        <text x=\"10\" y=\"212\" class=\"t-small\">晶片之間的線走在中介層上，比走有機基板密得多</text>\n\n        <text x=\"480\" y=\"18\" class=\"t-strong\">3D：直接疊起來（例：SoIC、Foveros）</text>\n        <rect class=\"m-pcb\" x=\"480\" y=\"160\" width=\"400\" height=\"22\"></rect>\n        <rect class=\"m-sub\" x=\"560\" y=\"110\" width=\"240\" height=\"44\"></rect><text x=\"640\" y=\"138\">下層晶片</text>\n        <rect class=\"m-sub\" x=\"600\" y=\"62\" width=\"160\" height=\"44\"></rect><text x=\"650\" y=\"90\">上層晶片</text>\n        <rect class=\"m-cu\" x=\"620\" y=\"106\" width=\"8\" height=\"4\"></rect><rect class=\"m-cu\" x=\"660\" y=\"106\" width=\"8\" height=\"4\"></rect><rect class=\"m-cu\" x=\"700\" y=\"106\" width=\"8\" height=\"4\"></rect><rect class=\"m-cu\" x=\"740\" y=\"106\" width=\"8\" height=\"4\"></rect>\n        <text x=\"810\" y=\"110\" class=\"t-small\">微凸塊或</text><text x=\"810\" y=\"124\" class=\"t-small\">混合鍵合</text>\n        <text x=\"480\" y=\"212\" class=\"t-small\">距離最短、頻寬最高，但熱要從底下那顆穿過上面那顆才散得出去</text>\n      </svg>\n    </figure>"
+        },
+        {
+          "t": "lv",
+          "lv": 1,
+          "title": "是什麼",
+          "html": "<div class=\"table-wrap\"><table>\n        <tbody><tr><th>名詞</th><th>意思</th></tr>\n        <tr><td>Chiplet</td><td>把大 SoC 拆成多顆小晶片，各自用最適合的製程做，再封在一起</td></tr>\n        <tr><td>2.5D</td><td>多顆晶片並排在中介層（interposer）上，中介層再上基板</td></tr>\n        <tr><td>3D</td><td>晶片垂直疊起來，用 TSV、微凸塊或混合鍵合互連</td></tr>\n        <tr><td>CoWoS-S／-R／-L</td><td>TSMC 的 2.5D：-S 整片矽中介層（效能最好、最貴，最大約 3.3 倍光罩尺寸）；-R 用 RDL（高分子＋銅線）中介層，便宜、彈性大；-L 在 RDL 裡嵌入局部矽橋（LSI）</td></tr>\n        <tr><td>InFO</td><td>TSMC 的扇出型（fan-out）晶圓級封裝，不用覆晶基板。2016 年量產，第一個客戶是 Apple A10</td></tr>\n        <tr><td>EMIB</td><td>Intel 的 2.5D：在有機基板裡只埋一小片矽橋，只在需要高密度連線的地方用矽，不需要大片中介層與 TSV</td></tr>\n        <tr><td>Foveros</td><td>Intel 的 3D 疊層（面對面，36 µm 微凸塊）；Foveros Direct 改用混合鍵合</td></tr>\n        <tr><td>HBM</td><td>DRAM 晶片用 TSV 疊起來的高頻寬記憶體。HBM3E 1024-bit、JEDEC 規格最高 12 層（廠商已發表 16 層）；HBM4 2048-bit、最高 16 層</td></tr>\n        <tr><td>UCIe</td><td>chiplet 之間的開放互連標準。Standard package 凸塊間距 100～130 µm；Advanced package 25～55 µm</td></tr>\n      </tbody></table></div>",
+          "anchor": "d03-l1"
+        },
+        {
+          "t": "lv",
+          "lv": 2,
+          "title": "為什麼",
+          "html": "<ul>\n        <li><b>為什麼要拆成 chiplet？</b>良率跟面積大致成指數關係（見 <a href=\"#d04\">D04</a>），晶片越大良率掉得越兇；還有光罩尺寸上限（約 858 mm²），做不出更大的單顆。拆成小顆，每顆良率高，也可以 I/O 用舊製程、運算用新製程，省錢。</li>\n        <li><b>為什麼不直接放在有機基板上就好？</b>有機基板的線寬線距太粗，晶片之間能拉的線不夠多，頻寬上不去。矽中介層可以用晶圓廠的製程拉很細的線。</li>\n        <li><b>為什麼 AI 晶片都要 HBM＋CoWoS？</b>AI 運算的瓶頸常是記憶體頻寬。HBM 用超寬的匯流排（1024／2048 bit）換頻寬，這麼多條線只有矽中介層拉得出來。</li>\n        <li><b>CoWoS-S、-L、-R 為什麼並存？</b>整片矽中介層越大越難做、良率越低、越貴。-L 只在需要的地方用矽橋，-R 完全不用矽，在效能、尺寸、成本之間取捨。EMIB 的想法也一樣。</li>\n        <li><b>3D 的難處？</b>熱：下層晶片的熱要穿過上層才散得掉；測試：疊起來之後壞一顆就整組報廢，所以每顆都要先確認是好的（KGD）。</li>\n      </ul>",
+          "anchor": "d03-l2"
+        },
+        {
+          "t": "lv",
+          "lv": 3,
+          "title": "出問題怎麼辦",
+          "html": "<div class=\"table-wrap\"><table>\n        <tbody><tr><th>現象</th><th>最可能原因</th><th>對策</th></tr>\n        <tr><td>大尺寸 CoWoS-S 中介層良率低、容易裂</td><td>整片矽中介層又大又脆</td><td>改用 CoWoS-L（RDL＋局部矽橋）或 CoWoS-R</td></tr>\n        <tr><td>多 chiplet 封裝後整顆報廢率高</td><td>良率相乘：5 顆各 98% 的晶片，封裝前就只剩約 90%</td><td>封裝前嚴格篩選，做到 KGD（含高溫、全速測試）</td></tr>\n        <tr><td>大型 2.5D 封裝翹曲、錫球接不好</td><td>大面積的中介層、基板和矽熱膨脹係數不同</td><td>選低翹曲材料、加補強框、量測回焊翹曲</td></tr>\n        <tr><td>有機基板拉不出足夠的晶片間連線</td><td>線寬線距不夠細；全矽中介層又太貴</td><td>局部矽橋（EMIB、CoWoS-L）折衷</td></tr>\n      </tbody></table></div>",
+          "anchor": "d03-l3"
+        }
+      ]
+    },
+    {
+      "id": "D04",
+      "anchor": "d04",
+      "tag": "D04",
+      "name": "測試與良率",
+      "sub": "挑出壞的",
+      "blocks": [
+        {
+          "t": "html",
+          "html": "<p><b>一句話：</b>越早抓到壞晶片越省錢：<b>在晶圓上先測（CP）</b>，壞的就不封裝；封裝後<b>再測一次（FT）</b>，抓封裝造成的問題，並依性能分等級。</p>\n<figure>\n      <svg class=\"fig\" viewBox=\"0 0 640 210\" role=\"img\" aria-label=\"浴缸曲線\">\n        <line class=\"ln-fg\" x1=\"60\" y1=\"170\" x2=\"600\" y2=\"170\"></line><text x=\"560\" y=\"192\" class=\"t-small\">時間</text>\n        <line class=\"ln-fg\" x1=\"60\" y1=\"170\" x2=\"60\" y2=\"20\"></line><text x=\"10\" y=\"30\" class=\"t-small\">失效率</text>\n        <path class=\"ln-accent\" d=\"M70,30 Q110,130 200,135 L440,135 Q540,130 590,40\"></path>\n        <line class=\"ln dash\" x1=\"200\" y1=\"40\" x2=\"200\" y2=\"170\"></line><line class=\"ln dash\" x1=\"440\" y1=\"40\" x2=\"440\" y2=\"170\"></line>\n        <text x=\"80\" y=\"60\" class=\"t-small\">早夭期</text><text x=\"80\" y=\"76\" class=\"t-small\">製造缺陷</text>\n        <text x=\"260\" y=\"120\" class=\"t-small\">隨機失效期：低且穩定</text>\n        <text x=\"470\" y=\"60\" class=\"t-small\">磨耗期</text><text x=\"470\" y=\"76\" class=\"t-small\">BTI、EM、TDDB</text>\n        <text x=\"80\" y=\"200\" class=\"t-small\">burn-in 就是在出貨前先把早夭期「燒」過去，讓客戶拿到的晶片直接從平坦段開始。</text>\n      </svg>\n    </figure>"
+        },
+        {
+          "t": "lv",
+          "lv": 1,
+          "title": "是什麼",
+          "html": "<div class=\"table-wrap\"><table>\n        <tbody><tr><th>名詞</th><th>意思</th></tr>\n        <tr><td>CP（Chip Probing／wafer sort）</td><td>切割前在晶圓上，用探針卡（probe card）扎每顆晶片的 pad 來測</td></tr>\n        <tr><td>FT（Final Test）</td><td>封裝後用 ATE 測整顆，確認封裝、打線沒出問題</td></tr>\n        <tr><td>ATE</td><td>自動測試機台，提供電源、訊號並比對輸出</td></tr>\n        <tr><td>Binning</td><td>依測試結果分類：壞的分到 fail bin，好的依速度、功耗分成不同等級出貨</td></tr>\n        <tr><td>Burn-in</td><td>短時間的高溫加偏壓，把早夭的晶片先篩掉（HTOL 的縮短版）</td></tr>\n        <tr><td>浴缸曲線</td><td>見上圖：早夭期 → 隨機失效期 → 磨耗期</td></tr>\n        <tr><td>KGD（Known Good Die）</td><td>封裝前就確定是好的裸晶片。多晶片封裝的前提</td></tr>\n        <tr><td>DPPM</td><td>每百萬顆出貨的不良顆數。車用要求最嚴，目標趨近 0，甚至改用 DPPB（每十億顆）</td></tr>\n        <tr><td>良率模型</td><td>Poisson：<code>Y = e^(−A·D)</code>（A 晶片面積、D 缺陷密度）；Murphy、Seeds 模型考慮缺陷群聚，對大晶片較不悲觀</td></tr>\n      </tbody></table></div>",
+          "anchor": "d04-l1"
+        },
+        {
+          "t": "lv",
+          "lv": 2,
+          "title": "為什麼",
+          "html": "<ul>\n        <li><b>為什麼 CP 和 FT 都要做？</b>CP 省錢：壞晶片在封裝前就丟掉，封裝一顆壞晶片的成本約是在晶圓上測的 10～100 倍。FT 抓封裝自己造成的問題（研磨、切割、打線、封膠應力），並驗證真正的出貨形態。</li>\n        <li><b>為什麼大晶片良率特別差？</b>缺陷隨機落在晶圓上，晶片面積越大，挨到至少一顆缺陷的機率越高。Poisson 模型裡良率隨面積<b>指數</b>下降。實際缺陷會群聚，所以 Murphy／Seeds 估出來比 Poisson 樂觀。</li>\n        <li><b>測試覆蓋率和成本怎麼取捨？</b>測試時間就是 ATE 的機時費。測越多項越安全，但每顆晶片的成本上升。常見作法：CP 測基本功能與漏電，FT 測全速功能；車用另外加高溫、低溫測試與 burn-in。</li>\n        <li><b>KGD 為什麼對 chiplet 很關鍵？</b>封裝良率＝各顆晶片良率相乘。20 顆 95% 的晶片封在一起，第一次測只剩約 35% 是好的。不先篩，等於把好晶片和壞晶片一起報廢。</li>\n        <li><b>顯示驅動 IC 的測試有什麼不一樣？</b>COG 用的 driver IC 是以帶金凸塊的裸晶出貨，沒有傳統封裝後的 FT，<b>CP 就是最後一道電性篩選</b>，覆蓋率要比一般晶片高；COF 則可以在捲帶上再測一次。另一個難處是輸出通道有上千個，逐一量測太慢，所以用多 site 並行測試，並在 IC 裡設計測試電路（DFT），例如把多個通道切到同一條比較電路上一起量。</li>\n        <li><b>burn-in 為什麼不是每顆都做？</b>要占用機台和時間，還會消耗一點壽命。消費性產品常只抽樣或改用其他篩選方式；車用、伺服器才會全做。</li>\n      </ul>",
+          "anchor": "d04-l2"
+        },
+        {
+          "t": "lv",
+          "lv": 3,
+          "title": "出問題怎麼辦",
+          "html": "<div class=\"table-wrap\"><table>\n        <tbody><tr><th>現象</th><th>最可能原因</th><th>對策</th></tr>\n        <tr><td>CP 良率好，FT 良率差</td><td>封裝造成的：研磨或切割傷晶片、打線漏打或不良、封裝應力改變類比特性、CP 針測傷 pad 讓打線不良</td><td>把 FT 的 fail bin 對應到封裝站、X-ray／SAT 檢查、控制針痕、比對 CP／FT 的測試條件</td></tr>\n        <tr><td>burn-in 後失效比例偏高</td><td>製造缺陷被高溫偏壓激發（早夭）</td><td>做 FA 找到缺陷、回饋製程；重新評估 burn-in 條件</td></tr>\n        <tr><td>多晶片封裝首測良率遠低於單顆</td><td>良率相乘，沒有做到 KGD</td><td>加強 CP 覆蓋率（含高溫、全速）</td></tr>\n        <tr><td>大晶片的實際良率比 Poisson 估的好很多</td><td>Poisson 沒考慮缺陷群聚，對大面積過度悲觀</td><td>改用 Murphy 或負二項模型估算</td></tr>\n        <tr><td>wafer map 上失效集中在某個區塊或某個圖案</td><td>系統性問題，不是隨機缺陷</td><td>看形狀找站點：每個曝光區（shot）同一位置重複 → 光罩缺陷；同心圓或中心／邊緣 → 薄膜、蝕刻、CMP 的均勻度；一條直線刮痕 → 傳送或 CMP 刮傷；某幾片整片差 → 特定機台。見 <a href=\"B-process.html#b01-l3\">B01 L3</a></td></tr>\n        <tr><td>上千個輸出通道的 driver IC 測試時間太長、測試成本吃掉毛利</td><td>逐通道量測、單 site 測試</td><td>多 site 並行、IC 內建測試模式（DFT）把通道分組比較、只對關鍵參數做全量測</td></tr>\n      </tbody></table></div>",
+          "anchor": "d04-l3"
+        }
+      ]
+    },
+    {
+      "id": "D05",
+      "anchor": "d05",
+      "tag": "D05",
+      "name": "可靠度與失效分析",
+      "sub": "能用多久、壞在哪",
+      "blocks": [
+        {
+          "t": "html",
+          "html": "<p><b>一句話：</b>可靠度測試是用<b>高溫、高壓、高濕、溫度循環</b>把幾年的老化壓縮到幾百、幾千小時；壞了之後，FA 依「先不破壞、再定位、最後切開看」的順序找原因。</p>"
+        },
+        {
+          "t": "lv",
+          "lv": 1,
+          "title": "是什麼",
+          "html": "<div class=\"table-wrap\"><table>\n        <tbody><tr><th>測項／機制</th><th>意思</th><th>常見條件</th></tr>\n        <tr><td>HTOL</td><td>高溫加偏壓長時間操作，模擬使用壽命（JESD22-A108）</td><td>業界常見 125 °C、1000 h</td></tr>\n        <tr><td>HAST／THB</td><td>高溫高濕加偏壓，測水氣造成的腐蝕與漏電</td><td>HAST 130 °C／85% RH，96 或 192 h；THB 85 °C／85% RH，1000 h</td></tr>\n        <tr><td>TC（溫度循環）</td><td>高低溫來回，測熱膨脹差造成的疲勞</td><td>例：−65～150 °C，500／1000 次</td></tr>\n        <tr><td>ESD：HBM／CDM</td><td>HBM 模擬人體帶電碰到腳；CDM 模擬晶片自己帶電再放電（更快、更常在產線發生）</td><td>業界建議目標 HBM 500 V～2 kV、CDM 最低 250 V</td></tr>\n        <tr><td>Latch-up</td><td>CMOS 裡寄生的 PNPN（SCR）被觸發，電源到地形成低阻通路、電流暴增（JESD78）</td><td>I/O 注入約 ±100 mA、電源加到 1.5 倍最大值</td></tr>\n        <tr><td>BTI（NBTI）</td><td>閘極長時間偏壓，介面捕捉電荷，Vt 漂移。PMOS 的 NBTI 最明顯</td><td>—</td></tr>\n        <tr><td>HCI（熱載子）</td><td>高電場下的高能載子打進閘極介電層，Vt 和電流漂移，主要影響 NMOS</td><td>—</td></tr>\n        <tr><td>TDDB</td><td>閘極介電層隨時間累積損傷，最後崩潰</td><td>—</td></tr>\n        <tr><td>EM（電遷移）</td><td>電流推動金屬原子移動，形成空洞（開路）或凸丘（短路）。Black 方程：<code>MTTF ∝ J⁻ⁿ · e^(Ea/kT)</code></td><td>—</td></tr>\n        <tr><td>MSL（濕敏等級）</td><td>封裝拆封後能在空氣中放多久（J-STD-020）。MSL 1 無限；MSL 3 是 168 h；MSL 6 每次用前都要烘烤</td><td>參考環境 ≤ 30 °C／60% RH</td></tr>\n        <tr><td>爆米花效應（popcorn）</td><td>封裝吸了水，回焊時（峰值約 250～260 °C）水氣瞬間汽化，把封裝撐裂、分層</td><td>—</td></tr>\n      </tbody></table></div>\n<h3 style=\"margin-top:20px\">FA 手法：由外而內</h3>\n<div class=\"table-wrap\"><table>\n        <tbody><tr><th>順序</th><th>手法</th><th>看什麼</th></tr>\n        <tr><td class=\"num\">1</td><td>X-ray（不破壞）</td><td>打線、錫球、黏晶、微凸塊有沒有斷或空洞</td></tr>\n        <tr><td class=\"num\">1</td><td>SAT／C-SAM 超音波掃描（不破壞）</td><td>聲波在介面反射，看分層（delamination）與縫隙</td></tr>\n        <tr><td class=\"num\">2</td><td>EMMI（微光顯微）</td><td>通電時缺陷處會發出微弱的光，定位漏電、崩潰點</td></tr>\n        <tr><td class=\"num\">2</td><td>OBIRCH（雷射加熱掃描）</td><td>雷射掃過時電阻變化，定位阻性缺陷、短路</td></tr>\n        <tr><td class=\"num\">3</td><td>開蓋（decap）、研磨切片</td><td>去掉封膠露出晶片、切開看剖面</td></tr>\n        <tr><td class=\"num\">3</td><td>FIB、SEM、TEM</td><td>在定位點精準切剖面，用電子顯微鏡看奈米級結構</td></tr>\n      </tbody></table></div>",
+          "anchor": "d05-l1"
+        },
+        {
+          "t": "lv",
+          "lv": 2,
+          "title": "為什麼",
+          "html": "<ul>\n        <li><b>為什麼可以用高溫「加速」？</b>多數失效機制是熱活化的，速度隨溫度指數上升（Arrhenius）。在 125 °C 跑 1000 小時，換算成正常溫度下的使用時間可以是好幾年。</li>\n        <li><b>為什麼 CDM 比 HBM 更重要？</b>現在產線靠自動化，人手碰晶片的機會少；晶片在滑軌、托盤裡摩擦帶電再碰到金屬放電的機會多。CDM 放電極快，保護電路來不及反應。</li>\n        <li><b>latch-up 為什麼一觸發就停不下來？</b>寄生的 PNP 和 NPN 互相把對方打開，形成正回授，觸發後即使拿掉觸發源也維持導通，直到斷電。所以設計上要用 guard ring、拉開 NMOS 與 PMOS 的距離、加強 well／基板接點。guard ring 是一圈接到電源或地的重摻雜環，把注入的載子在擴散到寄生電晶體之前就收走，也降低 well／基板的電阻，讓寄生電晶體的基極壓降不夠大、打不開。</li>\n        <li><b>為什麼 NBTI 主要是 PMOS、HCI 主要是 NMOS？</b>PMOS 平常閘極對通道是負偏，正好是 NBTI 的條件；NMOS 的電子遷移率高、在汲極端被加速成高能熱載子的機會大。</li>\n        <li><b>FA 為什麼一定要先做不破壞的？</b>開蓋、切片後就回不去了，原本的失效證據可能被破壞。先用 X-ray、SAT 看封裝層級，用 EMMI／OBIRCH 在通電狀態下鎖定位置，最後才在那一點切開。</li>\n      </ul>",
+          "anchor": "d05-l2"
+        },
+        {
+          "t": "lv",
+          "lv": 3,
+          "title": "出問題怎麼辦",
+          "html": "<div class=\"table-wrap\"><table>\n        <tbody><tr><th>現象</th><th>最可能原因</th><th>對策</th></tr>\n        <tr><td>回焊後 SAT 看到分層、封裝裂開</td><td>爆米花效應：拆封後放太久，超過 MSL 規定的 floor life</td><td>依 MSL 管控拆封時間、逾時先烘烤、乾燥包裝</td></tr>\n        <tr><td>溫度循環後錫球或凸塊開路</td><td>熱膨脹差的循環應力讓焊點疲勞（角落先裂）</td><td>封裝端用 underfill、選熱膨脹係數匹配的材料；板端可加板級 underfill</td></tr>\n        <tr><td>HTOL 後功能失效，要找原因</td><td>老化機制（BTI、HCI、TDDB、EM）或潛在缺陷被加速</td><td>X-ray／SAT → EMMI／OBIRCH 定位熱點 → FIB 切面 → SEM／TEM 確認</td></tr>\n        <tr><td>長時間大電流後金屬線開路或電阻上升</td><td>電遷移形成空洞；電流密度越大壽命越短</td><td>降低電流密度（加寬導線、多打 via）、改用抗 EM 較好的結構（如銅柱凸塊）</td></tr>\n        <tr><td>產線上不少顆 ESD 失效（腳漏電或短路）</td><td>晶片的 CDM／HBM 等級低於產線的 ESD 管控能力</td><td>提升 ESD 保護設計到業界建議目標，或加強產線 ESD 管控</td></tr>\n        <tr><td>HBM 測試通過，CDM 卻不過</td><td>CDM 是晶片本身帶電、極快放電，電流常從內部電路與跨電源域的介面流過，而不是只走 I/O 的保護元件</td><td>在內部閘極旁加局部箝位、加強跨電源域的保護與電源間的放電路徑；只加大 I/O 的 HBM 保護元件通常沒用</td></tr>\n        <tr><td>latch-up 測試時電源電流暴增</td><td>注入電流或電源過壓觸發寄生 SCR</td><td>在最高操作溫度下複測（高溫更容易觸發）；佈局加 guard ring、拉開 N／P 間距、加密 well 接點</td></tr>\n        <tr><td>老化後 PMOS 變慢、時序 margin 不夠</td><td>NBTI 讓 PMOS 的 Vt 隨時間上升</td><td>簽核時用老化模型（aging-aware），預留壽命末期的 margin</td></tr>\n      </tbody></table></div>",
+          "anchor": "d05-l3"
+        }
+      ]
+    }
+  ],
+  "back": [
+    {
+      "id": "confuse",
+      "title": "容易混淆",
+      "blocks": [
+        {
+          "t": "html",
+          "html": "<div class=\"table-wrap\"><table>\n      <tbody><tr><th>這兩個</th><th>差在哪</th></tr>\n      <tr><td>CP vs FT</td><td>晶圓上用探針卡測 vs 封裝後用 ATE 測（D04）</td></tr>\n      <tr><td>burn-in vs HTOL</td><td>出貨前篩早夭品（短、全數或抽樣）vs 認證壽命用的長時間測試（D04、D05）</td></tr>\n      <tr><td>COG vs COF</td><td>IC 直接黏玻璃 vs IC 黏軟性薄膜再接面板（D01）</td></tr>\n      <tr><td>ILB vs OLB</td><td>COF 裡 IC 接薄膜（內引腳，熱壓）vs 薄膜接面板或 PCB（外引腳，ACF）（D01、D02）</td></tr>\n      <tr><td>2.5D vs 3D</td><td>並排在中介層上 vs 直接疊起來（D03）</td></tr>\n      <tr><td>CoWoS vs InFO</td><td>有中介層、給大型 AI／HPC 晶片 vs 扇出型、無基板、給手機 SoC（D03）</td></tr>\n      <tr><td>HBM vs CDM</td><td>都是 ESD 模型：人體放電到晶片 vs 晶片自己帶電再放電（D05）。別跟記憶體 HBM 搞混</td></tr>\n      <tr><td>NBTI vs HCI</td><td>偏壓＋溫度、主要 PMOS vs 高電場熱載子、主要 NMOS（D05）</td></tr>\n      <tr><td>X-ray vs SAT</td><td>看金屬（線、球斷沒斷）vs 看介面（有沒有分層）（D05）</td></tr>\n      <tr><td>EMMI vs OBIRCH</td><td>看缺陷發光 vs 看雷射加熱下的電阻變化（D05）</td></tr>\n    </tbody></table></div>"
+        }
+      ]
+    },
+    {
+      "id": "terms",
+      "title": "英文術語",
+      "blocks": [
+        {
+          "t": "html",
+          "html": "<div class=\"table-wrap\"><table>\n      <tbody><tr><th>英文</th><th>中文</th><th>常見用法</th></tr>\n      <tr><td>Wire bonding</td><td>打線</td><td>Copper wire bonding needs forming gas.</td></tr>\n      <tr><td>Flip chip</td><td>覆晶</td><td>Flip chip packages need underfill.</td></tr>\n      <tr><td>Anisotropic Conductive Film (ACF)</td><td>異方性導電膠</td><td>The COG was bonded with ACF at 180 °C.</td></tr>\n      <tr><td>Interposer</td><td>中介層</td><td>HBM sits beside the GPU on a silicon interposer.</td></tr>\n      <tr><td>Hybrid bonding</td><td>混合鍵合</td><td>Hybrid bonding enables sub-10 µm pitch.</td></tr>\n      <tr><td>Probe card</td><td>探針卡</td><td>Excessive probing damaged the bond pads.</td></tr>\n      <tr><td>Binning</td><td>分級</td><td>Parts are binned by maximum frequency.</td></tr>\n      <tr><td>Known Good Die (KGD)</td><td>已知良品裸晶</td><td>Chiplet assembly requires KGD.</td></tr>\n      <tr><td>Warpage</td><td>翹曲</td><td>Package warpage caused head-in-pillow defects.</td></tr>\n      <tr><td>Delamination</td><td>分層</td><td>SAT revealed delamination after reflow.</td></tr>\n      <tr><td>Failure Analysis (FA)</td><td>失效分析</td><td>FA traced the leakage to a gate oxide defect.</td></tr>\n      <tr><td>Floor life</td><td>拆封後可放置時間</td><td>MSL 3 parts have a 168-hour floor life.</td></tr>\n    </tbody></table></div>"
+        }
+      ]
+    },
+    {
+      "id": "sources",
+      "title": "出處",
+      "blocks": [
+        {
+          "t": "html",
+          "html": "<ol class=\"sources\">\n      <li><b>D01</b>　https://en.wikipedia.org/wiki/Chip-scale_package ；https://www.pcbonline.com/blog/bga-ball-pitch.html ；https://anysilicon.com/ultimate-guide-qfn-package/ ；https://www.displaymodule.com/blogs/knowledge/how-does-cog-lcd-works-structure-bonding-process ；https://cgi.global.sharp/corporate/info/rd/tj3/3-12.html （COF 的 ILB）；https://semiengineering.com/controlling-warpage-in-advanced-packages</li>\n      <li><b>D02</b>　https://en.wikipedia.org/wiki/Wire_bonding ；https://eesemi.com/wirebond-copper.htm ；https://www.eesemi.com/bond-failures-causes.htm ；https://www.halbleiter.org/en/advanced-packaging/through-silicon-via-tsv/ ；https://semiengineering.com/hybrid-bonding-basics-what-is-hybrid-bonding/ ；Journal of Electronic Materials（ACF 粒子捕捉，doi 10.1007/s11664-008-0531-3）</li>\n      <li><b>D03</b>　https://anysilicon.com/cowos-package/ ；https://3dfabric.tsmc.com/english/dedicatedFoundry/technology/cowos.htm ；https://semiengineering.com/fan-out-packaging-gains-steam ；Intel EMIB／Foveros product brief；https://en.wikichip.org/wiki/foveros ；https://www.synopsys.com/articles/ucie-multi-die-socs.html ；Siemens HBM3E／HBM4 design guide</li>\n      <li><b>D04</b>　https://anysilicon.com/wafer-testing-ultimate-guide/ ；https://www.halbleiter.org/en/reliability/burn-in-htol-testing/ ；https://eesemi.com/test-yield-models.htm ；Cadence Breakfast Bytes「Known Good Die」</li>\n      <li><b>D05</b>　https://eesemi.com/reltests.htm ；Thermo Fisher ESD qualification；https://incompliancemag.com/esd-target-levels-the-industry-council/ ；TI SCAA124（latch-up JESD78）；All About Circuits（MOS 可靠度：BTI、HCI、TDDB、EM）；Cadence MSL overview；https://anysilicon.com/ic-failure-analysis-techniques-a-complete-guide/</li>\n      <li class=\"muted\">查證日 2026-10-01。HTOL 125 °C／1000 h 是業界常見值，未取得 JESD22-A108 原文；latch-up 的 guard ring、板級 underfill 等對策是一般工程作法，未逐條找到出處。COF 的接合方式來源說法不一，本頁採 ILB 熱壓、OLB 用 ACF。</li>\n    </ol>"
+        }
+      ]
+    }
+  ]
+}

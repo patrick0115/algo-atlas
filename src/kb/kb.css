@@ -1,0 +1,211 @@
+/* 百科詞條(原 SemiDrill 講義)的樣式:改寫自 public/semi/style.css、handout.css,全部限定在 .kb 底下。 */
+/* 講義原本是淺色;站上預設深色,所以 --fg / --bg 跟著站上的顏色走,剖面圖的材料灰階在深色時反轉。 */
+
+.kb {
+  --fg: var(--text);
+  --line: var(--border);
+  --faint: #6b6b6b;
+  --alert: var(--bad);
+  --sans: inherit;
+  --mono: Consolas, 'Cascadia Code', ui-monospace, monospace;
+  --accent: var(--fg);
+  --accent-soft: var(--soft);
+
+  --m-sub: #3a3a3a;
+  --m-ox: #111111;
+  --m-poly: #929292;
+  --m-pr: #505050;
+  --m-nplus: #707070;
+  --m-ild: #1c1c1c;
+  --m-w: #bbbbbb;
+  --m-cu: #e6e6e6;
+  --m-mask: #ececec;
+  --m-mold: #a5a5a5;
+  --m-pcb: #5b5b5b;
+  --m-solder: #2b2b2b;
+  --m-tape: #1c1c1c;
+  --m-glue: #111111;
+  --m-dep: #111111;
+
+  line-height: 1.7;
+  font-size: 15px;
+}
+:root[data-theme='light'] .kb {
+  --faint: #a3a3a3;
+  --m-sub: #dadada;
+  --m-ox: #ffffff;
+  --m-poly: #7e7e7e;
+  --m-pr: #c0c0c0;
+  --m-nplus: #a0a0a0;
+  --m-ild: #f4f4f4;
+  --m-w: #555555;
+  --m-cu: #2a2a2a;
+  --m-mask: #111111;
+  --m-mold: #6b6b6b;
+  --m-pcb: #b5b5b5;
+  --m-solder: #e5e5e5;
+  --m-tape: #f4f4f4;
+  --m-glue: #ffffff;
+  --m-dep: #ffffff;
+}
+
+.kb a { color: var(--fg); }
+.kb b, .kb strong { font-weight: 700; }
+.kb p, .kb li { max-width: 72ch; }
+
+.kb .tag {
+  display: inline-block;
+  font-size: 12px;
+  font-family: var(--mono);
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0 6px;
+  margin-right: 6px;
+}
+.kb .muted { color: var(--muted); }
+.kb .small { font-size: 12px; }
+.kb code {
+  background: var(--soft);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 13px;
+}
+.kb pre code { padding: 0; background: none; }
+
+.kb table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.kb .table-wrap { overflow-x: auto; }
+.kb th, .kb td { border-bottom: 1px solid var(--line); padding: 10px 16px 10px 0; text-align: left; vertical-align: top; }
+.kb th { color: var(--muted); font-weight: 500; font-size: 13px; border-bottom: 1px solid var(--fg); }
+.kb td.num, .kb th.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.kb .callout { border-left: 2px solid var(--fg); padding: 4px 0 4px 16px; margin: 20px 0; font-size: 14px; color: var(--muted); }
+.kb figure { margin: 24px 0; }
+.kb figcaption { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+/* 圖示共用(SVG 線稿) */
+.kb svg.fig { width: 100%; height: auto; display: block; }
+.kb svg.fig text { fill: var(--fg); font-family: var(--sans); font-size: 13px; }
+.kb svg.fig .t-muted { fill: var(--muted); }
+.kb svg.fig .t-accent { fill: var(--fg); font-weight: 700; }
+.kb svg.fig .t-strong { font-weight: 700; font-size: 15px; }
+.kb svg.fig .t-small { font-size: 12px; fill: var(--muted); }
+.kb svg.fig .ln { fill: none; stroke: var(--faint); stroke-width: 1.3; }
+.kb svg.fig .ln-soft { fill: none; stroke: var(--line); stroke-width: 1.3; }
+.kb svg.fig .ln-accent { fill: none; stroke: var(--fg); stroke-width: 1.5; }
+.kb svg.fig .ln-fg { fill: none; stroke: var(--fg); stroke-width: 1.3; }
+.kb svg.fig .dash { stroke-dasharray: 5 4; }
+.kb svg.fig .bx { fill: var(--bg); stroke: var(--fg); stroke-width: 1; }
+.kb svg.fig .bx-soft { fill: var(--soft); stroke: none; }
+.kb svg.fig .bx-accent { fill: var(--soft); stroke: var(--fg); stroke-width: 1.5; }
+.kb svg.fig .fill-fg { fill: var(--fg); }
+.kb svg.fig .fill-muted { fill: var(--muted); }
+.kb svg.fig .fill-accent { fill: var(--fg); }
+.kb svg.fig .fill-soft { fill: var(--soft); }
+.kb svg.fig .arrow { stroke: var(--fg); stroke-width: 1.5; fill: none; }
+.kb svg.fig .arrow-head { fill: var(--fg); }
+
+/* 剖面圖、封裝圖的材料 */
+.kb svg.fig .m-sub { fill: var(--m-sub); }
+.kb svg.fig .m-ox { fill: var(--m-ox); stroke: var(--fg); stroke-width: 0.6; }
+.kb svg.fig .m-poly { fill: var(--m-poly); }
+.kb svg.fig .m-pr { fill: var(--m-pr); }
+.kb svg.fig .m-pr-exp { fill: var(--m-pr); opacity: 0.3; }
+.kb svg.fig .m-nplus { fill: var(--m-nplus); }
+.kb svg.fig .m-ild { fill: var(--m-ild); stroke: var(--faint); stroke-width: 0.8; }
+.kb svg.fig .m-w { fill: var(--m-w); }
+.kb svg.fig .m-cu { fill: var(--m-cu); }
+.kb svg.fig .m-mask { fill: var(--m-mask); }
+.kb svg.fig .m-void { fill: var(--bg); }
+.kb svg.fig .m-mold { fill: var(--m-mold); opacity: 0.55; }
+.kb svg.fig .m-pcb { fill: var(--m-pcb); }
+.kb svg.fig .m-solder { fill: var(--m-solder); stroke: var(--fg); stroke-width: 0.6; }
+.kb svg.fig .m-tape { fill: var(--m-tape); stroke: var(--faint); stroke-width: 0.8; }
+.kb svg.fig .m-glue { fill: var(--m-glue); stroke: var(--muted); stroke-width: 0.6; }
+.kb svg.fig .m-dep { fill: var(--m-dep); stroke: var(--fg); stroke-width: 0.8; stroke-dasharray: 3 3; }
+.kb svg.fig .wire { fill: none; stroke: var(--m-cu); stroke-width: 1.6; }
+
+/* 可點的剖面部位 */
+.kb svg.fig .hot { cursor: pointer; transition: opacity 0.15s; }
+.kb svg.fig .hot:hover { opacity: 0.8; }
+.kb svg.fig .hot.sel { stroke: var(--fg); stroke-width: 2.5; }
+
+/* 控制元件 */
+.kb .controls { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; margin-bottom: 20px; }
+.kb .seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--fg); border-radius: 6px; overflow: hidden; }
+.kb .seg button { border: 0; background: var(--bg); color: var(--fg); padding: 6px 14px; font: inherit; font-size: 14px; cursor: pointer; border-radius: 0; }
+.kb .seg button + button { border-left: 1px solid var(--fg); }
+.kb .seg button.on { background: var(--fg); color: var(--bg); }
+.kb button.btn { border: 1px solid var(--fg); background: var(--bg); color: var(--fg); padding: 6px 14px; border-radius: 6px; font: inherit; font-size: 14px; cursor: pointer; }
+.kb button.btn:disabled { border-color: var(--line); color: var(--faint); cursor: default; }
+.kb button.btn.primary { background: var(--fg); color: var(--bg); }
+.kb button.btn.primary:disabled { background: var(--soft); border-color: var(--line); color: var(--faint); }
+.kb label.inline { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
+.kb input[type='range'], .kb input[type='checkbox'] { accent-color: var(--fg); }
+.kb select { font: inherit; font-size: 14px; padding: 3px 6px; border-radius: 6px; border: 1px solid var(--fg); background: var(--bg); color: var(--fg); }
+
+/* 主軸步驟條 */
+.kb .steps { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 16px; padding: 0; list-style: none; }
+.kb .steps button { border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 6px; padding: 4px 10px; font: inherit; font-size: 13px; cursor: pointer; }
+.kb .steps button.on { background: var(--fg); border-color: var(--fg); color: var(--bg); }
+.kb .steps button .no { font-family: var(--mono); color: var(--faint); margin-right: 4px; }
+.kb .steps button.on .no { color: var(--bg); }
+.kb .stage { border: 1px solid var(--fg); border-radius: 6px; padding: 16px; }
+.kb .stage-info { margin-top: 12px; }
+.kb .stage-info h3 { margin: 0 0 4px; font-size: 15px; font-weight: 700; color: var(--fg); }
+.kb .stage-info p { margin: 4px 0; }
+
+.kb .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--muted); margin-top: 8px; }
+.kb .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; border: 1px solid var(--faint); vertical-align: -1px; margin-right: 5px; }
+
+/* 三層難度標籤 */
+.kb .lv { display: inline-block; font-size: 12px; font-family: var(--mono); border-radius: 4px; padding: 0 6px; margin-right: 6px; vertical-align: 1px; border: 1px solid var(--line); color: var(--muted); }
+.kb .lv.l2 { border-color: var(--muted); color: var(--fg); }
+.kb .lv.l3 { background: var(--fg); border-color: var(--fg); color: var(--bg); }
+.kb .block { margin: 20px 0 0; }
+.kb .block > h3 { margin: 0 0 6px; }
+.kb .block ul { margin: 6px 0; padding-left: 20px; }
+.kb .block li { margin: 4px 0; }
+
+/* 總覽主軸 */
+.kb .chain { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.kb .chain .node { border: 1px solid var(--line); border-radius: 6px; padding: 16px; position: relative; }
+.kb .chain .node.ready { border-color: var(--fg); }
+.kb .chain .node h3 { margin: 4px 0 6px; font-size: 15px; font-weight: 700; color: var(--fg); }
+.kb .chain .node ol { margin: 8px 0 0; padding-left: 20px; font-size: 14px; }
+.kb .chain .node .state { font-size: 12px; color: var(--muted); }
+
+.kb .sources { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+.kb .sources li { margin: 2px 0; word-break: break-all; }
+
+/* 百科版面:書頁、詞條頁 */
+.kb-sec { padding: 36px 0 0; border-top: 1px solid var(--border); margin-top: 36px; max-width: 960px; }
+.kb-sec:first-of-type { border-top: 0; margin-top: 8px; padding-top: 0; }
+.kb-sec > h2 { margin: 0 0 16px; font-size: 18px; }
+.kb-sec h3 { margin: 28px 0 6px; font-size: 13px; font-weight: 500; color: var(--muted); }
+.kb .kb-lv { margin: 22px 0 0; }
+.kb .kb-lv > h3 { margin: 0 0 6px; font-size: 14px; font-weight: 600; color: var(--text); }
+.kb .kb-sub { margin: 40px 0 12px; font-size: 17px; padding-top: 24px; border-top: 1px solid var(--border); }
+.kb-entries { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; max-width: 960px; }
+.kb-entries a { display: block; border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; text-decoration: none; height: 100%; }
+.kb-entries a:hover { border-color: var(--strong); }
+.kb-entries b { display: block; font-size: 15px; }
+.kb-entries span.small { color: var(--muted); font-size: 12px; }
+.kb-books { list-style: none; padding: 0; max-width: 900px; }
+.kb-books li { padding: 14px 0; border-bottom: 1px solid var(--border); }
+.kb-books li a { font-weight: 700; }
+.kb-books .desc { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; }
+.kb-head .note { font-size: 12px; color: var(--muted); }
+.vol-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; max-width: 1000px; margin: 12px 0 28px; }
+.vol-grid a { display: flex; flex-direction: column; gap: 4px; border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; text-decoration: none; }
+.vol-grid a:hover { border-color: var(--strong); }
+.vol-grid b { font-size: 16px; }
+.vol-grid span { font-size: 13px; color: var(--muted); line-height: 1.6; }
+@media (max-width: 760px) {
+  .kb .seg button { padding: 6px 10px; }
+}
+
+/* E 本的互動 app 維持原本的淺色版面;它的 #toc 和網站的 .toc(頁內分頁列)撞名,把網站那組設定還原 */
+.kb-E .e-paper { color-scheme: light; background: #ffffff; color: #111111; border-radius: 12px; padding: 18px; }
+.kb-E .e-paper .toc { position: static; display: block; overflow: visible; }

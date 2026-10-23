@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { CATEGORIES, findStub } from './data/categories'
 import { PROBLEMS, problemsOf } from './data/problems'
 import { LEVEL_NAME, PRO, type ProNote } from './data/pro'
@@ -8,6 +8,10 @@ import { Plan } from './components/Plan'
 import { ProblemList } from './components/ProblemList'
 import { Review } from './components/Review'
 import { Rhythm, RhythmCard } from './components/Rhythm'
+import { APPENDIX_KINDS, AppendixPage, BookList, BookPage, EntryPage, KbAttached, SemiOverview, entryHref, setHostName } from './components/KbPage'
+import { hostOf } from './kb/merge'
+import { BOOKS, ENTRIES } from './kb'
+import { BOOK_META, VOLUMES } from './kb/volumes'
 import { SummaryPage } from './components/SummaryPage'
 import { Toc } from './components/Toc'
 import { SUMMARIES } from './data/summaries'
@@ -65,6 +69,15 @@ function Pager({ at }: { at: string }) {
   )
 }
 const nameOf = (id: string) => findStub(id)?.stub.name ?? id
+setHostName((r) => (r.startsWith('p/') ? nameOf(r.slice(2)) : r.startsWith('c/') ? (CONCEPTS[r.slice(2)]?.name ?? r) : r))
+
+/** 被併進圖鑑的講義詞條:舊網址直接換到新家 */
+function Redirect({ to }: { to: string }) {
+  useEffect(() => {
+    window.location.replace(to)
+  }, [to])
+  return null
+}
 
 function LevelBadge({ id }: { id: string }) {
   const lv = PRO[id]?.level
@@ -72,11 +85,62 @@ function LevelBadge({ id }: { id: string }) {
   return <span className={`lv lv-${lv}`} title={`難度:${LEVEL_NAME[lv]}`}>{LEVEL_NAME[lv]}</span>
 }
 
+/** 這個頁面屬於哪一卷:決定側欄預設展開哪一卷 */
+function volOfCurrent(current: string): string {
+  if (current.startsWith('c/')) return 'base'
+  if (current.startsWith('k/')) {
+    const id = current.slice(2)
+    const book = BOOKS[id] ?? ENTRIES[id]?.book
+    if (book) return BOOK_META[book.id]?.vol ?? ''
+    return id.startsWith('appendix') ? 'appendix' : ''
+  }
+  if (current.startsWith('v/')) return current.slice(2)
+  if (current === 'q' || current === 'problems') return 'sol'
+  if (current.startsWith('s/') || ORDER.some((p) => p.id === current)) return 'algo'
+  return ''
+}
+
 function Sidebar({ current }: { current: string }) {
   const [q, setQ] = useState('')
   const [open, setOpen] = useState(false)
   const kw = q.trim().toLowerCase()
   const match = (p: { id: string; name: string }) => !kw || p.name.toLowerCase().includes(kw) || p.id.includes(kw)
+  const vol = volOfCurrent(current)
+  const link = (key: string, href: string, label: ReactNode, extra = '') => (
+    <a key={key} href={href} className={`side-link${current === key ? ' active' : ''}${extra}`}>
+      {label}
+    </a>
+  )
+
+  /** 一本講義書:書名一行;正在看這本(或搜尋中)才展開詞條 */
+  const bookGroup = (id: string) => {
+    const b = BOOKS[id]
+    if (!b) return null
+    const meta = BOOK_META[id]
+    const here = current === `k/${id}` || ENTRIES[current.slice(2)]?.book.id === id
+    const es = b.entries.filter((e) => !kw || `${e.tag} ${e.name} ${e.sub}`.toLowerCase().includes(kw))
+    if (kw && !es.length && !match({ id: id.toLowerCase(), name: meta.name })) return null
+    return (
+      <div key={id} className="side-group">
+        {link(`k/${id}`, `#/k/${id}`, `${id} ${meta.name}`, ' side-book')}
+        {(here || kw) && es.map((e) => link(`k/${e.id}`, entryHref(e.id), `${e.tag} ${e.name}`, ' side-entry'))}
+      </div>
+    )
+  }
+
+  const volume = (id: string, body: ReactNode) => {
+    const v = VOLUMES.find((x) => x.id === id)!
+    return (
+      <details key={id} className="side-vol" open={!!kw || vol === id}>
+        <summary>
+          <a href={`#/v/${id}`} className={current === `v/${id}` ? 'active' : ''}>
+            {v.name}
+          </a>
+        </summary>
+        {body}
+      </details>
+    )
+  }
 
   return (
     <nav
@@ -92,69 +156,176 @@ function Sidebar({ current }: { current: string }) {
         </button>
       </div>
       <div className="side-body">
-        <input className="side-search" type="search" placeholder="搜尋演算法…" value={q} onChange={(e) => setQ(e.target.value)} />
-        <a href="#/rhythm" className={`side-link${current === 'rhythm' ? ' active' : ''}`}>
-          刷題節奏
-        </a>
-        <a href="#/plan" className={`side-link${current === 'plan' ? ' active' : ''}`}>
-          刷題藍圖
-        </a>
-        <a href="#/q" className={`side-link${current === 'q' ? ' active' : ''}`}>
-          題解
-        </a>
-        <a href="#/review" className={`side-link${current === 'review' ? ' active' : ''}`}>
-          複習
-        </a>
-        <a href="#/problems" className={`side-link${current === 'problems' ? ' active' : ''}`}>
-          全部題目
-        </a>
-        {import.meta.env.MODE !== 'offline' && (
-          <a href="./semi/index.html" className="side-link">
-            SemiDrill 觀念圖鑑與講義 ↗
-          </a>
+        <input className="side-search" type="search" placeholder="搜尋演算法、詞條…" value={q} onChange={(e) => setQ(e.target.value)} />
+        {link('rhythm', '#/rhythm', '刷題節奏')}
+        {link('plan', '#/plan', '刷題藍圖')}
+        {link('review', '#/review', '複習')}
+
+        {volume(
+          'base',
+          <>
+            {UNITS.map((u) => {
+              const cs = u.concepts.filter(match)
+              if (!cs.length) return null
+              return (
+                <div key={u.id} className="side-group">
+                  <div className="side-cat">{u.name}</div>
+                  {cs.map((c) =>
+                    link(
+                      `c/${c.id}`,
+                      `#/c/${c.id}`,
+                      <>
+                        {c.name}
+                        <i className={`dot lv-dot-${c.level}`} />
+                      </>,
+                    ),
+                  )}
+                </div>
+              )
+            })}
+            {VOLUMES.find((v) => v.id === 'base')!.books.map((b) => bookGroup(b.id))}
+          </>,
         )}
-        {UNITS.map((u) => {
-          const cs = u.concepts.filter(match)
-          if (!cs.length) return null
-          return (
-            <div key={u.id} className="side-group">
-              <div className="side-cat">基礎 · {u.name}</div>
-              {cs.map((c) => (
-                <a key={c.id} href={`#/c/${c.id}`} className={`side-link${current === `c/${c.id}` ? ' active' : ''}`}>
-                  {c.name}
-                  <i className={`dot lv-dot-${c.level}`} />
-                </a>
-              ))}
-            </div>
-          )
-        })}
-        <div className="side-part">演算法</div>
-        {CATEGORIES.map((c) => {
-          const ps = c.patterns.filter(match)
-          if (!ps.length) return null
-          return (
-            <div key={c.id} className="side-group">
-              <div className="side-cat">{c.name}</div>
-              {ps.map((p) => (
-                <a
-                  key={p.id}
-                  href={`#/p/${p.id}`}
-                  className={`side-link${current === p.id ? ' active' : ''}${PATTERNS[p.id] ? '' : ' todo'}`}
-                >
-                  {p.name}
-                  <i className={`dot lv-dot-${PRO[p.id]?.level ?? 0}`} />
-                </a>
-              ))}
-              {SUMMARIES[c.id] && !kw && (
-                <a href={`#/s/${c.id}`} className={`side-link side-sum${current === `s/${c.id}` ? ' active' : ''}`}>
-                  {c.name}總結
-                </a>
-              )}
-            </div>
-          )
-        })}
+
+        {volume(
+          'algo',
+          <>
+            {CATEGORIES.map((c) => {
+              const ps = c.patterns.filter(match)
+              if (!ps.length) return null
+              return (
+                <div key={c.id} className="side-group">
+                  <div className="side-cat">{c.name}</div>
+                  {ps.map((p) =>
+                    link(
+                      p.id,
+                      `#/p/${p.id}`,
+                      <>
+                        {p.name}
+                        <i className={`dot lv-dot-${PRO[p.id]?.level ?? 0}`} />
+                      </>,
+                      PATTERNS[p.id] ? '' : ' todo',
+                    ),
+                  )}
+                  {SUMMARIES[c.id] && !kw && link(`s/${c.id}`, `#/s/${c.id}`, `${c.name}總結`, ' side-sum')}
+                </div>
+              )
+            })}
+            {VOLUMES.find((v) => v.id === 'algo')!.books.map((b) => bookGroup(b.id))}
+          </>,
+        )}
+
+        {volume(
+          'sol',
+          <>
+            {link('q', '#/q', '題解目錄')}
+            {link('problems', '#/problems', '全部題目')}
+          </>,
+        )}
+
+        {['semi', 'sys', 'swe'].map((id) => volume(id, VOLUMES.find((v) => v.id === id)!.books.map((b) => bookGroup(b.id))))}
+
+        <details className="side-vol" open={!!kw || vol === 'appendix'}>
+          <summary>附錄</summary>
+          {APPENDIX_KINDS.map((a) => link(`k/appendix/${a.id}`, `#/k/appendix/${a.id}`, a.name))}
+        </details>
       </div>
     </nav>
+  )
+}
+
+/** 卷頁:這一卷有哪些單元、分類、講義書 */
+function VolumePage({ id }: { id: string }) {
+  const v = VOLUMES.find((x) => x.id === id)!
+  return (
+    <div className="page kb">
+      <div className="crumb">百科目錄</div>
+      <h1>{v.name}</h1>
+      <p className="lead">{v.desc}</p>
+      {id === 'base' && (
+        <ol className="unit-list">
+          {UNITS.map((u) => (
+            <li key={u.id}>
+              <div className="unit-head">
+                <b>{u.name}</b>
+                <span className="muted">{u.desc}</span>
+              </div>
+              <div className="unit-chips">
+                {u.concepts.map((c) => (
+                  <a key={c.id} href={`#/c/${c.id}`} className="chip">
+                    {c.name}
+                  </a>
+                ))}
+              </div>
+            </li>
+          ))}
+        </ol>
+      )}
+      {id === 'algo' && <AlgoGrid />}
+      {id === 'sol' && (
+        <ul className="kb-books">
+          <li>
+            <a href="#/q">題解目錄</a>
+            <span className="desc">已寫好題解的 {Object.keys(SOLUTIONS).length} 題,依題號排列。</span>
+          </li>
+          <li>
+            <a href="#/problems">全部題目</a>
+            <span className="desc">收錄的 {PROBLEMS.length} 題,可依演算法、難度、清單篩選。</span>
+          </li>
+        </ul>
+      )}
+      {id === 'semi' && <SemiOverview />}
+      {v.books.length > 0 && (
+        <>
+          <h2>講義</h2>
+          <BookList vol={id} />
+        </>
+      )}
+    </div>
+  )
+}
+
+function VolumeGrid() {
+  return (
+    <div className="vol-grid">
+      {VOLUMES.map((v) => (
+        <a key={v.id} href={`#/v/${v.id}`}>
+          <b>{v.name}</b>
+          <span>{v.desc}</span>
+        </a>
+      ))}
+    </div>
+  )
+}
+
+function AlgoGrid() {
+  return (
+    <div className="cat-grid">
+      {CATEGORIES.map((c) => (
+        <section key={c.id} className="cat-card">
+          <h2>{c.name}</h2>
+          <ul>
+            {c.patterns.map((p) => {
+              const n = problemsOf(p.id).length
+              return (
+                <li key={p.id} className={PATTERNS[p.id] ? '' : 'todo'}>
+                  <a href={`#/p/${p.id}`}>{p.name}</a>
+                  <span className="muted">
+                    <LevelBadge id={p.id} /> {n > 0 ? `${n} 題` : ''}
+                  </span>
+                </li>
+              )
+            })}
+            {SUMMARIES[c.id] && (
+              <li className="cat-sum">
+                <a href={`#/s/${c.id}`}>{c.name}總結</a>
+                <span className="muted">比較 · 怎麼選 · 測驗</span>
+              </li>
+            )}
+          </ul>
+        </section>
+      ))}
+    </div>
   )
 }
 
@@ -164,6 +335,8 @@ function Home() {
   return (
     <div className="page">
       <RhythmCard />
+      <h1>百科目錄</h1>
+      <VolumeGrid />
       <h1>演算法總覽</h1>
       <p className="lead">
         LeetCode 有幾千題,但用到的演算法只有這幾十種。每一頁從白話和比喻開始,用可以自己改輸入的動畫一步一步跑給你看,
@@ -224,32 +397,7 @@ function Home() {
       <p className="home-plan">
         <a href="#/plan">刷題藍圖 →</a> <span className="muted">NeetCode 150 排成每週進度,每天挑題、寫完標記</span>
       </p>
-      <div className="cat-grid">
-        {CATEGORIES.map((c) => (
-          <section key={c.id} className="cat-card">
-            <h2>{c.name}</h2>
-            <ul>
-              {c.patterns.map((p) => {
-                const n = problemsOf(p.id).length
-                return (
-                  <li key={p.id} className={PATTERNS[p.id] ? '' : 'todo'}>
-                    <a href={`#/p/${p.id}`}>{p.name}</a>
-                    <span className="muted">
-                      <LevelBadge id={p.id} /> {n > 0 ? `${n} 題` : ''}
-                    </span>
-                  </li>
-                )
-              })}
-              {SUMMARIES[c.id] && (
-                <li className="cat-sum">
-                  <a href={`#/s/${c.id}`}>{c.name}總結</a>
-                  <span className="muted">比較 · 怎麼選 · 測驗</span>
-                </li>
-              )}
-            </ul>
-          </section>
-        ))}
-      </div>
+      <AlgoGrid />
     </div>
   )
 }
@@ -419,6 +567,7 @@ function PatternPage({ id }: { id: string }) {
           )}
         </>
       )}
+      <KbAttached at={`p/${id}`} />
       <section id="sec-problems" className="sec">
         <h2>用到這個演算法的題目</h2>
         {problems.length ? <ProblemList key={id} problems={problems} /> : <p className="muted">還沒收錄題目。</p>}
@@ -438,16 +587,40 @@ export default function App() {
   const sol = qm ? SOLUTIONS[Number(qm[1])] : undefined
   const concept = cm ? CONCEPTS[cm[1]] : undefined
   const sumCat = sm && SUMMARIES[sm[1]] ? CATEGORIES.find((c) => c.id === sm[1]) : undefined
-  const current = m ? m[1] : qm || hash === '/q' ? 'q' : cm ? `c/${cm[1]}` : sm ? `s/${sm[1]}` : hash === '/problems' ? 'problems' : hash === '/review' ? 'review' : hash === '/plan' ? 'plan' : hash === '/rhythm' ? 'rhythm' : ''
+  const km = hash.match(/^\/k\/([\w-]+)(?:\/([\w-]+))?/)
+  const vm = hash.match(/^\/v\/([\w-]+)/)
+  const kbBook = km ? BOOKS[km[1]] : undefined
+  const kbEntry = km ? ENTRIES[km[1]] : undefined
+  const appendix = km && km[1] === 'appendix' ? km[2] : undefined
+  const current = km ? `k/${km[1]}${appendix ? `/${appendix}` : ''}` : vm ? `v/${vm[1]}` : m ? m[1] : qm || hash === '/q' ? 'q' : cm ? `c/${cm[1]}` : sm ? `s/${sm[1]}` : hash === '/problems' ? 'problems' : hash === '/review' ? 'review' : hash === '/plan' ? 'plan' : hash === '/rhythm' ? 'rhythm' : ''
 
   return (
     <div className="layout">
       <Sidebar current={current} />
       <main>
-        {m ? (
+        {km && hostOf(km[1]) ? (
+          <Redirect to={`#/${hostOf(km[1])}`} />
+        ) : kbBook ? (
+          <BookPage key={kbBook.id} book={kbBook} anchor={km![2]} />
+        ) : kbEntry ? (
+          <EntryPage key={kbEntry.entry.id} entry={kbEntry.entry} book={kbEntry.book} anchor={km![2]} />
+        ) : appendix ? (
+          <AppendixPage key={appendix} kind={appendix} />
+        ) : vm && VOLUMES.some((v) => v.id === vm[1]) ? (
+          <VolumePage key={vm[1]} id={vm[1]} />
+        ) : m ? (
           <PatternPage key={m[1]} id={m[1]} />
         ) : concept ? (
-          <ConceptPage key={concept.id} c={concept} pager={<Pager at={`c/${concept.id}`} />} />
+          <ConceptPage
+            key={concept.id}
+            c={concept}
+            pager={
+              <>
+                <KbAttached at={`c/${concept.id}`} />
+                <Pager at={`c/${concept.id}`} />
+              </>
+            }
+          />
         ) : sumCat ? (
           <SummaryPage key={sumCat.id} cat={sumCat} sum={SUMMARIES[sumCat.id]} pager={<Pager at={`s/${sumCat.id}`} />} />
         ) : sol ? (

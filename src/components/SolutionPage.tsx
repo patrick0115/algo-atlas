@@ -155,12 +155,6 @@ export function SolutionPage({ sol }: { sol: Solution }) {
           ))}
         </span>
       </div>
-      {sol.id === 217 && import.meta.env.MODE !== 'offline' && (
-        <p className="prereq">
-          延伸閱讀：
-          <a className="chip chip-base" href="./semi/P-leetcode.html#p04">SemiDrill P04 雜湊與計數 ↗</a>
-        </p>
-      )}
       <Toc sections={sections} />
 
       <section id="qs-desc" className="sec q-sec">
