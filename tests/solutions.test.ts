@@ -145,7 +145,14 @@ function normalize(v: unknown, compare: 'exact' | 'sorted' | 'groups' | 'close')
 }
 
 /** 照 LeetCode 的方式跑 JavaScript 版:函式題直接呼叫,設計題依 ops 依序呼叫方法 */
-function run(code: string, check: Check) {
+async function run(code: string, check: Check) {
+  if (check.kind === 'script') {
+    for (const c of check.cases) {
+      const got = await new Function(`${code}\nreturn (async () => { ${c.run} })();`)()
+      expect(normalize(got, 'exact'), c.run).toEqual(normalize(c.out, 'exact'))
+    }
+    return
+  }
   if (check.kind === 'fn') {
     const kinds = [...(check.argKinds ?? []), check.ret]
     const extra = kinds.includes('randomList') ? RANDOM_NODE : kinds.includes('graph') ? GRAPH_NODE : ''
@@ -196,7 +203,7 @@ describe('題解', () => {
         expect(byId.has(sol.id)).toBe(true)
       })
 
-      it('欄位齊全:至少兩種解法,每種都有圖示、複雜度與五種語言的程式碼', () => {
+      it('欄位齊全:至少兩種解法,每種都有圖示、複雜度與指定語言的程式碼', () => {
         expect(sol.statement.length).toBeGreaterThan(10)
         expect(sol.plain.length, '白話').toBeGreaterThan(10)
         expect(sol.examples.length).toBeGreaterThan(0)
@@ -209,7 +216,10 @@ describe('題解', () => {
           expect(a.figure.steps.length, a.name).toBeGreaterThanOrEqual(2)
           for (const s of a.figure.steps) expect(s.views.length, `${a.name}: ${s.note}`).toBeGreaterThan(0)
           expect(a.complexity.time && a.complexity.space && a.complexity.why, a.name).toBeTruthy()
-          for (const l of LANGS) expect(a.code[l.id]?.trim(), `${a.name} 缺 ${l.label}`).toBeTruthy()
+          const languages = sol.languages ?? LANGS.map((l) => l.id)
+          expect(languages).toContain('javascript')
+          expect(Object.keys(a.code).sort()).toEqual([...languages].sort())
+          for (const lang of languages) expect(a.code[lang]?.trim(), `${a.name} 缺 ${lang}`).toBeTruthy()
         }
       })
 
@@ -228,8 +238,8 @@ describe('題解', () => {
       })
 
       for (const a of sol.approaches) {
-        it(`JavaScript 版通過測資:${a.name}`, () => {
-          run(a.code.javascript, sol.check)
+        it(`JavaScript 版通過測資:${a.name}`, async () => {
+          await run(a.code.javascript, sol.check)
         })
       }
     })

@@ -1,4 +1,4 @@
-// 單題題解:一題一個檔案,一題有多個解法,每個解法都有想法、圖示、複雜度與五種語言的程式碼。
+// 單題題解:一題一個檔案,一題有多個解法,每個解法都有想法、圖示、複雜度與程式碼。
 // 題意一律用自己的話重述,不抄 LeetCode 原文。
 // 文字欄位可用和觀念章相同的行內標記(`程式碼`、**粗體**、[[c:id]]、[[p:id]]、[文字](#/路徑))。
 
@@ -22,7 +22,7 @@ export interface Approach {
   complexity: { time: string; space: string; why: Rich }
   /** 優缺點、什麼時候選它 */
   verdict: Rich
-  code: Record<Lang, string>
+  code: Partial<Record<Lang, string>> & { javascript: string }
 }
 
 /**
@@ -54,9 +54,13 @@ export type Check =
       cases: { args: unknown[]; out: unknown }[]
     }
   | { kind: 'class'; cls: string; compare?: 'exact' | 'close'; cases: { ops: string[]; args: unknown[][]; out: unknown[] }[] }
+  /** JavaScript 特有的函式、原型與 Promise 題:每個案例執行一小段程式並回傳可比較的值。 */
+  | { kind: 'script'; cases: { run: string; out: unknown }[] }
 
 export interface Solution {
   id: number
+  /** 未指定時要求五種語言;30 Days of JavaScript 題只列 javascript。 */
+  languages?: Lang[]
   /** 白話:一兩句話講這題在做什麼,最好帶一個生活比喻,給第一次看的人 */
   plain: Rich
   /** 題意(自己的話) */
