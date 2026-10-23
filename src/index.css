@@ -443,9 +443,11 @@ button:disabled:hover { border-color: var(--border); }
 .plan-today-list { list-style: none; padding: 0; margin: 0; }
 .plan-today-list li { border-top: 1px solid var(--border); padding: 10px 0; display: flex; flex-direction: column; gap: 6px; }
 .plan-today-list li:first-child { border-top: none; }
-.plan-today-list li.done .plan-title a { color: var(--done-text); }
+.plan-today-list li.done .plan-title .plan-solution { color: var(--done-text); }
 .plan-today-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .plan-today-head .plan-title { font-size: 17px; font-weight: 600; }
+.plan-title .plan-leetcode { margin-left: 8px; color: var(--muted); font-size: 12px; font-weight: 400; white-space: nowrap; }
+.plan-title .plan-leetcode:hover { color: var(--text); }
 .plan-today-body { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 13px; }
 .plan-key { font-size: 13px; text-align: left; line-height: 1.5; padding: 2px 8px; }
 .plan-key.hidden { color: var(--muted); }
@@ -466,14 +468,14 @@ button:disabled:hover { border-color: var(--border); }
 .plan-count { margin-left: auto; font-variant-numeric: tabular-nums; color: var(--muted); }
 .plan-week ol { list-style: none; padding: 0; margin: 6px 0 0; }
 .plan-week li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 4px 12px; align-items: center; padding: 5px 0; font-size: 14px; }
-.plan-week li.done .plan-title a { color: var(--done-text); text-decoration-color: var(--border); }
+.plan-week li.done .plan-title .plan-solution { color: var(--done-text); text-decoration-color: var(--border); }
 .plan-meta { display: inline-flex; gap: 6px; align-items: center; white-space: nowrap; }
 .plan-act { text-align: right; min-width: 64px; font-size: 13px; }
 .plan-status { color: var(--muted); }
 .plan-status.st-no { color: var(--bad); }
 .plan-extra { margin: 4px 0 4px; padding-left: 12px; border-left: 2px solid var(--border); }
 .plan-extra summary { cursor: pointer; font-size: 13px; padding: 4px 0; }
-.plan-extra li .plan-title a { color: var(--muted); }
+.plan-extra li .plan-title .plan-solution { color: var(--muted); }
 .plan-later { max-width: 900px; margin-top: 8px; }
 .plan-later > summary { cursor: pointer; padding: 10px 0; border-top: 1px solid var(--border); color: var(--muted); font-size: 14px; }
 

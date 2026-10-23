@@ -71,17 +71,20 @@ function useSettings(): [Settings, (patch: Partial<Settings>) => void] {
 
 function ProblemTitle({ it }: { it: PlanItem }) {
   const p = it.problem
+  const title = p.id + '. ' + p.title
   return (
     <span className="plan-title">
-      <a href={`https://leetcode.com/problems/${p.slug}/`} target="_blank" rel="noreferrer">
-        {p.id}. {p.title}
-      </a>
-      {p.paid && <span className="muted"> 🔒</span>}
-      {hasSolution(p.id) && (
-        <a className="tag q-tag" href={`#/q/${p.id}`} title="多種解法、圖示與複雜度">
-          題解
+      {hasSolution(p.id) ? (
+        <a className="plan-solution" href={'#/q/' + p.id} title="查看本站題解">
+          {title}
         </a>
+      ) : (
+        <span title="題解尚未提供">{title}</span>
       )}
+      {p.paid && <span className="muted"> 🔒</span>}
+      <a className="plan-leetcode" href={'https://leetcode.com/problems/' + p.slug + '/'} target="_blank" rel="noreferrer" title="在 LeetCode 開啟題目">
+        LeetCode ↗
+      </a>
     </span>
   )
 }
