@@ -323,6 +323,112 @@ const cppStl: Concept = {
       ],
     },
     {
+      title: '各容器怎麼操作',
+      blocks: [
+        {
+          t: 'p',
+          text: '每個容器都照同一個順序列:建立 → 加入 → 查詢 → 刪除 → 走訪 → 大小。查「在不在」有兩種寫法:`count(x)` 回傳 1 或 0;`find(x)` 回傳指向那個元素的**迭代器**(iterator,可以想成指標),找不到時等於 `end()`。只要知道在不在用 `count`;找到之後還要用那個元素,用 `find`。',
+        },
+        {
+          t: 'code',
+          title: 'vector:動態陣列',
+          code: {
+            cpp: `vector<int> v;                                  // 空的
+vector<int> v2(n, 0);                           // n 個 0
+vector<vector<int>> g(m, vector<int>(n, 0));    // m × n 的二維陣列
+v.push_back(x);  v.pop_back();                  // 尾端加 / 刪,O(1)
+v[i];  v.front();  v.back();                    // O(1);空的時候呼叫 front / back 是未定義行為
+v.insert(v.begin() + i, x);                     // 在位置 i 插入,O(n)
+v.erase(v.begin() + i);                         // 刪掉位置 i,O(n)
+find(v.begin(), v.end(), x) != v.end();         // 線性找,O(n);常找就改用 unordered_set
+for (int x : v) { ... }                         // 走訪
+v.size();  v.empty();  v.clear();  v.assign(n, -1);   // 大小、是否為空、清空、重設成 n 個 -1`,
+          },
+        },
+        {
+          t: 'code',
+          title: 'string:可變字串',
+          code: {
+            cpp: `string s = "abc";
+string t(n, 'a');                               // n 個 'a'
+s += 'd';  s += "ef";  s.push_back('g');  s.pop_back();
+s[i];                                           // 第 i 個字元(char)
+s.substr(i, len);                               // 從 i 起取 len 個,O(len);len 省略就取到結尾
+s.find("bc");                                   // 第一次出現的位置;找不到回傳 string::npos
+s.find("bc") != string::npos;                   // 「有沒有出現」的寫法
+to_string(42);  stoi("42");  stoll("10000000000");   // 數字 ↔ 字串
+s.size();  s.empty();`,
+          },
+        },
+        {
+          t: 'code',
+          title: 'unordered_set:Hash 集合(去重、查在不在)',
+          code: {
+            cpp: `unordered_set<int> seen;
+unordered_set<int> seen2(v.begin(), v.end());   // 從 vector 建,順便去重
+seen.insert(x);                                 // 已經存在就什麼都不做,平均 O(1)
+auto [it, added] = seen.insert(x);              // added == true 代表這次是新加入的
+seen.count(x);                                  // 在就是 1,不在就是 0,平均 O(1)
+seen.find(x) != seen.end();                     // 同上;find 回傳迭代器,*it 就是那個元素
+seen.contains(x);                               // C++20 起才有,意思和 count 一樣
+seen.erase(x);                                  // 回傳刪掉幾個(0 或 1);不存在也不會出錯
+for (int x : seen) { ... }                      // 走訪順序不固定,不要依賴它
+seen.size();  seen.empty();  seen.clear();
+seen.reserve(n);                                // 先預留 n 個位置,減少 rehash(重新配置)`,
+          },
+        },
+        {
+          t: 'code',
+          title: 'unordered_map:Hash 表(計數、對照)',
+          code: {
+            cpp: `unordered_map<string, int> m;
+m["a"] = 1;                                     // 新增或覆蓋
+m["b"]++;                                       // 不存在會先建立成 0,再加 1
+m.insert({"c", 3});                             // 已經存在就不覆蓋
+m.count("a");                                   // 只查不建立:1 或 0
+auto it = m.find("a");                          // 查一次就拿到值,不必再查一次 m["a"]
+if (it != m.end()) { it->first; it->second; }   // 鍵、值
+m.erase("a");                                   // 用鍵刪除
+for (auto& [k, val] : m) { ... }                // 走訪(順序不固定);要改值記得用 &
+m.size();  m.empty();  m.clear();`,
+          },
+        },
+        {
+          t: 'code',
+          title: 'set / map / multiset:有序(紅黑樹,全部 O(log n))',
+          code: {
+            cpp: `set<int> s = {5, 1, 9};
+s.insert(x);  s.erase(x);  s.count(x);  s.find(x);   // 用法和 unordered_set 一樣,但是 O(log n)
+*s.begin();  *s.rbegin();                       // 最小、最大
+auto it = s.lower_bound(x);                     // 第一個 >= x;沒有就是 s.end()
+auto jt = s.upper_bound(x);                     // 第一個 > x
+// 要用成員函式 s.lower_bound(x);寫成 lower_bound(s.begin(), s.end(), x) 在 set 上是 O(n)
+for (int x : s) { ... }                         // 由小到大走訪
+
+map<int, int> mp;                               // 操作同 unordered_map,但依鍵由小到大走訪
+mp.begin()->first;                              // 最小的鍵
+
+multiset<int> ms = {3, 3, 5};                   // 可以重複
+ms.erase(ms.find(3));                           // 只刪一個 3
+ms.erase(3);                                    // 把所有 3 都刪掉`,
+          },
+        },
+        {
+          t: 'code',
+          title: 'stack / queue / deque / priority_queue',
+          code: {
+            cpp: `stack<int> stk;   stk.push(x);  stk.top();  stk.pop();       // pop 不回傳值:先 top 再 pop
+queue<int> q;     q.push(x);    q.front();  q.pop();
+deque<int> dq;    dq.push_back(x);  dq.push_front(x);  dq.pop_back();  dq.pop_front();
+                  dq.front();  dq.back();  dq[i];                     // 兩端都是 O(1)
+priority_queue<int> pq;  pq.push(x);  pq.top();  pq.pop();            // 最大堆積,push / pop O(log n)
+// 這四種都有 size()、empty();但不能走訪,也沒有 find:只能看頂端或兩端
+// 空的時候呼叫 top / front / pop 是未定義行為,先檢查 empty()`,
+          },
+        },
+      ],
+    },
+    {
       title: '最常用的寫法',
       blocks: [
         {
@@ -494,6 +600,27 @@ const langCompare: Concept = {
             ['組字串', '`"".join(parts)`', '`s += c`', '`StringBuilder`', '`parts.join("")`', '`char` 陣列'],
           ],
           note: 'Java 的 `Stack` 類別和 JS 的 `arr.shift()` 都不建議用:前者是舊設計(同步、慢),後者是 O(n)。',
+        },
+      ],
+    },
+    {
+      title: 'Hash 集合 / Hash 表的常用操作',
+      blocks: [
+        {
+          t: 'table',
+          cols: ['操作', 'Python', 'C++', 'Java', 'JavaScript', 'C'],
+          rows: [
+            ['建立集合', '`s = set()`', '`unordered_set<int> s;`', '`Set<Integer> s = new HashSet<>();`', '`const s = new Set();`', '值域小:`bool seen[N] = {0};`'],
+            ['加入', '`s.add(x)`', '`s.insert(x)`', '`s.add(x)`(回傳是否新加入)', '`s.add(x)`', '`seen[x] = 1;`'],
+            ['在不在', '`x in s`', '`s.count(x)` / `s.find(x) != s.end()`', '`s.contains(x)`', '`s.has(x)`', '`seen[x]`'],
+            ['刪除', '`s.discard(x)`(不在也不報錯);`s.remove(x)` 不在會報錯', '`s.erase(x)`', '`s.remove(x)`', '`s.delete(x)`', '`seen[x] = 0;`'],
+            ['個數', '`len(s)`', '`s.size()`', '`s.size()`', '`s.size`(屬性,不加括號)', '自己記'],
+            ['表:設定值', '`d[k] = v`', '`m[k] = v`', '`m.put(k, v)`', '`m.set(k, v)`', 'uthash `HASH_ADD_INT`'],
+            ['表:取值,不在給 0', '`d.get(k, 0)`', '`m.count(k) ? m[k] : 0`(`m[k]` 會順手插入 0)', '`m.getOrDefault(k, 0)`', '`m.get(k) ?? 0`', 'uthash `HASH_FIND_INT`'],
+            ['表:計數 +1', '`d[k] = d.get(k, 0) + 1` 或 `Counter`', '`m[k]++`', '`m.merge(k, 1, Integer::sum)`', '`m.set(k, (m.get(k) ?? 0) + 1)`', '值域小:`cnt[x]++`'],
+            ['表:走訪', '`for k, v in d.items():`', '`for (auto& [k, v] : m)`', '`for (var e : m.entrySet())`', '`for (const [k, v] of m)`', 'uthash `HASH_ITER`'],
+          ],
+          note: '走訪順序:Python `dict`、JS `Map` / `Set` 保留插入順序;C++ `unordered_*`、Java `HashMap` / `HashSet` 不保證順序。各操作平均 O(1)。C++ 的完整寫法見 [[c:cpp-stl]] 的「各容器怎麼操作」。',
         },
       ],
     },
