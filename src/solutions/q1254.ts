@@ -54,7 +54,10 @@ export const q1254: Solution = {
       complexity: { time: 'O(R · C)', space: 'O(R · C)', why: '每格拜訪一次;遞迴深度最壞 R · C。' },
       verdict: '最推薦,一次 DFS 同時標記和判斷;記得不能短路。',
       code: {
-        python: `def closedIsland(grid):
+        python: `import sys
+
+def closedIsland(grid):
+    sys.setrecursionlimit(1 << 20)
     R, C = len(grid), len(grid[0])
 
     def dfs(r, c):
