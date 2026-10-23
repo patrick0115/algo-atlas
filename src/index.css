@@ -597,3 +597,39 @@ pre.c-code { margin: 0; background: var(--soft); padding: 10px 0; overflow-x: au
 .q-index a { font-weight: 600; }
 .tag.q-tag { border-color: var(--strong); color: var(--text); margin-left: 6px; }
 .q-page li code, .q-page p code, .q-page dd code, .q-page dt code, .q-page td code { overflow-wrap: anywhere; }
+
+/* 刷題節奏 */
+.rhythm-card { max-width: 900px; margin: 0 0 26px; }
+.rhythm-card h2 { display: flex; align-items: baseline; gap: 12px; margin: 0; font-size: 18px; }
+.rhythm-card h2 a { font-size: 14px; font-weight: 500; }
+.rhythm-card .plan-stats { margin: 12px 0 8px; }
+.spark { display: flex; align-items: flex-end; gap: 3px; height: 28px; max-width: 900px; }
+.spark i { flex: 1; background: var(--strong); min-height: 1px; border-radius: 1px; }
+.heat-wrap { overflow-x: auto; max-width: 100%; }
+.heat { display: flex; gap: 3px; width: max-content; }
+.heat > div { display: flex; flex-direction: column; gap: 3px; }
+.heat i { width: 11px; height: 11px; border-radius: 2px; background: var(--strong); }
+.heat i.h0 { background: var(--soft); outline: 1px solid var(--border); outline-offset: -1px; }
+.heat i.h1 { opacity: 0.25; }
+.heat i.h2 { opacity: 0.45; }
+.heat i.h3 { opacity: 0.7; }
+.heat i.out { background: transparent; }
+.rhythm-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; max-width: 1000px; margin: 8px 0 18px; }
+.rhythm-two h2 { font-size: 18px; }
+.plan-stats.one { grid-template-columns: minmax(0, 1fr); margin: 12px 0 0; }
+.week-bars { position: relative; display: flex; align-items: flex-end; gap: 6px; height: 140px; border-bottom: 1px solid var(--border); margin-top: 22px; }
+.week-bars > div { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; position: relative; }
+.week-bars i { width: 100%; background: var(--strong); border-radius: 2px 2px 0 0; min-height: 1px; }
+.week-bars small { font-size: 11px; color: var(--muted); line-height: 1.6; }
+.week-bars .goal { position: absolute; left: 0; right: 0; border-top: 1px dashed var(--muted); z-index: 1; }
+.cat-progress { width: 100%; border-collapse: collapse; font-size: 14px; }
+.cat-progress th { text-align: left; font-weight: 500; white-space: nowrap; padding: 4px 10px 4px 0; width: 1%; }
+.cat-progress td { padding: 4px 0; }
+.cat-progress td.num { text-align: right; width: 1%; white-space: nowrap; padding-left: 10px; font-variant-numeric: tabular-nums; color: var(--muted); }
+.cat-progress .plan-bar { display: flex; }
+.plan-bar i.mid { background: var(--mid); }
+.recent { list-style: none; padding: 0; max-width: 820px; }
+.recent li { display: grid; grid-template-columns: 3.5em minmax(0, 1fr) auto; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+@media (max-width: 760px) {
+  .rhythm-two { grid-template-columns: minmax(0, 1fr); }
+}

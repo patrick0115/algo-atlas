@@ -7,6 +7,7 @@ import { Player } from './engine/Player'
 import { Plan } from './components/Plan'
 import { ProblemList } from './components/ProblemList'
 import { Review } from './components/Review'
+import { Rhythm, RhythmCard } from './components/Rhythm'
 import { SummaryPage } from './components/SummaryPage'
 import { Toc } from './components/Toc'
 import { SUMMARIES } from './data/summaries'
@@ -92,6 +93,9 @@ function Sidebar({ current }: { current: string }) {
       </div>
       <div className="side-body">
         <input className="side-search" type="search" placeholder="搜尋演算法…" value={q} onChange={(e) => setQ(e.target.value)} />
+        <a href="#/rhythm" className={`side-link${current === 'rhythm' ? ' active' : ''}`}>
+          刷題節奏
+        </a>
         <a href="#/plan" className={`side-link${current === 'plan' ? ' active' : ''}`}>
           刷題藍圖
         </a>
@@ -159,6 +163,7 @@ function Home() {
   const done = PROBLEMS.filter((p) => store[p.id]?.status === 'ok').length
   return (
     <div className="page">
+      <RhythmCard />
       <h1>演算法總覽</h1>
       <p className="lead">
         LeetCode 有幾千題,但用到的演算法只有這幾十種。每一頁從白話和比喻開始,用可以自己改輸入的動畫一步一步跑給你看,
@@ -433,7 +438,7 @@ export default function App() {
   const sol = qm ? SOLUTIONS[Number(qm[1])] : undefined
   const concept = cm ? CONCEPTS[cm[1]] : undefined
   const sumCat = sm && SUMMARIES[sm[1]] ? CATEGORIES.find((c) => c.id === sm[1]) : undefined
-  const current = m ? m[1] : qm || hash === '/q' ? 'q' : cm ? `c/${cm[1]}` : sm ? `s/${sm[1]}` : hash === '/problems' ? 'problems' : hash === '/review' ? 'review' : hash === '/plan' ? 'plan' : ''
+  const current = m ? m[1] : qm || hash === '/q' ? 'q' : cm ? `c/${cm[1]}` : sm ? `s/${sm[1]}` : hash === '/problems' ? 'problems' : hash === '/review' ? 'review' : hash === '/plan' ? 'plan' : hash === '/rhythm' ? 'rhythm' : ''
 
   return (
     <div className="layout">
@@ -451,6 +456,8 @@ export default function App() {
           <SolutionIndex />
         ) : hash === '/plan' ? (
           <Plan />
+        ) : hash === '/rhythm' ? (
+          <Rhythm />
         ) : hash === '/review' ? (
           <Review />
         ) : hash === '/problems' ? (
