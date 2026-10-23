@@ -258,6 +258,7 @@ export function Rhythm() {
                   <span className="muted">{md(e.at)}</span>
                   <a href={hrefOf(e.id)}>
                     {e.id}. {BY_ID.get(e.id)?.title ?? ''}
+                    {BY_ID.get(e.id)?.titleZh && <span className="zh">{BY_ID.get(e.id)!.titleZh}</span>}
                   </a>
                   <span>{prev ? `${LABEL[prev]} → ${LABEL[e.s]}` : `新 · ${LABEL[e.s]}`}</span>
                 </li>

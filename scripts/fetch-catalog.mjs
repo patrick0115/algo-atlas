@@ -1,6 +1,7 @@
 // 抓 LeetCode 全部題目的中繼資料(不含題目內文,含通過率)與 NeetCode 清單,輸出 src/data/catalog.json。
 // 用法:node scripts/fetch-catalog.mjs
 import { writeFileSync } from 'node:fs'
+import { fetchTitlesCn } from './titles-cn.mjs'
 
 const Q = `query q($skip:Int,$limit:Int){ questionList(categorySlug:"", limit:$limit, skip:$skip, filters:{}){
   total: totalNum data { id: questionFrontendId title titleSlug difficulty acRate isPaidOnly likes dislikes topicTags { slug } } } }`
@@ -29,6 +30,8 @@ for (let skip = 0; skip < total; ) {
 const nc = await (await fetch('https://raw.githubusercontent.com/neetcode-gh/leetcode/main/.problemSiteData.json')).json()
 const ncBySlug = new Map(nc.map((p) => [p.link.replace(/\/$/, ''), p]))
 
+const cn = await fetchTitlesCn()
+
 const D = { Easy: 'E', Medium: 'M', Hard: 'H' }
 const tags = [...new Set(all.flatMap((q) => q.topicTags.map((t) => t.slug)))].sort()
 const problems = all
@@ -39,7 +42,7 @@ const problems = all
     if (n?.neetcode150) lists.push('neetcode150')
     if (n?.blind75) lists.push('blind75')
     if (n) lists.push('neetcode450')
-    return [Number(q.id), q.title, q.titleSlug, D[q.difficulty], q.isPaidOnly ? 1 : 0, q.topicTags.map((t) => tags.indexOf(t.slug)), lists, n?.pattern ?? '', Math.round(q.acRate * 10) / 10, q.likes, q.dislikes]
+    return [Number(q.id), q.title, q.titleSlug, D[q.difficulty], q.isPaidOnly ? 1 : 0, q.topicTags.map((t) => tags.indexOf(t.slug)), lists, n?.pattern ?? '', Math.round(q.acRate * 10) / 10, q.likes, q.dislikes, cn.get(q.titleSlug) ?? '']
   })
   .sort((a, b) => a[0] - b[0])
 

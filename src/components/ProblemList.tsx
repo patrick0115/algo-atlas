@@ -41,7 +41,7 @@ export function ProblemList({ problems, showPatterns = false, defaultScope = 'fo
       const s = store[p.id]?.status
       return status === 'all' || (status === 'none' ? !s : s === status)
     })
-    .filter((p) => !query || String(p.id) === query || p.title.toLowerCase().includes(query))
+    .filter((p) => !query || String(p.id) === query || p.title.toLowerCase().includes(query) || p.titleZh.includes(query))
     // 精標的排前面,再依題號
     .sort((a, b) => Number(b.curated) - Number(a.curated) || a.id - b.id)
 
@@ -114,6 +114,7 @@ export function ProblemList({ problems, showPatterns = false, defaultScope = 'fo
                   <a href={`https://leetcode.com/problems/${p.slug}/`} target="_blank" rel="noreferrer">
                     {p.title}
                   </a>
+                  {p.titleZh && <span className="zh">{p.titleZh}</span>}
                   {p.paid && <span className="muted"> 🔒</span>}
                   <div className="tags">
                     {hasSolution(p.id) && (

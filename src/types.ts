@@ -145,6 +145,8 @@ export type ListId = 'neetcode150' | 'blind75' | 'neetcode450'
 export interface Problem {
   id: number
   title: string
+  /** 中文題名(力扣中國站,已轉台灣繁體);抓不到時是空字串 */
+  titleZh: string
   slug: string
   difficulty: Difficulty
   paid: boolean

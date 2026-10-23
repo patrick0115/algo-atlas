@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { Status } from '../types'
 import { PROBLEMS } from '../data/problems'
 import { findStub } from '../data/categories'
@@ -83,6 +83,7 @@ function ProblemTitle({ it }: { it: PlanItem }) {
       ) : (
         <span title="題解尚未提供">{title}</span>
       )}
+      {p.titleZh && <span className="zh">{p.titleZh}</span>}
       {p.paid && <span className="muted"> 🔒</span>}
       <a className="plan-leetcode" href={'https://leetcode.com/problems/' + p.slug + '/'} target="_blank" rel="noreferrer" title="在 LeetCode 開啟題目">
         LeetCode ↗
@@ -105,7 +106,8 @@ function Meta({ it }: { it: PlanItem }) {
   )
 }
 
-export function Plan() {
+/** focus:從題解頁回來時要捲到的題號;找不到這題(延伸題庫後段)就捲到延伸題庫 */
+export function Plan({ focus }: { focus?: number }) {
   const { store, mark } = useProgress()
   const [settings, update] = useSettings()
   const [now] = useState(() => Date.now())
@@ -149,6 +151,15 @@ export function Plan() {
   const extNext = ext.filter((it) => !store[it.problem.id]).slice(0, SHOW_EXTENDED)
   const extWritten = ext.filter((it) => hasSolution(it.problem.id)).length
 
+  useEffect(() => {
+    if (!focus) return
+    const el = document.getElementById(`plan-q-${focus}`) ?? document.getElementById('plan-ext')
+    if (!el) return
+    for (let d = el.closest('details'); d; d = d.parentElement?.closest('details') ?? null) d.open = true
+    el.scrollIntoView({ block: 'center' })
+    el.classList.add('focus')
+  }, [focus])
+
   const toggleReveal = (id: number) => {
     const next = new Set(revealed)
     if (next.has(id)) next.delete(id)
@@ -160,7 +171,7 @@ export function Plan() {
     const s = store[it.problem.id]?.status
     const inToday = todayIds.includes(it.problem.id)
     return (
-      <li key={it.problem.id} className={s ? 'done' : ''}>
+      <li key={it.problem.id} id={`plan-q-${it.problem.id}`} className={s ? 'done' : ''}>
         <ProblemTitle it={it} />
         <Meta it={it} />
         <span className="plan-act">
@@ -363,7 +374,7 @@ export function Plan() {
         </details>
       )}
 
-      <h2>延伸題庫</h2>
+      <h2 id="plan-ext">延伸題庫</h2>
       <p className="muted">
         NeetCode 450 以外的題目,依 LeetCode 熱門度(讚數、好評比例)由高到低排。核心路線寫完、或想多練時從這裡往下挑。
         已寫 {extDone}/{ext.length} 題 · 本站題解 {extWritten} 題

@@ -29,6 +29,7 @@ function ProblemLink({ p }: { p: Problem }) {
   return (
     <a href={`https://leetcode.com/problems/${p.slug}/`} target="_blank" rel="noreferrer">
       {p.id}. {p.title}
+      {p.titleZh && <span className="zh">{p.titleZh}</span>}
     </a>
   )
 }

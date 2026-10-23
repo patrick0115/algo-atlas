@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-/** 頁內段落導覽:黏在頂端,捲到哪一段就亮哪一個 */
-export function Toc({ sections }: { sections: { id: string; label: string }[] }) {
+/** 頁內段落導覽:黏在頂端,捲到哪一段就亮哪一個;back 會放在最前面當返回連結 */
+export function Toc({ sections, back }: { sections: { id: string; label: string }[]; back?: { href: string; label: string } }) {
   const [active, setActive] = useState(sections[0].id)
   useEffect(() => {
     const els = sections.map((s) => document.getElementById(s.id)).filter((e): e is HTMLElement => !!e)
@@ -17,6 +17,11 @@ export function Toc({ sections }: { sections: { id: string; label: string }[] })
   }, [sections])
   return (
     <div className="toc" role="navigation" aria-label="本頁段落">
+      {back && (
+        <a className="toc-back" href={back.href}>
+          {back.label}
+        </a>
+      )}
       {sections.map((s) => (
         <button
           key={s.id}

@@ -584,6 +584,7 @@ export default function App() {
   const sm = hash.match(/^\/s\/([\w-]+)/)
   const cm = hash.match(/^\/c\/([\w-]+)/)
   const qm = hash.match(/^\/q\/(\d+)/)
+  const pm = hash.match(/^\/plan\/(\d+)/)
   const sol = qm ? SOLUTIONS[Number(qm[1])] : undefined
   const concept = cm ? CONCEPTS[cm[1]] : undefined
   const sumCat = sm && SUMMARIES[sm[1]] ? CATEGORIES.find((c) => c.id === sm[1]) : undefined
@@ -592,7 +593,7 @@ export default function App() {
   const kbBook = km ? BOOKS[km[1]] : undefined
   const kbEntry = km ? ENTRIES[km[1]] : undefined
   const appendix = km && km[1] === 'appendix' ? km[2] : undefined
-  const current = km ? `k/${km[1]}${appendix ? `/${appendix}` : ''}` : vm ? `v/${vm[1]}` : m ? m[1] : qm || hash === '/q' ? 'q' : cm ? `c/${cm[1]}` : sm ? `s/${sm[1]}` : hash === '/problems' ? 'problems' : hash === '/review' ? 'review' : hash === '/plan' ? 'plan' : hash === '/rhythm' ? 'rhythm' : ''
+  const current = km ? `k/${km[1]}${appendix ? `/${appendix}` : ''}` : vm ? `v/${vm[1]}` : m ? m[1] : qm || hash === '/q' ? 'q' : cm ? `c/${cm[1]}` : sm ? `s/${sm[1]}` : hash === '/problems' ? 'problems' : hash === '/review' ? 'review' : hash === '/plan' || pm ? 'plan' : hash === '/rhythm' ? 'rhythm' : ''
 
   return (
     <div className="layout">
@@ -627,8 +628,8 @@ export default function App() {
           <SolutionPage key={sol.id} sol={sol} />
         ) : hash === '/q' || qm ? (
           <SolutionIndex />
-        ) : hash === '/plan' ? (
-          <Plan />
+        ) : hash === '/plan' || pm ? (
+          <Plan key={pm?.[1]} focus={pm ? Number(pm[1]) : undefined} />
         ) : hash === '/rhythm' ? (
           <Rhythm />
         ) : hash === '/review' ? (

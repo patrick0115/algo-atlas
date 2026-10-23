@@ -124,6 +124,8 @@ export function SolutionPage({ sol }: { sol: Solution }) {
   return (
     <div className="page q-page">
       <div className="crumb">
+        <a href={`#/plan/${sol.id}`}>刷題藍圖</a>
+        {' · '}
         <a href="#/q">題解</a>
         {p && (
           <>
@@ -137,9 +139,14 @@ export function SolutionPage({ sol }: { sol: Solution }) {
           </>
         )}
       </div>
-      <h1>
+      <h1 className="q-title">
         {sol.id}. {p?.title ?? ''}
+        {p?.titleZh && <span className="q-zh">{p.titleZh}</span>}
       </h1>
+      <p className="analogy">
+        <b>白話</b>
+        {rich(sol.plain)}
+      </p>
       <div className="q-head">
         {p && (
           <a className="q-lc" href={`https://leetcode.com/problems/${p.slug}/`} target="_blank" rel="noreferrer">
@@ -155,14 +162,10 @@ export function SolutionPage({ sol }: { sol: Solution }) {
           ))}
         </span>
       </div>
-      <Toc sections={sections} />
+      <Toc sections={sections} back={{ href: `#/plan/${sol.id}`, label: '← 藍圖' }} />
 
       <section id="qs-desc" className="sec q-sec">
         <h2>題意</h2>
-        <p className="analogy">
-          <b>白話</b>
-          {rich(sol.plain)}
-        </p>
         <p className="lead">{rich(sol.statement)}</p>
         <div className="q-examples">
           {sol.examples.map((e, i) => (
@@ -259,14 +262,19 @@ export function SolutionPage({ sol }: { sol: Solution }) {
           <a href={`#/q/${prev.id}`}>
             <span className="muted">← 上一題</span>
             {prev.id}. {prev.title}
+            {prev.titleZh && <span className="zh">{prev.titleZh}</span>}
           </a>
         ) : (
           <span />
         )}
+        <a href={`#/plan/${sol.id}`} className="pager-plan">
+          回到刷題藍圖
+        </a>
         {next && (
           <a href={`#/q/${next.id}`} className="next">
             <span className="muted">下一題 →</span>
             {next.id}. {next.title}
+            {next.titleZh && <span className="zh">{next.titleZh}</span>}
           </a>
         )}
       </nav>
@@ -282,6 +290,11 @@ export function SolutionIndex() {
   return (
     <div className="page">
       <h1>題解</h1>
+      <p>
+        <a className="back-plan" href="#/plan">
+          ← 回到刷題藍圖
+        </a>
+      </p>
       <p className="lead">
         每題都有:用自己的話重述的題意、從限制條件反推複雜度、怎麼一步步想到解法,以及多個解法 ——
         每個解法附逐步圖示、時間 / 空間複雜度與原因、五種語言的程式碼。依<a href="#/plan">刷題藍圖</a>的順序陸續補上。
@@ -298,6 +311,7 @@ export function SolutionIndex() {
               <a href={`#/q/${p.id}`}>
                 {p.id}. {p.title}
               </a>
+              {p.titleZh && <span className="zh">{p.titleZh}</span>}
               <span className="plan-meta">
                 <span className={`diff diff-${p.difficulty}`}>{p.difficulty}</span>
                 <span className="muted">{s.approaches.length} 種解法 · 最佳 {s.approaches.at(-1)!.complexity.time}</span>
