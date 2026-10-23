@@ -104,6 +104,11 @@ function Sidebar({ current }: { current: string }) {
         <a href="#/problems" className={`side-link${current === 'problems' ? ' active' : ''}`}>
           全部題目
         </a>
+        {import.meta.env.MODE !== 'offline' && (
+          <a href="./semi/index.html" className="side-link">
+            SemiDrill 觀念圖鑑與講義 ↗
+          </a>
+        )}
         {UNITS.map((u) => {
           const cs = u.concepts.filter(match)
           if (!cs.length) return null

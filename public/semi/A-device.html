@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>元件與物理講義</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="handout.css">
+</head>
+<body>
+<main class="wide">
+  <header class="page">
+    <div class="crumb"><a href="index.html">觀念圖鑑</a> ／ <a href="overview.html">講義總覽</a> ／ A 元件與物理</div>
+    <h1>元件與物理：一顆 MOSFET 為什麼會開會關</h1>
+    <p class="lead">MOSFET 就是<b>用閘極電壓在矽表面「變出」一條導電通道</b>的開關。A 類的考點幾乎都能對到這顆電晶體的某個部位：通道、閘極、氧化層、源汲極接面、基板。</p>
+    <p class="muted small">對應 taxonomy A01～A05。難度標籤：<span class="lv">L1</span>是什麼　<span class="lv l2">L2</span>為什麼　<span class="lv l3">L3</span>出問題怎麼辦。製作流程見 <a href="B-process.html">B 前段製程</a>。</p>
+  </header>
+
+  <!-- ===== 主圖 ===== -->
+  <section class="card" id="mosfet">
+    <h2>主圖：點部位看物理，拉電壓看通道</h2>
+    <p class="muted small">點剖面上的任何一塊，下方會說明它對應哪個考點。拉動 V<sub>G</sub>、V<sub>D</sub>（或按「自動播放」），看通道怎麼出現、怎麼被夾止。這是 NMOS，假設 Vt = 0.4 V。</p>
+    <div class="stage">
+      <svg class="fig" id="mos" viewBox="0 0 640 330" role="img" aria-label="NMOS 剖面圖">
+        <rect class="m-sub hot" data-k="body" x="20" y="170" width="600" height="130"/>
+        <rect class="m-dep hot" data-k="dep" x="42" y="170" width="206" height="54" rx="6"/>
+        <rect class="m-dep hot" data-k="dep" x="392" y="170" width="206" height="54" rx="6"/>
+        <rect class="m-dep hot" data-k="gdep" id="gdep" x="240" y="170" width="160" height="0"/>
+        <rect class="m-nplus hot" data-k="sd" x="50" y="170" width="190" height="44"/>
+        <rect class="m-nplus hot" data-k="sd" x="400" y="170" width="190" height="44"/>
+        <polygon class="m-nplus hot" data-k="ch" id="ch" points=""/>
+        <g id="carriers" pointer-events="none"></g>
+        <rect class="m-ox hot" data-k="ox" x="240" y="158" width="160" height="12"/>
+        <rect class="m-poly hot" data-k="gate" x="240" y="100" width="160" height="58"/>
+        <line class="ln-fg" x1="145" y1="170" x2="145" y2="70"/><text x="137" y="62" class="t-strong">S</text>
+        <line class="ln-fg" x1="320" y1="100" x2="320" y2="70"/><text x="312" y="62" class="t-strong">G</text>
+        <line class="ln-fg" x1="495" y1="170" x2="495" y2="70"/><text x="487" y="62" class="t-strong">D</text>
+        <line class="ln-fg" x1="320" y1="300" x2="320" y2="314"/><text x="330" y="322" class="t-strong">B（基板）</text>
+        <text x="70" y="200" class="t-small">源極 n+</text>
+        <text x="510" y="200" class="t-small">汲極 n+</text>
+        <text x="292" y="134">閘極</text>
+        <text x="410" y="152" class="t-small">閘極氧化層</text>
+        <line class="ln" x1="240" y1="262" x2="400" y2="262"/>
+        <line class="ln" x1="240" y1="256" x2="240" y2="268"/><line class="ln" x1="400" y1="256" x2="400" y2="268"/>
+        <text x="270" y="282" class="t-small">L：通道長度</text>
+        <text x="30" y="292" class="t-small">p 型基板</text>
+        <text id="pinch" x="376" y="240" class="t-small"></text>
+        <circle cx="16" cy="12" r="3" class="fill-fg"/><text x="26" y="16" class="t-small">電子：會流動、負責導電</text>
+        <circle cx="16" cy="28" r="3" fill="none" stroke="var(--fg)" stroke-width="1"/><text x="26" y="32" class="t-small">電洞：p 型基板的多數載子</text>
+        <text x="12" y="49" class="t-muted" style="font-size:12px">−</text><text x="26" y="48" class="t-small">游離受體：電洞被推走後留下，不會動</text>
+        <text id="flow" x="630" y="16" text-anchor="end" class="t-strong"></text>
+        <text id="flow2" x="630" y="32" text-anchor="end" class="t-small"></text>
+      </svg>
+      <div class="controls" style="margin:12px 0 0">
+        <label class="inline">V<sub>G</sub> <input type="range" id="vg" min="0" max="1.2" step="0.05" value="0.8"> <span id="vgv"></span></label>
+        <label class="inline">V<sub>D</sub> <input type="range" id="vd" min="0" max="1.2" step="0.05" value="0.3"> <span id="vdv"></span></label>
+        <button class="btn" id="play" type="button">▶ 自動播放</button>
+      </div>
+      <div class="stage-info">
+        <h3 id="region"></h3>
+        <p id="regionTxt"></p>
+      </div>
+      <div class="stage-info" style="border-top:1px solid var(--line);padding-top:12px">
+        <h3 id="partTitle">點剖面上的一塊</h3>
+        <p id="partTxt" class="muted"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="evolve">
+    <h2>演進：閘極怎麼越包越緊</h2>
+    <figure>
+      <svg class="fig" viewBox="0 0 900 220" role="img" aria-label="平面、FinFET、GAA 三代結構比較">
+        <!-- planar -->
+        <text x="20" y="20" class="t-strong">平面 MOSFET</text>
+        <text x="20" y="38" class="t-small">閘極只蓋在通道上面一面</text>
+        <rect class="m-sub" x="20" y="130" width="240" height="60"/>
+        <rect class="m-nplus" x="70" y="130" width="140" height="8"/>
+        <rect class="m-ox" x="70" y="122" width="140" height="8"/>
+        <rect class="m-poly" x="70" y="80" width="140" height="42"/>
+        <text x="215" y="140" class="t-small">通道</text>
+        <!-- finfet -->
+        <text x="330" y="20" class="t-strong">FinFET</text>
+        <text x="330" y="38" class="t-small">鰭狀通道，閘極包三面</text>
+        <rect class="m-sub" x="330" y="160" width="240" height="30"/>
+        <path class="m-poly" d="M380,160 L380,62 L520,62 L520,160 L478,160 L478,92 L422,92 L422,160 Z"/>
+        <rect class="m-ox" x="422" y="92" width="56" height="68"/>
+        <rect class="m-nplus" x="430" y="100" width="40" height="60"/>
+        <text x="530" y="120" class="t-small">鰭</text>
+        <!-- gaa -->
+        <text x="640" y="20" class="t-strong">GAA（nanosheet）</text>
+        <text x="640" y="38" class="t-small">一片片奈米片，閘極四面全包</text>
+        <rect class="m-sub" x="640" y="170" width="240" height="20"/>
+        <rect class="m-poly" x="680" y="56" width="160" height="114"/>
+        <rect class="m-ox" x="700" y="72" width="120" height="22"/><rect class="m-nplus" x="706" y="77" width="108" height="12"/>
+        <rect class="m-ox" x="700" y="104" width="120" height="22"/><rect class="m-nplus" x="706" y="109" width="108" height="12"/>
+        <rect class="m-ox" x="700" y="136" width="120" height="22"/><rect class="m-nplus" x="706" y="141" width="108" height="12"/>
+        <text x="850" y="115" class="t-small">片</text>
+        <text x="20" y="215" class="t-small">三張都是「垂直於電流方向」切開看。閘極包得越多面，越能壓住通道，短通道效應與漏電就越小。</text>
+      </svg>
+    </figure>
+    <div class="table-wrap"><table>
+      <tr><th>結構</th><th>閘極控制</th><th>量產時間點</th><th>為什麼換</th></tr>
+      <tr><td>平面 bulk</td><td>一面</td><td>到 28／20 nm 世代</td><td>閘長再縮，汲極電場搶走控制權，關不乾淨</td></tr>
+      <tr><td>FinFET</td><td>三面</td><td>Intel 22 nm（2011 發表、2012 Ivy Bridge 量產）、TSMC 16 nm（2015）</td><td>立起來的鰭讓閘極從兩側加上方包住通道</td></tr>
+      <tr><td>GAA／nanosheet</td><td>四面</td><td>Samsung 3 nm（2022）、TSMC N2（2025 第 4 季量產）、Intel 18A（原訂的 20A 已取消）</td><td>鰭再窄就做不出來，也無法連續調寬度；奈米片可疊、可調片寬</td></tr>
+    </table></div>
+  </section>
+
+  <section class="card">
+    <h2>五個考點</h2>
+    <ul class="toc">
+      <li><a href="#a01"><span class="tag">A01</span><b>基礎物理</b><span class="small">能帶與載子</span></a></li>
+      <li><a href="#a02"><span class="tag">A02</span><b>PN 接面</b><span class="small">二極體</span></a></li>
+      <li><a href="#a03"><span class="tag">A03</span><b>MOSFET</b><span class="small">開與關</span></a></li>
+      <li><a href="#a04"><span class="tag">A04</span><b>微縮與變異</b><span class="small">越小越難</span></a></li>
+      <li><a href="#a05"><span class="tag">A05</span><b>先進結構</b><span class="small">FinFET、GAA</span></a></li>
+    </ul>
+  </section>
+
+  <!-- ===== A01 ===== -->
+  <section class="card" id="a01">
+    <h2><span class="tag">A01</span>半導體基礎物理</h2>
+    <p><b>一句話：</b>電子要跳過「能隙」才能導電；摻雜決定導電的是電子（n 型）還是電洞（p 型），費米能階就是這件事的指標。</p>
+
+    <figure>
+      <svg class="fig" viewBox="0 0 720 200" role="img" aria-label="n 型、本質、p 型的能帶圖">
+        <text x="10" y="18" class="t-strong">n 型</text>
+        <text x="250" y="18" class="t-strong">本質（未摻雜）</text>
+        <text x="490" y="18" class="t-strong">p 型</text>
+        <g>
+          <line class="ln-fg" x1="10" y1="50" x2="200" y2="50"/><text x="205" y="54" class="t-small">Ec</text>
+          <line class="ln-fg" x1="10" y1="150" x2="200" y2="150"/><text x="205" y="154" class="t-small">Ev</text>
+          <line class="ln-accent dash" x1="10" y1="64" x2="200" y2="64"/><text x="120" y="80" class="t-accent">E_F 靠近 Ec</text>
+        </g>
+        <g>
+          <line class="ln-fg" x1="250" y1="50" x2="440" y2="50"/><text x="445" y="54" class="t-small">Ec</text>
+          <line class="ln-fg" x1="250" y1="150" x2="440" y2="150"/><text x="445" y="154" class="t-small">Ev</text>
+          <line class="ln-accent dash" x1="250" y1="100" x2="440" y2="100"/><text x="330" y="94" class="t-accent">E_F 在中間</text>
+          <line class="ln" x1="270" y1="52" x2="270" y2="148"/><text x="276" y="128" class="t-small">Eg（Si 1.12 eV）</text>
+        </g>
+        <g>
+          <line class="ln-fg" x1="490" y1="50" x2="680" y2="50"/><text x="685" y="54" class="t-small">Ec</text>
+          <line class="ln-fg" x1="490" y1="150" x2="680" y2="150"/><text x="685" y="154" class="t-small">Ev</text>
+          <line class="ln-accent dash" x1="490" y1="136" x2="680" y2="136"/><text x="600" y="128" class="t-accent">E_F 靠近 Ev</text>
+        </g>
+        <text x="10" y="190" class="t-small">上面一條是導電帶底（Ec），下面一條是價電帶頂（Ev），中間就是能隙。費米能階 E_F 越靠近哪一邊，那一邊的載子就越多。</text>
+      </svg>
+    </figure>
+
+    <div class="block" id="a01-l1">
+      <h3><span class="lv">L1</span>是什麼</h3>
+      <div class="table-wrap"><table>
+        <tr><th>名詞</th><th>意思</th></tr>
+        <tr><td>導體／半導體／絕緣體</td><td>導體沒有能隙（價電帶與導電帶重疊）；半導體能隙約 0.1～4 eV，室溫下有少量載子；絕緣體能隙大（SiO₂ 約 9 eV），幾乎沒有載子</td></tr>
+        <tr><td>能隙（band gap, Eg）</td><td>價電帶和導電帶之間的能量差。Si 1.12 eV、GaAs 1.42 eV、SiC（4H）約 3.26 eV、GaN 約 3.4 eV</td></tr>
+        <tr><td>本質載子濃度 ni</td><td>沒摻雜時，熱能激發出的電子（＝電洞）濃度。Si 室溫約 1×10¹⁰ cm⁻³（修正值 9.65×10⁹；舊教科書常寫 1.5×10¹⁰，題目若給值就照題目）</td></tr>
+        <tr><td>質量作用定律</td><td><code>n · p = ni²</code>：摻雜讓一種載子變多，另一種就等比例變少</td></tr>
+        <tr><td>施體／受體</td><td>施體（P、As）多給一個電子 → n 型；受體（B）少一個電子 → p 型</td></tr>
+        <tr><td>多數／少數載子</td><td>n 型裡電子是多數載子、電洞是少數載子；p 型相反</td></tr>
+        <tr><td>遷移率（mobility, μ）</td><td>載子在電場下跑多快。Si 電子約 1400、電洞約 450 cm²/V·s，電子大約是電洞的 3 倍</td></tr>
+        <tr><td>漂移／擴散電流</td><td>漂移：被電場推著走；擴散：從濃的地方往稀的地方跑</td></tr>
+        <tr><td>費米能階（Fermi level, E_F）</td><td>電子佔據機率 50% 的能量位置；n 型靠近 Ec，p 型靠近 Ev</td></tr>
+        <tr><td>直接／間接能隙</td><td>GaAs、GaN 是直接能隙，發光效率高；Si 是間接能隙，不適合做發光元件</td></tr>
+      </table></div>
+    </div>
+
+    <div class="block" id="a01-l2">
+      <h3><span class="lv l2">L2</span>為什麼</h3>
+      <ul>
+        <li><b>為什麼 PMOS 要做得比 NMOS 寬？</b>電洞遷移率只有電子的三分之一左右，同樣尺寸 PMOS 的電流小很多。所以標準元件裡 PMOS 通常做得比 NMOS 寬，讓上拉和下拉速度接近。</li>
+        <li><b>為什麼寬能隙材料（SiC、GaN）適合功率元件？</b>能隙大 → 崩潰電場高，同樣耐壓可以做得更薄、電阻更低；高溫時熱激發的載子也少，漏電小、耐熱。</li>
+        <li><b>溫度升高會怎樣？</b>兩件事同時發生：ni 隨溫度指數上升（漏電暴增）；晶格振動加劇，遷移率下降（電流變小）。</li>
+        <li><b>為什麼摻雜濃度不是越高越好？</b>雜質太多會散射載子，遷移率下降；濃度極高時能隙還會變窄。</li>
+      </ul>
+    </div>
+
+    <div class="block" id="a01-l3">
+      <h3><span class="lv l3">L3</span>出問題怎麼辦</h3>
+      <div class="table-wrap"><table>
+        <tr><th>現象</th><th>最可能原因</th><th>對策</th></tr>
+        <tr><td>高溫下待機電流暴增</td><td>ni 與次臨界漏電都隨溫度指數上升</td><td>高 Vt 元件、電源閘控（power gating）、散熱設計；規格要寫最高溫的漏電</td></tr>
+        <tr><td>高溫時電路變慢</td><td>遷移率隨溫度下降</td><td>以最高溫 corner 做時序簽核，留足 margin</td></tr>
+        <tr><td>低電壓的先進製程，反而低溫最慢</td><td>溫度反轉（temperature inversion）：低溫時 Vt 升高的影響，蓋過遷移率變好的效果</td><td>時序簽核要同時跑低溫和高溫 corner，不能只看高溫</td></tr>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ===== A02 ===== -->
+  <section class="card" id="a02">
+    <h2><span class="tag">A02</span>PN 接面與二極體</h2>
+    <p><b>一句話：</b>p 和 n 接在一起，交界處的載子互相中和，留下一片沒有自由載子的<b>空乏區</b>和內建電場；順偏把它壓薄就導通，逆偏把它撐厚就截止。</p>
+
+    <div class="block" id="a02-l1">
+      <h3><span class="lv">L1</span>是什麼</h3>
+      <div class="table-wrap"><table>
+        <tr><th>名詞</th><th>意思</th></tr>
+        <tr><td>空乏區（depletion region）</td><td>接面兩側載子被耗盡、只剩固定離子電荷的區域。主圖上虛線框住的就是</td></tr>
+        <tr><td>內建電位（built-in potential）</td><td>空乏區形成的電位差，Si 約 0.6～0.8 V（依摻雜）</td></tr>
+        <tr><td>順偏／逆偏</td><td>順偏：p 接正、n 接負，空乏區變窄，電流隨電壓指數上升；Si 導通壓降約 0.7 V，溫度每升 1 °C 約降 2 mV。逆偏：空乏區變寬，只剩極小的逆向漏電</td></tr>
+        <tr><td>接面電容 Cj</td><td>空乏區像電容的介電層。逆偏越大，空乏區越寬，電容越小（變容二極體就是靠這個）。規格書常寫 Cj（或 Ct）並註明量測時的逆偏電壓</td></tr>
+        <tr><td>擴散電容</td><td>順偏時注入的少數載子堆在接面附近形成的電荷儲存，隨順向電流增加而變大。逆偏看接面電容，順偏看擴散電容</td></tr>
+        <tr><td>蕭特基二極體（Schottky）</td><td>金屬和半導體直接接觸形成的二極體，只靠多數載子導電：順向壓降低（約 0.2～0.4 V）、幾乎沒有反向恢復，但逆向漏電較大、耐壓較低</td></tr>
+        <tr><td>崩潰（breakdown）</td><td>逆偏大到某個值，電流突然暴增。分齊納崩潰與雪崩崩潰兩種</td></tr>
+      </table></div>
+    </div>
+
+    <div class="block" id="a02-l2">
+      <h3><span class="lv l2">L2</span>為什麼</h3>
+      <ul>
+        <li><b>空乏區寬度由什麼決定？</b>逆偏越大越寬；摻雜越淡越寬。而且空乏區主要往<b>濃度淡</b>的那一側延伸。</li>
+        <li><b>齊納 vs 雪崩：</b>齊納崩潰發生在兩側都很濃、空乏區極薄的接面，電子直接<b>穿隧</b>過去，崩潰電壓低（約 5 V 以下），溫度升高崩潰電壓下降。雪崩崩潰是載子在寬空乏區裡被加速、撞出更多載子，連鎖放大，崩潰電壓高（約 6 V 以上），溫度升高崩潰電壓上升。5～6 V 之間兩種都有，溫度係數接近零。雪崩為什麼是正溫度係數？溫度高時晶格振動強，載子還沒加速到足夠能量就被撞散（平均自由徑變短），要更高的電場才能觸發連鎖撞擊。</li>
+        <li><b>為什麼 MOSFET 裡也有 PN 接面？</b>源極、汲極（n+）跟 p 型基板就是兩個 PN 接面，平常處於逆偏。它們的接面電容是寄生電容，接面漏電是待機漏電的一部分。</li>
+        <li><b>PN 二極體為什麼有反向恢復時間？</b>順偏時少數載子堆在接面兩側；突然切到逆偏，這些電荷要先被抽乾，二極體才關得掉，這段時間會有一大股逆向電流。Schottky 沒有少數載子儲存，所以切換快，常用在高頻切換電源。</li>
+        <li><b>ESD 保護為什麼常用二極體？</b>二極體順偏導通快、能承受大電流，可以把突波導到電源或地，見 <a href="D-package.html#d05">D05</a>。</li>
+      </ul>
+    </div>
+
+    <div class="block" id="a02-l3">
+      <h3><span class="lv l3">L3</span>出問題怎麼辦</h3>
+      <div class="table-wrap"><table>
+        <tr><th>現象</th><th>最可能原因</th><th>對策</th></tr>
+        <tr><td>I/O 腳逆向漏電偏高</td><td>接面缺陷、金屬污染形成產生中心；或高溫</td><td>FA 找漏電點（熱點／EMMI），回頭查製程污染；接面漏電大約每升 10 °C 加倍，先確認量測溫度</td></tr>
+        <tr><td>穩壓用的齊納二極體電壓隨溫度漂移</td><td>齊納（負溫度係數）與雪崩（正溫度係數）的區別</td><td>選崩潰電壓約 5～6 V 附近、兩種效應互相抵消的元件；或串一顆順偏二極體補償、改用帶隙參考</td></tr>
+        <tr><td>逆偏電壓不高就崩潰</td><td>兩側摻雜太濃，空乏區太窄、電場太強，觸發穿隧</td><td>降低摻雜或改用漸變接面</td></tr>
+        <tr><td>高速訊號腳上升時間變慢</td><td>ESD 二極體與接面電容太大</td><td>選低電容 ESD 結構，在 ESD 能力和電容間取捨</td></tr>
+        <tr><td>切換電源的二極體很燙、雜訊大</td><td>PN 二極體的反向恢復電流</td><td>改用 Schottky 或快恢復二極體；Schottky 要接受較大的逆向漏電與較低耐壓</td></tr>
+        <tr><td>晶片還沒上電，I/O 接到的外部訊號卻讓內部電源被「供電」起來（back-powering）</td><td>I/O 到 VDD 的 ESD 二極體（或寄生二極體）被外部訊號順偏</td><td>選 fail-safe／耐壓（tolerant）I/O、控制上電順序、外部訊號加限流或隔離</td></tr>
+        <tr><td>帶隙參考電壓隨溫度漂移超規</td><td>二極體（或 BJT）的 V<sub>BE</sub> 約 −2 mV/°C（CTAT），要和隨溫度上升的 ΔV<sub>BE</sub>（PTAT）剛好抵消；製程變異讓兩者比例偏掉</td><td>用電阻比做 trimming，把溫度曲線的頂點調回常溫附近</td></tr>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ===== A03 ===== -->
+  <section class="card" id="a03">
+    <h2><span class="tag">A03</span>MOSFET 結構與特性</h2>
+    <p><b>一句話：</b>閘極電壓超過臨界電壓 Vt，表面就反轉出一條通道；V<sub>D</sub> 小時像電阻（線性區），V<sub>D</sub> 大到把汲極端的通道夾止後，電流就幾乎不再增加（飽和區）。</p>
+
+    <figure>
+      <svg class="fig" viewBox="0 0 640 240" role="img" aria-label="MOSFET 的 Id-Vd 特性曲線">
+        <line class="ln-fg" x1="60" y1="200" x2="600" y2="200"/><text x="560" y="222" class="t-small">V_DS</text>
+        <line class="ln-fg" x1="60" y1="200" x2="60" y2="20"/><text x="10" y="30" class="t-small">I_D</text>
+        <path class="ln-accent" d="M60,200 Q120,60 200,52 L590,46"/>
+        <path class="ln-accent" d="M60,200 Q105,115 160,110 L590,105"/>
+        <path class="ln-accent" d="M60,200 Q90,160 120,158 L590,155"/>
+        <path class="ln dash" d="M60,200 Q130,120 210,40"/>
+        <text x="520" y="40" class="t-small">V_GS 大</text>
+        <text x="520" y="148" class="t-small">V_GS 小</text>
+        <text x="80" y="70" class="t-small">線性區</text>
+        <text x="320" y="80" class="t-small">飽和區：電流幾乎持平</text>
+        <text x="215" y="36" class="t-small">分界 V_DS = V_GS − Vt</text>
+      </svg>
+    </figure>
+
+    <div class="block" id="a03-l1">
+      <h3><span class="lv">L1</span>是什麼</h3>
+      <div class="table-wrap"><table>
+        <tr><th>名詞</th><th>意思</th></tr>
+        <tr><td>臨界電壓 Vt（threshold voltage）</td><td>讓表面反轉、形成通道所需的閘極電壓。規格書的 V<sub>GS(th)</sub> 是用「定電流法」量的：汲極電流到某個值（功率 MOSFET 常見 I<sub>D</sub> = 250 µA）時的 V<sub>GS</sub>，所以看規格要連量測條件一起看</td></tr>
+        <tr><td>截止區</td><td>V<sub>GS</sub> &lt; Vt，沒有通道；但還有微小的次臨界電流</td></tr>
+        <tr><td>線性區（三極區）</td><td>V<sub>DS</sub> &lt; V<sub>GS</sub> − Vt，通道連通，電流大致隨 V<sub>DS</sub> 線性增加，像可變電阻</td></tr>
+        <tr><td>飽和區</td><td>V<sub>DS</sub> ≥ V<sub>GS</sub> − Vt，汲極端通道夾止，電流大約 ∝ (V<sub>GS</sub> − Vt)²（長通道平方律）</td></tr>
+        <tr><td>次臨界擺幅（SS）</td><td>閘極電壓要降多少，次臨界電流才少 10 倍。室溫理論極限約 60 mV/decade</td></tr>
+        <tr><td>body effect</td><td>源極對基板的逆偏 V<sub>SB</sub> 越大，Vt 越高</td></tr>
+        <tr><td>CMOS 反相器</td><td>PMOS 上拉＋NMOS 下拉，任何穩態只有一顆導通，靜態電流幾乎為零；只有切換時才耗電</td></tr>
+      </table></div>
+    </div>
+
+    <div class="block" id="a03-l2">
+      <h3><span class="lv l2">L2</span>為什麼</h3>
+      <ul>
+        <li><b>為什麼會飽和？</b>汲極那一端的通道電壓差是 V<sub>GS</sub> − V<sub>DS</sub>，掉到 Vt 以下就沒有反轉層了（夾止）。再加大 V<sub>DS</sub>，多出來的電壓都落在夾止區，通道本身的電壓差不變，電流就不再增加。拉主圖的 V<sub>D</sub> 可以看到。</li>
+        <li><b>為什麼 SS 有 60 mV/dec 的下限？</b>次臨界電流靠載子「翻過」能障，數量遵守熱分佈（波茲曼分佈），室溫 kT/q·ln10 ≈ 60 mV。這也是電源電壓降不下去的根本原因：要關得乾淨，Vt 不能太低。</li>
+        <li><b>Vt 由什麼決定？</b>閘極材料的功函數、氧化層厚度（越薄越低）、通道摻雜（越濃越高）、氧化層電荷、body bias。製程端主要靠通道佈植調 Vt。</li>
+        <li><b>為什麼 CMOS 會成為主流？</b>靜態幾乎不耗電，功耗主要來自切換（∝ C·V²·f），所以能把幾十億顆電晶體放在一起。</li>
+        <li><b>為什麼電流鏡、類比放大器的電晶體 L 要做長？</b>飽和區電流會隨 V<sub>DS</sub> 微微上升（通道長度調變），夾止區占通道的比例越大越明顯。L 加長，比例變小，輸出阻抗 r<sub>o</sub> 變高，電流鏡更準、增益更高；代價是面積和速度。</li>
+        <li><b>短通道下平方律不準了：</b>電場太強，載子速度飽和，電流變成大約跟 (V<sub>GS</sub> − Vt) 成正比；飽和區電流也會隨 V<sub>DS</sub> 慢慢上升（通道長度調變）。</li>
+      </ul>
+    </div>
+
+    <div class="block" id="a03-l3">
+      <h3><span class="lv l3">L3</span>出問題怎麼辦</h3>
+      <div class="table-wrap"><table>
+        <tr><th>現象</th><th>最可能原因</th><th>對策</th></tr>
+        <tr><td>整批晶片速度偏慢、Vt 偏高</td><td>通道佈植劑量偏多、氧化層偏厚、閘極功函數偏移</td><td>看 WAT 的 Vt、Idsat、Tox 追到哪一層製程</td></tr>
+        <tr><td>堆疊的電晶體（例如 NAND 上面那顆）比較慢</td><td>body effect：上方那顆的源極不在地，V<sub>SB</sub> &gt; 0，Vt 變高</td><td>關鍵路徑減少堆疊數、把最晚到的訊號接在靠近輸出的那顆</td></tr>
+        <tr><td>想降低電壓省電，但待機漏電暴增</td><td>Vt 跟著降，SS 卡在 60 mV/dec，Vt 每降約 60～100 mV，漏電就多 10 倍</td><td>多種 Vt 混用（關鍵路徑低 Vt、其他高 Vt）、電源閘控、DVFS</td></tr>
+        <tr><td>輸入訊號上升很慢時，緩衝器耗電大增、輸出還會抖動</td><td>輸入停在中間電壓時 PMOS 和 NMOS 同時導通，電源直接短路到地（短路電流，crowbar current）；雜訊讓輸出來回翻轉</td><td>輸入改用 Schmitt trigger（有遲滯）、要求訊號源的上升時間、避免浮接輸入</td></tr>
+        <tr><td>低電壓操作時，晶片間速度差異特別大</td><td>過驅動電壓 V<sub>GS</sub> − Vt 很小，電流對 Vt 的變異非常敏感（接近次臨界時是指數關係）</td><td>提高電壓或用 DVFS 依晶片調電壓（AVS）、時序簽核用統計方法</td></tr>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ===== A04 ===== -->
+  <section class="card" id="a04">
+    <h2><span class="tag">A04</span>微縮與製程變異</h2>
+    <p><b>一句話：</b>電晶體越小越快越省，但閘長短到一個程度，<b>汲極開始搶走閘極的控制權</b>，漏電與變異一起變大。</p>
+
+    <div class="block" id="a04-l1">
+      <h3><span class="lv">L1</span>是什麼</h3>
+      <div class="table-wrap"><table>
+        <tr><th>名詞</th><th>意思</th></tr>
+        <tr><td>Dennard scaling</td><td>尺寸與電壓等比例縮小，功率密度維持不變。大約 2005～2006 年起失效：電壓縮不下去，頻率也停在數 GHz</td></tr>
+        <tr><td>短通道效應（SCE）</td><td>閘長變短後，Vt 下降（Vt roll-off）、漏電上升</td></tr>
+        <tr><td>DIBL</td><td>汲極電壓越高，源極端的能障被壓得越低，Vt 下降</td></tr>
+        <tr><td>漏電來源</td><td>次臨界漏電（關不乾淨）、閘極穿隧漏電（氧化層太薄）、接面漏電、GIDL（閘極引起的汲極漏電）</td></tr>
+        <tr><td>high-k 金屬閘極（HKMG）</td><td>用介電常數高的材料（如 HfO₂）取代 SiO₂，物理厚度較厚但電性等效很薄，壓低閘極漏電。Intel 45 nm（2007）首先量產，閘極漏電降低超過 10 倍</td></tr>
+        <tr><td>PVT</td><td>製程（Process）、電壓（Voltage）、溫度（Temperature）三種變因。注意先進製程低電壓時最慢的可能是<b>低溫</b>（temperature inversion，見 <a href="#a01-l3">A01 L3</a>）</td></tr>
+        <tr><td>Process corner</td><td>TT／FF／SS／FS／SF：第一個字母是 NMOS、第二個是 PMOS，T 典型、F 快、S 慢</td></tr>
+        <tr><td>全域 vs 局部變異</td><td>全域：整片或整批一起偏（用 corner 涵蓋）；局部：相鄰兩顆也不一樣（隨機摻雜擾動 RDF、線邊緣粗糙 LER）</td></tr>
+        <tr><td>Pelgrom 定律</td><td>兩顆相鄰電晶體的 Vt 不匹配 σ ∝ 1/√(W·L)：面積越大，匹配越好</td></tr>
+      </table></div>
+    </div>
+
+    <div class="block" id="a04-l2">
+      <h3><span class="lv l2">L2</span>為什麼</h3>
+      <ul>
+        <li><b>為什麼短通道會「關不掉」？</b>通道很短時，源極和汲極的空乏區幾乎碰在一起，汲極的電場直接伸進通道，幫忙壓低能障（這就是 DIBL）。閘極不再是唯一控制通道的人。</li>
+        <li><b>為什麼 Dennard scaling 會失效？</b>電壓要降，Vt 就得跟著降；但 SS 有 60 mV/dec 的下限，Vt 一降漏電就指數上升。電壓降不下去，縮小尺寸後功率密度就上升，頻率只好停住，改走多核心。</li>
+        <li><b>為什麼要 high-k？</b>SiO₂ 薄到只剩幾個原子層（約 1.2 nm），電子直接穿隧過去，閘極漏電大到不能用。high-k 可以用較厚的物理厚度，得到同樣的閘極電容。</li>
+        <li><b>為什麼類比電路的電晶體常做得很大？</b>依 Pelgrom 定律，面積越大，隨機變異越平均掉，差動對的 offset 越小。數位電路追求小，類比電路為了匹配常刻意做大。</li>
+        <li><b>FS／SF corner 為什麼重要？</b>NMOS 和 PMOS 一快一慢時，上升和下降不對稱，最容易出事的是 SRAM 的讀寫穩定度、duty cycle 與保持時間。</li>
+      </ul>
+    </div>
+
+    <div class="block" id="a04-l3">
+      <h3><span class="lv l3">L3</span>出問題怎麼辦</h3>
+      <div class="table-wrap"><table>
+        <tr><th>現象</th><th>最可能原因</th><th>對策</th></tr>
+        <tr><td>SS corner 有 setup violation</td><td>電晶體慢、低電壓、（傳統製程）高溫</td><td>改用低 Vt 元件、加大驅動、重新切 pipeline；確認簽核 corner 是否涵蓋</td></tr>
+        <tr><td>FF corner 有 hold violation</td><td>電晶體快、資料路徑太短</td><td>在資料路徑插 delay buffer</td></tr>
+        <tr><td>同一顆晶片裡 SRAM 偶發讀錯，量產良率隨電壓下降而掉</td><td>局部變異（RDF、LER）讓少數 bit cell 不穩</td><td>提高 SRAM 的最低工作電壓、加讀寫輔助電路、ECC</td></tr>
+        <tr><td>類比差動對 offset 過大</td><td>電晶體匹配差：面積太小或佈局不對稱</td><td>加大面積、共質心（common-centroid）佈局、加 dummy、做 trimming</td></tr>
+        <tr><td>短閘長的元件 Vt 比長閘長低很多</td><td>Vt roll-off、DIBL</td><td>加 halo／pocket 佈植、淺接面、加大 L；或改用 FinFET／GAA 等閘控更強的結構</td></tr>
+        <tr><td>電晶體關閉時，汲極漏電反而在閘極加負偏時變大</td><td>GIDL：閘極與汲極重疊處電場太強，發生能帶間穿隧</td><td>降低閘汲重疊區的電場、調整汲極摻雜梯度</td></tr>
+        <tr><td>同樣尺寸的電晶體，擺在佈局不同位置電流卻不一樣</td><td>佈局相依效應：主動區長度（LOD）與 STI 擠壓的應力改變遷移率；靠近 well 邊緣時佈植被光阻邊緣散射（WPE）讓 Vt 偏移</td><td>關鍵匹配元件遠離 well 邊緣、加 dummy 讓周圍環境一致、post-layout 模擬要開啟這些效應</td></tr>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ===== A05 ===== -->
+  <section class="card" id="a05">
+    <h2><span class="tag">A05</span>先進元件結構</h2>
+    <p><b>一句話：</b>平面電晶體壓不住短通道效應之後，業界換成<b>讓閘極從更多面包住通道</b>的結構；另一條路是讓通道本身更好跑（應變、SOI）。</p>
+
+    <div class="block" id="a05-l1">
+      <h3><span class="lv">L1</span>是什麼</h3>
+      <div class="table-wrap"><table>
+        <tr><th>名詞</th><th>意思</th></tr>
+        <tr><td>FinFET</td><td>通道立成鰭狀，閘極包三面。驅動電流靠鰭的數量調整，寬度只能是「幾根鰭」的整數倍，是離散值</td></tr>
+        <tr><td>GAA（Gate-All-Around）／nanosheet</td><td>通道是一疊水平的奈米片，閘極四面包住。Samsung 叫 MBCFET、Intel 叫 RibbonFET（18A 同時導入背面供電 PowerVia）</td></tr>
+        <tr><td>SOI（Silicon-on-Insulator）</td><td>矽層下面墊一層埋入氧化層（BOX）。FD-SOI：矽層薄到完全空乏；PD-SOI：矽層較厚、部分空乏，有浮體效應</td></tr>
+        <tr><td>應變矽（strained Si）</td><td>拉伸或壓縮晶格提高遷移率：PMOS 用 SiGe 源汲極給<b>壓縮</b>應變（驅動電流約 +25%）；NMOS 用 SiN 蓋層給<b>拉伸</b>應變（約 +10%）。Intel 90 nm（2003）首先量產</td></tr>
+        <tr><td>製程節點命名</td><td>「3 nm」「2 nm」是世代名稱，已經和實際閘長或任何單一尺寸脫鉤，見 <a href="#a05-l2">L2</a></td></tr>
+      </table></div>
+    </div>
+
+    <div class="block" id="a05-l2">
+      <h3><span class="lv l2">L2</span>為什麼</h3>
+      <ul>
+        <li><b>包越多面為什麼越好？</b>閘極跟通道的接觸面越多，對通道電位的掌控越強，汲極電場就越難伸進來，DIBL 和 SS 都變好，可以用更低的電壓。</li>
+        <li><b>FinFET 為什麼還要換 GAA？</b>鰭要更窄才壓得住，但再窄就做不出來、變異也大；寬度只能用「幾根鰭」離散調整。奈米片可以垂直疊起來增加電流，片寬也能連續調整。</li>
+        <li><b>FD-SOI 好在哪？</b>BOX 擋住了往基板的漏電與寄生電容，薄矽層讓閘極容易控制；還可以從背面加偏壓（back bias）動態調 Vt。缺點是晶圓比較貴。</li>
+        <li><b>節點名稱為什麼不等於尺寸？</b>早期節點約等於閘長。後來為了延續「每代縮小約 0.7 倍」的命名，名稱繼續往下走，但實際的閘距、金屬間距縮得沒那麼快。比較不同家的製程要看電晶體密度、閘距（CPP）、金屬間距（MP）。</li>
+        <li><b>應變為什麼能提高速度？</b>晶格被拉伸或壓縮後，能帶結構改變，載子的有效質量和散射減少，遷移率上升。電子喜歡拉伸、電洞喜歡壓縮，所以 NMOS 和 PMOS 用相反的應變。</li>
+      </ul>
+    </div>
+
+    <div class="block" id="a05-l3">
+      <h3><span class="lv l3">L3</span>出問題怎麼辦</h3>
+      <div class="table-wrap"><table>
+        <tr><th>現象</th><th>最可能原因</th><th>對策</th></tr>
+        <tr><td>FinFET 電路在高電流下特性變差、可靠度下降</td><td>自熱效應：鰭很窄，熱不容易散到基板</td><td>可靠度評估要算自熱溫升，限制大電流元件的電流密度</td></tr>
+        <tr><td>從平面製程移植過來的類比電路，元件尺寸調不到想要的值</td><td>FinFET 的寬度是離散的（鰭數）</td><td>重新設計電流比例，用多個單位元件組合</td></tr>
+        <tr><td>兩家「同名 3 nm」的製程，晶片面積差很多</td><td>節點名稱不代表實際尺寸</td><td>比較電晶體密度、CPP、MP 與標準元件高度，不要只看名稱</td></tr>
+        <tr><td>PD-SOI 電路的 I–V 出現扭折（kink），延遲還跟之前的操作歷史有關</td><td>浮體效應：撞擊游離產生的電荷堆在沒接地的 body 裡，改變 body 電位與 Vt</td><td>加 body contact／body tie，或改用 FD-SOI</td></tr>
+      </table></div>
+    </div>
+  </section>
+
+  <section class="card" id="confuse">
+    <h2>容易混淆</h2>
+    <div class="table-wrap"><table>
+      <tr><th>這兩個</th><th>差在哪</th></tr>
+      <tr><td>線性區 vs 飽和區</td><td>V<sub>DS</sub> &lt; V<sub>GS</sub> − Vt 是線性區；≥ 是飽和區（A03）。注意 MOSFET 的「飽和」和 BJT 的「飽和」意思相反</td></tr>
+      <tr><td>齊納 vs 雪崩崩潰</td><td>穿隧、低電壓、負溫度係數 vs 撞擊游離、高電壓、正溫度係數（A02）</td></tr>
+      <tr><td>DIBL vs body effect</td><td>汲極電壓讓 Vt 降 vs 源極對基板的逆偏讓 Vt 升（A03、A04）</td></tr>
+      <tr><td>全域 vs 局部變異</td><td>整批一起偏，靠 corner vs 相鄰兩顆不同，靠統計與匹配佈局（A04）</td></tr>
+      <tr><td>FS vs SF</td><td>第一個字母永遠是 NMOS：FS＝NMOS 快、PMOS 慢（A04）</td></tr>
+      <tr><td>FinFET vs GAA</td><td>閘極包三面、寬度離散 vs 包四面、片可疊、寬度可調（A05）</td></tr>
+      <tr><td>遷移率 vs 速度飽和</td><td>低電場時速度 ∝ 電場（遷移率）；電場太強時速度到頂，不再增加（A03）</td></tr>
+    </table></div>
+  </section>
+
+  <section class="card" id="terms">
+    <h2>英文術語</h2>
+    <div class="table-wrap"><table>
+      <tr><th>英文</th><th>中文</th><th>常見用法</th></tr>
+      <tr><td>Band gap</td><td>能隙</td><td>GaN has a wide band gap of about 3.4 eV.</td></tr>
+      <tr><td>Mobility</td><td>遷移率</td><td>Hole mobility is about one third of electron mobility.</td></tr>
+      <tr><td>Depletion region</td><td>空乏區</td><td>The depletion region widens under reverse bias.</td></tr>
+      <tr><td>Threshold voltage (Vt)</td><td>臨界電壓</td><td>Low-Vt cells are faster but leakier.</td></tr>
+      <tr><td>Subthreshold swing</td><td>次臨界擺幅</td><td>SS is limited to about 60 mV/dec at room temperature.</td></tr>
+      <tr><td>Pinch-off</td><td>夾止</td><td>The channel pinches off near the drain in saturation.</td></tr>
+      <tr><td>DIBL</td><td>汲極引起能障降低</td><td>DIBL increases with shorter gate length.</td></tr>
+      <tr><td>Process corner</td><td>製程角落</td><td>Hold is checked at the FF corner.</td></tr>
+      <tr><td>Mismatch</td><td>不匹配</td><td>Larger devices give better mismatch.</td></tr>
+      <tr><td>Gate-all-around</td><td>環繞式閘極</td><td>GAA nanosheets replace FinFETs at the 3 nm / 2 nm generation.</td></tr>
+      <tr><td>Strain engineering</td><td>應變工程</td><td>Embedded SiGe adds compressive strain to PMOS.</td></tr>
+    </table></div>
+  </section>
+
+  <section class="card" id="sources">
+    <h2>出處</h2>
+    <ol class="sources" id="srcList">
+      <li><b>A01</b>　https://www.ioffe.ru/SVA/NSM/Semicond/Si/bandstr.html ；https://www.pveducation.org/node/389 （ni 修正值）；Nanoscale Res. Lett. 材料參數表（GaAs／SiC／GaN 能隙）；arXiv 1702.06454（遷移率與溫度）</li>
+      <li><b>A02</b>　UCSB ECE122 Lecture 6（PN 接面、空乏區、接面電容）；Toshiba FAQ（齊納溫度係數）；https://www.electronics-notes.com/articles/electronic_components/diode/zener-diode-theory-operation.php</li>
+      <li><b>A03</b>　arXiv 1811.09146（次臨界擺幅極限）；U of Toronto ECE331（body effect）；embeddedcomputing.com（temperature inversion）</li>
+      <li><b>A04</b>　https://en.wikipedia.org/wiki/Dennard_scaling ；All About Circuits（MOS 漏電來源、DIBL、GIDL）；IEEE Spectrum（Intel 45 nm HKMG）；ChipVerify（process corner）；Atomera（Pelgrom、RDF）；Chatterjee 1999（halo／pocket）</li>
+      <li><b>A05</b>　Samsung Newsroom（3 nm GAA）；eeNews Europe（TSMC N2 量產）；IEEE Spectrum「The Status of Moore's Law: It's Complicated」（節點命名）；Real World Tech IEDM 2003（Intel 90 nm 應變矽）；US Patent 7268024（PD／FD-SOI 浮體效應）；ISQED 2019（FinFET 自熱）</li>
+      <li class="muted">查證日 2026-10-01。定義與機制以教科書常識撰寫；數值與 L3 條目對照上列出處。Intel 18A 量產狀態只見媒體轉述；長通道平方律、次臨界電流指數式是教科書標準式，未另找出處。</li>
+    </ol>
+  </section>
+</main>
+
+<script>
+(() => {
+  const VT = 0.4;
+  const $ = id => document.getElementById(id);
+  const parts = {
+    body: ['基板（body）', 'A01 半導體基礎物理', 'p 型矽：電洞是多數載子。能帶、摻雜、費米能階都在講它。基板接的電壓會透過 body effect 改變 Vt（A03）。', '#a01'],
+    dep: ['空乏區', 'A02 PN 接面', '源極、汲極（n+）和 p 型基板形成 PN 接面，交界處沒有自由載子。平常逆偏，帶來寄生的接面電容與接面漏電。', '#a02'],
+    sd: ['源極／汲極（n+）', 'A02 PN 接面／B05 佈植', '高濃度 n 型區，是電子進出通道的地方。用離子佈植以閘極為遮罩自對準做出來。', '#a02'],
+    gdep: ['閘極下的空乏區', 'A03 MOSFET', '閘極的正電壓把表面電洞推走，留下不能動的負離子（游離受體）。V_G 到 Vt 之前，閘極電壓都花在撐開這一層；超過 Vt 後空乏區幾乎不再變厚，多出來的電荷都變成通道電子。', '#a03'],
+    ch: ['通道（反轉層）', 'A03 MOSFET', '閘極電壓超過 Vt，p 型表面被反轉成 n 型的一層薄電子層，源汲極因此接通。', '#a03'],
+    ox: ['閘極氧化層', 'A04 微縮與變異', '越薄閘極控制越強，但薄到 1 nm 左右電子會直接穿隧，閘極漏電暴增，所以改用 high-k 材料。', '#a04'],
+    gate: ['閘極', 'A03／A04／A05', '施加電壓控制通道。閘長 L 越短越快，但短到一個程度會出現短通道效應；FinFET／GAA 就是讓閘極包更多面。', '#a04'],
+  };
+
+  // ---- 載子：電洞○、游離受體−、通道電子● ----
+  const NS = 'http://www.w3.org/2000/svg';
+  const DEP_MAX = 50, N_E = 40;
+  const mk = (tag, attrs, parent) => {
+    const el = document.createElementNS(NS, tag);
+    for (const a in attrs) el.setAttribute(a, attrs[a]);
+    parent.appendChild(el);
+    return el;
+  };
+  const g = $('carriers');
+  const holes = [];   // 閘極下會被推走的電洞（附帶留下的 −）
+  for (let y = 178; y <= 226; y += 16)
+    for (let x = 250; x <= 390; x += 20) {
+      const minus = mk('text', { x: x - 3, y: y + 4, class: 't-muted', 'font-size': 12, opacity: 0 }, g);
+      minus.textContent = '−';
+      const h = mk('circle', { cx: x, cy: y, r: 3, fill: 'none', stroke: 'var(--fg)', 'stroke-width': 1 }, g);
+      h.style.transition = 'opacity .3s, transform .3s';
+      holes.push({ y, h, minus });
+    }
+  for (let y = 242; y <= 290; y += 16)   // 其他地方的電洞，固定不動
+    for (let x = 32 + (y % 32 ? 10 : 0); x <= 610; x += 20)
+      mk('circle', { cx: x, cy: y, r: 3, fill: 'none', stroke: 'var(--faint)', 'stroke-width': 1 }, g);
+  const elecs = Array.from({ length: N_E }, (_, i) => ({
+    x: 242 + 156 * i / N_E, f: Math.random(),
+    el: mk('circle', { r: 2.4, class: 'fill-fg', opacity: 0 }, g),
+  }));
+  // 源極／汲極 n+ 本來就有大量自由電子；缺的只是中間那座橋（通道）
+  const pool = (x0) => Array.from({ length: 28 }, () => ({
+    x0, x: x0 + Math.random() * 186, y: 174 + Math.random() * 36,
+    el: mk('circle', { r: 2.4, class: 'fill-fg' }, g),
+  }));
+  const reservoirs = [...pool(52), ...pool(402)];
+  function drawPools() {
+    reservoirs.forEach(e => {
+      e.el.setAttribute('cx', e.x.toFixed(1));
+      e.el.setAttribute('cy', e.y.toFixed(1));
+    });
+  }
+
+  let cur = { ov: 0, vd: 0, ts: 0, td: 0, xp: 400, sat: false, I: 0 };
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function thick(x) {   // 通道在位置 x 的厚度（px）
+    if (cur.ov <= 0) return 0;
+    if (!cur.sat) return cur.ts + (cur.td - cur.ts) * (x - 240) / 160;
+    return x < cur.xp ? Math.max(1.5, cur.ts * (1 - (x - 240) / (cur.xp - 240))) : 1.5;
+  }
+
+  function drawElecs() {
+    const n = cur.ov <= 0 ? 0 : Math.round(N_E * Math.min(cur.ov, 0.8) / 0.8);
+    elecs.forEach((e, i) => {
+      const on = i < n;
+      e.el.setAttribute('opacity', on ? 1 : 0);
+      if (!on) return;
+      const t = thick(e.x);
+      e.el.setAttribute('cx', e.x.toFixed(1));
+      e.el.setAttribute('cy', (171.5 + e.f * Math.max(0, t - 3)).toFixed(1));
+    });
+  }
+
+  function update() {
+    const vg = +$('vg').value, vd = +$('vd').value;
+    $('vgv').textContent = vg.toFixed(2) + ' V';
+    $('vdv').textContent = vd.toFixed(2) + ' V';
+    const ov = vg - VT, k = 20 / 0.8;
+    let pts = '', region, txt, pinch = '';
+    // 空乏區：V_G 到 Vt 之前持續撐開，之後大致固定
+    const dep = DEP_MAX * Math.sqrt(Math.min(vg, VT) / VT);
+    $('gdep').setAttribute('height', dep);
+    holes.forEach(o => {
+      const gone = o.y < 170 + dep;
+      o.h.style.opacity = gone ? 0 : 1;
+      o.h.style.transform = gone ? 'translateY(14px)' : '';
+      o.minus.setAttribute('opacity', gone ? 1 : 0);
+    });
+    cur = { ov, vd, ts: 0, td: 0, xp: 400, sat: false, I: 0 };
+    if (ov <= 0) {
+      region = '截止區';
+      txt = vg === 0
+        ? `V_G = 0：閘極下的表面跟基板一樣，滿滿是電洞，源汲極之間是兩個背對背的 PN 接面，電子過不去。`
+        : `V_G（${vg.toFixed(2)} V）還沒到 Vt（${VT} V）：表面電洞被推走，形成空乏區，只剩不能動的負離子；但吸上來的電子還不夠，沒有通道。仍有一點點次臨界漏電，溫度越高越多。`;
+    } else if (vd < ov) {
+      const ts = ov * k, td = (ov - vd) * k;
+      pts = `240,170 400,170 400,${170 + td} 240,${170 + ts}`;
+      cur = { ov, vd, ts, td, xp: 400, sat: false, I: ov * vd - vd * vd / 2 };
+      region = '線性區';
+      txt = `V_D（${vd.toFixed(2)} V）< V_G − Vt（${ov.toFixed(2)} V）：通道從源極一路連到汲極，靠汲極那端稍薄。電流大致隨 V_D 線性增加，像一顆電阻。`;
+    } else {
+      const ts = ov * k, xp = 400 - Math.min(40, 40 * (vd - ov) / 0.8);
+      pts = `240,170 ${xp},170 240,${170 + ts}`;
+      cur = { ov, vd, ts, td: 0, xp, sat: true, I: ov * ov / 2 };
+      region = '飽和區';
+      txt = `V_D（${vd.toFixed(2)} V）≥ V_G − Vt（${ov.toFixed(2)} V）：汲極端的通道被夾止。電子流到夾止點後被強電場直接掃進汲極；多加的 V_D 都落在夾止區，電流幾乎不再增加。`;
+      pinch = '↑ 夾止區';
+      $('pinch').setAttribute('x', xp - 24);
+    }
+    $('ch').setAttribute('points', pts);
+    $('pinch').textContent = pinch;
+    $('region').textContent = region;
+    $('regionTxt').textContent = txt;
+    let flow, flow2 = '';
+    if (ov <= 0) { flow = '沒有通道：S、D 的電子過不去'; flow2 = '中間只有電洞和空乏區，沒有橋'; }
+    else if (vd === 0) { flow = '通道接通了，但 V_D = 0'; flow2 = '兩端沒有電壓差，電子原地不動'; }
+    else { flow = '電子流：S ⟶ D'; flow2 = '電流方向相反（D → S），因為電子帶負電'; }
+    $('flow').textContent = flow;
+    $('flow2').textContent = flow2;
+    drawElecs();
+    drawPools();
+  }
+
+  // 電子從源極流到汲極；速度 ∝ 電流 ÷ 通道電荷量
+  let last = 0;
+  function tick(now) {
+    const dt = Math.min(0.05, (now - last) / 1000 || 0);
+    last = now;
+    const v = cur.ov > 0 ? 400 * cur.I / cur.ov : 0;
+    reservoirs.forEach(e => {   // n+ 裡電子很多，同樣電流下走得比通道慢
+      e.x += v * 0.5 * dt + (Math.random() - 0.5) * 0.8;
+      e.y = Math.min(210, Math.max(174, e.y + (Math.random() - 0.5) * 0.8));
+      if (e.x > e.x0 + 186) e.x -= 186;
+      if (e.x < e.x0) e.x += 186;
+    });
+    drawPools();
+    if (cur.ov > 0) {
+      elecs.forEach(e => {
+        const boost = cur.sat && e.x > cur.xp ? 3 : 1;
+        e.x += v * boost * dt;
+        if (e.x > 398) { e.x -= 156; e.f = Math.random(); }
+        e.f = Math.min(1, Math.max(0, e.f + (Math.random() - 0.5) * 0.15));
+      });
+      drawElecs();
+    }
+    requestAnimationFrame(tick);
+  }
+  if (!reduce) requestAnimationFrame(tick);
+
+  // 自動播放：先掃 V_G 看通道出現，再掃 V_D 看夾止
+  let playT0 = null;
+  function stopPlay() {
+    playT0 = null;
+    $('play').textContent = '▶ 自動播放';
+  }
+  function play(now) {
+    if (playT0 === null) return;
+    const t = (now - playT0) / 1000;
+    if (t < 6) { $('vg').value = 1.2 * t / 6; $('vd').value = 0.1; }
+    else if (t < 10) { $('vg').value = 1.2; $('vd').value = 0.1 + 1.1 * (t - 6) / 4; }
+    else { $('vg').value = 1.2; $('vd').value = 1.2; update(); stopPlay(); return; }
+    update();
+    requestAnimationFrame(play);
+  }
+  $('play').addEventListener('click', () => {
+    if (playT0 !== null) { stopPlay(); return; }
+    $('play').textContent = '■ 停止';
+    playT0 = performance.now();
+    requestAnimationFrame(play);
+  });
+
+  document.querySelectorAll('#mos .hot').forEach(el => el.addEventListener('click', () => {
+    const p = parts[el.dataset.k];
+    document.querySelectorAll('#mos .hot').forEach(e => e.classList.toggle('sel', e.dataset.k === el.dataset.k));
+    $('partTitle').textContent = `${p[0]}（${p[1]}）`;
+    $('partTxt').innerHTML = `${p[2]} <a href="${p[3]}">看這一節 →</a>`;
+  }));
+  $('vg').addEventListener('input', () => { stopPlay(); update(); });
+  $('vd').addEventListener('input', () => { stopPlay(); update(); });
+  update();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>品質與量產講義</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="handout.css">
+<style>
+  .readout td, .readout th { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .readout td b { font-size: 18px; }
+  .slider-row input[type="range"] { width: 200px; }
+  .slider-row output { font-family: var(--mono); color: var(--fg); min-width: 64px; display: inline-block; }
+  .pane[hidden] { display: none; }
+</style>
+</head>
+<body>
+<main class="wide">
+  <header class="page">
+    <div class="crumb"><a href="index.html">觀念圖鑑</a> ／ G 品質與量產</div>
+    <h1>品質與量產：從「做得出來」到「每一顆都一樣好」</h1>
+    <p class="lead">設計做出一顆會動的晶片只是開始。量產要回答的是：<b>一百萬顆裡有幾顆會壞？壞的是哪裡、為什麼？改了東西怎麼讓客戶知道？規格書上那個數字到底保證了什麼？</b>這一大類就是用統計（Cp／Cpk、管制圖）、流程（EVT→PVT、ECN／PCN、8D、FMEA）和規格書，把「差不多」變成可量化、可追溯的承諾。</p>
+    <p class="muted small">對應 taxonomy G01～G03。難度標籤：<span class="lv">L1</span>是什麼　<span class="lv l2">L2</span>為什麼　<span class="lv l3">L3</span>出問題怎麼辦。</p>
+  </header>
+
+  <!-- ===== 主圖 ===== -->
+  <section class="card" id="capability">
+    <h2>主圖：拉拉看，製程能力怎麼變成不良率</h2>
+    <div class="controls">
+      <div class="seg" id="tab">
+        <button data-t="cpk" class="on">Cp／Cpk</button>
+        <button data-t="cc">管制圖</button>
+      </div>
+    </div>
+
+    <!-- Cp/Cpk -->
+    <div class="pane stage" id="paneCpk">
+      <p class="muted small" style="margin-top:0">例子：Source driver 的通道輸出偏差 ΔV，規格 ±20 mV、目標 0。拉桿改平均值（偏移）和標準差（變異），看分布和規格上下限的關係。黑色尾巴＝超出規格的那一塊。</p>
+      <div class="controls slider-row" style="margin-bottom:8px">
+        <label class="inline">平均值 μ <input type="range" id="mu" min="-20" max="20" step="0.5" value="0"> <output id="muOut"></output></label>
+        <label class="inline">標準差 σ <input type="range" id="sg" min="1" max="15" step="0.25" value="5"> <output id="sgOut"></output></label>
+      </div>
+      <div class="controls" style="margin-bottom:8px">
+        <span class="muted small">預設情境：</span>
+        <button class="btn" data-pre="0,5">置中、Cpk 1.33</button>
+        <button class="btn" data-pre="5,3.333">Cp 2、偏 1.5σ</button>
+        <button class="btn" data-pre="12,3">Cp 高、Cpk 低</button>
+        <button class="btn" data-pre="0,6.667">Cp＝Cpk＝1</button>
+      </div>
+      <div class="table-wrap">
+        <svg class="fig" id="dist" viewBox="0 0 900 300" role="img" aria-label="常態分布與規格上下限" style="min-width:640px"></svg>
+      </div>
+      <div class="table-wrap readout"><table>
+        <tr><th>Cp</th><th>Cpk</th><th>CPU</th><th>CPL</th><th class="num">超出 USL</th><th class="num">低於 LSL</th><th class="num">合計不良</th></tr>
+        <tr><td><b id="rCp"></b></td><td><b id="rCpk"></b></td><td id="rCpu"></td><td id="rCpl"></td><td class="num" id="rHi"></td><td class="num" id="rLo"></td><td class="num"><b id="rTot"></b></td></tr>
+      </table></div>
+      <div class="stage-info">
+        <h3 id="cpkTitle"></h3>
+        <p id="cpkWhat"></p>
+        <p class="muted small">公式：Cp＝(USL−LSL)／6σ，只看「寬度夠不夠」；Cpk＝min(USL−μ, μ−LSL)／3σ，連「有沒有置中」一起算。不良率假設常態分布，用兩邊尾巴面積換算 ppm。</p>
+      </div>
+    </div>
+
+    <!-- 管制圖 -->
+    <div class="pane stage" id="paneCc" hidden>
+      <p class="muted small" style="margin-top:0">例子：某 fab 機台每片晶圓量一次膜厚（已換算成離中心線幾個 σ）。前 12 點都正常，第 13 點起依情境注入異常。一點一點加，看哪一條 Western Electric 規則先叫。</p>
+      <div class="controls" style="margin-bottom:8px">
+        <div class="seg" id="scn">
+          <button data-s="normal" class="on">正常</button>
+          <button data-s="shift">均值偏移</button>
+          <button data-s="drift">慢慢漂移</button>
+          <button data-s="spike">單點突波</button>
+          <button data-s="vari">變異變大</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <svg class="fig" id="cc" viewBox="0 0 900 300" role="img" aria-label="管制圖" style="min-width:640px"></svg>
+      </div>
+      <div class="controls" style="margin:12px 0 0">
+        <button class="btn" id="ccPrev">← 退一點</button>
+        <button class="btn primary" id="ccNext">加一點 →</button>
+        <button class="btn" id="ccAll">全部加完</button>
+        <span class="muted small" id="ccPhase"></span>
+      </div>
+      <div class="stage-info">
+        <h3 id="ccTitle"></h3>
+        <p id="ccWhat"></p>
+        <p class="muted small" id="ccHits"></p>
+        <p class="muted small">規則（同一側才算）：R1 一點超出 ±3σ；R2 連續 3 點有 2 點超出 2σ；R3 連續 5 點有 4 點超出 1σ；R4 連續 8 點在中心線同一側；R5 趨勢（Nelson 規則：連續 6 點一路升或一路降）。黑色方塊是違規點，上方標的是該規則第一次觸發。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="overview">
+    <h2>三個考點一張表</h2>
+    <div class="table-wrap"><table>
+      <tr><th></th><th>G01 良率與 SPC</th><th>G02 量產導入流程</th><th>G03 規格書判讀</th></tr>
+      <tr><td>核心問題</td><td>做出來的東西有多一致？壞的在哪？</td><td>怎麼一關一關把設計推到量產？出事怎麼處理？</td><td>規格書上的數字保證了什麼、在什麼條件下？</td></tr>
+      <tr><td>主要工具</td><td>Cp／Cpk、管制圖、wafer map、WAT／PCM、inline 量測</td><td>EVT／DVT／PVT、ECN／PCN、8D、FMEA</td><td>Abs Max、Recommended、Electrical Characteristics、熱阻</td></tr>
+      <tr><td>常見數字</td><td>Cpk ≥ 1.33（約 63 ppm）、1.67（約 0.6 ppm）</td><td>PCN 至少提前 90 天；停產 6 個月內下最後訂單</td><td>T<sub>J</sub>＝T<sub>A</sub>＋P×θ<sub>JA</sub></td></tr>
+      <tr><td>RD／AE 最常碰到</td><td>CP（晶圓針測）良率掉了要找原因</td><td>客戶要 8D、改版要發 PCN</td><td>客戶問「這個值保證嗎」「這樣用會不會燒」</td></tr>
+    </table></div>
+  </section>
+
+  <section class="card">
+    <h2>目錄</h2>
+    <ul class="toc">
+      <li><a href="#g01"><span class="tag">G01</span><b>良率與 SPC</b><span class="small">Cpk、管制圖、wafer map</span></a></li>
+      <li><a href="#g02"><span class="tag">G02</span><b>量產導入流程</b><span class="small">NPI、ECN／PCN、8D、FMEA</span></a></li>
+      <li><a href="#g03"><span class="tag">G03</span><b>規格書判讀</b><span class="small">Abs Max、typ／min／max、熱阻</span></a></li>
+      <li><a href="#confuse"><span class="tag">對照</span><b>容易混淆</b><span class="small">兩兩比較</span></a></li>
+    </ul>
+  </section>
+
+  <!-- ===== G01 ===== -->
+  <section class="card" id="g01">
+    <h2><span class="tag">G01</span>良率與 SPC</h2>
+    <p><b>一句話：</b>良率看的是「結果」（多少顆好），SPC 看的是「過程」（製程有沒有在變）；Cpk 把兩者接起來——只要製程穩定，就能從平均值和標準差<b>預估</b>不良率，而不是等到壞了才知道。</p>
+
+    <figure>
+      <div class="table-wrap">
+        <svg class="fig" id="wm" viewBox="0 0 900 230" role="img" aria-label="wafer map 六種典型型態" style="min-width:640px"></svg>
+      </div>
+      <figcaption>Wafer map（晶圓圖）的空間型態就是線索：黑點是 CP fail 的 die。分類名稱沿用常見的 WM-811K 資料集分類；原因只是「最常見的方向」，要再用機台履歷和 inline 資料確認。</figcaption>
+    </figure>
+
+    <div class="block" id="g01-l1">
+      <h3><span class="lv">L1</span>是什麼</h3>
+      <div class="table-wrap"><table>
+        <tr><th>名詞</th><th>意思</th></tr>
+        <tr><td>良率的幾段</td><td>Line yield（晶圓走完製程沒報廢的比例）→ CP yield／wafer sort yield（晶圓針測，每顆 die 好壞）→ assembly yield（封裝）→ FT yield（final test，成品測試）。總良率是各段相乘</td></tr>
+        <tr><td>Defect、killer defect</td><td>晶圓上的缺陷（微粒、刮傷、殘留、圖形異常）。會讓電路失效的叫 killer defect；落在空白區的不一定致命</td></tr>
+        <tr><td>缺陷密度 D<sub>0</sub></td><td>每平方公分平均有幾顆致命缺陷。Poisson 模型：Y＝e<sup>−A·D<sub>0</sub></sup>（A＝die 面積）。缺陷實際上會成群，負二項模型 Y＝(1＋A·D<sub>0</sub>／α)<sup>−α</sup> 加一個群聚參數 α；α 越大越接近 Poisson</td></tr>
+        <tr><td>Wafer map（bin map）</td><td>把每顆 die 的 CP 結果（pass 或 fail 的 bin 號）畫回晶圓位置。常見型態：Center、Donut、Edge-Ring、Edge-Loc、Scratch、Loc（局部群聚）、Random、Near-full（見上圖）</td></tr>
+        <tr><td>WAT／PCM</td><td>Wafer Acceptance Test／Process Control Monitor：在晶圓的切割道（scribe line）放測試結構（test key），晶圓出貨前量電性：V<sub>t</sub>、I<sub>dsat</sub>、漏電、片電阻（R<sub>s</sub>）、接觸／via 電阻、電容、崩潰電壓、ring oscillator 速度。每片量數個 site，不合 WAT spec 的晶圓不出貨</td></tr>
+        <tr><td>Inline measurement</td><td>製程中途、晶圓還沒做完就量：膜厚（橢圓偏光儀）、線寬 CD（CD-SEM、光學 OCD）、疊對誤差 overlay、缺陷掃描（亮場／暗場檢查，再用 review SEM 看缺陷長相）。通常是抽樣量</td></tr>
+        <tr><td>SPC</td><td>Statistical Process Control：用管制圖持續監看製程參數，分辨「正常的隨機變動」（common cause）和「有特定原因的異常」（assignable／special cause）</td></tr>
+        <tr><td>管制圖</td><td>中心線 CL ± 3σ 畫出 UCL／LCL。常見 X̄-R（每組量幾點取平均和全距）、I-MR（每次只量一點，例如一片晶圓一個值）。超出管制界限叫 OOC（out of control）</td></tr>
+        <tr><td>Western Electric 規則</td><td>除了「一點超出 3σ」，還看型態：2／3 點超 2σ、4／5 點超 1σ、連 8 點同側（都要同一側）。Nelson 規則再加趨勢（連 6 點升降）等。「連幾點同側」各規則集不同：Western Electric 8 點、Nelson 9 點、AIAG SPC 手冊 7 點；看公司或客戶指定哪一套</td></tr>
+        <tr><td>Cp、Cpk</td><td>Cp＝(USL−LSL)／6σ：規格寬度夠不夠裝下製程變異；Cpk＝min(USL−μ, μ−LSL)／3σ：再考慮偏心。Cpk ≤ Cp，置中時兩者相等</td></tr>
+        <tr><td>Cpk 與不良率</td><td>置中常態下：Cpk 1.0 ≈ 2700 ppm、1.33 ≈ 63 ppm、1.67 ≈ 0.57 ppm、2.0 ≈ 0.002 ppm。常見門檻：既有製程 1.33、新製程或安全關鍵 1.5～1.67、「六標準差」2.0</td></tr>
+        <tr><td>Ppk</td><td>公式跟 Cpk 一樣，但 σ 用「全部資料的整體標準差」（含批與批之間的漂移）；Cpk 用組內（短期）σ。所以 Ppk 通常 ≤ Cpk</td></tr>
+        <tr><td>Gauge R&R（MSA）</td><td>量測系統分析：量測本身的重複性與再現性佔公差多少。常用門檻：&lt;10% 可接受、10～30% 視情況、&gt;30% 不可用</td></tr>
+        <tr><td>OOC vs OOS</td><td>OOC 超出管制界限（製程在變，產品可能還合格）；OOS 超出規格界限（產品不合格）</td></tr>
+      </table></div>
+    </div>
+
+    <div class="block" id="g01-l2">
+      <h3><span class="lv l2">L2</span>為什麼</h3>
+      <ul>
+        <li><b>為什麼管制界限和規格界限是兩回事？</b>規格界限是客戶或設計說「可以接受的範圍」；管制界限是從製程自己的資料算出來的 ±3σ，代表「這個製程正常時會落在哪」。點還在規格內但跑出管制界限，代表製程變了，應該在出不良品<b>之前</b>先處理。</li>
+        <li><b>為什麼看 Cpk 不只看 Cp？</b>Cp 只比寬度，不管中心在哪。變異很小但整個偏向上限，Cp 很漂亮、實際一直有不良。主圖的「Cp 高、Cpk 低」就是這種：<b>對策是調中心（trim、調 recipe target），不是去降變異</b>，前者便宜得多。</li>
+        <li><b>為什麼 Cpk 1.33 是常見門檻？</b>1.33 代表最近的規格邊界離平均值 4σ，置中時約 63 ppm。留這 1σ 是因為製程長期會漂。六標準差的「3.4 ppm」是假設 Cp＝2 的製程長期偏移 1.5σ，等於 Cpk 1.5 單邊尾巴的不良率。</li>
+        <li><b>為什麼 die 越大良率越差？</b>Poisson 模型 Y＝e<sup>−A·D<sub>0</sub></sup>：面積加倍，同樣的缺陷密度下良率是原本的平方。顯示驅動 IC 的 die 細長（輸出腳上千隻），面積雖不算最大，但每片晶圓的 die 數和邊緣損失特別受影響，所以 D<sub>0</sub> 和邊緣良率都要盯。</li>
+        <li><b>為什麼 Poisson 常常太悲觀？</b>真實缺陷會成群（某一顆微粒灑一片、某台機台局部有問題）。缺陷擠在少數 die 上，其他 die 反而乾淨，實際良率比均勻分布的預估高。負二項模型用 α 描述這種群聚。</li>
+        <li><b>為什麼 wafer map 型態能指向機台？</b>每種製程問題有自己的「空間指紋」：旋轉類製程（旋塗、CMP、單片濕式清洗）出同心圓；邊緣溫度或電漿不均出 Edge-Ring；搬運或 CMP 刮傷是一條線；微粒是隨機散點。型態先縮小範圍，再查該批走過哪些機台（tool commonality）。</li>
+        <li><b>為什麼 WAT 全過，CP 還是會掉？</b>WAT 量的是切割道上的少數測試結構，只代表「電晶體參數在不在 window 內」；CP 量的是整顆電路。隨機缺陷、局部圖形問題、設計對某參數特別敏感（margin 不夠），WAT 都看不到。反過來 WAT 偏到 window 邊緣但沒出 spec，也可能讓 margin 小的設計 CP 掉。</li>
+        <li><b>為什麼有了 CP／FT，製程中還要做 inline measurement？</b>晶圓要走幾週到幾個月才做完，等到 CP 才發現膜厚或 CD 偏了，這段時間在線上的晶圓全都受影響。inline 量測在每一站之後就抓偏移，回饋快、還能在可重工（rework，例如黃光重做）的階段救回來，減少整批報廢；也讓 CP 掉的時候有資料可以回頭對到是哪一站。</li>
+        <li><b>為什麼算 Cpk 前要先確認量測系統和分布？</b>量測誤差會灌進 σ，Gauge R&R 大時 Cpk 被低估；漏電、時間這類參數常是偏態（例如對數常態），硬套常態公式會算錯尾巴的 ppm，要先轉換或用非常態方法。</li>
+      </ul>
+    </div>
+
+    <div class="block" id="g01-l3">
+      <h3><span class="lv l3">L3</span>出問題怎麼辦</h3>
+      <div class="table-wrap"><table>
+        <tr><th>現象</th><th>最可能原因</th><th>對策</th></tr>
+        <tr><td>某幾批 CP 良率突然掉，wafer map 是整圈邊緣 fail</td><td>邊緣的製程均勻性問題：蝕刻、沉積或退火（RTP）在晶圓邊緣溫度／電漿不均</td><td>調出這幾批的 inline 膜厚／CD 與 WAT 的邊緣 site 比對；查共同機台；短期把邊緣 die 加嚴測試或 ink-out，長期請 fab 調機台</td></tr>
+        <tr><td>單片晶圓有一條細長弧線的 fail</td><td>搬運刮傷或 CMP 刮傷（scratch）</td><td>查該片的機台履歷；只有單片多半是偶發搬運；同機台連續多片就 hold 機台、請 fab 開異常單</td></tr>
+        <tr><td>WAT 都在 spec 內，但某一批 V<sub>t</sub> 偏高、CP 的輸出偏差或速度項掉很多</td><td>製程落在慢角（slow corner）邊緣，設計對這個參數的 margin 不夠</td><td>短期：請 fab 把 target 拉回中心、用 trim／OTP 微調；長期：設計端在 DVT 就要拿 corner lot 驗證 margin。<b>不要只靠放寬 test limit</b>，放寬要有 characterization 資料支持</td></tr>
+        <tr><td>內部算出 Cpk 1.5，客戶進料檢驗卻常抓到不良</td><td>Cpk 只用短期（單批）σ，沒包含批間漂移；資料非常態；或量測系統誤差大</td><td>改算跨多批的 Ppk；檢查直方圖和常態性；做 Gauge R&R；對齊雙方的量測條件（溫度、治具）</td></tr>
+        <tr><td>管制圖連續 8 點在中心線上方，但全部都在規格內</td><td>製程均值偏移了：換新批材料、機台保養（PM）後沒校回、換了量測機台</td><td>不能因為沒有 OOS 就不管。找 assignable cause、確認是否要調回；若是刻意改製程，要重算管制界限並留紀錄</td></tr>
+        <tr><td>Cp 只有 0.9，怎麼調中心都不夠</td><td>變異本身太大，規格寬度裝不下</td><td>先拆變異來源（片內、片間、批間、量測），從最大項下手；設計端可加 trim 或放寬設計 margin；真的不行再和客戶談規格</td></tr>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ===== G02 ===== -->
+  <section class="card" id="g02">
+    <h2><span class="tag">G02</span>量產導入流程</h2>
+    <p><b>一句話：</b>NPI 是一連串「過關才能往下」的閘門：EVT 證明<b>設計能動</b>、DVT 證明<b>設計在各種極限下都對</b>、PVT 證明<b>產線能穩定做出來</b>；之後任何改變都要走 ECN（內部）和 PCN（通知客戶），出了問題用 8D 收尾、用 FMEA 事先預防。</p>
+
+    <figure>
+      <div class="table-wrap">
+        <svg class="fig" viewBox="0 0 900 220" role="img" aria-label="NPI 階段流程" style="min-width:640px">
+          <defs><marker id="ahN" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="fill-muted"/></marker></defs>
+          <text x="0" y="18" class="t-strong">系統產品的 NPI 閘門（每一關都有 exit criteria）</text>
+          <rect class="bx" x="0" y="34" width="160" height="78" rx="6"/><text x="12" y="58" class="t-strong">設計／原型</text><text x="12" y="80" class="t-small">概念、架構</text><text x="12" y="98" class="t-small">可以大改</text>
+          <rect class="bx" x="184" y="34" width="160" height="78" rx="6"/><text x="196" y="58" class="t-strong">EVT</text><text x="196" y="80" class="t-small">工程驗證：功能對嗎</text><text x="196" y="98" class="t-small">設計還能改</text>
+          <rect class="bx" x="368" y="34" width="160" height="78" rx="6"/><text x="380" y="58" class="t-strong">DVT</text><text x="380" y="80" class="t-small">設計驗證：極限、可靠度</text><text x="380" y="98" class="t-small">接近量產設計</text>
+          <rect class="bx" x="552" y="34" width="160" height="78" rx="6"/><text x="564" y="58" class="t-strong">PVT</text><text x="564" y="80" class="t-small">生產驗證：良率、產能</text><text x="564" y="98" class="t-small">設計凍結</text>
+          <rect class="bx-accent" x="736" y="34" width="160" height="78" rx="6"/><text x="748" y="58" class="t-strong">MP</text><text x="748" y="80" class="t-small">量產（先 ramp）</text><text x="748" y="98" class="t-small">改變走 ECN／PCN</text>
+          <line class="ln" x1="162" y1="73" x2="182" y2="73" marker-end="url(#ahN)"/><line class="ln" x1="346" y1="73" x2="366" y2="73" marker-end="url(#ahN)"/>
+          <line class="ln" x1="530" y1="73" x2="550" y2="73" marker-end="url(#ahN)"/><line class="ln" x1="714" y1="73" x2="734" y2="73" marker-end="url(#ahN)"/>
+          <text x="0" y="146" class="t-strong">對應到 IC 公司</text>
+          <rect class="bx-soft" x="0" y="160" width="160" height="50" rx="6"/><text x="12" y="190" class="t-small">Tape-out、首批晶圓</text>
+          <rect class="bx-soft" x="184" y="160" width="160" height="50" rx="6"/><text x="196" y="190" class="t-small">ES 工程樣品、bring-up</text>
+          <rect class="bx-soft" x="368" y="160" width="160" height="50" rx="6"/><text x="380" y="182" class="t-small">Corner lot、特性量測</text><text x="380" y="200" class="t-small">可靠度認證、CS 樣品</text>
+          <rect class="bx-soft" x="552" y="160" width="160" height="50" rx="6"/><text x="564" y="182" class="t-small">試產批、測試程式定版</text><text x="564" y="200" class="t-small">良率爬升</text>
+          <rect class="bx-soft" x="736" y="160" width="160" height="50" rx="6"/><text x="748" y="182" class="t-small">量產、SPC 監控</text><text x="748" y="200" class="t-small">客訴走 8D</text>
+        </svg>
+      </div>
+      <figcaption>越往右，改東西越貴：EVT 改是改圖，PVT 後改就要重做驗證、通知客戶。IC 公司這一列是常見對應，各公司叫法不一。</figcaption>
+    </figure>
+
+    <figure>
+      <div class="table-wrap">
+        <svg class="fig" viewBox="0 0 900 110" role="img" aria-label="8D 九個步驟" style="min-width:640px">
+          <text x="0" y="18" class="t-strong">8D：客訴處理的標準格式</text>
+          <g id="eightD"></g>
+        </svg>
+      </div>
+      <figcaption>D3 先止血、D4 才找病因；D4 要找兩個根因：為什麼會發生（occurrence）、為什麼沒被抓到（escape）。</figcaption>
+    </figure>
+
+    <div class="block" id="g02-l1">
+      <h3><span class="lv">L1</span>是什麼</h3>
+      <div class="table-wrap"><table>
+        <tr><th>名詞</th><th>意思</th></tr>
+        <tr><td>NPI</td><td>New Product Introduction：新產品從設計走到量產的整套流程，由階段閘門（gate）和每關的 exit criteria 組成</td></tr>
+        <tr><td>EVT</td><td>Engineering Validation Test：驗證功能符合需求，是設計的「可行性證明」，可能還是手工或小量做出來的</td></tr>
+        <tr><td>DVT</td><td>Design Validation Test：用接近量產的設計與製程，驗證規格、極限條件、可靠度與法規</td></tr>
+        <tr><td>PVT</td><td>Production Validation Test：設計不再改，驗證產線能以目標良率和產能做出來；做出一條「golden line」再複製</td></tr>
+        <tr><td>MP／Ramp</td><td>Mass Production；PVT 後先 ramp（逐步放量），良率與產能穩定、料夠才進全量</td></tr>
+        <tr><td>Golden sample</td><td>經雙方確認的標準品，當作外觀、功能、測試比對的基準</td></tr>
+        <tr><td>Qualification</td><td>可靠度認證：依 JEDEC（如 JESD47）或車用 AEC-Q100 做 HTOL、溫度循環、ESD、latch-up 等加速應力測試</td></tr>
+        <tr><td>ECR／ECN</td><td>Engineering Change Request／Notice：<b>內部</b>的工程變更申請與通知，改圖面、BOM、製程、測試程式都要走，要有版本與核准紀錄</td></tr>
+        <tr><td>ECO／metal fix</td><td>Engineering Change Order：tape-out 後發現設計錯，在既有設計上做局部修改。metal fix 只改金屬層光罩（常搭配預先放好的 spare cell），電晶體層不動，光罩費和週期都比全層改版（full re-spin）省；EVT 抓到的 bug 常這樣修，修完再進 DVT 驗證</td></tr>
+        <tr><td>PCN</td><td>Product Change Notification：變更會影響客戶（外形、功能、品質、可靠度、產地）時<b>通知客戶</b>。JEDEC J-STD-046：至少在變更後首次出貨前 90 天發出；客戶 30 天內沒回覆通常視為接受</td></tr>
+        <tr><td>PDN／EOL</td><td>停產通知（J-STD-048）：通知後 6 個月內是最後下單（last time buy），12 個月內最後出貨</td></tr>
+        <tr><td>8D</td><td>Eight Disciplines：D0 緊急應變、D1 組隊、D2 描述問題（5W2H）、D3 臨時圍堵、D4 根因、D5 選定永久對策、D6 執行並驗證、D7 防止再發、D8 結案表揚。源自 Ford</td></tr>
+        <tr><td>FMEA</td><td>Failure Mode and Effects Analysis：事先列出「可能怎麼壞、壞了多嚴重、多常發生、抓不抓得到」。DFMEA 看設計、PFMEA 看製程。傳統用 RPN＝S×O×D 排序；AIAG-VDA 2019 版改成七步驟，用 Action Priority（高／中／低）取代 RPN</td></tr>
+        <tr><td>Control plan</td><td>量產時每個關鍵特性要量什麼、怎麼量、多常量、超出怎麼辦；通常由 PFMEA 推出來</td></tr>
+      </table></div>
+    </div>
+
+    <div class="block" id="g02-l2">
+      <h3><span class="lv l2">L2</span>為什麼</h3>
+      <ul>
+        <li><b>為什麼要分 EVT、DVT、PVT，不一次做完？</b>每一關要回答的問題不同，而且問題越晚發現越貴。EVT 發現設計錯，改圖就好；DVT 才發現就要重做樣品和驗證；PVT 之後才發現，可能已經備料、排產，還要通知客戶。分關讓「便宜的錯」早點出現。</li>
+        <li><b>為什麼 DVT 一定要用 corner 樣品和極限條件？</b>EVT 樣品多半在典型製程、室溫、標準電壓下能動；量產會碰到整個製程分布和客戶的所有使用條件。IC 用 corner lot（快／慢角）加上電壓與溫度極限掃一遍，才知道 margin 夠不夠。</li>
+        <li><b>ECN 和 PCN 差在哪？為什麼不是每個 ECN 都要 PCN？</b>ECN 是內部變更紀錄，所有變更都要；PCN 是對客戶的承諾，只有影響外形、尺寸、功能、品質或可靠度的變更才需要（換晶圓廠、換封測廠、改光罩、改材料、改規格書數值）。內部改報表格式不必發 PCN。</li>
+        <li><b>為什麼 8D 要先圍堵（D3）再找根因（D4）？</b>根因可能要查好幾週，這段時間不良品還在流出。先把可疑批號隔離、篩選、通知客戶庫存，保護客戶；根因找到、永久對策驗證有效（D6）後才拆掉圍堵。</li>
+        <li><b>為什麼 8D 的根因要分「發生」和「流出」？</b>只修「為什麼會壞」，下一次別的原因造成同樣的壞品還是會流出去；「為什麼測試沒抓到」對應到測試覆蓋率、test limit 或抽樣計畫的漏洞，兩個都要補。</li>
+        <li><b>為什麼 AIAG-VDA 要用 AP 取代 RPN？</b>RPN 三個分數相乘，嚴重度 10、發生度 1、偵測度 1 得 10 分，比嚴重度 3、發生 4、偵測 4 的 48 分還低，可是前者一發生就是安全事故。AP 表格先看嚴重度，再看發生與偵測，避免高嚴重度風險被乘法稀釋。</li>
+        <li><b>為什麼 D7 防再發常寫「更新 FMEA 和 control plan」？</b>FMEA 是預防的知識庫，8D 是事後補救。客訴暴露的失效模式如果沒回寫 FMEA、沒加進測試或管制計畫，下一個新產品還會重犯。</li>
+      </ul>
+    </div>
+
+    <div class="block" id="g02-l3">
+      <h3><span class="lv l3">L3</span>出問題怎麼辦</h3>
+      <div class="table-wrap"><table>
+        <tr><th>現象</th><th>最可能原因</th><th>對策</th></tr>
+        <tr><td>客戶回報某 date code 的面板出現線缺陷，要求 48 小時內回覆</td><td>8D 啟動，根因未知</td><td>先回 D0～D3：組隊、用 5W2H 描述問題、隔離同 lot／date code 的庫存與在途品、提供篩選方式；同時要回不良品做失效分析（FA），D4 之後再回完整 8D</td></tr>
+        <tr><td>同樣的客訴半年後又來一次</td><td>上次只修了單點（換了一台機台或改了一批），D7 沒做：沒更新 FMEA、測試程式、管制計畫，或沒水平展開到同類產品</td><td>重開 8D，補「流出根因」；把失效模式回寫 DFMEA／PFMEA、加測試項或加嚴 limit；檢查同製程的其他料號</td></tr>
+        <tr><td>想把 COF 封測換到另一家廠，業務希望下個月就出貨</td><td>屬於會影響客戶的變更，必須 PCN</td><td>依 J-STD-046 至少提前 90 天發 PCN，附可靠度與比對資料、提供樣品給客戶驗證；大客戶合約常要求更長的通知期或事前核准，以合約為準</td></tr>
+        <tr><td>量產中收到晶圓廠（或封測廠）的 PCN：要換某站機台、材料或搬到另一座廠</td><td>上游變更，可能影響我方產品的電性、良率或可靠度</td><td>要對方的變更內容、比對資料（WAT、可靠度）與時程；評估是否要拿變更後的樣品重做特性量測與可靠度驗證；判斷是否影響我方客戶，需要的話我方也要對客戶發 PCN；變更前的料可考慮先備庫存</td></tr>
+        <tr><td>PVT 良率卡在目標以下，一直上不去</td><td>前幾大 fail bin 沒拆清楚；可能是設計 margin 不夠，也可能是製程或測試問題</td><td>做 bin Pareto，先攻前兩三名；判斷是設計（需要 ECO、回到 DVT 驗證）還是製程／測試（調 recipe、治具、test limit）。不要在設計問題上靠一直放寬 limit 硬過</td></tr>
+        <tr><td>量產後才發現低溫下某功能失效，DVT 報告卻全過</td><td>DVT 只用典型樣品、只測室溫，或溫度條件沒覆蓋客戶規格</td><td>回補 corner lot × 溫度 × 電壓的驗證矩陣；把漏掉的條件寫進 DVT checklist 和 DFMEA；必要時對已出貨品評估風險並通知客戶</td></tr>
+        <tr><td>測試程式改了 limit，客戶端退貨率上升才發現</td><td>變更沒走 ECN、沒有版本控管，也沒評估是否要 PCN</td><td>測試程式、量測工具、自製分析軟體都納入 ECN 版本管理；改 limit 前附 characterization 依據並評估對客戶的影響</td></tr>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ===== G03 ===== -->
+  <section class="card" id="g03">
+    <h2><span class="tag">G03</span>規格書判讀</h2>
+    <p><b>一句話：</b>規格書不是「這顆 IC 的能力清單」，是一份<b>有條件的承諾</b>：Abs Max 是「超過會壞」，Recommended 是「在這裡面才保證正常」，Electrical Characteristics 的 min／max 才是保證值，typ 只是參考；每個數字都要連著它的<b>測試條件</b>一起讀。</p>
+
+    <figure>
+      <div class="table-wrap">
+        <svg class="fig" viewBox="0 0 900 214" role="img" aria-label="同一支腳的三種範圍" style="min-width:640px">
+          <text x="0" y="18" class="t-strong">例：TI TPS65150（LCD 面板偏壓 PMIC）的 VIN 腳，三種範圍疊在一起看</text>
+          <!-- scale: x = 100 + V*80 ; -0.5..9 V -->
+          <rect class="bx-soft" x="100" y="96" width="144" height="34"/>
+          <rect class="bx-accent" x="244" y="96" width="336" height="34"/>
+          <rect class="bx" x="580" y="96" width="80" height="34"/>
+          <rect class="fill-fg" x="660" y="96" width="180" height="34"/>
+          <rect class="fill-fg" x="60" y="96" width="16" height="34"/>
+          <line class="ln-fg" x1="60" y1="130" x2="840" y2="130"/>
+          <line class="ln-fg" x1="100" y1="130" x2="100" y2="136"/><text x="100" y="152" class="t-small" text-anchor="middle">0</text>
+          <line class="ln-fg" x1="76" y1="130" x2="76" y2="136"/><text x="72" y="152" class="t-small" text-anchor="middle">−0.3</text>
+          <line class="ln-fg" x1="244" y1="130" x2="244" y2="136"/><text x="244" y="152" class="t-small" text-anchor="middle">1.8</text>
+          <line class="ln-fg" x1="364" y1="130" x2="364" y2="136"/><text x="364" y="152" class="t-small" text-anchor="middle">3.3</text>
+          <line class="ln-fg" x1="580" y1="130" x2="580" y2="136"/><text x="580" y="152" class="t-small" text-anchor="middle">6</text>
+          <line class="ln-fg" x1="660" y1="130" x2="660" y2="136"/><text x="660" y="152" class="t-small" text-anchor="middle">7</text>
+          <text x="840" y="152" class="t-small" text-anchor="end">VIN（V）</text>
+          <!-- labels above -->
+          <text x="106" y="88" class="t-small">太低：UVLO 關機</text>
+          <text x="254" y="64" class="t-accent">Recommended 1.8～6 V</text>
+          <text x="254" y="84" class="t-small">在這裡面才保證 EC 表的數值</text>
+          <text x="364" y="172" class="t-small" text-anchor="middle">↑ EC 表的測試條件 VI＝3.3 V</text>
+          <text x="590" y="64" class="t-small">6～7 V：不會壞，</text>
+          <text x="590" y="84" class="t-small">但功能不保證</text>
+          <text x="712" y="40" class="t-accent">超過 Abs Max 7 V</text>
+          <text x="712" y="58" class="t-small">可能永久損壞；</text>
+          <text x="712" y="76" class="t-small">長時間逼近也傷可靠度</text>
+          <text x="0" y="204" class="t-small">同一顆的 T<tspan baseline-shift="sub" font-size="9">J</tspan>：Recommended −40～125 °C、Abs Max −40～150 °C、熱關機約 155 °C（typ）。三個數字各管不同的事。</text>
+        </svg>
+      </div>
+      <figcaption>數值取自 TI TPS65150 規格書（SLVS576B）。黑色＝Abs Max 以外；灰底＝規格內但不保證運作的區段；粗框＝Recommended。</figcaption>
+    </figure>
+
+    <figure>
+      <div class="table-wrap">
+        <svg class="fig" viewBox="0 0 900 230" role="img" aria-label="熱阻與接面溫度" style="min-width:640px">
+          <defs><marker id="ahT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-head"/></marker></defs>
+          <text x="0" y="18" class="t-strong">熱怎麼走：大部分不是從頂面散掉</text>
+          <rect class="bx-soft" x="20" y="150" width="360" height="22"/>
+          <text x="30" y="166" class="t-small">PCB（銅箔、via、地層）</text>
+          <rect class="bx" x="110" y="96" width="180" height="54" rx="3"/>
+          <rect class="fill-fg" x="170" y="132" width="60" height="10"/>
+          <text x="120" y="116" class="t-small">封裝（塑膠）</text>
+          <text x="238" y="141" class="t-small">die</text>
+          <line class="arrow" x1="200" y1="96" x2="200" y2="60" marker-end="url(#ahT)"/>
+          <text x="210" y="70" class="t-small">頂面：少部分</text>
+          <text x="210" y="50" class="t-small">ψ<tspan baseline-shift="sub" font-size="9">JT</tspan> 用頂面溫度推 T<tspan baseline-shift="sub" font-size="9">J</tspan></text>
+          <line class="arrow" x1="200" y1="172" x2="200" y2="208" marker-end="url(#ahT)" stroke-width="3"/>
+          <text x="212" y="204" class="t-small">經 PCB：多數熱（約 60～95%）</text>
+          <!-- calc -->
+          <rect class="bx" x="440" y="34" width="456" height="186" rx="6"/>
+          <text x="456" y="58" class="t-strong">算一次 T<tspan baseline-shift="sub" font-size="10">J</tspan>（TPS65150 HTSSOP）</text>
+          <text x="456" y="84" class="t-small">θ<tspan baseline-shift="sub" font-size="9">JA</tspan>＝36.4 °C/W（JEDEC 測試板），ψ<tspan baseline-shift="sub" font-size="9">JT</tspan>＝0.4 °C/W</text>
+          <text x="456" y="110">① 估算：T<tspan baseline-shift="sub" font-size="9">J</tspan>＝T<tspan baseline-shift="sub" font-size="9">A</tspan>＋P×θ<tspan baseline-shift="sub" font-size="9">JA</tspan>＝85＋1.0×36.4＝121.4 °C</text>
+          <text x="456" y="132" class="t-small">離 Recommended 上限 125 °C 只剩 3.6 °C，而且你的板子不是 JEDEC 板</text>
+          <text x="456" y="160">② 實測：頂面量到 T<tspan baseline-shift="sub" font-size="9">T</tspan>＝95 °C</text>
+          <text x="456" y="182">　 T<tspan baseline-shift="sub" font-size="9">J</tspan>＝T<tspan baseline-shift="sub" font-size="9">T</tspan>＋P×ψ<tspan baseline-shift="sub" font-size="9">JT</tspan>＝95＋1.0×0.4 ≈ 95.4 °C</text>
+          <text x="456" y="206" class="t-small">ψ 不是真的熱阻，只能拿來從量到的溫度反推 T<tspan baseline-shift="sub" font-size="9">J</tspan></text>
+        </svg>
+      </div>
+      <figcaption>θ<sub>JA</sub> 是在 JEDEC 標準測試板上量的，用來<b>比較不同封裝</b>，不是你的板子上的真實值；同一顆 1s 板和 2s2p 板可差到約 50%。實機要靠量頂面（ψ<sub>JT</sub>）或板溫（ψ<sub>JB</sub>）反推。① 的 1.0 W 為假設值。</figcaption>
+    </figure>
+
+    <div class="block" id="g03-l1">
+      <h3><span class="lv">L1</span>是什麼</h3>
+      <div class="table-wrap"><table>
+        <tr><th>欄位／名詞</th><th>意思</th></tr>
+        <tr><td>Absolute Maximum Ratings</td><td>超過可能<b>永久損壞</b>的應力極限（電壓、電流、T<sub>J</sub>、儲存溫度、焊接溫度）。標準註腳：只是 stress rating，不代表能在這裡正常運作；長時間處在極限值會影響可靠度</td></tr>
+        <tr><td>ESD Ratings</td><td>HBM（人體模型）、CDM（帶電元件模型）耐壓。JEDEC JEP155／JEP157：HBM 500 V、CDM 250 V 即可在標準 ESD 管控的產線安全生產。這是<b>製造搬運</b>等級，不等於系統級 ESD（IEC 61000-4-2）</td></tr>
+        <tr><td>Recommended Operating Conditions</td><td>保證正常運作的條件範圍（供電、輸入電壓、T<sub>A</sub>、T<sub>J</sub>、外部元件值）。EC 表的保證值只在這個範圍內成立</td></tr>
+        <tr><td>Electrical Characteristics（EC）</td><td>電性規格表。表頭寫共同測試條件（例：VI＝3.3 V、T<sub>A</sub>＝−40～85 °C、typ 在 25 °C），每列再寫個別條件</td></tr>
+        <tr><td>min／max</td><td>保證值。可能是量產 100% 測試，也可能是註腳寫的「由設計／特性量測保證」（guaranteed by design／characterization，抽樣、不是每顆都測）</td></tr>
+        <tr><td>typ</td><td>典型值：特性樣品在 25 °C、標稱電壓下的平均或中位數，<b>不保證</b>，只能當設計參考</td></tr>
+        <tr><td>Test conditions</td><td>這個數字是在什麼條件量的：電流、負載、溫度、頻率。例：R<sub>DS(on)</sub> 寫在 I<sub>DS</sub>＝500 mA，換條件數值就不同</td></tr>
+        <tr><td>Thermal Information</td><td>θ<sub>JA</sub>（接面到環境）、θ<sub>JC(top)</sub>／θ<sub>JC(bot)</sub>（到封裝頂／底，用銅冷板量）、θ<sub>JB</sub>（到板子）、ψ<sub>JT</sub>、ψ<sub>JB</sub>（特性參數，用量到的頂面／板溫反推 T<sub>J</sub>）。單位 °C/W</td></tr>
+        <tr><td>Derating</td><td>降額：環境溫度越高，允許的功耗越小。P<sub>max</sub>(T<sub>A</sub>)＝(T<sub>J,max</sub>−T<sub>A</sub>)／θ<sub>JA</sub>；也泛指設計上刻意不用滿額定值（電壓、電流打折使用）</td></tr>
+        <tr><td>Typical Characteristics</td><td>曲線圖（效率對負載、輸出對溫度…），都是典型值，不是保證</td></tr>
+        <tr><td>Timing／Switching Characteristics</td><td>時序規格（setup／hold、上升時間、傳輸延遲），一樣要看量測負載電容和參考電位</td></tr>
+        <tr><td>文件狀態</td><td>Advance Information／Preliminary（數值可能還會改）→ Production Data（量產定版）。看 revision history 知道哪一版改了什麼</td></tr>
+      </table></div>
+      <div class="table-wrap" style="margin-top:12px"><table>
+        <tr><th>降額例（θ<sub>JA</sub> 36.4 °C/W，以 Recommended T<sub>J</sub> 125 °C 為上限）</th><th class="num">T<sub>A</sub> 25 °C</th><th class="num">50 °C</th><th class="num">70 °C</th><th class="num">85 °C</th></tr>
+        <tr><td>可承受功耗 P<sub>max</sub></td><td class="num">2.75 W</td><td class="num">2.06 W</td><td class="num">1.51 W</td><td class="num">1.10 W</td></tr>
+      </table></div>
+      <p class="muted small">用 Abs Max 的 150 °C 去算會高估可用功耗；而且 θ<sub>JA</sub> 是測試板數值，只能當起點。</p>
+    </div>
+
+    <div class="block" id="g03-l2">
+      <h3><span class="lv l2">L2</span>為什麼</h3>
+      <ul>
+        <li><b>為什麼不能把 Abs Max 當成工作條件？</b>Abs Max 只保證「不立刻壞」，不保證功能也不保證壽命。Recommended 和 Abs Max 中間那段，IC 可能動作異常、參數偏離 EC 表，長時間待著會加速老化（氧化層、接面劣化）。設計要留在 Recommended 內，而且對上電突波、熱插拔振鈴也要留 margin。</li>
+        <li><b>為什麼不能拿 typ 做設計？</b>typ 是 25 °C 的平均，量產分布有一半比它差。要保證每一顆都能用，要拿 min／max 做 worst case，或用統計方法（例如 RSS）算；只用 typ 算 margin，量產一定會有一部分不過。</li>
+        <li><b>為什麼同一個參數在不同條件下數值差很多？</b>MOSFET 導通電阻隨溫度上升變大、漏電隨溫度指數上升、輸出電壓精度和負載有關。EC 表常分兩列：「T<sub>A</sub>＝25 °C」和「全溫度範圍」，後者的 min／max 比較寬，設計要看後者。</li>
+        <li><b>為什麼 θ<sub>JA</sub> 不能直接拿來算實機 T<sub>J</sub>？</b>θ<sub>JA</sub> 是在 JEDEC 標準板、靜止空氣下量的，目的是讓不同廠的封裝可以比較。實機的銅箔面積、層數、旁邊的熱源、氣流都不同。而且多數熱是經 PCB 散掉，不是從頂面，所以用 θ<sub>JC(top)</sub> 加頂面溫度也會算錯，要用 ψ<sub>JT</sub>。</li>
+        <li><b>為什麼 Recommended T<sub>J</sub> 是 125 °C、Abs Max 150 °C、熱關機 155 °C？</b>125 °C 以內保證規格和壽命；150 °C 是不損壞的極限；熱關機是最後一道保護，觸發時已經超過 Abs Max，<b>不能把熱關機當成正常的溫度管理</b>。</li>
+        <li><b>為什麼有些 min／max 寫「guaranteed by design」？</b>有些參數量產測試太花時間或測不到（高頻時序、溫度係數），廠商用設計模擬和特性量測樣品（常見是平均 ±3σ 以上的範圍）來保證，量產不逐顆測。客戶若這個參數很關鍵，可以要特性報告或要求加測。</li>
+        <li><b>顯示驅動 IC 的規格書要特別看什麼？</b>Source driver 的輸出偏差（通道間、晶片間）、輸出電壓範圍與 gamma 精度、settling time（和面板負載 RC 有關，量測條件要看負載模型）、介面時序（setup／hold）、上電與下電時序（power sequence）、靜態與動態電流的測試圖樣（pattern 不同功耗差很多）。COF／COG 的散熱比一般封裝差，高解析、高更新率時要特別算熱。</li>
+      </ul>
+    </div>
+
+    <div class="block" id="g03-l3">
+      <h3><span class="lv l3">L3</span>出問題怎麼辦</h3>
+      <div class="table-wrap"><table>
+        <tr><th>現象</th><th>最可能原因</th><th>對策</th></tr>
+        <tr><td>量產板偶發 IC 燒毀，量 VIN 穩態只有 5 V（Abs Max 7 V）</td><td>上電或熱插拔時線材電感和輸入電容振鈴，瞬間突波超過 Abs Max</td><td>用示波器抓上電瞬間（單次觸發、頻寬夠）；加 TVS、阻尼（串小電阻或加電解電容）、軟啟動；設計時把突波也算進 margin</td></tr>
+        <tr><td>設計時用 typ 值算 margin，量產有幾個百分比不過</td><td>typ 只是平均，沒算到 min／max 與溫度</td><td>改用 min／max worst case 或統計方法重算；EC 表要看全溫度範圍那一列；必要時加 trim 或放大 margin</td></tr>
+        <tr><td>熱計算用 θ<sub>JA</sub> 說沒問題，實機高溫下 IC 反覆熱關機</td><td>實機板子散熱比 JEDEC 板差（銅箔少、thermal pad 沒焊好或沒打 via、旁邊有熱源）</td><td>量頂面溫度用 ψ<sub>JT</sub> 反推 T<sub>J</sub>；加大 thermal pad 下方的 via 與銅面積、檢查焊錫空洞；依降額重估最高 T<sub>A</sub></td></tr>
+        <tr><td>TCON 用 1.8 V 邏輯驅動 CTRL 腳（規格 V<sub>IH</sub> min 1.6 V），偶發誤動作</td><td>只有 0.2 V margin，加上地彈、雜訊、TCON 輸出在低電壓角落時會掉到 V<sub>IH</sub> 以下</td><td>量實際高電位與雜訊；改用較高的 I/O 電壓、加電位轉換，或選 V<sub>IH</sub> 較低的元件；介面設計要同時看兩邊的 V<sub>OH</sub>／V<sub>IH</sub></td></tr>
+        <tr><td>系統上電順序不定，IC 還沒上電時前級已送訊號進來，偶發漏電、上電異常或閂鎖（latch-up）</td><td>輸入腳電壓超過 Abs Max（輸入腳常見寫法是 VDD＋0.3 V，VDD＝0 時等於只能 0.3 V）：訊號經輸入端 ESD 二極體灌進未上電的 VDD（back-powering），晶片處在半上電狀態</td><td>照規格書的 power sequence 上電；未上電時把訊號拉低或加串聯電阻限流；改用標明可耐受（fail-safe／over-voltage tolerant）的輸入；量 VDD 在未上電時有沒有被抬起來</td></tr>
+        <tr><td>客戶要某參數的 Cpk 資料，但規格書寫的是 guaranteed by design</td><td>該參數量產不逐顆測，沒有量產分布資料</td><td>提供特性量測報告（樣本數、批數、溫度、corner）；若客戶認為關鍵，評估加入量產測試，並更新規格書註腳與 control plan</td></tr>
+        <tr><td>用 Preliminary 版規格書設計，量產版數值變了</td><td>早期版本是預估值，特性量測後修正</td><td>看 revision history 逐項比對差異；對客戶發 PCN（若影響保證值）；內部設計檢查表要記錄依據的規格書版本</td></tr>
+      </table></div>
+    </div>
+  </section>
+
+  <section class="card" id="confuse">
+    <h2>容易混淆</h2>
+    <div class="table-wrap"><table>
+      <tr><th>這兩個</th><th>差在哪</th></tr>
+      <tr><td>Cp vs Cpk</td><td>只看寬度 vs 寬度加置中。Cpk ≤ Cp；兩者差很多代表偏心，調中心就好（G01）</td></tr>
+      <tr><td>Cpk vs Ppk</td><td>組內短期 σ vs 全部資料整體 σ（含批間漂移）。Ppk ≤ Cpk 是常態（G01）</td></tr>
+      <tr><td>管制界限 vs 規格界限</td><td>製程自己的 ±3σ（聲音來自資料）vs 客戶或設計要求（聲音來自客戶）；OOC 不一定 OOS（G01）</td></tr>
+      <tr><td>WAT vs CP</td><td>切割道測試結構的元件參數 vs 每顆 die 的電路功能；WAT 過不保證 CP 過（G01）</td></tr>
+      <tr><td>CP vs FT</td><td>晶圓階段針測 vs 封裝後成品測試；COF 產品封裝在捲帶上，FT 前還有封裝良率（G01）</td></tr>
+      <tr><td>EVT vs DVT vs PVT</td><td>設計能動嗎 vs 設計在所有條件下都對嗎 vs 產線能穩定做嗎（G02）</td></tr>
+      <tr><td>ECN vs PCN</td><td>內部工程變更紀錄（每個變更都要）vs 通知客戶（影響外形、功能、品質、可靠度才要）（G02）</td></tr>
+      <tr><td>PCN vs PDN／EOL</td><td>產品還在，只是改了（至少提前 90 天）vs 產品要停了（6 個月最後下單、12 個月最後出貨）（G02）</td></tr>
+      <tr><td>RPN vs AP</td><td>S×O×D 相乘排序 vs AIAG-VDA 2019 的高／中／低表格，嚴重度優先（G02）</td></tr>
+      <tr><td>D3 vs D5／D6</td><td>臨時圍堵（篩選、隔離，保護客戶）vs 永久對策（消除根因），永久對策驗證後才拆圍堵（G02）</td></tr>
+      <tr><td>Abs Max vs Recommended</td><td>超過會壞 vs 在裡面才保證功能；中間地帶不壞但不保證（G03）</td></tr>
+      <tr><td>θ<sub>JC</sub> vs ψ<sub>JT</sub></td><td>真的熱阻（假設熱全部從頂面走，用冷板量）vs 特性參數（只用來從量到的頂面溫度反推 T<sub>J</sub>）（G03）</td></tr>
+    </table></div>
+  </section>
+
+  <section class="card" id="terms">
+    <h2>英文術語</h2>
+    <div class="table-wrap"><table>
+      <tr><th>英文</th><th>中文</th><th>常見用法</th></tr>
+      <tr><td>Process capability</td><td>製程能力</td><td>The process capability is Cpk 1.67 for output deviation.</td></tr>
+      <tr><td>Out of control (OOC)</td><td>失控（超出管制界限）</td><td>The tool went OOC after the PM.</td></tr>
+      <tr><td>Out of spec (OOS)</td><td>超出規格</td><td>Two wafers were OOS on sheet resistance.</td></tr>
+      <tr><td>Assignable cause</td><td>可歸屬原因</td><td>We need to find the assignable cause before releasing the lot.</td></tr>
+      <tr><td>Wafer map signature</td><td>晶圓圖型態</td><td>The edge-ring signature points to the etch chamber.</td></tr>
+      <tr><td>Defect density</td><td>缺陷密度</td><td>Defect density dropped to 0.1 per cm² after the fix.</td></tr>
+      <tr><td>Lot hold</td><td>批貨暫停</td><td>Put the lot on hold until WAT data is reviewed.</td></tr>
+      <tr><td>Design freeze</td><td>設計凍結</td><td>No design changes after PVT design freeze.</td></tr>
+      <tr><td>Yield ramp</td><td>良率爬升</td><td>The yield ramp is behind plan.</td></tr>
+      <tr><td>Containment</td><td>圍堵</td><td>Containment actions are in place for all suspect date codes.</td></tr>
+      <tr><td>Root cause</td><td>根本原因</td><td>The 8D must cover both occurrence and escape root causes.</td></tr>
+      <tr><td>Product Change Notification</td><td>產品變更通知</td><td>We will issue a PCN for the assembly site change.</td></tr>
+      <tr><td>Last time buy</td><td>最後訂購</td><td>The last time buy date is six months after the EOL notice.</td></tr>
+      <tr><td>Absolute maximum rating</td><td>絕對最大額定值</td><td>The surge exceeded the absolute maximum rating of 7 V.</td></tr>
+      <tr><td>Guaranteed by design</td><td>由設計保證</td><td>This parameter is guaranteed by design, not production tested.</td></tr>
+      <tr><td>Derating</td><td>降額</td><td>Derate the power dissipation above 25 °C ambient.</td></tr>
+    </table></div>
+  </section>
+
+  <section class="card" id="sources">
+    <h2>出處</h2>
+    <ol class="sources">
+      <li><b>G01</b>　https://en.wikipedia.org/wiki/Process_capability_index （Cp／Cpk 公式、建議最小值）；https://resources.rework.com/libraries/process-management/process-capability-cpk （Cpk 與 ppm、1.5σ 偏移）；https://en.wikipedia.org/wiki/Western_Electric_rules （四條區域規則、附加型態、誤報率）；https://fog.misty.com/perry/cod/references/yield_models.pdf （Poisson、負二項良率模型）；https://conductscience.com/conductvision/materials-science/wafer-map-excursion-analysis （wafer map 型態與成因）；https://patents.google.com/patent/US9748150 （WAT test line 結構與參數）；https://en.wikipedia.org/wiki/ANOVA_gauge_R%26R （量測系統門檻）</li>
+      <li><b>G02</b>　https://embeddedartistry.com/fieldmanual-terms/design-validation-test/ ；https://embeddedartistry.com/fieldmanual-terms/production-validation-and-test/ ；https://instrumental.com/build-better-handbook/evt-dvt-pvt （EVT／DVT／PVT、golden line、ramp）；https://cn.qorvo.com/resources/d/qorvo-pcn-policy （PCN 90 天、EOL 6／12 個月）；https://www.utmel.com/blog/categories/semiconductor/semiconductor-pcn-review-checklist-from-notification-to-engineering-sign-off （J-STD-046 90 天、30 天回覆）；https://www.complianceonline.com/resources/8D-problem-solving-process.html （8D 步驟）；https://blog.softexpert.com/en/new-edition-of-aiag-vda-fmea-for-the-automotive-sector-check-out-what-has-changed/ （AIAG-VDA 2019、AP 取代 RPN）；https://www.pharmaceuticalonline.com/doc/is-it-time-to-say-goodbye-to-fmea-risk-priority-number-rpn-scores-0001</li>
+      <li><b>G03</b>　https://www.ti.com/lit/ds/symlink/tps65150.pdf （TI TPS65150 SLVS576B：Abs Max、ESD、Recommended、Thermal Information、EC 表頭條件、熱關機）；https://ti.com/lit/SPRA953 （θ<sub>JA</sub> 誤用、1s 與 2s2p 差約 50%、60～95% 熱經 PCB、ψ<sub>JT</sub>、冷板量 θ<sub>JC</sub>）；https://www.allaboutcircuits.com/technical-articles/learn-about-the-thermal-characterization-parameters/ ；https://rfessentials.com/rf-knowledge-base/what-is-the-difference-between-a-test-condition-and-a-guaranteed-specification-o/ （測試條件與保證規格）</li>
+      <li class="muted">查證日 2026-10-02。未證實或未寫死的項目：Gauge R&R 門檻取自 Wikipedia 的 P/T 比說明，未對照 AIAG MSA 原文；qualification 的 HTOL 時數、樣本數與 AEC-Q100 溫度等級未查到一手資料，故未寫數字；「guaranteed by characterization 常用平均 ±3σ」來自 ST 規格書註腳的二手轉述；wafer map 各型態的成因是文獻常見歸因，非定論；顯示驅動 IC 的規格書要點為一般經驗整理，未引用特定廠商規格書；降額表與 T<sub>J</sub> 例題的 1.0 W、95 °C 為假設值。</li>
+    </ol>
+  </section>
+</main>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const NS = 'http://www.w3.org/2000/svg';
+  const el = (tag, attrs, txt) => {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (txt !== undefined) e.textContent = txt;
+    return e;
+  };
+
+  // ---------- 分頁 ----------
+  document.querySelectorAll('#tab button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('#tab button').forEach(x => x.classList.toggle('on', x === b));
+    $('paneCpk').hidden = b.dataset.t !== 'cpk';
+    $('paneCc').hidden = b.dataset.t !== 'cc';
+  }));
+
+  // ---------- Cp／Cpk ----------
+  const LSL = -20, USL = 20;
+  // 互補誤差函數（Numerical Recipes erfcc，相對誤差 < 1.2e-7）
+  function erfc(x) {
+    const z = Math.abs(x), t = 1 / (1 + 0.5 * z);
+    const r = t * Math.exp(-z * z - 1.26551223 + t * (1.00002368 + t * (0.37409196 + t * (0.09678418 +
+      t * (-0.18628806 + t * (0.27886807 + t * (-1.13520398 + t * (1.48851587 + t * (-0.82215223 + t * 0.17087277)))))))));
+    return x >= 0 ? r : 2 - r;
+  }
+  const tail = z => 0.5 * erfc(z / Math.SQRT2); // P(Z > z)
+  const fmtPpm = p => {
+    const v = p * 1e6;
+    if (v >= 100) return Math.round(v).toLocaleString() + ' ppm';
+    if (v >= 1) return v.toFixed(1) + ' ppm';
+    if (v >= 0.001) return v.toPrecision(2) + ' ppm';
+    return '< 0.001 ppm';
+  };
+
+  function drawDist() {
+    const mu = +$('mu').value, sg = +$('sg').value;
+    $('muOut').textContent = (mu > 0 ? '+' : '') + mu.toFixed(1) + ' mV';
+    $('sgOut').textContent = sg.toFixed(2) + ' mV';
+    const svg = $('dist');
+    svg.innerHTML = '';
+    const base = 250, X = v => 460 + v * 10;
+    const H = 190 * Math.min(1, 4 / sg);
+    const Y = v => base - H * Math.exp(-0.5 * ((v - mu) / sg) ** 2);
+
+    // 本體與尾巴
+    const area = (a, b, cls) => {
+      if (b <= a) return;
+      let d = `M${X(a)},${base}`;
+      for (let v = a; v <= b + 1e-9; v += 0.25) d += ` L${X(v)},${Y(v)}`;
+      d += ` L${X(b)},${base} Z`;
+      svg.appendChild(el('path', { d, class: cls }));
+    };
+    area(LSL, USL, 'bx-soft');
+    area(-40, LSL, 'fill-fg');
+    area(USL, 40, 'fill-fg');
+    let d = '';
+    for (let v = -40; v <= 40 + 1e-9; v += 0.25) d += (d ? ' L' : 'M') + `${X(v)},${Y(v)}`;
+    svg.appendChild(el('path', { d, class: 'ln-accent' }));
+
+    // 軸
+    svg.appendChild(el('line', { x1: 60, y1: base, x2: 860, y2: base, class: 'ln-fg' }));
+    for (let v = -40; v <= 40; v += 10) {
+      svg.appendChild(el('line', { x1: X(v), y1: base, x2: X(v), y2: base + 5, class: 'ln-fg' }));
+      svg.appendChild(el('text', { x: X(v), y: base + 20, class: 't-small', 'text-anchor': 'middle' }, (v > 0 ? '+' : '') + v));
+    }
+    svg.appendChild(el('text', { x: 890, y: 20, class: 't-small', 'text-anchor': 'end' }, 'ΔV（mV）'));
+
+    // 規格線與目標
+    svg.appendChild(el('line', { x1: X(LSL), y1: 32, x2: X(LSL), y2: base, class: 'ln-accent' }));
+    svg.appendChild(el('line', { x1: X(USL), y1: 32, x2: X(USL), y2: base, class: 'ln-accent' }));
+    svg.appendChild(el('text', { x: X(LSL), y: 24, class: 't-accent', 'text-anchor': 'middle' }, 'LSL −20'));
+    svg.appendChild(el('text', { x: X(USL), y: 24, class: 't-accent', 'text-anchor': 'middle' }, 'USL +20'));
+    svg.appendChild(el('line', { x1: X(0), y1: 32, x2: X(0), y2: base, class: 'ln dash' }));
+    svg.appendChild(el('text', { x: X(0), y: 24, class: 't-small', 'text-anchor': 'middle' }, '目標 0'));
+
+    // 平均值與 ±3σ
+    svg.appendChild(el('line', { x1: X(mu), y1: 58, x2: X(mu), y2: base, class: 'ln-fg' }));
+    const muLx = Math.min(X(mu) + 6, 850);
+    svg.appendChild(el('text', { x: muLx, y: 80, class: 't-accent', 'font-size': 13 }, 'μ'));
+    [-3, 3].forEach(k => {
+      const v = mu + k * sg;
+      if (v < -40 || v > 40) return;
+      svg.appendChild(el('line', { x1: X(v), y1: base - 30, x2: X(v), y2: base + 26, class: 'ln-fg dash' }));
+      svg.appendChild(el('text', { x: X(v), y: base + 42, class: 't-small', 'text-anchor': 'middle' }, k < 0 ? '−3σ' : '+3σ'));
+    });
+
+    // 數值
+    const cp = (USL - LSL) / (6 * sg), cpu = (USL - mu) / (3 * sg), cpl = (mu - LSL) / (3 * sg), cpk = Math.min(cpu, cpl);
+    const pHi = tail((USL - mu) / sg), pLo = tail((mu - LSL) / sg);
+    $('rCp').textContent = cp.toFixed(2);
+    $('rCpk').textContent = cpk.toFixed(2);
+    $('rCpu').textContent = cpu.toFixed(2);
+    $('rCpl').textContent = cpl.toFixed(2);
+    $('rHi').textContent = fmtPpm(pHi);
+    $('rLo').textContent = fmtPpm(pLo);
+    $('rTot').textContent = fmtPpm(pHi + pLo);
+
+    let title, what;
+    if (cpk >= 1.67) title = 'Cpk ≥ 1.67：很穩，新製程或關鍵特性也夠';
+    else if (cpk >= 1.33) title = 'Cpk 1.33～1.67：一般量產門檻內';
+    else if (cpk >= 1.0) title = 'Cpk 1.0～1.33：勉強，長期一漂就會出不良';
+    else title = 'Cpk < 1：規格內裝不下，現在就在出不良';
+    if (cp - cpk > 0.3) what = `Cp ${cp.toFixed(2)} 比 Cpk ${cpk.toFixed(2)} 高很多：變異其實夠小，問題是<b>偏心</b>。對策是把中心拉回目標（trim、調 recipe target），比降變異便宜得多。`;
+    else if (cp < 1.33) what = `Cp 只有 ${cp.toFixed(2)}：就算完全置中也不夠，問題是<b>變異太大</b>。要拆變異來源（片內、片間、批間、量測）從最大項下手，或在設計端加 trim／加大 margin。`;
+    else what = `中心大致在目標附近，Cp 與 Cpk 接近。距離最近的規格邊界約 ${(3 * cpk).toFixed(1)} 個 σ。注意：這是用短期 σ 算的，跨批的長期漂移會讓實際不良率更高（Ppk）。`;
+    $('cpkTitle').textContent = title;
+    $('cpkWhat').innerHTML = what;
+  }
+  $('mu').addEventListener('input', drawDist);
+  $('sg').addEventListener('input', drawDist);
+  document.querySelectorAll('[data-pre]').forEach(b => b.addEventListener('click', () => {
+    const [m, s] = b.dataset.pre.split(',').map(Number);
+    $('mu').value = m; $('sg').value = s; drawDist();
+  }));
+  drawDist();
+
+  // ---------- 管制圖 ----------
+  const Z = [0.3, -0.8, 1.1, -0.2, 0.6, -1.4, 0.1, 0.9, -0.5, -1.0, 0.4, 1.3, -0.6, 0.2, -1.2,
+    0.7, -0.3, 1.6, -0.9, 0.5, -0.1, -0.7, 1.0, 0.3, -1.5, 0.8, -0.4, 0.2, 1.2, -0.6];
+  const N = Z.length, START = 12;
+  const SCN = {
+    normal: { f: (z) => z, t: '正常：只有隨機變動', w: '點在中心線上下隨機跳，偶爾靠近 2σ 也沒關係。這就是 common cause 變異，這時候去調機台反而會把變異放大（over-adjustment）。注意：就算製程完全正常，四條規則一起用平均約每 92 點會誤報一次。' },
+    shift: { f: (z, i) => i >= START ? z + 1.8 : z, t: '均值偏移：整體往上跳 1.8σ', w: '第 13 點起平均值突然上移。單點都沒超出 3σ，R1 抓不到；但 R3（4／5 點超 1σ）和 R4（連 8 點同側）會抓到。常見原因：換新批材料或靶材、機台保養（PM）後沒校回、換了量測機台。' },
+    drift: { f: (z, i) => i >= START ? z * 0.5 + 0.2 * (i - START + 1) : z, t: '慢慢漂移：每點往上一點點', w: '平均值一點一點往上爬，到後面才會超出 3σ。R3、R4 會比 R1 早很多叫。常見原因：耗材慢慢磨耗（CMP 研磨墊、電極）、腔體累積沉積物、量測機台漂移。對策是找到漂移源，必要時排定期保養或加入補償。' },
+    spike: { f: (z, i) => i === 19 ? 3.8 : z, t: '單點突波：一點突然超出 3σ', w: '只有第 20 點跳出去，前後都正常。R1 立刻抓到。可能是那一片的偶發事件（搬運、微粒、量測失誤），先重量確認，再查那一片的機台履歷，不要立刻調整整個製程。' },
+    vari: { f: (z, i) => i >= START ? z * 2.4 : z, t: '變異變大：中心沒動，上下跳更大', w: '平均值沒變，但點越跳越遠，出現超出 2σ、3σ 的點。這種在 X 圖上看起來「時好時壞」，在 R 圖或 MR 圖上更明顯。常見原因：控制迴路不穩、腔體條件不一致、兩台機台混跑（mixture）。' },
+  };
+  const ccState = { s: 'normal', n: START };
+
+  function rulesAt(x, i) {
+    const r = [];
+    const v = x[i];
+    if (Math.abs(v) > 3) r.push(1);
+    for (const s of [1, -1]) {
+      if (s * v > 2 && i >= 2) { let c = 0; for (let k = i - 2; k <= i; k++) if (s * x[k] > 2) c++; if (c >= 2) r.push(2); }
+      if (s * v > 1 && i >= 4) { let c = 0; for (let k = i - 4; k <= i; k++) if (s * x[k] > 1) c++; if (c >= 4) r.push(3); }
+      if (i >= 7) { let ok = true; for (let k = i - 7; k <= i; k++) if (!(s * x[k] > 0)) ok = false; if (ok) r.push(4); }
+    }
+    if (i >= 5) {
+      let up = true, dn = true;
+      for (let k = i - 5; k < i; k++) { if (!(x[k + 1] > x[k])) up = false; if (!(x[k + 1] < x[k])) dn = false; }
+      if (up || dn) r.push(5);
+    }
+    return r;
+  }
+
+  function drawCc() {
+    const sc = SCN[ccState.s];
+    const x = Z.map((z, i) => sc.f(z, i));
+    const svg = $('cc');
+    svg.innerHTML = '';
+    const CL = 160, S = 31, X0 = 90, X1 = 850;
+    const px = i => X0 + i * (X1 - X0) / (N - 1);
+    const py = v => CL - Math.max(-4.1, Math.min(4.1, v)) * S;
+    // 區域
+    svg.appendChild(el('rect', { x: X0 - 10, y: py(1), width: X1 - X0 + 20, height: 2 * S, class: 'bx-soft' }));
+    const lines = [[3, 'UCL +3σ', 'ln-accent dash'], [2, '+2σ', 'ln-soft'], [1, '+1σ', 'ln-soft'], [0, 'CL', 'ln-fg'],
+      [-1, '−1σ', 'ln-soft'], [-2, '−2σ', 'ln-soft'], [-3, 'LCL −3σ', 'ln-accent dash']];
+    lines.forEach(([k, lbl, cls]) => {
+      svg.appendChild(el('line', { x1: X0 - 10, y1: py(k), x2: X1 + 10, y2: py(k), class: cls }));
+      svg.appendChild(el('text', { x: X0 - 16, y: py(k) + 4, class: 't-small', 'text-anchor': 'end' }, lbl));
+    });
+    [['A', 2.5], ['B', 1.5], ['C', 0.5], ['C', -0.5], ['B', -1.5], ['A', -2.5]].forEach(([z, k]) =>
+      svg.appendChild(el('text', { x: X1 + 24, y: py(k) + 4, class: 't-small', 'text-anchor': 'middle' }, z)));
+    svg.appendChild(el('line', { x1: px(START) - 13, y1: 34, x2: px(START) - 13, y2: 290, class: 'ln dash' }));
+    svg.appendChild(el('text', { x: px(START) - 7, y: 296, class: 't-small' }, '← 正常｜注入情境 →'));
+
+    // 點與規則
+    let pts = '';
+    const hits = [];
+    let prevR = [];
+    for (let i = 0; i < ccState.n; i++) pts += `${px(i)},${py(x[i])} `;
+    svg.appendChild(el('polyline', { points: pts, class: 'ln' }));
+    let row = 0;
+    for (let i = 0; i < ccState.n; i++) {
+      const r = rulesAt(x, i);
+      const onset = r.filter(k => !prevR.includes(k));
+      prevR = r;
+      if (r.length) {
+        svg.appendChild(el('rect', { x: px(i) - 5, y: py(x[i]) - 5, width: 10, height: 10, class: 'fill-fg' }));
+        r.forEach(k => hits.push([i + 1, k]));
+      } else {
+        svg.appendChild(el('circle', { cx: px(i), cy: py(x[i]), r: 4, class: 'bx' }));
+      }
+      if (onset.length) {
+        const yy = row % 2 ? 28 : 14;
+        row++;
+        svg.appendChild(el('text', { x: px(i), y: yy, class: 't-accent', 'text-anchor': 'middle', 'font-size': 11 }, onset.map(k => 'R' + k).join('·')));
+        svg.appendChild(el('line', { x1: px(i), y1: yy + 3, x2: px(i), y2: py(x[i]) - 7, class: 'ln-soft' }));
+      }
+    }
+    $('ccTitle').textContent = sc.t;
+    $('ccWhat').textContent = sc.w;
+    if (!hits.length) $('ccHits').textContent = '目前沒有違反任何規則。';
+    else {
+      const first = {};
+      hits.forEach(([p, k]) => { if (!(k in first)) first[k] = p; });
+      $('ccHits').textContent = '各規則第一次觸發：' + Object.keys(first).sort().map(k => `R${k} 在第 ${first[k]} 點`).join('、') + '。';
+    }
+    $('ccPhase').textContent = `第 ${ccState.n} / ${N} 點`;
+    $('ccPrev').disabled = ccState.n <= 1;
+    $('ccNext').disabled = $('ccAll').disabled = ccState.n >= N;
+  }
+  document.querySelectorAll('#scn button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('#scn button').forEach(x => x.classList.toggle('on', x === b));
+    ccState.s = b.dataset.s; ccState.n = START; drawCc();
+  }));
+  $('ccPrev').addEventListener('click', () => { if (ccState.n > 1) { ccState.n--; drawCc(); } });
+  $('ccNext').addEventListener('click', () => { if (ccState.n < N) { ccState.n++; drawCc(); } });
+  $('ccAll').addEventListener('click', () => { ccState.n = N; drawCc(); });
+  drawCc();
+
+  // ---------- Wafer map ----------
+  (function wafer() {
+    let seed = 7;
+    const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
+    const pats = [
+      ['Center', '中心：旋塗、CMP、', 'RF 或液流不均', (r) => r < 0.38 ? 0.85 : 0.03],
+      ['Donut', '環狀：殘留、清洗、', '沉積或蝕刻均勻性', (r) => r > 0.42 && r < 0.66 ? 0.8 : 0.03],
+      ['Edge-Ring', '整圈邊緣：溫度、', '電漿邊緣效應', (r) => r > 0.82 ? 0.85 : 0.03],
+      ['Edge-Loc', '邊緣一角：夾具、', '局部溫度或接觸', (r, a) => r > 0.7 && a > 0.6 && a < 1.7 ? 0.8 : 0.03],
+      ['Scratch', '一條線：搬運、', 'CMP 刮傷', (r, a, u, v) => Math.abs(v - (0.55 * u - 0.15)) < 0.07 && u > -0.7 && u < 0.75 ? 0.95 : 0.03],
+      ['Random', '均勻散布：微粒、', 'D0 偏高（Poisson）', () => 0.1],
+    ];
+    const svg = $('wm');
+    const R = 62, cell = 9;
+    pats.forEach((p, k) => {
+      const cx = 75 + k * 150, cy = 84;
+      svg.appendChild(el('circle', { cx, cy, r: R + 3, class: 'bx' }));
+      for (let gx = -R; gx < R; gx += cell) for (let gy = -R; gy < R; gy += cell) {
+        const mx = gx + cell / 2, my = gy + cell / 2;
+        if (Math.hypot(Math.abs(mx) + cell / 2, Math.abs(my) + cell / 2) > R) continue;
+        const u = mx / R, v = -my / R, r = Math.hypot(u, v), a = Math.atan2(v, u);
+        const fail = rnd() < p[3](r, a, u, v);
+        svg.appendChild(el('rect', { x: cx + gx + 0.5, y: cy + gy + 0.5, width: cell - 1, height: cell - 1, class: fail ? 'fill-fg' : 'fill-soft' }));
+      }
+      svg.appendChild(el('text', { x: cx, y: 172, class: 't-accent', 'text-anchor': 'middle' }, p[0]));
+      svg.appendChild(el('text', { x: cx, y: 192, class: 't-small', 'text-anchor': 'middle' }, p[1]));
+      svg.appendChild(el('text', { x: cx, y: 210, class: 't-small', 'text-anchor': 'middle' }, p[2]));
+    });
+  })();
+
+  // ---------- 8D ----------
+  (function eightD() {
+    const g = $('eightD');
+    const D = [['D0', '緊急應變', '先止血'], ['D1', '組隊', '跨部門'], ['D2', '描述問題', '5W2H'], ['D3', '臨時圍堵', '隔離篩選'],
+      ['D4', '根因', '發生＋流出'], ['D5', '選永久對策', '驗證可行'], ['D6', '執行驗證', '拆除圍堵'], ['D7', '防再發', '回寫 FMEA'], ['D8', '結案', '表揚團隊']];
+    D.forEach((d, i) => {
+      const x = i * 100;
+      g.appendChild(el('rect', { x, y: 32, width: 92, height: 70, rx: 6, class: (i === 3 || i === 4) ? 'bx-accent' : 'bx' }));
+      g.appendChild(el('text', { x: x + 10, y: 52, class: 't-strong' }, d[0]));
+      g.appendChild(el('text', { x: x + 10, y: 72, class: 't-small' }, d[1]));
+      g.appendChild(el('text', { x: x + 10, y: 92, class: 't-small' }, d[2]));
+    });
+  })();
+})();
+</script>
+</body>
+</html>
