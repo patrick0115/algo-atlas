@@ -123,6 +123,16 @@ export function MultiCode({ title, code }: { title?: string; code: Partial<Recor
   const [pref, setLang] = useLang()
   const langs = LANGS.filter((l) => code[l.id] !== undefined)
   const lang = code[pref] !== undefined ? pref : langs[0].id
+  const [copied, setCopied] = useState(false)
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(code[lang]!)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1200)
+    } catch {
+      /* 不支援剪貼簿就算了 */
+    }
+  }
   return (
     <div className="c-codebox">
       <div className="tabs">
@@ -135,7 +145,10 @@ export function MultiCode({ title, code }: { title?: string; code: Partial<Recor
         ) : (
           <button className="active">{langs[0].label}</button>
         )}
-        {title && <span className="tabs-spacer c-code-title">{title}</span>}
+        <span className="tabs-spacer c-code-title">{title}</span>
+        <button className="copy" onClick={copy} title="複製這個語言的全部程式碼">
+          {copied ? '已複製 ✓' : '複製'}
+        </button>
       </div>
       <CodeLines code={code[lang]!} lang={lang} />
     </div>
