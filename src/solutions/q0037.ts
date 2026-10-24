@@ -73,7 +73,7 @@ static bool dfs(char **b) {
 void solveSudoku(char **board, int boardSize, int *boardColSize) {
     dfs(board);
 }`,
-      cpp: `bool valid(vector < vector<char>>& b, int r, int c, char x) {
+      cpp: `bool valid(vector<vector<char>>& b, int r, int c, char x) {
     for (int i = 0; i < 9; i++) {
         if (b[r][i] == x || b[i][c] == x)
             return false;
@@ -82,7 +82,7 @@ void solveSudoku(char **board, int boardSize, int *boardColSize) {
     }
     return true;
 }
-bool dfs(vector < vector<char>>& b) {
+bool dfs(vector<vector<char>>& b) {
     for (int r = 0; r < 9; r++)
         for (int c = 0; c < 9; c++)
             if (b[r][c] == '.') {
@@ -97,7 +97,7 @@ bool dfs(vector < vector<char>>& b) {
             }
     return true;
 }
-void solveSudoku(vector < vector<char>>& board) {
+void solveSudoku(vector<vector<char>>& board) {
     dfs(board);
 }`,
       java: `boolean valid(char[][] b, int r, int c, char x) {
@@ -229,7 +229,7 @@ void solveSudoku(char **a, int boardSize, int *cols) {
             }
     dfs(a, er, ec, e, 0, row, col, box);
 }`,
-      cpp: `bool dfs(vector < vector<char>>& a, vector < pair<int, int>>& e, int i, int *row, int *col, int *box) {
+      cpp: `bool dfs(vector<vector<char>>& a, vector<pair<int, int>>& e, int i, int *row, int *col, int *box) {
     if (i == (int)e.size())
         return true;
     auto [r, c] = e[i];
@@ -251,13 +251,13 @@ void solveSudoku(char **a, int boardSize, int *cols) {
     }
     return false;
 }
-void solveSudoku(vector < vector<char>>& a) {
+void solveSudoku(vector<vector<char>>& a) {
     int row[9] = {}, col[9] = {}, box[9] = {};
-    vector < pair<int, int>> e;
+    vector<pair<int, int>> e;
     for (int r = 0; r < 9; r++)
         for (int c = 0; c < 9; c++)
             if (a[r][c] == '.')
-                e.push_back( {r, c});
+                e.push_back({r, c});
             else {
                 int bit = 1 << (a[r][c] - '1');
                 row[r] |= bit;
@@ -267,7 +267,7 @@ void solveSudoku(vector < vector<char>>& a) {
     dfs(a, e, 0, row, col, box);
 }`,
       java: `int[] row = new int[9], col = new int[9], box = new int[9];
-List < int[] > empty = new ArrayList<>();
+List<int[]> empty = new ArrayList<>();
 boolean dfs(char[][] a, int i) {
     if (i == empty.size())
         return true;

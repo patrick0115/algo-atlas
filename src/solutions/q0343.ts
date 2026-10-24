@@ -87,7 +87,7 @@ export const q0343: Solution = {
       idea: 'n ≤ 3 → n − 1;否則依 n % 3:0 → 3^q、1 → 3^(q−1) × 4、2 → 3^q × 2。',
       steps: ['`n <= 3` → `n − 1`', '`q, r = divmod(n, 3)`', '`r == 0` → `3**q`;`r == 1` → `3**(q−1) * 4`;`r == 2` → `3**q * 2`'],
       figure: { title: `n = ${N}`, steps: mathFig() },
-      complexity: { time: 'O(log n)', space: 'O(1)', why: '快速冪(或直接迴圈乘,n ≤ 58)。' },
+      complexity: { time: 'O(n)', space: 'O(1)', why: '迴圈乘 n/3 次(n ≤ 58,實際上可視為常數);若改用快速冪可降到 O(log n)。' },
       verdict: '最快;背後是「e ≈ 2.718,最接近的整數是 3」的直覺。',
       code: {
         python: `def integerBreak(n):

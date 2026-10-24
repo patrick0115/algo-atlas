@@ -28,7 +28,7 @@ function trieView(hl: string[] = []): GraphViewData {
       edges.push({ from: w.slice(0, k - 1), to: id, directed: true })
     }
   })
-  return { kind: 'graph', label: 'Trie(綠色 = 單字結尾)', nodes, edges }
+  return { kind: 'graph', label: 'Trie(淺色實心 = 單字結尾)', nodes, edges }
 }
 
 function trieFig(): FigStep[] {
@@ -38,7 +38,7 @@ function trieFig(): FigStep[] {
     { note: '把所有單字放進一棵 Trie(字首樹)。共同的前綴只存一次', views: [trieView()] },
     { note: '從每一格出發做 DFS,但**同時**在 Trie 上往下走:格子的字母不是 Trie 目前節點的孩子 → 立刻停(沒有任何單字以這個前綴開頭)', views: [grid([[0, 0]], [], '從 (0,0) "o" 出發'), trieView(['o'])] },
     { note: 'o → a → t → h:每一步都在 Trie 上找得到,走到 "oath" 的結尾 → 找到一個單字', views: [grid(oath, [], '路徑 o-a-t-h'), trieView(['o', 'oa', 'oat', 'oath'])] },
-    { note: '從 (1,3) "e" 出發:e → a → t,找到 "eat"。"pea" 的 p 不在棋盤上、"rain" 走到 r-a 就斷了', views: [grid(eat, oath, '路徑 e-a-t'), trieView(['e', 'ea', 'eat'])] },
+    { note: '從 (1,3) "e" 出發:e → a → t,找到 "eat"。"pea" 的 p 不在棋盤上、"rain" 的 r 旁邊(e、k、v)沒有 a,走不下去', views: [grid(eat, oath, '路徑 e-a-t'), trieView(['e', 'ea', 'eat'])] },
     { note: '一次 DFS 同時比對所有單字,而不是每個單字各搜一次。找到的單字把結尾標記清掉,避免重複加入', views: [grid([], [...oath, ...eat], '答案:["oath", "eat"]')] },
   ]
 }

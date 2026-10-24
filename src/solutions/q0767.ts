@@ -185,7 +185,7 @@ def reorganizeString(s):
       steps: ['最大堆積放 (次數, 字母)', '`prev = None`;每一輪:堆積空 → 結束', '彈出 (k, ch) 放上去;把 prev(如果還有剩)推回堆積;`prev = (k − 1, ch)`', '結果長度 < n → 回傳 ""'],
       figure: { title: `s = "${S}"`, steps: heapFig() },
       complexity: { time: 'O(n log 26)', space: 'O(26)', why: '每放一個字做一次堆積操作。' },
-      verdict: '更通用:可以推廣到「相同字母至少相隔 k 個」([358](#/q/358))。',
+      verdict: '更通用:可以推廣到「相同字母至少相隔 k 個」(358 題)。',
       code: {
         python: `import heapq
 from collections import Counter
@@ -252,7 +252,7 @@ def reorganizeString(s):
   for (const c of s) cnt[c.charCodeAt(0) - 97]++;
   let res = '', prev = -1;
   for (;;) {
-    let best = -1;
+    let best = -1; // 26 種字母,直接掃一遍代替堆積
     for (let c = 0; c < 26; c++) if (c !== prev && cnt[c] > 0 && (best < 0 || cnt[c] > cnt[best])) best = c;
     if (best < 0) break;
     res += String.fromCharCode(97 + best);

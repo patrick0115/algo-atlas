@@ -28,7 +28,7 @@ function idxFig(): FigStep[] {
   const words = W.split(' ')
   const enc = <T,>(xs: T[]) => xs.map((x) => xs.indexOf(x))
   return [
-    { note: '和 [205](#/q/205) 一樣的另一招:把每個元素換成「它第一次出現的位置」', views: [arr(P.split(''), { label: 'pattern' }), arr(enc(P.split('')), { label: '第一次出現的位置' })] },
+    { note: '和 [205](#/q/205) 一樣的另一招:把每個元素換成「它第一次出現的位置」(比第一次出現或上次出現都可以,程式用上次出現)', views: [arr(P.split(''), { label: 'pattern' }), arr(enc(P.split('')), { label: '第一次出現的位置' })] },
     { note: `單字也這樣換:[${enc(words)}],和 pattern 的 [${enc(P.split(''))}] 相同 → true`, views: [arr(words, { label: '單字' }), arr(enc(words), { label: '第一次出現的位置', done: [0, 1, 2, 3] })] },
   ]
 }
@@ -127,7 +127,7 @@ export const q0290: Solution = {
       },
     },
     {
-      name: '比較「第一次出現的位置」',
+      name: '比較「上次出現的位置」',
       idea: '`pattern[i]` 與 `words[i]` 上次出現的位置要一樣。',
       steps: ['長度不同 → false', '兩張表記「上次出現在哪」', '每個 i:兩邊上次出現的位置不同 → false;否則都更新成 i'],
       figure: { title: `pattern = "${P}",s = "${W}"`, steps: idxFig() },

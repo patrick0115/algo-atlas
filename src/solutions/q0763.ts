@@ -65,7 +65,7 @@ function intervalFig(): FigStep[] {
     out.push({ note, views: [view(k, [...cuts])] })
   })
   cuts.push(end)
-  out.push({ note: `最後一段 [${start}, ${end}]。黃色的直線就是切點`, views: [view(letters.length - 1, cuts)] })
+  out.push({ note: `最後一段 [${start}, ${end}]。標記出來的那幾欄就是切點`, views: [view(letters.length - 1, cuts)] })
   return out
 }
 

@@ -6,16 +6,16 @@ const V = [3, 2, 0, -4]
 const WRAP = {
   python: `\ndef cycleEntryIndex(head):
     entry = detectCycle(head)
-    if entry is None:  # 一旦指針相遇，就能進入尋找入口的階段。
+    if entry is None:  # 沒有環
         return -1
     i = 0
-    while head is not entry:  # 沿 next 前進，觀察是否重遇同一個節點。
-        head, i = (head.next, i + 1)
+    while head is not entry:  # 從 head 數到入口是第幾個節點
+        head, i = head.next, i + 1
     return i`,
   c: `\nint cycleEntryIndex(struct ListNode *head) {
     struct ListNode *entry = detectCycle(head);
     if (!entry)
-        return - 1;
+        return -1;
     int i = 0;
     while (head != entry) {
         head = head->next;
@@ -26,7 +26,7 @@ const WRAP = {
   cpp: `\nint cycleEntryIndex(ListNode *head) {
     ListNode *entry = detectCycle(head);
     if (!entry)
-        return - 1;
+        return -1;
     int i = 0;
     while (head != entry) {
         head = head->next;
@@ -37,7 +37,7 @@ const WRAP = {
   java: `\nint cycleEntryIndex(ListNode head) {
     ListNode entry = detectCycle(head);
     if (entry == null)
-        return - 1;
+        return -1;
     int i = 0;
     while (head != entry) {
         head = head.next;
@@ -48,7 +48,7 @@ const WRAP = {
   javascript: `\nfunction cycleEntryIndex(head) {
     const entry = detectCycle(head);
     if (!entry)
-        return - 1;
+        return -1;
     let i = 0;
     while (head !== entry) {
         head = head.next;
@@ -73,11 +73,11 @@ export const q0142: Solution = {
   constraints: ['0 ≤ 節點數 ≤ 10⁴。', '進階：O(1) 額外空間。'],
   insight: ['走過的節點若再次出現，它就是環入口。', '要省空間可用 [141](#/q/141) 的快慢指針先找到環內相遇點。', '設入口前長 a、入口到相遇點長 b、環長 c；相遇時快慢路程差是 c 的倍數，所以從 head 與相遇點同步出發，會在入口碰面。'],
   approaches: [
-    { name: 'Set 記錄節點', idea: '沿 next 走；第一個重複造訪的節點就是入口。', steps: ['建立空 set。記錄目前指針狀態，才能判斷是否走進環中。', '逐節點檢查是否看過；若是，直接回傳該節點。若再次遇到同一節點，或快慢指針相遇，就已證明有環。', '走到 null 則無環。最後確認返回的是入口節點本身；沒有環時才返回空值。'], figure: { title: 'head = [3,2,0,-4], pos = 1', steps: [fig[0], { note: '把 3、2、0、−4 依序加入 set；每個節點第一次到訪時都還不重複。', views: [loopChain(V, 1, { cls: { 0: 'visited', 1: 'visited', 2: 'visited', 3: 'visited' } })] }, { note: '下一步又走到節點 2，它已在 set 中，因此回傳這個節點。', views: [loopChain(V, 1, { cls: { 1: 'hl' } })] }] }, complexity: { time: 'O(n)', space: 'O(n)', why: '每個節點最多放入 set 一次。' }, verdict: '直觀；set 裡要存節點身分，而非節點值。', code: {
+    { name: 'Set 記錄節點', idea: '沿 next 走；第一個重複造訪的節點就是入口。', steps: ['建立空 set。', '逐節點檢查是否看過；若是，直接回傳該節點。', '走到 null 則無環。最後確認返回的是入口節點本身；沒有環時才返回空值。'], figure: { title: 'head = [3,2,0,-4], pos = 1', steps: [fig[0], { note: '把 3、2、0、−4 依序加入 set；每個節點第一次到訪時都還不重複。', views: [loopChain(V, 1, { cls: { 0: 'visited', 1: 'visited', 2: 'visited', 3: 'visited' } })] }, { note: '下一步又走到節點 2，它已在 set 中，因此回傳這個節點。', views: [loopChain(V, 1, { cls: { 1: 'hl' } })] }] }, complexity: { time: 'O(n)', space: 'O(n)', why: '每個節點最多放入 set 一次。' }, verdict: '直觀；set 裡要存節點身分，而非節點值。', code: {
       python: `def detectCycle(head):
     seen = set()
     while head:  # 沿 next 前進，觀察是否重遇同一個節點。
-        if head in seen:  # 一旦指針相遇，就能進入尋找入口的階段。
+        if head in seen:  # 第一個重複造訪的節點就是入口
             return head
         seen.add(head)
         head = head.next

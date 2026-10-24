@@ -25,12 +25,12 @@ function view(label: number[][], hl: Cell[] = []): GridViewData {
   }
 }
 
-function dfsFig(): FigStep[] {
+function dfsFig(bfs = false): FigStep[] {
   const label = G.map((r) => r.map(() => 0))
   let id = 0
   let best = 0
   const areas: number[] = []
-  const out: FigStep[] = [{ note: '和 200 題一樣掃過每一格、遇到陸地就把整座島走完。差別是 DFS 要**回傳這座島有幾格**:1(自己)+ 四個方向回傳的格數', views: [view(label)] }]
+  const out: FigStep[] = [{ note: bfs ? '和 200 題一樣掃過每一格、遇到陸地就把整座島走完。BFS 版:每從佇列拿出一格,area 就加 1,走完整座島 area 就是格數' : '和 200 題一樣掃過每一格、遇到陸地就把整座島走完。差別是 DFS 要**回傳這座島有幾格**:1(自己)+ 四個方向回傳的格數', views: [view(label)] }]
   for (let r = 0; r < G.length; r++)
     for (let c = 0; c < G[0].length; c++) {
       if (!G[r][c] || label[r][c]) continue
@@ -141,7 +141,7 @@ private int dfs(int[][] g, int r, int c) {
       name: 'BFS 計數',
       idea: '遇到陸地就開一個佇列,每拿出一格面積 +1,四周的陸地標記後放進佇列。',
       steps: ['每一格是 1:標記、放進佇列、`area = 0`', '拿出一格 `area += 1`,四周是 1 的標記並放進佇列', '`best = max(best, area)`'],
-      figure: { title: 'grid(4 × 5)', steps: dfsFig() },
+      figure: { title: 'grid(4 × 5)', steps: dfsFig(true) },
       complexity: { time: 'O(m · n)', space: 'O(m · n)', why: '每格一次;佇列最多 O(m·n)。' },
       verdict: '不用遞迴,避免整張圖都是陸地時遞迴太深。',
       code: {

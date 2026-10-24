@@ -11,7 +11,7 @@ const fig = [
 ]
 const WRAP = {
   python: `\ndef majorityCheck(nums):
-    return sorted(majorityElement(nums))  # 只有實際次數超過門檻才加入答案。`,
+    return sorted(majorityElement(nums))  # 排序後方便比對答案`,
   c: `\nstatic int cmpInt(const void *a, const void *b) {
     int x = *(int*)a, y = *(int*)b;
     return (x > y) - (x < y);
@@ -44,7 +44,7 @@ export const q0229: Solution = {
   constraints: ['1 ≤ nums.length ≤ 5×10⁴。', '進階要求線性時間與常數額外空間。'],
   insight: ['用 hash 表計次最直接。', '超過 n/3 的不同值最多兩個；因此可以維持兩個候選人。', '每遇到與兩候選人都不同的新值，三者各消掉一次，不會把真正超過 n/3 的元素完全消光；最後仍須驗證。'],
   approaches: [
-    { name: 'Hash 表計次', idea: '記下每個數字出現多少次，再篩選超過門檻者。', steps: ['掃一次陣列建立 count。先建立計數或候選狀態，不能在還沒看完陣列時直接判定答案。', '走訪 count 的每個值。掃描時更新目前數字的次數，或抵消三種不同數字的票數。', '次數 > floor(n/3) 才加入答案。最後用原陣列核對實際次數，因為候選人不一定超過門檻。'], figure: { title: 'nums = [3,2,3]', steps: [{ note: '讀到第一個 3 時，計數表是 {3:1}；還不能確定它最後是否超過門檻。', views: [arr(A, { label: '掃到索引 0', highlight: [0] })] }, { note: '掃完後計數表是 {3:2,2:1}，因為最後一個 3 讓其次數增為 2。', views: [arr(A, { label: '掃描完成', done: [0,1,2] })] }, { note: 'n=3 的門檻是 1，只有 3 的次數嚴格大於 1，因此回傳 [3]。', views: [arr([3], { label: '答案', done: [0] })] }] }, complexity: { time: 'O(n)', space: 'O(n)', why: '最多記 n 種不同值。' }, verdict: '最易實作；需要額外記憶體。', code: {
+    { name: 'Hash 表計次', idea: '記下每個數字出現多少次，再篩選超過門檻者。', steps: ['掃一次陣列建立 count。先建立計數或候選狀態，不能在還沒看完陣列時直接判定答案。', '走訪 count 的每個 (值, 次數)。', '次數 > floor(n/3) 才加入答案。'], figure: { title: 'nums = [3,2,3]', steps: [{ note: '讀到第一個 3 時，計數表是 {3:1}；還不能確定它最後是否超過門檻。', views: [arr(A, { label: '掃到索引 0', highlight: [0] })] }, { note: '掃完後計數表是 {3:2,2:1}，因為最後一個 3 讓其次數增為 2。', views: [arr(A, { label: '掃描完成', done: [0,1,2] })] }, { note: 'n=3 的門檻是 1，只有 3 的次數嚴格大於 1，因此回傳 [3]。', views: [arr([3], { label: '答案', done: [0] })] }] }, complexity: { time: 'O(n)', space: 'O(n)', why: '最多記 n 種不同值。' }, verdict: '最易實作；需要額外記憶體。', code: {
       python: `def majorityElement(nums):
     count = {}
     for x in nums:  # 掃描數字並更新出現次數或候選票數。
@@ -107,7 +107,7 @@ export const q0229: Solution = {
     a = b = None
     ca = cb = 0
     for x in nums:  # 掃描數字並更新出現次數或候選票數。
-        if ca and x == a:  # 只有實際次數超過門檻才加入答案。
+        if ca and x == a:  # 和候選 a 相同：a 加一票
             ca += 1
         elif cb and x == b:
             cb += 1
@@ -127,7 +127,8 @@ export const q0229: Solution = {
         int x = nums[i];
         if (ca && x == a)
             ca++;
-        else if (cb && x == b)cb++;
+        else if (cb && x == b)
+            cb++;
         else if (!ca) {
             a = x;
             ca = 1;
@@ -145,7 +146,8 @@ export const q0229: Solution = {
     for (int i = 0; i < n; i++) {
         if (nums[i] == a)
             ca++;
-        else if (nums[i] == b)cb++;
+        else if (nums[i] == b)
+            cb++;
     }
     int *out = malloc(2 * sizeof(int));
     *returnSize = 0;
@@ -160,7 +162,8 @@ export const q0229: Solution = {
     for (int x : nums) {
         if (ca && x == a)
             ca++;
-        else if (cb && x == b)cb++;
+        else if (cb && x == b)
+            cb++;
         else if (!ca) {
             a = x;
             ca = 1;
@@ -178,7 +181,8 @@ export const q0229: Solution = {
     for (int x : nums) {
         if (x == a)
             ca++;
-        else if (x == b)cb++;
+        else if (x == b)
+            cb++;
     }
     vector<int> out;
     if (ca > (int)nums.size() / 3)
@@ -192,7 +196,8 @@ export const q0229: Solution = {
     for (int x : nums) {
         if (ca > 0 && x == a)
             ca++;
-        else if (cb > 0 && x == b)cb++;
+        else if (cb > 0 && x == b)
+            cb++;
         else if (ca == 0) {
             a = x;
             ca = 1;
@@ -210,7 +215,8 @@ export const q0229: Solution = {
     for (int x : nums) {
         if (x == a)
             ca++;
-        else if (x == b)cb++;
+        else if (x == b)
+            cb++;
     }
     List<Integer> out = new ArrayList<>();
     if (ca > nums.length / 3)
@@ -224,7 +230,8 @@ export const q0229: Solution = {
     for (const x of nums) {
         if (ca && x === a)
             ca++;
-        else if (cb && x === b)cb++;
+        else if (cb && x === b)
+            cb++;
         else if (!ca) {
             a = x;
             ca = 1;
@@ -242,7 +249,8 @@ export const q0229: Solution = {
     for (const x of nums) {
         if (x === a)
             ca++;
-        else if (x === b)cb++;
+        else if (x === b)
+            cb++;
     }
     const out = [];
     if (ca > nums.length / 3)

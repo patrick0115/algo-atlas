@@ -177,21 +177,32 @@ def roundTrip(urls):
     return [c.decode(s) for s in shorts]`,
         c: `#define BASE "http://tinyurl.com/"
 typedef struct { char code[7]; char *url; UT_hash_handle hh; } Entry;
+typedef struct { char *url; char code[7]; UT_hash_handle hh; } Rev;
 static Entry *tab_ = NULL;
+static Rev *rev_ = NULL;                      // 長網址 → 鍵(url2code)
 static const char *CH = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 char *encode(char *longUrl) {
     Entry *e;
+    Rev *r;
     char code[7];
-    do {                                      // 抽到沒用過的 6 碼為止
-        for (int i = 0; i < 6; i++) code[i] = CH[rand() % 62];
-        code[6] = '\\0';
-        HASH_FIND_STR(tab_, code, e);
-    } while (e);
-    e = malloc(sizeof(Entry));
-    strcpy(e->code, code);
-    e->url = strdup(longUrl);
-    HASH_ADD_STR(tab_, code, e);
+    HASH_FIND_STR(rev_, longUrl, r);
+    if (r) strcpy(code, r->code);             // 同一網址回傳同一短碼
+    else {
+        do {                                  // 抽到沒用過的 6 碼為止
+            for (int i = 0; i < 6; i++) code[i] = CH[rand() % 62];
+            code[6] = '\\0';
+            HASH_FIND_STR(tab_, code, e);
+        } while (e);
+        e = malloc(sizeof(Entry));
+        strcpy(e->code, code);
+        e->url = strdup(longUrl);
+        HASH_ADD_STR(tab_, code, e);
+        r = malloc(sizeof(Rev));
+        r->url = e->url;
+        strcpy(r->code, code);
+        HASH_ADD_KEYPTR(hh, rev_, r->url, strlen(r->url), r);
+    }
     char *s = malloc(strlen(BASE) + 7);
     strcpy(s, BASE); strcat(s, code);
     return s;

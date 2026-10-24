@@ -142,7 +142,7 @@ def zigzagLevelOrder(root):
       steps: ['每層建一個空的 `row`(deque)', '取出節點 n:偶數層 `row.append(n.val)`;奇數層 `row.appendleft(n.val)`', '孩子照常左、右入隊', '`list(row)` 放進答案'],
       figure: { title: `root = [${T}]`, steps: dequeFig() },
       complexity: { time: 'O(n)', space: 'O(w)', why: '兩端插入都是 O(1)。' },
-      verdict: '一步到位,不用事後反轉。',
+      verdict: '一步到位,不用事後反轉。C / JavaScript 改用先配好長度的陣列,奇數層從後往前填,效果相同。',
       code: {
         python: `from collections import deque
 

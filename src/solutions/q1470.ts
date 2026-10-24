@@ -74,7 +74,7 @@ export const q1470: Solution = {
       idea: '將對應的 y 暫存在 x 的高位,再由後往前拆出兩個值並覆蓋原陣列。',
       steps: ['對 i = 0..n−1,做 nums[i] |= nums[n+i] << 10', '從 i = n−1 下降到 0', 'nums[2i+1] = nums[i] >> 10', 'nums[2i] = nums[i] & 1023'],
       figure: { title: '利用 10 位保存一個數', steps: packedFig },
-      complexity: { time: 'O(n)', space: 'O(1)', why: '直接改輸入陣列,只用常數個變數。' },
+      complexity: { time: 'O(n)', space: 'O(1)', why: '直接改輸入陣列,只用常數個變數。C 版必須回傳新配置的陣列,所以先複製一份。' },
       verdict: '進階技巧,必須知道數值上限;一般寫法仍以新陣列較清楚。',
       code: {
         python: `def shuffle(nums, n):
@@ -112,13 +112,12 @@ export const q1470: Solution = {
     return nums;
 }`,
         javascript: `function shuffle(nums, n) {
-  const ans = [...nums];
-  for (let i = 0; i < n; i++) ans[i] |= ans[n + i] << 10;
+  for (let i = 0; i < n; i++) nums[i] |= nums[n + i] << 10;
   for (let i = n - 1; i >= 0; i--) {
-    ans[2 * i + 1] = ans[i] >> 10;
-    ans[2 * i] = ans[i] & 1023;
+    nums[2 * i + 1] = nums[i] >> 10;
+    nums[2 * i] = nums[i] & 1023;
   }
-  return ans;
+  return nums;
 }`,
       },
     },

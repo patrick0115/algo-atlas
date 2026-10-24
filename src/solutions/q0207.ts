@@ -47,7 +47,7 @@ function dfsFig(): FigStep[] {
   for (const [u, v] of EDGES) adj[u].push(v)
   const state = Array(N).fill(0) // 0 沒走過、1 走訪中(在目前的路徑上)、2 走完了
   const cls = () => Object.fromEntries(state.map((s, i) => [i, s === 1 ? 'hl' : s === 2 ? 'done' : '']))
-  const out: FigStep[] = [{ note: '另一種判斷循環的方法:DFS 時給節點三種顏色 —— 白(沒走過)、黃(正在目前這條路上)、綠(完全走完、確定沒問題)。走到一個「黃色」的節點 = 繞回自己的路上 = 有循環', views: [graphView(N, EDGES, { directed: true, pos: POS })] }]
+  const out: FigStep[] = [{ note: '另一種判斷循環的方法:DFS 時給節點三種狀態 —— 沒走過(外框)、走訪中(實心,正在目前這條路上)、走完(變淡,完全走完、確定沒問題)。走到一個「走訪中」的節點 = 繞回自己的路上 = 有循環', views: [graphView(N, EDGES, { directed: true, pos: POS })] }]
   const dfs = (u: number): boolean => {
     state[u] = 1
     out.push({ note: `進入 ${u},標成「走訪中」`, views: [graphView(N, EDGES, { directed: true, pos: POS, cls: cls() })] })
@@ -60,7 +60,7 @@ function dfsFig(): FigStep[] {
     return true
   }
   for (let i = 0; i < N; i++) if (state[i] === 0) dfs(i)
-  out.push({ note: '所有節點都走完,沒遇到黃色 → 沒有循環 → true', views: [graphView(N, EDGES, { directed: true, pos: POS, cls: cls() })] })
+  out.push({ note: '所有節點都走完,沒遇到「走訪中」的節點 → 沒有循環 → true', views: [graphView(N, EDGES, { directed: true, pos: POS, cls: cls() })] })
   return out
 }
 

@@ -4,9 +4,10 @@ import { chain } from './fig'
 // 328. Odd Even Linked List
 const V = [1,2,3,4,5]
 const fig = [
-  { note: '先把 odd 指向第 1 個節點 1，even 指向第 2 個節點 2，並保存偶數鏈的頭 2。', views: [chain(V, { label: '起始指標', cls: { 0: 'hl', 1: 'visited' } })] },
   { note: '奇偶指的是位置（第 1、3、5 個），不是節點的數值。先分成奇位 1→3→5 與偶位 2→4。', views: [chain(V, { label: '原串列', cls: { 0: 'hl', 2: 'hl', 4: 'hl' } }), chain([1,3,5], { label: '奇位' }), chain([2,4], { label: '偶位' })] },
+  { note: '先把 odd 指向第 1 個節點 1，even 指向第 2 個節點 2，並保存偶數鏈的頭 2。', views: [chain(V, { label: '起始指標', cls: { 0: 'hl', 1: 'visited' } })] },
   { note: '第一次改接後，奇數鏈已有 1→3，偶數鏈已有 2→4；兩條鏈各自保留原有次序。', views: [chain([1,3], { label: 'odd 鏈', cls: { 1: 'hl' } }), chain([2,4], { label: 'even 鏈', cls: { 1: 'hl' } })] },
+  { note: '第二次改接後，奇數鏈變成 1→3→5，偶數鏈是 2→4（4 的 next 變成空）；even 走到空，迴圈結束。', views: [chain([1,3,5], { label: 'odd 鏈', cls: { 2: 'hl' } }), chain([2,4], { label: 'even 鏈' })] },
   { note: '把奇位尾巴接到偶位頭，得到 1→3→5→2→4。', views: [chain([1,3,5,2,4], { label: '結果', tail: true, cls: { 0: 'done', 1: 'done', 2: 'done', 3: 'done', 4: 'done' } })] },
 ]
 const collectFig = [
@@ -23,7 +24,7 @@ export const q0328: Solution = {
   constraints: ['0 ≤ 節點數 ≤ 10⁴。', '進階要求 O(1) 額外空間。'],
   insight: ['要保留兩組相對順序，可先用兩個陣列收集節點。', '更省空間：維持 odd 和 even 兩條鏈的尾巴，交替改 next；最後把 odd 接到原 even 頭。', '與 [143](#/q/143) 一樣，改指標前要保留必要的下一個節點。'],
   approaches: [
-    { name: '收集奇偶節點', idea: '走訪時把節點物件依位置放進兩個陣列，再依序重新串接。', steps: ['交替把節點放入 odd / even 陣列。奇偶依原本的位置決定，因此必須照原順序走訪節點。', '串接 odd 後再串接 even。分組時保留每組的先後順序，才符合題目要求。', '最後節點 next 設成 null。最後把奇數鏈尾端接到偶數鏈頭端，得到完整串列。'], figure: { title: 'head = [1,2,3,4,5]', steps: collectFig }, complexity: { time: 'O(n)', space: 'O(n)', why: '每個節點保存一次。' }, verdict: '簡單但需要額外陣列。', code: {
+    { name: '收集奇偶節點', idea: '走訪時把節點物件依位置放進兩個陣列，再依序重新串接。', steps: ['交替把節點放入 odd / even 陣列。奇偶依原本的位置決定，因此必須照原順序走訪節點。', '串接 odd 後再串接 even。分組時保留每組的先後順序，才符合題目要求。', '最後一個節點的 next 設成 null。'], figure: { title: 'head = [1,2,3,4,5]', steps: collectFig }, complexity: { time: 'O(n)', space: 'O(n)', why: '每個節點保存一次。' }, verdict: '簡單但需要額外陣列。', code: {
       python: `def oddEvenList(head):
     odd, even = ([], [])
     n = head
@@ -46,7 +47,7 @@ export const q0328: Solution = {
             odd = realloc(odd, cap * sizeof(*odd));
             even = realloc(even, cap * sizeof(*even));
         }
-        if (n++%2 == 0)
+        if (n++ % 2 == 0)
             odd[o++] = p;
         else
             even[e++] = p;
@@ -81,7 +82,7 @@ export const q0328: Solution = {
     List<ListNode> a = new ArrayList<>(), b = new ArrayList<>();
     int i = 0;
     for (ListNode p = head; p != null; p = p.next) {
-        (i++%2 == 0 ? a : b).add(p);
+        (i++ % 2 == 0 ? a : b).add(p);
     }
     a.addAll(b);
     for (i = 0; i < a.size(); i++)
@@ -92,13 +93,13 @@ export const q0328: Solution = {
     const a = [], b = [];
     let i = 0;
     for (let p = head; p; p = p.next)
-        (i++%2 ? b : a).push(p);
+        (i++ % 2 ? b : a).push(p);
     const all = a.concat(b);
-    all.forEach((n, j) => n.next = all[j + 1]??null);
+    all.forEach((n, j) => n.next = all[j + 1] ?? null);
     return head;
 }`,
     } },
-    { name: '兩條鏈原地交錯拆分', idea: 'odd、even 各跳過一個節點，最後把奇位尾巴接到偶位頭。', steps: ['若 head 空，直接回傳。奇偶依原本的位置決定，因此必須照原順序走訪節點。', 'odd=head、even=head.next，保存 evenHead。分組時保留每組的先後順序，才符合題目要求。', '當 even 與 even.next 存在，分別改接 odd.next 與 even.next。最後把奇數鏈尾端接到偶數鏈頭端，得到完整串列。', 'odd.next=evenHead。最後把奇數鏈尾端接到偶數鏈頭端，得到完整串列。'], figure: { title: 'head = [1,2,3,4,5]', steps: fig }, complexity: { time: 'O(n)', space: 'O(1)', why: '僅使用固定數量指針。' }, verdict: '符合進階要求；奇偶是索引，不是值。', code: {
+    { name: '兩條鏈原地交錯拆分', idea: 'odd、even 各跳過一個節點，最後把奇位尾巴接到偶位頭。', steps: ['若 head 空，直接回傳。奇偶依原本的位置決定，因此必須照原順序走訪節點。', 'odd=head、even=head.next，保存 evenHead。分組時保留每組的先後順序，才符合題目要求。', '當 even 與 even.next 存在：odd.next = even.next、odd 前進；even.next = odd.next、even 前進。', 'odd.next=evenHead。最後把奇數鏈尾端接到偶數鏈頭端，得到完整串列。'], figure: { title: 'head = [1,2,3,4,5]', steps: fig }, complexity: { time: 'O(n)', space: 'O(1)', why: '僅使用固定數量指針。' }, verdict: '符合進階要求；奇偶是索引，不是值。', code: {
       python: `def oddEvenList(head):
     if not head:  # 空串列可直接回傳。
         return head

@@ -65,7 +65,7 @@ function countFig(): FigStep[] {
   return [
     { note: '重量最多只有 1000 → 可以用「計數陣列」:cnt[w] = 重量 w 的石頭有幾顆。從最重的往下找', views: [arr(cnt, { label: 'cnt[重量](這裡只畫到 8)', highlight: S })] },
     { note: '最重的是 8(1 顆)、下一個是 7 → 撞完剩 1,cnt[1]++。之後一樣從目前最重的往下找;同一個重量有兩顆就直接互相抵銷', views: [arr([0, 3, 1, 0, 1, 0, 0, 0, 0], { label: 'cnt(撞完 8 和 7 之後)', highlight: [1] })] },
-    { note: '一路做下去,最後剩下的重量就是答案 1。總共掃一遍重量範圍,O(n + W)', views: [arr([0, 1, 0, 0, 0, 0, 0, 0, 0], { label: 'cnt(最後)', done: [1] })] },
+    { note: '一路做下去,最後剩下的重量就是答案 1。每次碰撞往下找次重的最多掃 W 格,總共 O(n · W)', views: [arr([0, 1, 0, 0, 0, 0, 0, 0, 0], { label: 'cnt(最後)', done: [1] })] },
   ]
 }
 
@@ -245,7 +245,7 @@ int lastStoneWeight(int *stones, int stonesSize) {
       idea: '重量 ≤ 1000,用 `cnt[w]` 記每個重量有幾顆。從最大的重量往下找「最重」和「次重」,撞完把差放回對應的格子。同一個重量有偶數顆會互相抵銷。',
       steps: ['`cnt[w]++`', '`w` 從最大往下:`cnt[w]` 是偶數 → 全部兩兩抵銷;奇數 → 剩一顆,往下找下一顆石頭 `x`', '撞完 `cnt[w − x]++`(差一定比 w 小,之後還會掃到)', '找不到第二顆 → 答案是 w'],
       figure: { title: `stones = [${S.join(',')}]`, steps: countFig() },
-      complexity: { time: 'O(n + W)', space: 'O(W)', why: 'W 是最大重量(1000)。每個重量位置最多被掃幾次,總共線性。' },
+      complexity: { time: 'O(n · W)', space: 'O(W)', why: 'W 是最大重量(1000)。最多 n 次碰撞,每次往下找次重的最多掃 W 格。' },
       verdict: '利用「值的範圍小」換掉 Heap,和 [347](#/q/347) 的桶排序是同一個想法。面試時當補充。',
       code: {
         python: `def lastStoneWeight(stones):

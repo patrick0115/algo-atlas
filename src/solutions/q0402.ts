@@ -17,7 +17,7 @@ function stackFig(): FigStep[] {
 function greedyFig(): FigStep[] {
   return [
     { note: '暴力版的貪心:每一輪從左往右找第一個「比下一位大」的數字刪掉(找不到就刪最後一位),重複 k 輪', views: [arr(NUM.split(''), { label: '第 1 輪:4 > 3,刪 4', dim: [1] })] },
-    { note: '"132219" → 刪 3 → "12219" → 刪第一個 2(2 > 1)→ "1219"。每輪 O(n),共 O(n · k)', views: [arr('1219'.split(''), { label: '結果' })] },
+    { note: '"132219" → 刪 3 → "12219" → 刪第二個 2(2 > 1)→ "1219"。每輪 O(n),共 O(n · k)', views: [arr('1219'.split(''), { label: '結果' })] },
   ]
 }
 

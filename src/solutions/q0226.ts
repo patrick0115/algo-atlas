@@ -35,6 +35,20 @@ function bfsFig(): FigStep[] {
   return out
 }
 
+function stackFig(): FigStep[] {
+  const root = buildTree(T)
+  const st: FNode[] = [root!]
+  const out: FigStep[] = [{ note: '把佇列換成堆疊:每次 pop 最後放進去的節點,交換它的左右,再把孩子(先左後右)push 進去', views: [treeOf(root), arr(st.map((n) => n.val), { label: '堆疊(右邊是頂端)' })] }]
+  while (st.length) {
+    const n = st.pop()!
+    ;[n.left, n.right] = [n.right, n.left]
+    if (n.left) st.push(n.left)
+    if (n.right) st.push(n.right)
+    out.push({ note: `pop 出 ${n.val},交換左右,孩子 push 進堆疊`, views: [treeOf(root, { cls: { [n.i]: 'hl' } }), arr(st.map((x) => x.val), { label: '堆疊(右邊是頂端)' })] })
+  }
+  return out
+}
+
 export const q0226: Solution = {
   id: 226,
   plain: '把一棵樹「照鏡子」:每個節點的左邊孩子和右邊孩子互換位置,整棵樹就左右顛倒了。',
@@ -180,7 +194,7 @@ def invertTree(root):
       name: '迭代(DFS,用堆疊)',
       idea: '和 BFS 一樣,只是把佇列換成堆疊:後放進去的先處理,走訪順序變成「一路往下」。',
       steps: ['`stack = [root]`', 'pop 出 `node`,交換左右', '把不是空的孩子 push 進去', '堆疊空了就完成'],
-      figure: { title: 'root = [4,2,7,1,3,6,9]', steps: recurFig() },
+      figure: { title: 'root = [4,2,7,1,3,6,9]', steps: stackFig() },
       complexity: { time: 'O(n)', space: 'O(h)', why: '每個節點一次;堆疊最多放 O(h) 層的節點(加上兄弟)。' },
       verdict: '把遞迴手動改成堆疊的標準手法。面試官問「不用遞迴可以嗎」時的答案之一。',
       code: {

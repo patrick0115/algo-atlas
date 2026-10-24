@@ -28,10 +28,11 @@ function threeFig(): FigStep[] {
     i++
   }
   while (i < IV.length && IV[i][0] <= e) {
+    const prevE = e
     s = Math.min(s, IV[i][0])
     e = Math.max(e, IV[i][1])
     cls[i] = 'cmp'
-    out.push({ note: `[${IV[i]}] 和新區間重疊(開始 ${IV[i][0]} ≤ ${e}) → 合併,新區間變成 [${s},${e}]`, views: [intervalsView(all, { rowLabels: lbl, cls: { ...cls } }), arr(res.map((r) => `[${r}]`), { label: '答案' })] })
+    out.push({ note: `[${IV[i]}] 和新區間重疊(開始 ${IV[i][0]} ≤ ${prevE}) → 合併,新區間變成 [${s},${e}]`, views: [intervalsView(all, { rowLabels: lbl, cls: { ...cls } }), arr(res.map((r) => `[${r}]`), { label: '答案' })] })
     i++
   }
   res.push([s, e])

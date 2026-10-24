@@ -120,7 +120,7 @@ int maxTurbulenceSize(int *arr, int arrSize) {
       steps: ['`up = down = 1`', '`arr[i−1] < arr[i]`:`up, down = down + 1, 1`', '`arr[i−1] > arr[i]`:`down, up = up + 1, 1`;相等:`up = down = 1`', '`best = max(best, up, down)`'],
       figure: { title: `arr = [${A}]`, steps: dpFig() },
       complexity: { time: 'O(n)', space: 'O(1)', why: '兩個變數滾動。' },
-      verdict: '和 [376. Wiggle Subsequence](#/q/376) 同一個狀態設計,只是這題要求連續。',
+      verdict: '和 376. Wiggle Subsequence 同一個狀態設計,只是這題要求連續。',
       code: {
         python: `def maxTurbulenceSize(arr):
     up = down = best = 1

@@ -66,7 +66,7 @@ export const q0110: Solution = {
       idea: '`balanced(n)` = `|height(左) − height(右)| ≤ 1` 且 `balanced(左)` 且 `balanced(右)`。',
       steps: ['空樹 → true', '算 `height(n.left)`、`height(n.right)`,差 > 1 → false', '遞迴檢查左右子樹'],
       figure: { title: `root = [${T.map((v) => v ?? 'null').join(',')}]`, steps: topDownFig() },
-      complexity: { time: 'O(n²)', space: 'O(h)', why: '每個節點都會算一次它子樹的高度;樹是一條鍊時總共 O(n²)。平衡的樹是 O(n log n)。' },
+      complexity: { time: 'O(n²)', space: 'O(h)', why: '每個節點都會重算子樹高度,最壞是 O(n²) 的上界;平衡的樹是 O(n log n)。' },
       verdict: '直接照定義寫,好懂。但高度被重複計算。',
       code: {
         python: `def isBalanced(root):

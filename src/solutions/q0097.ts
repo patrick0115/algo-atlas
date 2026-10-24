@@ -53,7 +53,7 @@ export const q0097: Solution = {
       name: '遞迴 + 記憶化',
       idea: '`f(i, j)`:s1[i:] 和 s2[j:] 能不能拼出 s3[i+j:]。下一個字和 s1[i] 一樣就試 `f(i+1, j)`,和 s2[j] 一樣就試 `f(i, j+1)`。',
       steps: ['長度不符 → false', '`i == m and j == n` → true', '`s1[i] == s3[i+j]` 且 `f(i+1, j)` → true', '`s2[j] == s3[i+j]` 且 `f(i, j+1)` → true;記憶化'],
-      figure: { title: `s1 = "${S1}", s2 = "${S2}", s3 = "${S3}"`, steps: dpFig().slice(0, 5) },
+      figure: { title: `s1 = "${S1}", s2 = "${S2}", s3 = "${S3}"(借用方法二的前綴表,方向和 f(i, j) 相反)`, steps: dpFig().slice(0, 5) },
       complexity: { time: 'O(m · n)', space: 'O(m · n)', why: '狀態 (i, j) 共 (m+1)(n+1) 種。沒有記憶化會是指數級。' },
       verdict: '最自然的想法:每一步決定「下一個字從哪邊拿」。',
       code: {

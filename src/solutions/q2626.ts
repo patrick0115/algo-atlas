@@ -17,7 +17,7 @@ export const q2626: Solution = {
       steps: ["令 acc=init","依序讀取 nums","將 acc 設為 fn(acc,目前值)","回傳 acc"],
       figure: { title: "逐項更新", steps: [
         { note: "初值為 0，先讀 1。", views: [arr(["0","1","2","3"], { label: "累計與輸入", highlight: [1] })] },
-        { note: "依序加入 2、3 後累計為 6。", views: [arr(["1","3","6","10"], { label: "累計過程", done: [3] })] },
+        { note: "依序加入 2、3、4，累計 3 → 6 → 10。", views: [arr(["1","3","6","10"], { label: "累計過程", done: [3] })] },
       ] },
       complexity: { time: "O(N)", space: "O(1)", why: "每個元素呼叫 fn 一次，僅保存累計值。" },
       verdict: "最容易讀懂。",

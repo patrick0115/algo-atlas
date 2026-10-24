@@ -17,7 +17,7 @@ const recursiveFig = [
 ]
 const WRAP = {
   python: `\ndef distanceKCheck(root, target, k):
-    return sorted(distanceK(root, target, k))  # 避免重訪已經走過的節點。`,
+    return sorted(distanceK(root, target, k))  # 測試用:排序後比對`,
   c: `\nstatic int cmpInt(const void *a, const void *b) {
     int x = *(int*)a, y = *(int*)b;
     return (x > y) - (x < y);
@@ -54,10 +54,10 @@ export const q0863: Solution = {
       python: `def distanceK(root, target, k):
     parent = {root: None}
     st = [root]
-    while st:  # 從目標逐層擴展，或由遞迴回報與目標的距離。
+    while st:  # DFS 記下每個節點的父節點
         n = st.pop()
         for ch in (n.left, n.right):
-            if ch:  # 避免重訪已經走過的節點。
+            if ch:  # 有孩子才記父節點
                 parent[ch] = n
                 st.append(ch)
     q = [target]
@@ -73,7 +73,7 @@ export const q0863: Solution = {
     return [n.val for n in q]${WRAP.python}`,
       c: `static int build(struct TreeNode *n, int p, struct TreeNode **a, int *par, int *l, int *r, int *len) {
     if (!n)
-        return - 1;
+        return -1;
     int i = (*len)++;
     a[i] = n;
     par[i] = p;
@@ -84,7 +84,7 @@ export const q0863: Solution = {
 int *distanceK(struct TreeNode *root, struct TreeNode *target, int k, int *returnSize) {
     struct TreeNode **a = malloc(501 * sizeof(*a));
     int *par = malloc(501 * sizeof(int)), *l = malloc(501 * sizeof(int)), *r = malloc(501 * sizeof(int)), n = 0;
-    build(root, -1, a, par, l, r, & n);
+    build(root, -1, a, par, l, r, &n);
     int t = 0;
     while (t < n && a[t] != target)
         t++;
@@ -132,8 +132,8 @@ int *distanceK(struct TreeNode *root, struct TreeNode *target, int k, int *retur
     for (int d = 0; d < k; d++) {
         vector<TreeNode*> next;
         for (auto n : q)
-            for (auto v : {n->left, n->right, par[n]}
-)if (v && seen.insert(v).second)next.push_back(v);
+            for (auto v : {n->left, n->right, par[n]})
+                if (v && seen.insert(v).second) next.push_back(v);
         q = next;
     }
     vector<int> out;
@@ -151,8 +151,8 @@ int *distanceK(struct TreeNode *root, struct TreeNode *target, int k, int *retur
     for (int d = 0; d < k; d++) {
         List<TreeNode> next = new ArrayList<>();
         for (TreeNode n : q)
-            for (TreeNode v : new TreeNode[] {n.left, n.right, par.get(n)}
-)if (v != null && seen.add(v))next.add(v);
+            for (TreeNode v : new TreeNode[]{n.left, n.right, par.get(n)})
+                if (v != null && seen.add(v)) next.add(v);
         q = next;
     }
     List<Integer> out = new ArrayList<>();
@@ -192,12 +192,12 @@ void build(TreeNode n, TreeNode p, Map<TreeNode, TreeNode> par) {
     return q.map(n => n.val);
 }${WRAP.javascript}`,
     } },
-    { name: '遞迴回報距離', idea: '找到 target 後向上回報距離；對祖先的另一側子樹補找剩餘步數。', steps: ['向下收集某節點深度 d 的節點。樹原本沒有往父節點的指標，因此搜尋前要準備回頭的辦法。', '遞迴找 target；找到時從 target 向下收 k 步。每走過一條邊就增加一層距離，並避免再走回已訪問節點。', '回到祖先時，若祖先距離 k 就收祖先；否則在另一側收剩餘步數。恰好走完 k 條邊的節點才加入答案，不可把較近節點也算進來。'], figure: { title: 'target = 5, k = 2', steps: recursiveFig }, complexity: { time: 'O(n)', space: 'O(h)', why: '子樹互不重複地收集；額外記憶體為遞迴堆疊，輸出不計。' }, verdict: '不建父節點表，但距離公式需要仔細處理。', code: {
+    { name: '遞迴回報距離', idea: '找到 target 後向上回報距離；對祖先的另一側子樹補找剩餘步數。', steps: ['向下收集某節點深度 d 的節點。', '遞迴找 target；找到時從 target 向下收 k 步。', '回到祖先時，若祖先距離 k 就收祖先；否則在另一側收剩餘步數。恰好走完 k 條邊的節點才加入答案，不可把較近節點也算進來。'], figure: { title: 'target = 5, k = 2', steps: recursiveFig }, complexity: { time: 'O(n)', space: 'O(h)', why: '子樹互不重複地收集；額外記憶體為遞迴堆疊，輸出不計。' }, verdict: '不建父節點表，但距離公式需要仔細處理。', code: {
       python: `def distanceK(root, target, k):
     out = []
 
     def down(n, d):
-        if not n or d < 0:  # 避免重訪已經走過的節點。
+        if not n or d < 0:  # 走出樹外或步數用完
             return
         if d == 0:
             out.append(n.val)
@@ -240,7 +240,7 @@ void build(TreeNode n, TreeNode p, Map<TreeNode, TreeNode> par) {
 }
 static int find(struct TreeNode *n, struct TreeNode *target, int k, int *out, int *sz) {
     if (!n)
-        return - 1;
+        return -1;
     if (n == target) {
         down(n, k, out, sz);
         return 0;
@@ -261,7 +261,7 @@ static int find(struct TreeNode *n, struct TreeNode *target, int k, int *out, in
             down(n->left, k - d - 2, out, sz);
         return d + 1;
     }
-    return - 1;
+    return -1;
 }
 int *distanceK(struct TreeNode *root, struct TreeNode *target, int k, int *returnSize) {
     int *out = malloc(501 * sizeof(int));
@@ -283,7 +283,7 @@ int *distanceK(struct TreeNode *root, struct TreeNode *target, int k, int *retur
     };
     function<int(TreeNode*)> find = [&](TreeNode *n) {
         if (!n)
-            return - 1;
+            return -1;
         if (n == target) {
             down(n, k);
             return 0;
@@ -304,7 +304,7 @@ int *distanceK(struct TreeNode *root, struct TreeNode *target, int k, int *retur
                 down(n->left, k - d - 2);
             return d + 1;
         }
-        return - 1;
+        return -1;
     };
     find(root);
     return out;
@@ -331,7 +331,7 @@ void down(TreeNode n, int d) {
 }
 int find(TreeNode n) {
     if (n == null)
-        return - 1;
+        return -1;
     if (n == target) {
         down(n, k);
         return 0;
@@ -352,7 +352,7 @@ int find(TreeNode n) {
             down(n.left, k - d - 2);
         return d + 1;
     }
-    return - 1;
+    return -1;
 }${WRAP.java}`,
       javascript: `function distanceK(root, target, k) {
     const out = [];
@@ -368,7 +368,7 @@ int find(TreeNode n) {
     }
     function find(n) {
         if (!n)
-            return - 1;
+            return -1;
         if (n === target) {
             down(n, k);
             return 0;
@@ -389,7 +389,7 @@ int find(TreeNode n) {
                 down(n.left, k - d - 2);
             return d + 1;
         }
-        return - 1;
+        return -1;
     }
     find(root);
     return out;

@@ -37,7 +37,7 @@ export const q0352: Solution = {
   examples: [
     { input: 'addNum(1), get, addNum(3), get, addNum(7), get, addNum(2), get, addNum(6), get', output: '[[1,1]] → [[1,1],[3,3]] → [[1,1],[3,3],[7,7]] → [[1,3],[7,7]] → [[1,3],[6,7]]' },
   ],
-  constraints: ['0 ≤ value ≤ 10⁴', '最多 3·10⁴ 次呼叫', 'Follow-up:合併很多次、不同的數相對很少時怎麼辦?'],
+  constraints: ['0 ≤ value ≤ 10⁴', '最多 3·10⁴ 次呼叫', 'Follow-up:合併很多次、區間數相對資料量很少時怎麼辦?'],
   insight: ['簡單作法:用集合記收到哪些數,查詢時排序再把連續的接起來', '值的範圍只到 10⁴ → 也可以用布林陣列,查詢時從 0 掃到 10⁴', '查詢很多時:改成隨時維護排好序的區間,加入時二分找位置、和左右鄰居合併'],
   approaches: [
     {
@@ -45,7 +45,7 @@ export const q0352: Solution = {
       idea: 'addNum 放進集合;getIntervals 把集合排序,連續的數接成一段。',
       steps: ['addNum:`seen.add(value)`', 'getIntervals:`for v in sorted(seen)`', '`v == 上一段結尾 + 1` → 延長;否則開新的一段'],
       figure: { title: `依序加入 ${ADD.join(', ')}`, steps: setFig() },
-      complexity: { time: 'addNum O(1),getIntervals O(n log n)', space: 'O(n)', why: '每次查詢都要排序(值域小時可以用布林陣列換成 O(值域))。' },
+      complexity: { time: 'addNum O(1),getIntervals O(n log n)', space: 'O(n)', why: '每次查詢都要排序(值域小時可以用布林陣列換成 O(值域))。C++/Java 用平衡樹:addNum O(log n)、getIntervals O(n);C 用布林陣列:getIntervals O(10⁴)。' },
       verdict: '最好寫。查詢不多時很夠用。',
       code: {
         python: `class SummaryRanges:

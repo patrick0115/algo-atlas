@@ -10,8 +10,8 @@ const T = 'thehat'
 function memoFig(): FigStep[] {
   return [
     { note: `每張貼紙可以無限次使用,剪下字母拼出 "${T}"。狀態 = 「還缺哪些字母」;用字母計數表示,同一個缺口只算一次(記憶化)`, views: [kv([['t', 2], ['h', 2], ['e', 1], ['a', 1]], '還缺')] },
-    { note: '剪枝:只考慮**含有缺口第一個字母**的貼紙。反正那個字母遲早要由某張貼紙提供,先決定它不會漏解,又能大幅減少分支', views: [arr(ST, { label: '含 t 的:with、—、—', highlight: [0], dim: [1, 2] })] },
-    { note: '用 "with" → 缺 {t:1, h:1, e:1, a:1};再用 "with" → 缺 {e:1, a:1};用 "example" → 全補齊。共 3 張', views: [arr(['with', 'with', 'example'], { label: '選用', done: [0, 1, 2] })] },
+    { note: '剪枝:只考慮**含有缺口第一個字母**的貼紙。反正那個字母遲早要由某張貼紙提供,先決定它不會漏解,又能大幅減少分支。缺口排序後是 "aehhtt",第一個字母是 a', views: [arr(ST, { label: '含 a 的:—、example、—', highlight: [1], dim: [0, 2] })] },
+    { note: '先用 "example" → 缺 {t:2, h:2};再用 "with" → 缺 {t:1, h:1};再用 "with" → 全補齊。共 3 張', views: [arr(['example', 'with', 'with'], { label: '選用', done: [0, 1, 2] })] },
     { note: '記憶化遞迴回傳「補齊這個缺口最少要幾張」,遞迴式:`1 + min(dfs(用了貼紙 s 後的缺口))`', views: [arr([3], { label: '答案', done: [0] })] },
   ]
 }

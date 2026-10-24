@@ -18,7 +18,7 @@ function dpFig(): FigStep[] {
 function trieFig(): FigStep[] {
   return [
     { note: '字典樹版:所有詞放進 Trie。對每個詞從頭沿著 Trie 走,每遇到一個「詞的結尾」就嘗試從下一個位置重新開始', views: [arr(['c-a-t*', 'c-a-t-s*', 'd-o-g*', 'r-a-t*'], { label: 'Trie 裡的詞(* = 結尾)' })] },
-    { note: '用 `dfs(i, count)` 記錄已經拆出幾個詞;走到結尾時 count ≥ 2 就是連接詞。加上記憶化避免重複', views: [arr(['catsdogcats', 'dogcatsdog', 'ratcatdogcat'], { label: '答案', done: [0, 1, 2] })] },
+    { note: '用 `dfs(i)` = 從 i 開始最多能拆成幾個詞(−1 表示拆不完);最後 `dfs(0) ≥ 2` 就是連接詞。加上記憶化避免重複', views: [arr(['catsdogcats', 'dogcatsdog', 'ratcatdogcat'], { label: '答案', done: [0, 1, 2] })] },
   ]
 }
 
@@ -149,7 +149,7 @@ char **findAllConcatenatedWordsInADict(char **words, int wordsSize, int *returnS
     },
     {
       name: 'Trie + 記憶化 DFS',
-      idea: '全部詞放進 Trie;`can(w, i, cnt)`:從 i 開始沿 Trie 走,每到一個詞尾 j 就遞迴 `can(w, j + 1, cnt + 1)`;走到字尾且 cnt ≥ 2 為真。',
+      idea: '全部詞放進 Trie;`dfs(i)` = 從 i 開始最多能拆成幾個詞(−1 表示拆不完):沿 Trie 走,每到一個詞尾 j 就遞迴 `dfs(j + 1)`;最後 `dfs(0) ≥ 2` 就是連接詞。',
       steps: ['建 Trie', '`dfs(i)`:回傳從位置 i 開始最多 / 能否拆成的詞數(記憶化)', '沿 Trie 往下:遇到詞尾 → 嘗試 `dfs(j + 1)`', '整個詞拆得出 ≥ 2 個詞 → 答案'],
       figure: { title: 'words(8 個)', steps: trieFig() },
       complexity: { time: 'O(Σ L²)', space: 'O(Σ L)', why: '每個起點沿 Trie 最多走 L 步;記憶化後每個起點只算一次。' },

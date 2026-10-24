@@ -9,8 +9,8 @@ const L = [1, 2, 3, 2, 1]
 function revFig(): FigStep[] {
   return [
     { note: '回文 = 前半和「反過來的後半」一樣。串列不能從後面走,所以:① 快慢指標找中點', views: [chain(L, { cls: { 2: 'cur' }, subs: { 2: 'slow(中點)' } })] },
-    { note: '② 把中點之後的後半段原地反轉:3 → 2 → 1 變成 1 → 2 → 3', views: [chain([1, 2], { label: '前半' }), chain([1, 2, 3], { label: '後半(反轉後)' })] },
-    { note: '③ 兩條同時往前比:1 = 1、2 = 2 → 是回文(奇數長度的正中間 3 不用比)', views: [chain([1, 2], { label: '前半', cls: { 0: 'done', 1: 'done' } }), chain([1, 2, 3], { label: '後半', cls: { 0: 'done', 1: 'done' } })] },
+    { note: '② 把從中點開始的後半段原地反轉:3 → 2 → 1 變成 1 → 2 → 3', views: [chain([1, 2], { label: '前半' }), chain([1, 2, 3], { label: '後半(反轉後)' })] },
+    { note: '③ 兩條同時往前比:1 = 1、2 = 2,最後中點 3 和自己比,一定相同 → 是回文', views: [chain([1, 2], { label: '前半', cls: { 0: 'done', 1: 'done' } }), chain([1, 2, 3], { label: '後半', cls: { 0: 'done', 1: 'done' } })] },
     { note: '(好習慣:比完再把後半反轉回來,恢復原本的串列)', views: [chain(L, { tail: true })] },
   ]
 }
@@ -144,7 +144,7 @@ export const q0234: Solution = {
       },
     },
   ],
-  pitfalls: ['比較時以前半段的長度為準:奇數長度時前半多一個(正中間),會多比一次而出錯;以後半(較短)為準', 'Java 用 `==` 比較兩個 Integer:超過 127 會出錯'],
+  pitfalls: ['比較時以前半段的長度為準:偶數長度時前半仍連著中點,比後半多一個節點,會走到 p2 = null 而出錯;要以後半為準', 'Java 用 `==` 比較兩個 Integer:超過 127 會出錯'],
   check: {
     kind: 'fn',
     fn: 'isPalindrome',

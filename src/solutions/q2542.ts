@@ -18,7 +18,7 @@ function heapFig(): FigStep[] {
 function bruteFig(): FigStep[] {
   return [
     { note: '直接一點:枚舉誰當「nums2 最小的那個」i;能選的其他索引必須 nums2 ≥ nums2[i]', views: [arr(N2, { label: 'nums2', highlight: [0] })] },
-    { note: '在這些候選裡挑 nums1 最大的 k − 1 個(排序),加上 nums1[i]。每個 i 都排序一次 → O(n² log n)', views: [arr(N1, { label: 'nums1', done: [0, 1, 2] })] },
+    { note: '在這些候選裡挑 nums1 最大的 k − 1 個(排序),加上 nums1[i]。每個 i 都排序一次 → O(n² log n)', views: [arr(N1, { label: 'nums1', done: [0, 2, 3] })] },
   ]
 }
 

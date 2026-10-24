@@ -6,7 +6,7 @@ const T = [1, 2, 5, 3, 4, null, 6]
 const steps = [
   { note: '前序走訪先收集 1，再走左子樹收集 2、3、4，最後走右子樹收集 5、6。', views: [tree(T, { cls: { 0: 'visited', 1: 'hl', 3: 'visited', 4: 'visited' } })] },
   { note: '原樹的前序順序是 1、2、3、4、5、6。展開後必須沿 right 依此走，所有 left 都是 null。', views: [tree(T, { cls: { 0: 'hl', 1: 'visited', 3: 'visited', 4: 'visited', 2: 'visited', 6: 'visited' } })] },
-  { note: '若先接上 5，就會失去原本的左子樹。先保存或處理右子樹，再改指標。', views: [tree(T, { cls: { 1: 'hl', 2: 'dim' } })] },
+  { note: '若先把 1.right 改接 2，就會失去原本的右子樹 5。先保存右子樹，再改指標。', views: [tree(T, { cls: { 1: 'hl', 2: 'dim' } })] },
   { note: '依序把 1.right 接 2、2.right 接 3，並把它們的 left 清空；剩餘節點照相同方式接上。', views: [chain([1,2,3,4,5,6], { label: '逐節點接 right', cls: { 0: 'visited', 1: 'visited', 2: 'hl' } })] },
   { note: '最後每個節點只剩 right 鏈。', views: [chain([1,2,3,4,5,6], { label: 'right 鏈', tail: true, cls: { 0: 'done', 1: 'done', 2: 'done', 3: 'done', 4: 'done', 5: 'done' } })] },
 ]
@@ -48,7 +48,7 @@ void flatten(struct TreeNode *root) {
     if (!n)
         return;
     struct TreeNode **a = malloc(n * sizeof(*a));
-    collect(root, a, & k);
+    collect(root, a, &k);
     for (int i = 0; i < n; i++) {
         a[i]->left = NULL;
         a[i]->right = i + 1 < n ? a[i + 1] : NULL;
@@ -97,11 +97,11 @@ void collect(TreeNode n, List<TreeNode> a) {
     }
     dfs(root);
     a.forEach((n, i) => {
-        n.left = null; n.right = a[i + 1]??null;
+        n.left = null; n.right = a[i + 1] ?? null;
     });
 }`,
     } },
-    { name: '反向後序原地接鏈', idea: '依右、左、根的順序走，把當前節點的 right 指向已處理的前一個節點。', steps: ['令 prev = null。先確定節點的前序順序，避免改接指標時遺失原本子樹。', '遞迴先處理右子樹，再處理左子樹。每次接鏈時同步清空 left，結果才會是一條只沿 right 的鏈。', '令 node.right = prev、node.left = null，再更新 prev = node。收尾時確認末節點指向空值，整條鏈才不會意外形成環。'], figure: { title: 'root = [1,2,5,3,4,null,6]', steps: [steps[0], { note: '先走到 6，然後 5.right = 6；接著處理 4、3、2，最後 1.right = 2。', views: [tree(T, { cls: { 6: 'done', 2: 'visited', 0: 'hl' } })] }, steps[2]] }, complexity: { time: 'O(n)', space: 'O(h)', why: '每個節點一次，遞迴堆疊長度為樹高。' }, verdict: '只用遞迴堆疊；必須先右後左。', code: {
+    { name: '反向後序原地接鏈', idea: '依右、左、根的順序走，把當前節點的 right 指向已處理的前一個節點。', steps: ['令 prev = null。先確定節點的前序順序，避免改接指標時遺失原本子樹。', '遞迴先處理右子樹，再處理左子樹。每次接鏈時同步清空 left，結果才會是一條只沿 right 的鏈。', '令 node.right = prev、node.left = null，再更新 prev = node。收尾時確認末節點指向空值，整條鏈才不會意外形成環。'], figure: { title: 'root = [1,2,5,3,4,null,6]', steps: [{ note: '依 右 → 左 → 根 的順序走，prev 從 null 開始。', views: [tree(T)] },{ note: '先走到 6，然後 5.right = 6；接著處理 4、3、2，最後 1.right = 2。', views: [tree(T, { cls: { 6: 'done', 2: 'visited', 0: 'hl' } })] }, steps[2]] }, complexity: { time: 'O(n)', space: 'O(h)', why: '每個節點一次，遞迴堆疊長度為樹高。' }, verdict: '只用遞迴堆疊；必須先右後左。', code: {
       python: `def flatten(root):
     prev = None
 
@@ -125,7 +125,7 @@ void collect(TreeNode n, List<TreeNode> a) {
 }
 void flatten(struct TreeNode *root) {
     struct TreeNode *prev = NULL;
-    dfs(root, & prev);
+    dfs(root, &prev);
 }`,
       cpp: `void flatten(TreeNode *root) {
     TreeNode *prev = nullptr;

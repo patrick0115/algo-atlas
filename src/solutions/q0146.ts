@@ -459,7 +459,7 @@ public:
       name: '用語言內建的「有順序的 Map」',
       idea: '有些語言的 Map 會記住插入順序:Python 的 `OrderedDict`、Java 的 `LinkedHashMap`、JavaScript 的 `Map`。「搬到最新」= 刪掉再重新放進去;「最舊的」= 第一個 key。它們內部其實就是方法二的 Hash + 雙向串列。',
       steps: ['`get`:不在 → `-1`;在 → 移到最後(`move_to_end` / 刪掉再放回)', '`put`:放進去並移到最後', '超過容量 → 刪掉第一個 key'],
-      figure: { title: `容量 ${CAP}:${OPS.map(opText).join('、')}`, steps: listFig() },
+      figure: { title: `容量 ${CAP}:${OPS.map(opText).join('、')}`, steps: dllFig() },
       complexity: { time: 'get / put O(1)', space: 'O(capacity)', why: '這些內建結構的插入、刪除、取第一個都是 O(1)。' },
       verdict: '實務上最簡單。但面試官通常會說「不要用內建的」,要你寫出方法二 —— 這個方法比較適合當作「我知道內建的原理」的補充。C 的 uthash 剛好也有插入順序,C++ 則用 `list` + `unordered_map` 拼出來。',
       code: {

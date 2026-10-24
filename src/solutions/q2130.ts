@@ -155,7 +155,7 @@ export const q2130: Solution = {
       },
     },
   ],
-  pitfalls: ['快慢指標的終止條件:n 是偶數時用 `while fast` 讓 slow 停在後半段開頭;寫成 `while fast.next` 會停在前半段結尾', '反轉時忘了先存 next,串列就斷了'],
+  pitfalls: ['快慢指標的終止條件:n 是偶數時用 `while fast` 讓 slow 停在後半段開頭;寫成 `while fast.next and fast.next.next` 會停在前半段結尾;只寫 `while fast.next` 會在 fast 變成 null 後出錯', '反轉時忘了先存 next,串列就斷了'],
   check: {
     kind: 'fn',
     fn: 'pairSum',

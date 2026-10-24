@@ -221,7 +221,7 @@ List<List<Integer>> findCriticalAndPseudoCriticalEdges(int n, int[][] edges) {
       steps: ['依權重排序並分組', '組內每條邊:`a, b = find(u), find(v)`;相同 → 不在任何 MST', '其餘邊在塊圖上跑 Tarjan 找橋(用邊編號處理重邊)', '橋 → 關鍵、非橋 → 偽關鍵;最後 union 整組'],
       figure: { title: `n = ${N}`, steps: bridgeFig() },
       complexity: { time: 'O(E log E + E · α(n))', space: 'O(n + E)', why: '排序之後每條邊只在自己那組處理一次。' },
-      verdict: '進階解:看懂「同權重的邊何時可以互相替換」,並把它轉成找橋([1192](#/q/1192))。',
+      verdict: '進階解:看懂「同權重的邊何時可以互相替換」,並把它轉成找橋(1192. Critical Connections in a Network)。',
       code: {
         python: `import sys
 

@@ -4,10 +4,10 @@ import type { GridViewData } from '../types'
 // 542. 01 Matrix
 const M = [[0,0,0],[0,1,0],[1,1,1]]
 const O = [[0,0,0],[0,1,0],[1,2,1]]
-const grid = (cells: number[][], hl: [number,number][] = [], label = 'matrix'): GridViewData => ({ kind: 'grid', label, cells, marks: { hl } })
+const grid = (cells: (number | string)[][], hl: [number,number][] = [], label = 'matrix'): GridViewData => ({ kind: 'grid', label, cells, marks: { hl } })
 const fig = [
   { note: '所有 0 的距離都是 0，把它們同時放進 BFS 佇列，向四周擴散。', views: [grid(M, [[0,0],[0,1],[0,2],[1,0],[1,2]])] },
-  { note: '處理第一層時，(1,1)、(2,0)、(2,2) 都能從相鄰的 0 一步到達，所以距離更新為 1。', views: [grid([[0,0,0],[0,1,0],[1,9,1]], [[1,1],[2,0],[2,2]], '距離 1 的格子')] },
+  { note: '處理第一層時，(1,1)、(2,0)、(2,2) 都能從相鄰的 0 一步到達，所以距離更新為 1。', views: [grid([[0,0,0],[0,1,0],[1,'∞',1]], [[1,1],[2,0],[2,2]], '距離 1 的格子')] },
   { note: '下一層從距離 1 的格子擴展到 (2,1)，它第一次被到達時距離是 2。', views: [grid(O, [[2,1]], '距離 2 的格子')] },
   { note: '中間格 (1,1) 離 0 一步；底部中間格 (2,1) 最近的 0 需兩步。', views: [grid(O, [[2,1]], '到最近 0 的距離')] },
 ]
@@ -27,9 +27,9 @@ def updateMatrix(mat):
     m, n = (len(mat), len(mat[0]))
     d = [[10 ** 9] * n for _ in range(m)]
     q = deque()
-    for r in range(m):  # 逐格傳遞到最近 0 的距離。
+    for r in range(m):  # 把所有 0 放進佇列，距離設 0
         for c in range(n):
-            if mat[r][c] == 0:  # 只有找到更短距離時才更新鄰居。
+            if mat[r][c] == 0:  # 0 格：距離設 0、放進佇列
                 d[r][c] = 0
                 q.append((r, c))
     while q:
@@ -67,15 +67,15 @@ def updateMatrix(mat):
     free(q);
     return d;
 }`,
-      cpp: `vector < vector<int>> updateMatrix(vector < vector<int>>& mat) {
+      cpp: `vector<vector<int>> updateMatrix(vector<vector<int>>& mat) {
     int m = mat.size(), n = mat[0].size();
-    vector < vector<int>> d(m, vector<int> (n, 1000000000));
-    queue < pair<int, int>> q;
+    vector<vector<int>> d(m, vector<int> (n, 1000000000));
+    queue<pair<int, int>> q;
     for (int r = 0; r < m; r++)
         for (int c = 0; c < n; c++)
             if (mat[r][c] == 0) {
                 d[r][c] = 0;
-                q.push( {r, c});
+                q.push({r, c});
             }
     int dr[4] = {1, -1, 0, 0}, dc[4] = {0, 0, 1, -1};
     while (!q.empty()) {
@@ -85,7 +85,7 @@ def updateMatrix(mat):
             int x = r + dr[t], y = c + dc[t];
             if (x >= 0 && x < m && y >= 0 && y < n && d[x][y] > d[r][c] + 1) {
                 d[x][y] = d[r][c] + 1;
-                q.push( {x, y});
+                q.push({x, y});
             }
         }
     }
@@ -94,13 +94,13 @@ def updateMatrix(mat):
       java: `int[][] updateMatrix(int[][] mat) {
     int m = mat.length, n = mat[0].length;
     int[][] d = new int[m][n];
-    Queue < int[] > q = new ArrayDeque<>();
+    Queue<int[]> q = new ArrayDeque<>();
     for (int r = 0; r < m; r++)
         for (int c = 0; c < n; c++)
             if (mat[r][c] == 0)
                 q.offer(new int[] {r, c});
-    else
-        d[r][c] = 1000000000;
+            else
+                d[r][c] = 1000000000;
     int[] dr = {1, -1, 0, 0}, dc = {0, 0, 1, -1};
     while (!q.isEmpty()) {
         int[] at = q.poll();
@@ -116,7 +116,7 @@ def updateMatrix(mat):
     return d;
 }`,
       javascript: `function updateMatrix(mat) {
-    const m = mat.length, n = mat[0].length, d = Array.from( {length : m}, () => Array(n).fill(1e9)), q = [];
+    const m = mat.length, n = mat[0].length, d = Array.from({ length: m }, () => Array(n).fill(1e9)), q = [];
     for (let r = 0; r < m; r++)
         for (let c = 0; c < n; c++)
             if (mat[r][c] === 0) {
@@ -140,9 +140,9 @@ def updateMatrix(mat):
       python: `def updateMatrix(mat):
     m, n = (len(mat), len(mat[0]))
     d = [[0 if mat[r][c] == 0 else 10 ** 9 for c in range(n)] for r in range(m)]
-    for r in range(m):  # 逐格傳遞到最近 0 的距離。
+    for r in range(m):  # 正向掃描：用上方、左方更新
         for c in range(n):
-            if r:  # 只有找到更短距離時才更新鄰居。
+            if r:  # 上方
                 d[r][c] = min(d[r][c], d[r - 1][c] + 1)
             if c:
                 d[r][c] = min(d[r][c], d[r][c - 1] + 1)
@@ -179,9 +179,9 @@ def updateMatrix(mat):
         }
     return d;
 }`,
-      cpp: `vector < vector<int>> updateMatrix(vector < vector<int>>& mat) {
+      cpp: `vector<vector<int>> updateMatrix(vector<vector<int>>& mat) {
     int m = mat.size(), n = mat[0].size();
-    vector < vector<int>> d(m, vector<int> (n, 1000000000));
+    vector<vector<int>> d(m, vector<int> (n, 1000000000));
     for (int r = 0; r < m; r++)
         for (int c = 0; c < n; c++)
             if (mat[r][c] == 0)

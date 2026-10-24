@@ -85,7 +85,7 @@ int eliminateMaximum(int *dist, int distSize, int *speed, int speedSize) {
     {
       name: '計數桶',
       idea: '到達時間 ≥ n 的都放進桶 n;`cnt[t]` 統計。累加 `arrived`,在時間 t 時 `arrived > t` 就回傳 t。',
-      steps: ['`cnt = [0] * (n + 1)`;`cnt[min(n, t)] += 1`', '`killed = 0`', '`for t in 0..n − 1`:`killed += cnt[t]`;`killed > t` → 回傳 t', '回傳 n'],
+      steps: ['`cnt = [0] * (n + 1)`;`cnt[min(n, t)] += 1`', '`arrived = 0`', '`for t in 0..n − 1`:`arrived += cnt[t]`;`arrived > t` → 回傳 t', '回傳 n'],
       figure: { title: `dist = [${D}],speed = [${SP}]`, steps: bucketFig() },
       complexity: { time: 'O(n)', space: 'O(n)', why: '計數取代排序。' },
       verdict: '值域只有 0..n 有意義時,計數排序把 log 拿掉。',

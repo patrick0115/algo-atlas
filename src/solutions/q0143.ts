@@ -33,7 +33,7 @@ function o1Fig(): FigStep[] {
     if (i < rev.length) merged.push(rev[i])
   }
   return [
-    { note: '不用陣列的做法分三步。① 用快慢指針找中點:slow 一次一步、fast 一次兩步,fast 走到底時 slow 在中間', views: [chain(V, { tail: true, subs: { [mid]: 'slow(中點)', [V.length - 1]: 'fast' }, cls: { [mid]: 'hl' } })] },
+    { note: '不用陣列的做法分三步。① 用快慢指針找中點:slow 一次一步、fast 一次兩步,fast 走到底時 slow 在中間', views: [chain(V, { tail: true, subs: { [mid]: 'slow(中點)', [2 * mid]: 'fast' }, cls: { [mid]: 'hl' } })] },
     { note: `從中點切開:前半 [${first.join(',')}]、後半 [${second.join(',')}]`, views: [chain(first, { label: '前半', tail: true }), chain(second, { label: '後半', tail: true })] },
     { note: '② 把後半反轉([206. Reverse Linked List](#/q/206) 的三指標)', views: [chain(first, { label: '前半', tail: true }), chain(rev, { label: '後半(反轉後)', tail: true, cls: Object.fromEntries(rev.map((_, i) => [i, 'visited'])) })] },
     { note: '③ 兩條交錯合併:前半拿一個、後半拿一個……', views: [chain(merged, { label: '結果', tail: true, cls: Object.fromEntries(merged.map((v, i) => [i, rev.includes(v) ? 'visited' : ''])) })] },

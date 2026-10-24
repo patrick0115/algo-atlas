@@ -201,7 +201,7 @@ private void dfs(TreeNode n, int i) {
       },
     },
   ],
-  pitfalls: ['只檢查每個節點「有右孩子就必須有左孩子」:不夠,[1,2,3,null,null,4] 這種第二層缺右邊、第三層有節點的情況也不完全', '編號法沒有防溢位:100 個節點排成一條鏈,編號會到 2¹⁰⁰', 'Java 的 ArrayDeque 不能放 null,BFS 要改用 LinkedList'],
+  pitfalls: ['只檢查每個節點「有右孩子就必須有左孩子」:不夠,[1,2,3,null,null,4] 這種第三層左邊空著、右邊卻有節點的情況也不完全', '編號法沒有防溢位:100 個節點排成一條鏈,編號會到 2¹⁰⁰', 'Java 的 ArrayDeque 不能放 null,BFS 要改用 LinkedList'],
   check: {
     kind: 'fn',
     fn: 'isCompleteTree',

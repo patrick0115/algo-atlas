@@ -21,7 +21,7 @@ function prefixFig(): FigStep[] {
 
 function bsFig(): FigStep[] {
   return [
-    { note: '二分搜尋答案 x:「能不能讓每個數都 ≤ x」?從右往左檢查,超過 x 的部分搬到左邊那格(carry)', views: [arr(A, { label: '試 x = 4' }), arr([0, 2, 0, 2], { label: '從右往左:每格多出來的,往左帶' })] },
+    { note: '二分搜尋答案 x:「能不能讓每個數都 ≤ x」?從右往左檢查,超過 x 的部分搬到左邊那格(carry)', views: [arr(A, { label: '試 x = 4' }), arr([2, 3, 0, 2], { label: '從右往左:每格多出來的,往左帶' })] },
     { note: 'x = 4:6 多 2 → 帶給 1 變 3(沒超過);7 多 3 → 帶給 3 變 6 > 4 → 第 0 格搬不出去,失敗。x = 5:最後第 0 格是 5 ≤ 5,成功 → 答案 5', views: [arr([5, 5, 4, 4], { label: 'x = 5 成功', done: [0, 1, 2, 3] })] },
   ]
 }

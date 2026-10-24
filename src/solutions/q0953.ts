@@ -30,7 +30,7 @@ function transFig(): FigStep[] {
   const tr = (w: string) => w.split('').map((c) => String.fromCharCode(97 + ORDER.indexOf(c))).join('')
   return [
     { note: '另一種想法:把每個單字「翻譯」成一般字母(名次 0 → a、1 → b…)。翻譯後用一般的字典序比較就行', views: [arr(W, { label: '原本' }), arr(W.map(tr), { label: '翻譯後' })] },
-    { note: `翻譯後 [${W.map(tr).join(', ')}] 已經是由小到大 → true`, views: [arr(W.map(tr), { label: '翻譯後', done: [0, 1, 2] })] },
+    { note: '翻譯後 "abce" > "abcde"(第 4 個字母 e > d)→ 順序錯 → false', views: [arr(W.map(tr), { label: '翻譯後', highlight: [0, 1] })] },
   ]
 }
 

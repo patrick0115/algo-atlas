@@ -88,7 +88,7 @@ export const q0120: Solution = {
       idea: '`dp[r][c] = T[r][c] + min(dp[r−1][c−1], dp[r−1][c])`(超出範圍的不算);答案是最底列的最小值。',
       steps: ['`dp[0][0] = T[0][0]`', '每列:c = 0 只能從正上方;c = r 只能從左上方;中間取 min', '回傳 `min(dp[n−1])`'],
       figure: { title: 'triangle(4 列)', steps: topFig() },
-      complexity: { time: 'O(n²)', space: 'O(n²)', why: '可以壓成一維,但要由右往左更新。' },
+      complexity: { time: 'O(n²)', space: 'O(n²)', why: 'Python 版保留整張表 O(n²);其他語言已壓成一維、由右往左更新,O(n)。' },
       verdict: '比較符合「往下走」的直覺,只是要多處理兩端的邊界。',
       code: {
         python: `def minimumTotal(triangle):

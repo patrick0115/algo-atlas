@@ -43,7 +43,7 @@ function bfsFig(): FigStep[] {
       }
     minutes++
     q = next
-    out.push({ note: `第 ${minutes} 分鐘:${next.length} 顆被傳染(黑色),剩 ${fresh} 顆新鮮`, views: [view(g, next)] })
+    out.push({ note: `第 ${minutes} 分鐘:${next.length} 顆被傳染(實心),剩 ${fresh} 顆新鮮`, views: [view(g, next)] })
   }
   out.push({ note: fresh ? `還有 ${fresh} 顆新鮮的被空格隔開,永遠爛不掉 → −1` : `全部爛掉了,總共 ${minutes} 分鐘`, views: [view(g)] })
   return out

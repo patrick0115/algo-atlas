@@ -6,9 +6,9 @@ import type { FigStep, Solution } from './types'
 function arrFig(): FigStep[] {
   return [
     { note: '用一個陣列存瀏覽紀錄,cur 指著目前頁面,last 指著「最後一個有效的頁面」', views: [arr(['leetcode', 'google', 'facebook', 'youtube'], { label: '紀錄', pointers: [{ name: 'cur', index: 3 }, { name: 'last', index: 3, color: 'b' }] })] },
-    { note: 'back(1) → cur 往左 1 格(google…facebook);back(1) 再往左 → google。只移動指標,紀錄不刪', views: [arr(['leetcode', 'google', 'facebook', 'youtube'], { label: '紀錄', highlight: [1], pointers: [{ name: 'cur', index: 1 }, { name: 'last', index: 3, color: 'b' }] })] },
-    { note: 'visit("linkedin"):寫到 cur + 1,而且 last = cur(後面的 facebook、youtube 不能再 forward 了)。直接覆寫,不用真的刪除', views: [arr(['leetcode', 'google', 'linkedin', 'youtube'], { label: '紀錄', highlight: [2], dim: [3], pointers: [{ name: 'cur', index: 2 }, { name: 'last', index: 2, color: 'b' }] })] },
-    { note: 'forward(2):最多只能走到 last → 停在 linkedin。back(7):最多退到 0 → leetcode。每個操作都是 O(1)', views: [arr(['leetcode', 'google', 'linkedin'], { label: '有效紀錄', highlight: [0], pointers: [{ name: 'cur', index: 0 }] })] },
+    { note: 'back(1) → cur=2(facebook);back(1) → cur=1(google);forward(1) → cur=2(facebook)。只移動指標,紀錄不刪', views: [arr(['leetcode', 'google', 'facebook', 'youtube'], { label: '紀錄', highlight: [2], pointers: [{ name: 'cur', index: 2 }, { name: 'last', index: 3, color: 'b' }] })] },
+    { note: 'visit("linkedin"):寫到 cur + 1 = 3,蓋掉 youtube,last = cur = 3。直接覆寫,不用真的刪除', views: [arr(['leetcode', 'google', 'facebook', 'linkedin'], { label: '紀錄', highlight: [3], pointers: [{ name: 'cur', index: 3 }, { name: 'last', index: 3, color: 'b' }] })] },
+    { note: 'forward(2):最多走到 last → 停在 linkedin。back(2) → google。back(7):最多退到 0 → leetcode。每個操作都是 O(1)', views: [arr(['leetcode', 'google', 'facebook', 'linkedin'], { label: '有效紀錄', highlight: [0], pointers: [{ name: 'cur', index: 0 }] })] },
   ]
 }
 

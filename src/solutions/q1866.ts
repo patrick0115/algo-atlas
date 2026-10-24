@@ -86,14 +86,11 @@ export const q1866: Solution = {
 }`,
         javascript: `function rearrangeSticks(n, k) {
   const MOD = 1000000007n;
-  let prev = new Array(k + 1).fill(0n);
-  prev[0] = 1n;
-  for (let i = 1; i <= n; i++) {
-    const cur = new Array(k + 1).fill(0n);
-    for (let j = 1; j <= Math.min(i, k); j++) cur[j] = (prev[j - 1] + BigInt(i - 1) * prev[j]) % MOD;
-    prev = cur;
-  }
-  return Number(prev[k]);
+  const dp = Array.from({ length: n + 1 }, () => new Array(k + 1).fill(0n));
+  dp[0][0] = 1n;
+  for (let i = 1; i <= n; i++)
+    for (let j = 1; j <= Math.min(i, k); j++) dp[i][j] = (dp[i - 1][j - 1] + BigInt(i - 1) * dp[i - 1][j]) % MOD;
+  return Number(dp[n][k]);
 }`,
       },
     },

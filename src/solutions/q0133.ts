@@ -28,8 +28,21 @@ function dfsFig(bfs: boolean): FigStep[] {
   const todo = [1]
   made.set(1, "1′")
   out.push({ note: `從節點 1 開始:做出 1′,記進 map`, views: [graph({ 1: 'hl' }, '原本的圖'), kv([...made].map(([k, v]) => [k, v]), 'map(舊 → 新)', [1])] })
-  while (todo.length) {
-    const u = bfs ? todo.shift()! : todo.pop()!
+  const snap = (u: number, v: number) => [graph({ ...Object.fromEntries([...made.keys()].map((k) => [k, 'done'])), [u]: 'hl', [v]: 'visited' }, '原本的圖'), kv([...made].map(([k, val]) => [k, val]), 'map(舊 → 新)', [v])]
+  const clone = (u: number) => {
+    for (const v of ADJ[u - 1]) {
+      if (made.has(v)) {
+        out.push({ note: `clone(${u}) 看鄰居 ${v}:map 裡已經有 ${v}′ 了 → 直接用,不要再做一個;把 ${v}′ 加進 ${u}′ 的鄰居`, views: snap(u, v) })
+      } else {
+        made.set(v, `${v}′`)
+        out.push({ note: `clone(${u}) 看鄰居 ${v}:還沒複製過 → 遞迴 clone(${v}):做出 ${v}′ 並記進 map,先往深處走,回來後才把 ${v}′ 加進 ${u}′ 的鄰居`, views: snap(u, v) })
+        clone(v)
+      }
+    }
+  }
+  if (!bfs) clone(1)
+  while (bfs && todo.length) {
+    const u = todo.shift()!
     for (const v of ADJ[u - 1]) {
       const fresh = !made.has(v)
       if (fresh) {

@@ -21,7 +21,7 @@ function treeFig(): FigStep[] {
   const ok = nodes.filter((n) => n.kind === 'ok').length
   return [
     { note: '每一步可以吃 1 個數字(1~9)或 2 個數字(10~26),各自對應一個字母。所有走到底的路就是所有解碼方式', views: [recView(nodes, pos, 0, '決策樹')] },
-    { note: `共 ${ok} 種(綠色)。注意同一個「剩下的字串」會出現好幾次 —— 它的解碼數只和剩下多少有關,可以重複利用`, views: [recView(nodes, pos, nodes.length - 1, '決策樹')] },
+    { note: `共 ${ok} 種(走到底的節點)。注意同一個「剩下的字串」會出現好幾次 —— 它的解碼數只和剩下多少有關,可以重複利用`, views: [recView(nodes, pos, nodes.length - 1, '決策樹')] },
   ]
 }
 

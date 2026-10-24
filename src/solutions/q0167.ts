@@ -75,7 +75,7 @@ export const q0167: Solution = {
       name: '暴力:試每一對',
       idea: '兩層迴圈,和等於 `target` 就回傳。沒有用到「有序」。',
       steps: ['`i` 從 0 開始,`j` 從 `i+1` 開始', '`numbers[i] + numbers[j] == target` → 回傳 `[i+1, j+1]`'],
-      figure: { title: `numbers = [${A.join(',')}], target = ${T}`, steps: [{ note: '和 [1. Two Sum](#/q/1) 的暴力法一樣:每一對都試,最多 n(n−1)/2 對', views: [arr(A, { label: 'numbers' })] }, { note: `一路試到 4 + 10?沒有 10;……最後試到 3 + 11 = ${T}`, views: [arr(A, { label: 'numbers', highlight: [1, 5] })] }] },
+      figure: { title: `numbers = [${A.join(',')}], target = ${T}`, steps: [{ note: '和 [1. Two Sum](#/q/1) 的暴力法一樣:每一對都試,最多 n(n−1)/2 對', views: [arr(A, { label: 'numbers' })] }, { note: `1 配誰都湊不到 ${T}(要 ${T - 1});換 3:3 + 4、3 + 6、3 + 9 都不對,3 + 11 = ${T}`, views: [arr(A, { label: 'numbers', highlight: [1, 5] })] }] },
       complexity: { time: 'O(n²)', space: 'O(1)', why: '最多比 n(n−1)/2 對。' },
       verdict: 'n = 3·10⁴ 會超時。只當起點。',
       code: {

@@ -57,7 +57,8 @@ export const q2707: Solution = {
             if s[i:j] in words:
                 dp[i] = min(dp[i], dp[j])     # s[i:j] 是字典詞,免費
     return dp[0]`,
-        c: `int minExtraChar(char *s, char **dictionary, int dictionarySize) {
+        c: `// C 沒有內建集合：改成對每個 i 逐一比對字典詞，時間 O(n · 字典總長)
+int minExtraChar(char *s, char **dictionary, int dictionarySize) {
     int n = strlen(s), dp[51];
     dp[n] = 0;
     for (int i = n - 1; i >= 0; i--) {

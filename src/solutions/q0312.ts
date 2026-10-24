@@ -48,6 +48,31 @@ function bruteFig(): FigStep[] {
   ]
 }
 
+function memoFig(): FigStep[] {
+  const n = V.length
+  const memo = new Map<string, number>()
+  const f = (l: number, r: number): number => {
+    if (r - l < 2) return 0
+    const key = `${l},${r}`
+    const hit = memo.get(key)
+    if (hit !== undefined) return hit
+    let best = 0
+    for (let k = l + 1; k < r; k++) best = Math.max(best, V[l] * V[k] * V[r] + f(l, k) + f(k, r))
+    memo.set(key, best)
+    return best
+  }
+  const total = f(0, n - 1)
+  const out: FigStep[] = [...bruteFig()]
+  for (let k = 1; k < n - 1; k++) {
+    const v = V[0] * V[k] * V[n - 1] + f(0, k) + f(k, n - 1)
+    out.push({ note: `f(0, ${n - 1}) 試「最後戳 k = ${k}」(值 ${V[k]}):${V[0]}·${V[k]}·${V[n - 1]} + f(0, ${k}) + f(${k}, ${n - 1}) = ${V[0] * V[k] * V[n - 1]} + ${f(0, k)} + ${f(k, n - 1)} = ${v}`, views: [arr(V, { label: '最後戳 k,左右鄰居是 l = 0、r = ' + (n - 1), highlight: [k], compare: [0, n - 1] })] })
+  }
+  const dp: (number | string)[][] = Array.from({ length: n }, (_, l) => Array.from({ length: n }, (_, r) => memo.get(`${l},${r}`) ?? ''))
+  const hl: Cell[] = [...memo.keys()].map((s) => s.split(',').map(Number) as Cell)
+  out.push({ note: `取最大 → f(0, ${n - 1}) = ${total}。遞迴途中算過的 f(l, r) 都存進 memo,下次直接拿;子問題只有 O(n²) 個`, views: [table(dp, hl)] })
+  return out
+}
+
 export const q0312: Solution = {
   id: 312,
   plain: '一排氣球,每顆上面有個數字。戳破一顆得到「它 × 左邊鄰居 × 右邊鄰居」的分數(邊界外當作 1),戳破後左右兩顆就變成鄰居。按什麼順序戳,總分最高?',
@@ -68,7 +93,7 @@ export const q0312: Solution = {
       name: '遞迴 + 記憶化(最後戳誰)',
       idea: '`f(l, r)`:開區間 (l, r) 內全部戳完的最高分。枚舉最後戳的 k:`v[l]·v[k]·v[r] + f(l, k) + f(k, r)`。',
       steps: ['`v = [1] + nums + [1]`', '`f(l, r)`:`r − l < 2` → 0', '`max(v[l]·v[k]·v[r] + f(l, k) + f(k, r) for k in (l, r))`', '回傳 `f(0, n + 1)`'],
-      figure: { title: `nums = [${A}]`, steps: bruteFig() },
+      figure: { title: `nums = [${A}]`, steps: memoFig() },
       complexity: { time: 'O(n³)', space: 'O(n²)', why: 'n² 個區間,每個枚舉 n 個 k。' },
       verdict: '想通「最後戳誰」之後程式很短。',
       code: {

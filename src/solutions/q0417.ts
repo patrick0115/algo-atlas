@@ -30,7 +30,7 @@ function reverseFig(): FigStep[] {
   const none = () => H.map((r) => r.map(() => false))
   const pac = none()
   const atl = none()
-  const out: FigStep[] = [{ note: '反過來想:不是「從每格往外流」,而是「從海往內爬」。水往低處流 → 反過來就是從海邊往**一樣高或更高**的格子走。灰底 = 太平洋爬得到、虛線框 = 大西洋爬得到、綠色 = 兩邊都到得了', views: [view(pac, atl)] }]
+  const out: FigStep[] = [{ note: '反過來想:不是「從每格往外流」,而是「從海往內爬」。水往低處流 → 反過來就是從海邊往**一樣高或更高**的格子走。灰底 = 太平洋爬得到、虛線框 = 大西洋爬得到、淡色字 = 兩邊都到得了', views: [view(pac, atl)] }]
   const bfs = (seen: boolean[][], starts: Cell[], name: string) => {
     const q: Cell[] = []
     for (const [r, c] of starts) if (!seen[r][c]) (seen[r][c] = true), q.push([r, c])
@@ -49,7 +49,7 @@ function reverseFig(): FigStep[] {
   }
   bfs(pac, [...Array.from({ length: N }, (_, c) => [0, c] as Cell), ...Array.from({ length: M }, (_, r) => [r, 0] as Cell)], '太平洋')
   bfs(atl, [...Array.from({ length: N }, (_, c) => [M - 1, c] as Cell), ...Array.from({ length: M }, (_, r) => [r, N - 1] as Cell)], '大西洋')
-  out.push({ note: '兩邊都爬得到的格子(綠色)就是答案:從那裡下雨,水能流到兩個大洋', views: [view(pac, atl)] })
+  out.push({ note: '兩邊都爬得到的格子(淡色字)就是答案:從那裡下雨,水能流到兩個大洋', views: [view(pac, atl)] })
   return out
 }
 

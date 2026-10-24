@@ -18,7 +18,7 @@ function dpFig(): FigStep[] {
     for (let c = 0; c < N; c++) {
       if (r === 0 || c === 0) {
         dp[r][c] = 1
-        if (r === 0 && c === N - 1) out.push({ note: '第一列、第一行只有一種走法(一直往右 / 一直往下)→ 全部是 1', views: [grid(dp, Array.from({ length: N }, (_, k) => [0, k] as Cell))] })
+        if (r === 0 && c === N - 1) out.push({ note: '第一列只有一種走法(一直往右)→ 全部是 1;第一行(一直往下)也一樣,之後填到時都是 1', views: [grid(dp, Array.from({ length: N }, (_, k) => [0, k] as Cell))] })
         continue
       }
       dp[r][c] = (dp[r - 1][c] as number) + (dp[r][c - 1] as number)
@@ -154,7 +154,7 @@ export const q0062: Solution = {
       idea: '答案 = C(m + n − 2, m − 1)。一邊乘一邊除:`res = res · (n − 1 + i) / i`,i 從 1 到 m − 1,每一步都是整數。',
       steps: ['`res = 1`', '`for i in 1..m−1`:`res = res · (n − 1 + i) / i`', '回傳 res'],
       figure: { title: `m = ${M}, n = ${N}`, steps: mathFig() },
-      complexity: { time: 'O(min(m, n))', space: 'O(1)', why: '只做 m − 1 次乘除。' },
+      complexity: { time: 'O(m)', space: 'O(1)', why: '只做 m − 1 次乘除。' },
       verdict: '最快,但要知道組合數的意義,而且中間值要用 64 位元避免溢位。',
       code: {
         python: `from math import comb

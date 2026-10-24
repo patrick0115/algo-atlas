@@ -13,7 +13,7 @@ function replaceFig(): FigStep[] {
     if (next === s) break
     const hits: number[] = []
     for (const m of s.matchAll(/\(\)|\[\]|\{\}/g)) hits.push(m.index!, m.index! + 1)
-    out.push({ note: `第 ${round} 輪:找到緊鄰的配對(黃色),全部刪掉`, views: [arr([...s], { label: 's', highlight: hits })] })
+    out.push({ note: `第 ${round} 輪:找到緊鄰的配對(標示處),全部刪掉`, views: [arr([...s], { label: 's', highlight: hits })] })
     s = next
     out.push({ note: `刪完剩下 "${s}"`, views: [arr(s ? [...s] : ['(空)'], { label: 's' })] })
   }

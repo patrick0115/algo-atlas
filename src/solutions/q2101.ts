@@ -249,7 +249,7 @@ def maximumDetonation(bombs):
       },
     },
   ],
-  pitfalls: ['當成無向圖或用併查集:引爆關係是單向的', '距離用 int 平方:2·10⁵ 的平方會溢位', '用浮點數開根號比較:精度問題'],
+  pitfalls: ['當成無向圖或用併查集:引爆關係是單向的', '距離用 int 平方:距離平方 dx² + dy² 可到 2·10¹⁰,用 int 會溢位', '用浮點數開根號比較:精度問題'],
   check: {
     kind: 'fn',
     fn: 'maximumDetonation',

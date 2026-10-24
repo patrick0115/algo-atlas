@@ -169,7 +169,7 @@ export const q0743: Solution = {
       idea: '最小堆放 `(距離, 節點)`。每次拿出距離最小的:已經確定過就跳過;否則確定它,用它更新所有鄰居,變短的放進堆。',
       steps: ['建鄰接串列;`heap = [(0, k)]`', '拿出 `(d, u)`:u 已確定 → 跳過', '確定 u(`dist[u] = d`);對每個 `(v, w)`:`d + w` 更短就 push', '全部確定 → 回傳最大的 dist;有沒確定的 → −1'],
       figure: { title: `times = ${JSON.stringify(TIMES)}, n = ${N}, k = ${K}(節點下方是目前的最短時間)`, steps: dijkstraFig() },
-      complexity: { time: 'O(E log V)', space: 'O(V + E)', why: '每條邊最多讓堆多一個元素,每次堆操作 O(log E) = O(log V)。' },
+      complexity: { time: 'O(E log V)', space: 'O(V + E)', why: '每條邊最多讓堆多一個元素,每次堆操作 O(log E) = O(log V)。C / JavaScript 版利用 n ≤ 100 改用 O(V²) 線性挑選、不用堆,時間 O(V² + E)。' },
       verdict: '標準解,[[p:dijkstra]]的模板。權重非負才能用:有負邊的話,「確定了就不會變」的保證會失效。',
       code: {
         python: `import heapq

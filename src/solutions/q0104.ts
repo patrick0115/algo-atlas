@@ -23,6 +23,25 @@ function dfsFig(): FigStep[] {
   return out
 }
 
+function stackFig(): FigStep[] {
+  const root = buildTree(T)!
+  const seen: Record<number, string> = {}
+  const show = (st: [FNode, number][]) => arr(st.map(([n, d]) => `${n.val}:${d}`), { label: '堆疊(節點:深度)' })
+  const st: [FNode, number][] = [[root, 1]]
+  let best = 0
+  const out: FigStep[] = [{ note: '深度由上往下傳:根是第 1 層,孩子是父節點的深度 + 1。stack = [(3, 1)]、best = 0', views: [tree(T), show(st)] }]
+  while (st.length) {
+    const [n, d] = st.pop()!
+    best = Math.max(best, d)
+    seen[n.i] = `深${d}`
+    if (n.left) st.push([n.left, d + 1])
+    if (n.right) st.push([n.right, d + 1])
+    out.push({ note: `pop 出 (${n.val}, ${d}):best = ${best};孩子以深度 ${d + 1} push 進去`, views: [tree(T, { cls: { ...Object.fromEntries(Object.keys(seen).map((k) => [k, 'done'])), [n.i]: 'hl' }, subs: { ...seen } }), show(st)] })
+  }
+  out.push({ note: `堆疊空了,best = ${best} 就是答案`, views: [tree(T, { subs: seen })] })
+  return out
+}
+
 function bfsFig(): FigStep[] {
   const root = buildTree(T)!
   let level = [root]
@@ -176,7 +195,7 @@ def maxDepth(root):
       name: '迭代 DFS(堆疊存 [節點, 深度])',
       idea: '堆疊裡同時記住「這個節點在第幾層」。每 pop 出一個就更新最大深度。',
       steps: ['`stack = [(root, 1)]`、`best = 0`', 'pop 出 `(node, d)`:`best = max(best, d)`', '孩子以 `(child, d + 1)` push 進去'],
-      figure: { title: 'root = [3,9,20,null,null,15,7,null,null,8]', steps: dfsFig() },
+      figure: { title: 'root = [3,9,20,null,null,15,7,null,null,8]', steps: stackFig() },
       complexity: { time: 'O(n)', space: 'O(h)', why: '每個節點一次;堆疊最多 O(h) 層。' },
       verdict: '「往下傳資訊」(深度從父節點傳給孩子)的寫法,和方法一「往上傳」相反。1448. Count Good Nodes 就是往下傳路徑上的最大值。',
       code: {

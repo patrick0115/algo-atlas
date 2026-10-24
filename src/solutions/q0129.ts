@@ -156,7 +156,7 @@ def sumNumbers(root):
       },
     },
   ],
-  pitfalls: ['只有一個孩子的節點不是葉子,不能在那裡把數字加進答案', '在 null 時回傳 cur:會把單邊的節點算兩次(左右各一次)'],
+  pitfalls: ['只有一個孩子的節點不是葉子,不能在那裡把數字加進答案', '在 null 時回傳 cur:葉子會被算兩次(左右兩個 null 各一次),只有一個孩子的節點也會把半截數字加進答案'],
   check: {
     kind: 'fn',
     fn: 'sumNumbers',

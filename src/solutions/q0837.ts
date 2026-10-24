@@ -21,7 +21,7 @@ function dpFig(): FigStep[] {
 function naiveFig(): FigStep[] {
   return [
     { note: `直接照定義:dp[x] = Σ dp[x − i] / maxPts,i = 1..maxPts,且 x − i < k。例 n = ${N}、k = ${K}、maxPts = ${W}:只抽一次,1..10 各 1/10`, views: [arr(Array.from({ length: W + 1 }, (_, i) => (i === 0 ? 1 : 0.1)), { label: 'dp[0..10]' })] },
-    { note: `停在 1..${N} 的機率 = 6 × 0.1 = 0.6。每格要加 maxPts 個 → O((k + maxPts) · maxPts)`, views: [arr(Array.from({ length: W + 1 }, (_, i) => (i === 0 ? 1 : 0.1)), { label: 'dp', done: [1, 2, 3, 4, 5, 6] })] },
+    { note: `停在 1..${N} 的機率 = 6 × 0.1 = 0.6。每格要加 maxPts 個 → O(n · maxPts)`, views: [arr(Array.from({ length: W + 1 }, (_, i) => (i === 0 ? 1 : 0.1)), { label: 'dp', done: [1, 2, 3, 4, 5, 6] })] },
   ]
 }
 

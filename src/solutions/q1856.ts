@@ -21,7 +21,7 @@ function stackFig(): FigStep[] {
   const best = vals.indexOf(Math.max(...vals))
   return [
     { note: '換個角度:枚舉「誰是最小值」。若 nums[i] 是子陣列的最小值,子陣列要盡量長(和越大越好,而且元素都是正數)→ 往左、往右延伸到第一個比它小的數為止', views: [arr(A, { label: 'nums' })] },
-    { note: '用單調堆疊一次算出每個 i 的「左邊第一個更小」和「右邊第一個更小」。範圍內的和用前綴和 O(1) 算', views: [arr(left.map((v) => v), { label: '左邊第一個更小的位置(−1 = 沒有)' }), arr(right, { label: `右邊第一個更小的位置(${n} = 沒有)` })] },
+    { note: '用單調堆疊一次算出每個 i 的「左邊第一個更小」和「右邊第一個小於或等於」。範圍內的和用前綴和 O(1) 算', views: [arr(left.map((v) => v), { label: '左邊第一個更小的位置(−1 = 沒有)' }), arr(right, { label: `右邊第一個 ≤ 它的位置(${n} = 沒有)` })] },
     { note: `每個 i:nums[i] × 範圍和 = [${vals}]。最大是 i = ${best}:${A[best]} × (${A.slice(left[best] + 1, right[best]).join(' + ')}) = ${vals[best]}`, views: [arr(A, { label: 'nums', highlight: [best], range: [left[best] + 1, right[best] - 1] }), arr(vals, { label: 'min-product', done: [best] })] },
   ]
 }

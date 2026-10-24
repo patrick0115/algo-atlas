@@ -142,7 +142,7 @@ export const q1466: Solution = {
       idea: '原本的邊放進集合;建無向鄰接表從 0 BFS,每走 u → v,`(u, v)` 在集合裡就 `ans += 1`。',
       steps: ['`orig = {(a, b)}`;無向鄰接表', '從 0 BFS', '走 u → v(v 沒看過):`(u, v) in orig` → `ans += 1`'],
       figure: { title: `n = ${N}`, steps: bfsFig() },
-      complexity: { time: 'O(n)', space: 'O(n)', why: '集合查詢平均 O(1)。' },
+      complexity: { time: 'O(n)', space: 'O(n)', why: '集合查詢平均 O(1)。C 用排序 + 二分搜尋代替集合,為 O(n log n)。' },
       verdict: '比較貼近直覺的「檢查這條路原本朝哪邊」,只是多一個集合。',
       code: {
         python: `from collections import deque
@@ -203,10 +203,10 @@ int minReorder(int n, int **connections, int connectionsSize, int *connectionsCo
     return ans;
 }`,
         cpp: `int minReorder(int n, vector<vector<int>>& connections) {
-    set<pair<int, int>> orig;
+    unordered_set<long long> orig;
     vector<vector<int>> g(n);
     for (auto &c : connections) {
-        orig.insert({c[0], c[1]});
+        orig.insert((long long)c[0] * n + c[1]);
         g[c[0]].push_back(c[1]);
         g[c[1]].push_back(c[0]);
     }
@@ -221,7 +221,7 @@ int minReorder(int n, int **connections, int connectionsSize, int *connectionsCo
         for (int v : g[u]) {
             if (seen[v]) continue;
             seen[v] = true;
-            if (orig.count({u, v})) ans++;
+            if (orig.count((long long)u * n + v)) ans++;
             q.push(v);
         }
     }

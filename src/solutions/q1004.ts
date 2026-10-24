@@ -8,7 +8,7 @@ const fig = [
   { note: '右端來到索引 3、4，視窗 [0..4] 恰有兩個 0，符合 k=2，暫時最佳長度為 5。', views: [arr(A, { label: '視窗 [0..4]', highlight: [0,1,2,3,4] })] },
   { note: '最佳視窗 [4..9] 長 6，裡面兩個 0 可翻成 1。', views: [arr(A, { label: '長度 6', highlight: [4,5,6,7,8,9], dim: [0,1,2,3,10] })] },
   { note: '右端到索引 10 後，視窗 [4..10] 含三個 0，超過 k=2，所以左端必須右移。', views: [arr(A, { label: '新加入索引 10', highlight: [4,5,6,7,8,9,10] })] },
-  { note: '左端移到索引 6 後，視窗 [6..10] 只剩一個 0；最佳長度仍保留先前的 6。', views: [arr(A, { label: '收縮後視窗', highlight: [6,7,8,9,10], done: [4,5] })] },
+  { note: '左端移到索引 5 後，視窗 [5..10] 剩兩個 0，又合法了，長度 6，最佳長度仍是 6。', views: [arr(A, { label: '收縮後視窗', highlight: [5,6,7,8,9,10], done: [4] })] },
 ]
 
 export const q1004: Solution = {
@@ -26,7 +26,7 @@ export const q1004: Solution = {
         zeros = 0
         for r in range(l, len(nums)):
             zeros += nums[r] == 0
-            if zeros > k:  # 超過可翻轉的數量時，移動左端恢復合法。
+            if zeros > k:  # 超過可翻轉的數量：這個起點到此為止
                 break
             best = max(best, r - l + 1)
     return best`,

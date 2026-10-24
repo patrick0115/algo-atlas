@@ -8,7 +8,7 @@ const fig = [
   { note: '三個城市起初都未訪問，省份數是 0；先從城市 0 開始第一次 DFS。', views: [view([[0,0]])] },
   { note: '城市 0 與 1 直接相連，屬於同一省；城市 2 與它們都不相連。', views: [view([[0,1],[1,0]])] },
   { note: 'DFS 從 0 走到 1，兩城都標記完成；城市 2 仍未訪問，所以還需要再啟動一次 DFS。', views: [view([[0,0],[1,1]])] },
-  { note: '從尚未走過的城市 0 開始走訪，可到 1，省份數加一。之後從 2 再開始一次，總共兩省。', views: [view([[2,2]])] },
+  { note: '城市 2 尚未訪問，從 2 再啟動一次 DFS，省份數加一，總共兩省。', views: [view([[2,2]])] },
 ]
 
 export const q0547: Solution = {
@@ -26,8 +26,8 @@ export const q0547: Solution = {
 
     def dfs(i):
         seen.add(i)
-        for j in range(n):  # 從尚未處理的城市展開一整個連通群。
-            if isConnected[i][j] and j not in seen:  # 已訪問的城市不用再次建立省份。
+        for j in range(n):  # 掃 i 的所有鄰居
+            if isConnected[i][j] and j not in seen:  # 相連且沒走過就走過去
                 dfs(j)
     ans = 0
     for i in range(n):
@@ -52,7 +52,7 @@ int findCircleNum(int **isConnected, int n, int *cols) {
     free(seen);
     return ans;
 }`,
-      cpp: `int findCircleNum(vector < vector<int>>& g) {
+      cpp: `int findCircleNum(vector<vector<int>>& g) {
     int n = g.size(), ans = 0;
     vector<int> seen(n);
     function<void(int)> dfs = [&](int i) {
@@ -101,20 +101,20 @@ int findCircleNum(int[][] g) {
     return ans;
 }`,
     } },
-    { name: '並查集合併城市', idea: '相連兩城歸到同一代表；每次成功合併，省份數減一。', steps: ['每城先是一個省，parent[i]=i，答案 n。每個尚未訪問的城市都代表一個新省份的起點。', '只掃矩陣上三角的 i<j；相連且根不同則合併。沿連接關係走完可到達的城市，它們都屬於同一省。', '每合併一次答案減一。處理完所有城市後，啟動搜尋或成功合併的次數就能決定答案。'], figure: { title: '3 個城市', steps: [{ note: '一開始 parent=[0,1,2]，三座城市各算一個省，因此計數是 3。', views: [view([[0,0],[1,1],[2,2]])] }, { note: '檢查 (0,1) 發現兩城相連，就把 1 併入 0 的集合，省份數降為 2。', views: [view([[0,1]])] }, { note: '其餘不同城市的連接都是 0，城市 2 保持獨立，最後回傳 2。', views: [view([[0,2],[1,2]])] }] }, complexity: { time: 'O(n² α(n))', space: 'O(n)', why: '檢查 n² 個連接，每次 find/union 幾乎常數時間。' }, verdict: '適合延伸到「陸續增加道路」的版本。', code: {
+    { name: '並查集合併城市', idea: '相連兩城歸到同一代表；每次成功合併，省份數減一。', steps: ['每城先是一個省，parent[i]=i，答案 n。每城先自成一組。', '只掃矩陣上三角的 i<j；相連且根不同則合併。', '每合併一次答案減一。處理完所有城市後，啟動搜尋或成功合併的次數就能決定答案。'], figure: { title: '3 個城市', steps: [{ note: '一開始 parent=[0,1,2]，三座城市各算一個省，因此計數是 3。', views: [view([[0,0],[1,1],[2,2]])] }, { note: '檢查 (0,1) 發現兩城相連，就把 1 併入 0 的集合，省份數降為 2。', views: [view([[0,1]])] }, { note: '其餘不同城市的連接都是 0，城市 2 保持獨立，最後回傳 2。', views: [view([[0,2],[1,2]])] }] }, complexity: { time: 'O(n² α(n))', space: 'O(n)', why: '檢查 n² 個連接，每次 find/union 幾乎常數時間。' }, verdict: '適合延伸到「陸續增加道路」的版本。', code: {
       python: `def findCircleNum(isConnected):
     n = len(isConnected)
     p = list(range(n))
     ans = n
 
     def find(x):
-        while p[x] != x:  # 從尚未處理的城市展開一整個連通群。
+        while p[x] != x:  # 往上找根，順便路徑減半
             p[x] = p[p[x]]
             x = p[x]
         return x
     for i in range(n):
         for j in range(i + 1, n):
-            if isConnected[i][j]:  # 已訪問的城市不用再次建立省份。
+            if isConnected[i][j]:  # 兩城直接相連
                 a, b = (find(i), find(j))
                 if a != b:
                     p[a] = b
@@ -143,7 +143,7 @@ int findCircleNum(int **g, int n, int *cols) {
     free(p);
     return ans;
 }`,
-      cpp: `int findCircleNum(vector < vector<int>>& g) {
+      cpp: `int findCircleNum(vector<vector<int>>& g) {
     int n = g.size(), ans = n;
     vector<int> p(n);
     iota(p.begin(), p.end(), 0);
@@ -185,7 +185,7 @@ int findCircleNum(int[][] g) {
     return ans;
 }`,
       javascript: `function findCircleNum(g) {
-    const n = g.length, p = Array.from( {length : n}, (_, i) => i);
+    const n = g.length, p = Array.from({ length: n }, (_, i) => i);
     let ans = n;
     function find(x) {
         while (p[x] !== x) {

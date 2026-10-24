@@ -30,7 +30,7 @@ function dpFig(): FigStep[] {
 function rollFig(): FigStep[] {
   return [
     { note: '換個迴圈順序:外層跑欄 k,內層跑 target 的位置 i(**由大到小**),一維 `dp[i]` 就夠了(像 0/1 背包)', views: [arr(['dp[i] += dp[i−1] × cnt[k][target[i−1]]'], { label: 'i 由 t 往 1' })] },
-    { note: '每一欄最多用一次,倒著更新保證同一欄不會被同一個 i 用兩次', views: [arr([6], { label: '答案', done: [0] })] },
+    { note: '每一欄最多用一次,倒著更新時,dp[i−1] 還是上一欄的值,保證同一欄不會同時拿來拼 target 的兩個位置', views: [arr([6], { label: '答案', done: [0] })] },
   ]
 }
 

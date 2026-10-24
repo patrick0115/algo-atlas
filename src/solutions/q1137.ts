@@ -124,7 +124,7 @@ function tribonacci(n) {
       },
     },
   ],
-  pitfalls: ['沒處理 n = 0、1、2', '不加記憶化直接遞迴:n = 37 要算數億次'],
+  pitfalls: ['沒處理 n = 0、1、2', '不加記憶化直接遞迴:n = 37 要呼叫約 40 億次'],
   check: {
     kind: 'fn',
     fn: 'tribonacci',

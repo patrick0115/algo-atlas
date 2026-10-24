@@ -110,9 +110,9 @@ export const q0456: Solution = {
     {
       name: '枚舉「3」+ 前綴最小值',
       idea: '`mn[j]` = nums[0..j−1] 的最小值;對每個 j,往右找有沒有 `mn[j] < nums[k] < nums[j]`。',
-      steps: ['算前綴最小值', '`for j`:`lo = mn[j]`;`lo >= nums[j]` 就跳過', '`for k > j`:`lo < nums[k] < nums[j]` → true'],
+      steps: ['用變數 lo 記目前為止的最小值', '`for j`:`lo = mn[j]`;`lo >= nums[j]` 就跳過', '`for k > j`:`lo < nums[k] < nums[j]` → true'],
       figure: { title: `nums = [${A}]`, steps: bruteFig() },
-      complexity: { time: 'O(n²)', space: 'O(n)', why: '每個 j 往右掃。' },
+      complexity: { time: 'O(n²)', space: 'O(1)', why: '每個 j 往右掃。' },
       verdict: '「1 取左邊最小」這個貪心觀察是對的,但找「2」還是要掃;單調堆疊就是把這一步優化掉。',
       code: {
         python: `def find132pattern(nums):

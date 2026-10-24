@@ -178,7 +178,7 @@ export const q0116: Solution = {
       steps: ['`q = [root]`', '每層:取出該層的 k 個節點,依序讓前一個的 next 指向後一個', '孩子放進佇列'],
       figure: { title: `root = [${T}]`, steps: bfsFig() },
       complexity: { time: 'O(n)', space: 'O(n)', why: '佇列最多存一層(最後一層約 n / 2 個)。' },
-      verdict: '最直觀,而且對任意二元樹([117](#/q/117))都適用。',
+      verdict: '最直觀,而且對任意二元樹(117)都適用。',
       code: {
         python: `${NODE.python}from collections import deque
 
@@ -312,7 +312,7 @@ def connect(root):
       },
     },
   ],
-  pitfalls: ['只連「同一個父親」的兩個孩子:5 → 6 這種跨父親的連結會漏掉', 'O(1) 版直接拿到一般二元樹([117](#/q/117))用:孩子可能缺,要改寫'],
+  pitfalls: ['只連「同一個父親」的兩個孩子:5 → 6 這種跨父親的連結會漏掉', 'O(1) 版直接拿到一般二元樹(117)用:孩子可能缺,要改寫'],
   check: {
     kind: 'fn',
     fn: 'connectLevels',

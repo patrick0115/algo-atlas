@@ -22,7 +22,7 @@ function borderFig(): FigStep[] {
   const b = B.map((r) => [...r])
   const m = b.length
   const n = b[0].length
-  const out: FigStep[] = [{ note: '被 X 包圍的 O 要翻成 X。反過來想:**不會**被包圍的 O,一定和邊界上的某個 O 相連。所以從邊界的 O 出發,把相連的 O 都標記成「安全」(綠色)', views: [view(b)] }]
+  const out: FigStep[] = [{ note: '被 X 包圍的 O 要翻成 X。反過來想:**不會**被包圍的 O,一定和邊界上的某個 O 相連。所以從邊界的 O 出發,把相連的 O 都標記成「安全」', views: [view(b)] }]
   const mark = (r: number, c: number, path: Cell[]) => {
     if (r < 0 || c < 0 || r >= m || c >= n || b[r][c] !== 'O') return
     b[r][c] = 'T'

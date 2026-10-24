@@ -7,8 +7,8 @@ const A = [5, 2, 3, 1, 4]
 
 function mergeFig(): FigStep[] {
   return [
-    { note: '合併排序:把陣列切成兩半,各自排好,再合併。一路切到只剩一個元素', views: [arr([5, 2], { label: '左' }), arr([3, 1, 4], { label: '右' })] },
-    { note: '左半 → [2, 5];右半 → [1, 3, 4]。合併:兩個指標各指一邊,每次拿比較小的', views: [arr([2, 5], { label: '左(排好)', pointers: [{ name: 'i', index: 0 }] }), arr([1, 3, 4], { label: '右(排好)', pointers: [{ name: 'j', index: 0, color: 'b' }] })] },
+    { note: '合併排序:把陣列切成兩半,各自排好,再合併。一路切到只剩一個元素', views: [arr([5, 2, 3], { label: '左' }), arr([1, 4], { label: '右' })] },
+    { note: '左半 → [2, 3, 5];右半 → [1, 4]。合併:兩個指標各指一邊,每次拿比較小的', views: [arr([2, 3, 5], { label: '左(排好)', pointers: [{ name: 'i', index: 0 }] }), arr([1, 4], { label: '右(排好)', pointers: [{ name: 'j', index: 0, color: 'b' }] })] },
     { note: '1 → 2 → 3 → 4 → 5。每層合併 O(n),共 log n 層 → 穩定的 O(n log n)', views: [arr([1, 2, 3, 4, 5], { label: '結果', done: [0, 1, 2, 3, 4] })] },
   ]
 }
@@ -30,7 +30,7 @@ export const q0912: Solution = {
     { input: 'nums = [5,1,1,2,0,0]', output: '[0,0,1,1,2,5]' },
   ],
   constraints: ['n ≤ 5·10⁴', '值在 −5·10⁴ ~ 5·10⁴'],
-  insight: ['O(n log n) 的比較排序:合併、堆積、快速(平均)', '快速排序最壞 O(n²)(測資常有已排序或大量重複的陣列),要隨機選 pivot', '合併排序穩定但要 O(n) 輔助陣列;堆積排序 O(1) 空間但不穩定'],
+  insight: ['O(n log n) 的比較排序:合併、堆積、快速(平均)', '快速排序最壞 O(n²):已排序的測資要隨機選 pivot;大量重複的測資還要三路分割(小於 / 等於 / 大於)', '合併排序穩定但要 O(n) 輔助陣列;堆積排序 O(1) 空間但不穩定'],
   approaches: [
     {
       name: '合併排序',
@@ -246,7 +246,7 @@ private void sift(int[] a, int i, int size) {
       },
     },
   ],
-  pitfalls: ['快速排序固定選第一個當 pivot:已排序或全部相同的測資會變 O(n²) 超時', '用氣泡 / 插入排序:O(n²),n = 5·10⁴ 會超時', '堆積排序建堆積要從 n/2 − 1 往前,不是從 0 往後'],
+  pitfalls: ['快速排序固定選第一個當 pivot:已排序的測資會變 O(n²) 超時', '快速排序只分兩段:全部相同的測資連隨機 pivot 也救不了,一樣 O(n²),要三路分割', '用氣泡 / 插入排序:O(n²),n = 5·10⁴ 會超時', '堆積排序建堆積要從 n/2 − 1 往前,不是從 0 往後'],
   check: {
     kind: 'fn',
     fn: 'sortArray',

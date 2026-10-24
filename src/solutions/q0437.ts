@@ -19,7 +19,7 @@ export const q0437: Solution = {
   constraints: ['節點數 ≤ 1000；值可能為負，不能只靠總和過大來剪枝。', '答案是路徑數，不是節點數；單節點也可形成路徑。'],
   insight: ['最直接：把每個節點都當一次起點，往下累加。', '更快：在一條根到當前節點的路上，兩個前綴和之差就是中間路徑的和。', '用 [[p:prefix-sum]] 搭配 hash 表記錄目前祖先路徑上的前綴和次數。'],
   approaches: [
-    { name: '逐節點當起點', idea: '對每個節點，向下列出所有由它出發的路徑。', steps: ['countFrom(node, remain)：當前值等於 remain 就計一條，再走左右子樹。路徑只能往下延伸，所以每次搜尋都沿父到子的方向前進。', '對樹中每個節點都呼叫 countFrom。目前總和與舊前綴和的差等於目標時，代表中間有一條合格路徑。', '加總所有起點的結果。離開子樹後恢復計數，才能避免把兩條不同分支錯接成一路。'], figure: { title: 'targetSum = 8', steps: [{ note: '先以根節點 10 為起點向下累加，沒有任何路徑剛好得到 8。', views: [tree(T, { cls: { 0: 'hl' } })] }, { note: '改以 5 為起點，5→3 與 5→2→1 的總和都等於 8，因此目前找到兩條。', views: [tree(T, { cls: { 1: 'hl', 3: 'visited', 4: 'visited', 10: 'visited' } })] }, { note: '再以 −3 為起點，−3→11 也等於 8；把三個起點的結果相加得到 3。', views: [tree(T, { cls: { 2: 'hl', 6: 'visited' } })] }] }, complexity: { time: 'O(nh)', space: 'O(h)', why: '每個起點最多探索其子樹；最壞退化成 O(n²)，平衡樹約 O(n log n)。' }, verdict: '定義最直接；重複計算很多後代。', code: {
+    { name: '逐節點當起點', idea: '對每個節點，向下列出所有由它出發的路徑。', steps: ['countFrom(node, remain)：當前值等於 remain 就計一條，再走左右子樹。路徑只能往下延伸，所以每次搜尋都沿父到子的方向前進。', '對樹中每個節點都呼叫 countFrom。', '加總所有起點的結果。'], figure: { title: 'targetSum = 8', steps: [{ note: '先以根節點 10 為起點向下累加，沒有任何路徑剛好得到 8。', views: [tree(T, { cls: { 0: 'hl' } })] }, { note: '改以 5 為起點，5→3 與 5→2→1 的總和都等於 8，因此目前找到兩條。', views: [tree(T, { cls: { 1: 'hl', 3: 'visited', 4: 'visited', 10: 'visited' } })] }, { note: '再以 −3 為起點，−3→11 也等於 8；把三個起點的結果相加得到 3。', views: [tree(T, { cls: { 2: 'hl', 6: 'visited' } })] }] }, complexity: { time: 'O(nh)', space: 'O(h)', why: '每個起點最多探索其子樹；最壞退化成 O(n²)，平衡樹約 O(n log n)。' }, verdict: '定義最直接；重複計算很多後代。', code: {
       python: `def pathSum(root, targetSum):
 
     def start(n, left):

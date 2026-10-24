@@ -10,7 +10,7 @@ const HI = 3
 function recFig(): FigStep[] {
   return [
     { note: `只留下值在 [${LO}, ${HI}] 的節點,而且剩下的還要是 BST。看根 3:在範圍內,保留,左右子樹各自修剪`, views: [tree(T, { cls: { 0: 'hl' } })] },
-    { note: `左孩子 0 < ${LO}:0 和它的**整個左子樹**都太小,直接丟掉;答案只可能在 0 的右子樹 → 回傳 trim(0.right)`, views: [tree(T, { cls: { 1: 'dim', 3: 'hl' } })] },
+    { note: `左孩子 0 < ${LO}:0 和它的**整個左子樹**都太小,直接丟掉;答案只可能在 0 的右子樹 → 回傳 trim(0.right)`, views: [tree(T, { cls: { 1: 'dim', 4: 'hl' } })] },
     { note: `右孩子 4 > ${HI}:4 和它的右子樹都太大 → 回傳 trim(4.left) = 空。結果 [3, 2, null, 1]`, views: [tree([3, 2, null, 1], { cls: { 0: 'done', 1: 'done', 3: 'done' } })] },
   ]
 }

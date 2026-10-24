@@ -4,7 +4,7 @@ import type { FigStep, Solution } from './types'
 // 9. Palindrome Number
 const halfFig: FigStep[] = [
   { note: '12321 從左右讀都一樣。負數有負號,不會是回文;正數若結尾是 0,開頭不可能也是 0。', views: [arr([1, 2, 3, 2, 1], { label: '12321 的各位數', compare: [0, 4] })] },
-  { note: '只反轉右半邊:12321 → 左 123、右 1 → 左 123、右 12 → 左 12、右 123。奇數位時丟掉中間的 3。', views: [arr([12, 123], { label: '剩餘左半 / 反轉右半' }), arr([12, 12], { label: '右半去中位後', done: [0, 1] })] },
+  { note: '只反轉右半邊:12321 → 左 1232、右 1 → 左 123、右 12 → 左 12、右 123。奇數位時丟掉中間的 3。', views: [arr([12, 123], { label: '剩餘左半 / 反轉右半' }), arr([12, 12], { label: '右半去中位後', done: [0, 1] })] },
 ]
 const stringFig: FigStep[] = [
   { note: '轉成字串後,兩端字元往中間比較。全部相同就是回文。', views: [arr([...('12321')], { label: '字元', compare: [0, 4] })] },

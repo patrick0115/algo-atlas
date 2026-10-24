@@ -51,10 +51,10 @@ function btFig(): FigStep[] {
 }
 
 function diagFig(): FigStep[] {
-  const g = (f: (r: number, c: number) => number, label: string): GridViewData => ({ kind: 'grid', label, cells: Array.from({ length: N }, (_, r) => Array.from({ length: N }, (_, c) => f(r, c))), marks: { hl: [[0, 1], [1, 2], [2, 3]] } })
+  const g = (f: (r: number, c: number) => number, label: string, hl: Cell[]): GridViewData => ({ kind: 'grid', label, cells: Array.from({ length: N }, (_, r) => Array.from({ length: N }, (_, c) => f(r, c))), marks: { hl } })
   return [
-    { note: '同一條「↘」斜線上的格子,r − c 都一樣;同一條「↙」斜線上的格子,r + c 都一樣。所以用三個集合(行、r − c、r + c)就能 O(1) 判斷', views: [g((r, c) => r - c, 'r − c(↘ 斜線編號)')] },
-    { note: '↙ 斜線用 r + c', views: [g((r, c) => r + c, 'r + c(↙ 斜線編號)')] },
+    { note: '同一條「↘」斜線上的格子,r − c 都一樣;同一條「↙」斜線上的格子,r + c 都一樣。所以用三個集合(行、r − c、r + c)就能 O(1) 判斷', views: [g((r, c) => r - c, 'r − c(↘ 斜線編號)', [[0, 1], [1, 2], [2, 3]])] },
+    { note: '↙ 斜線用 r + c', views: [g((r, c) => r + c, 'r + c(↙ 斜線編號)', [[0, 3], [1, 2], [2, 1], [3, 0]])] },
   ]
 }
 

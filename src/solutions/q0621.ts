@@ -78,7 +78,7 @@ export const q0621: Solution = {
       steps: ['計數,把次數放進最大堆', '`time += 1`;堆不空 → 拿出最大的做一次,剩下的次數和「可以再做的時間 time + n」放進佇列', '佇列最前面的冷卻好了 → 放回堆', '堆和佇列都空了 → 回傳 time'],
       figure: { title: `tasks = [${TASKS.join(',')}], n = ${N}`, steps: simFig() },
       complexity: { time: 'O(T · log 26)', space: 'O(26)', why: 'T 是總時間(最多 tasks 長度 × (n+1))。堆和佇列最多 26 種任務。' },
-      verdict: '直接模擬,邏輯清楚,也能印出實際的排程。',
+      verdict: '直接模擬,邏輯清楚,也能印出實際的排程。C / JavaScript 版沒有內建堆,改用 ready 陣列每個時間點掃 26 種任務,效果相同。',
       code: {
         python: `import heapq
 from collections import Counter, deque
@@ -176,7 +176,7 @@ def leastInterval(tasks, n):
       idea: '`maxf` = 最多的次數,`ties` = 次數等於 maxf 的任務種類數。答案 = `max(len(tasks), (maxf − 1) × (n + 1) + ties)`。',
       steps: ['計數', '`maxf = max(count)`、`ties = count 等於 maxf 的種類數`', '回傳 `max(len(tasks), (maxf − 1)(n + 1) + ties)`'],
       figure: { title: `tasks = [${TASKS.join(',')}], n = ${N}`, steps: mathFig() },
-      complexity: { time: 'O(n)', space: 'O(26)', why: '計數走一遍 tasks,其他都是常數。' },
+      complexity: { time: 'O(len(tasks))', space: 'O(26)', why: '計數走一遍 tasks,其他都是常數。' },
       verdict: '最佳解,但要能解釋公式:框架由最多次的任務決定;其他任務填空格;填滿了就不需要 idle(答案 = 任務數)。',
       code: {
         python: `from collections import Counter

@@ -44,7 +44,7 @@ export const q0442: Solution = {
   constraints: ['1 ≤ n ≤ 10⁵。', '進階要求 O(n) 時間、O(1) 額外空間（不計答案）。'],
   insight: ['一般做法用 set 記已出現的值。', '因為值在 1..n，能把索引 x−1 當作值 x 的專屬標記格。', '把該格改為負數表示見過；第二次看見就加入答案。'],
   approaches: [
-    { name: 'Set 記已見過的值', idea: '掃過每個值，已在 set 就加入答案。', steps: ['準備 seen 和答案。每次都先讀出原本的數值，因為陣列格子可能已被改成負數。', '值已出現則收進答案；否則加入 seen。利用已見過的記錄，判斷目前的值是不是第二次出現。', '掃完回傳。只把確實重複的值加入答案，掃完後返回答案陣列。'], figure: { title: 'nums = [4,3,2,7,8,2,3,1]', steps: [{ note: '先讀到 4，把 4 放入空的 seen；此時答案仍是空陣列。', views: [arr(A, { label: '掃到 4', highlight: [0] })] }, { note: '前五個值互不相同，掃完索引 4 後 seen={4,3,2,7,8}。', views: [arr(A, { label: '已掃描', done: [0,1,2,3,4] })] }, { note: '下一個 2、3 都已在 seen，因此依次加入答案，得到 [2,3]。', views: [arr(A, { label: '重複', highlight: [5,6] }), arr([2,3], { label: '答案', done: [0,1] })] }] }, complexity: { time: 'O(n)', space: 'O(n)', why: 'set 最多放 n 個值。' }, verdict: '通用於任意值域；額外空間較多。', code: {
+    { name: 'Set 記已見過的值', idea: '掃過每個值，已在 set 就加入答案。', steps: ['準備 seen 和答案。', '值已出現則收進答案；否則加入 seen。利用已見過的記錄，判斷目前的值是不是第二次出現。', '掃完回傳。只把確實重複的值加入答案，掃完後返回答案陣列。'], figure: { title: 'nums = [4,3,2,7,8,2,3,1]', steps: [{ note: '先讀到 4，把 4 放入空的 seen；此時答案仍是空陣列。', views: [arr(A, { label: '掃到 4', highlight: [0] })] }, { note: '前五個值互不相同，掃完索引 4 後 seen={4,3,2,7,8}。', views: [arr(A, { label: '已掃描', done: [0,1,2,3,4] })] }, { note: '下一個 2、3 都已在 seen，因此依次加入答案，得到 [2,3]。', views: [arr(A, { label: '重複', highlight: [5,6] }), arr([2,3], { label: '答案', done: [0,1] })] }] }, complexity: { time: 'O(n)', space: 'O(n)', why: 'set 最多放 n 個值。' }, verdict: '通用於任意值域；額外空間較多。', code: {
       python: `def findDuplicates(nums):
     seen = set()
     out = []

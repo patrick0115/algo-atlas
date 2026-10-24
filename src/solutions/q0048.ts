@@ -39,7 +39,7 @@ function ringFig(): FigStep[] {
       m[n - 1 - j][i] = m[n - 1 - i][n - 1 - j]
       m[n - 1 - i][n - 1 - j] = m[j][n - 1 - i]
       m[j][n - 1 - i] = tmp
-      out.push({ note: `這四格一起轉:左上的值去右上、右上去右下、右下去左下、左下回左上`, views: [grid(m, `第 ${i} 圈`, cells)] })
+      out.push({ note: j === i ? '這四格一起轉:左上的值去右上、右上去右下、右下去左下、左下回左上' : '這四格一起轉:上邊的值去右邊、右邊去下邊、下邊去左邊、左邊回上邊', views: [grid(m, `第 ${i} 圈`, cells)] })
     }
   out.push({ note: '外圈轉完,中間的 5 不用動', views: [grid(m, '答案', [], [[1, 1]])] })
   return out

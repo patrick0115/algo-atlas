@@ -48,7 +48,7 @@ export const q1140: Solution = {
   plain: 'Alice 和 Bob 輪流從一排石頭堆的**最前面**拿走若干堆。一開始 M = 1,每次可以拿 1 到 2M 堆,拿了 X 堆之後 M 變成 max(M, X)。兩人都用最聰明的方式玩,Alice 先手,她最多能拿到幾顆石頭?',
   statement: '`piles[i]` 是第 i 堆的石頭數。兩人輪流從剩下的最前面拿走 X 堆(1 ≤ X ≤ 2M),然後 `M = max(M, X)`;一開始 M = 1,Alice 先。雙方都採最佳策略,回傳 Alice 最多拿到的石頭數。',
   examples: [
-    { input: 'piles = [2,7,9,4,4]', output: '10', note: 'Alice 拿 1 堆(2),Bob 拿 1 堆(7),Alice 拿 2 堆(9+4)…;算到底 Alice 最多 10' },
+    { input: 'piles = [2,7,9,4,4]', output: '10', note: 'Alice 拿 1 堆(2),Bob 拿 2 堆(7+9),Alice 拿剩下 2 堆(4+4),共 10' },
     { input: 'piles = [1,2,3,4,5,100]', output: '104' },
   ],
   constraints: ['n ≤ 100 → 狀態 (i, M) 最多 100 × 100 個,每個試 2M 種 → O(n³) 約 10⁶'],

@@ -53,7 +53,7 @@ export const q0877: Solution = {
       steps: ['`dp[i][i] = piles[i]`', '區間長度由 2 到 n', '`dp[i][j] = max(piles[i] − dp[i+1][j], piles[j] − dp[i][j−1])`', '回傳 `dp[0][n−1] > 0`'],
       figure: { title: `piles = [${P}]`, steps: dpFig() },
       complexity: { time: 'O(n²)', space: 'O(n²)', why: 'n² / 2 個區間,每個 O(1)。可以壓成一維。' },
-      verdict: '最推薦學會的寫法:「分差 DP」適用於所有這類兩人取數博弈(例如 [486](#/q/486))。',
+      verdict: '最推薦學會的寫法:「分差 DP」適用於所有這類兩人取數博弈(例如 486 題)。',
       code: {
         python: `def stoneGame(piles):
     n = len(piles)

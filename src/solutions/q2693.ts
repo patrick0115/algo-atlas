@@ -19,7 +19,7 @@ export const q2693: Solution = {
         { note: "obj 有 a=5，暫掛 add。", views: [arr(["obj","add","7"], { label: "呼叫資訊", highlight: [0] })] },
         { note: "以方法形式執行，得到 5+7=12。", views: [arr([5,7,12], { label: "計算", done: [2] })] },
       ] },
-      complexity: { time: "O(K)", space: "O(1)", why: "K 是參數數量；展開參數時需傳遞 K 個值。" },
+      complexity: { time: "O(K)", space: "O(K)", why: "K 是參數數量；剩餘參數陣列保存 K 個值，展開參數時需傳遞 K 個值。" },
       verdict: "展示 JavaScript 方法呼叫如何決定 this。",
       code: { javascript: "Function.prototype.callPolyfill = function(obj, ...args) {\n  const key = Symbol('temporary');\n  obj[key] = this;\n  try {\n    return obj[key](...args);\n  } finally {\n    delete obj[key];\n  }\n};" },
     },

@@ -7,9 +7,9 @@ const grid = (cells: (string|number)[][], hl: [number,number][] = [], label = 'm
 const fig = [
   { note: '掃第 0 列後高度是 [1,0,1,0,0]；遇到 0 的欄位會歸零，因為矩形不能跨過 0。', views: [grid([[1,0,1,0,0]], [], '第 0 列高度')] },
   { note: '掃第 1 列後高度變為 [2,0,2,1,1]；每欄都記錄以此列為底的連續 1 數量。', views: [grid([[2,0,2,1,1]], [], '第 1 列高度')] },
-  { note: '把每一列當作矩形底邊；到第 2 列時，各欄連續的 1 高度是 [3,0,3,2,2]。', views: [grid(M, [[2,2],[2,3],[2,4]]), grid([[3,0,3,2,2]], [], '高度')] },
+  { note: '把每一列當作矩形底邊；到第 2 列時，各欄連續的 1 高度是 [3,1,3,2,2]。', views: [grid(M, [[2,2],[2,3],[2,4]]), grid([[3,1,3,2,2]], [], '高度')] },
   { note: '第 2、3、4 欄高度至少 2，寬 3、高 2，面積 6。', views: [grid(M, [[1,2],[1,3],[1,4],[2,2],[2,3],[2,4]])] },
-  { note: '右邊界停在第 4 欄，因為再往右已沒有柱子；用高 2 乘寬 3，更新最大面積為 6。', views: [grid([[3,0,3,2,2]], [[0,2],[0,3],[0,4]], '結算面積 6')] },
+  { note: '右邊界停在第 4 欄，因為再往右已沒有柱子；用高 2 乘寬 3，更新最大面積為 6。', views: [grid([[3,1,3,2,2]], [[0,2],[0,3],[0,4]], '結算面積 6')] },
 ]
 
 export const q0085: Solution = {
@@ -22,7 +22,7 @@ export const q0085: Solution = {
   approaches: [
     { name: '逐柱向左右擴展', idea: '每列更新高度；以每欄高度為矩形高，左右找仍不低於它的範圍。', steps: ['遇 1，高度加一；遇 0，高度歸零。高度只計算到目前這列為止的連續 1，因此遇到 0 必須歸零。', '對每欄 j，以 h[j] 為高向左右掃到比它矮的柱。以某個高度向兩側找邊界，才能知道可形成矩形的寬度。', '計算高度×寬度並更新最佳面積。每算出一個面積都與目前最佳值比較，以免漏掉最大矩形。'], figure: { title: '第 2 列作底邊', steps: fig }, complexity: { time: 'O(mn²)', space: 'O(n)', why: 'm 列，每列 n 個柱各可掃 n 格。' }, verdict: '直接看得出長方形如何形成，效率較低。', code: {
       python: `def maximalRectangle(matrix):
-    if not matrix:  # 遇到較矮的柱子時，結算已形成的矩形。
+    if not matrix:  # 空矩陣沒有矩形
         return 0
     h = [0] * len(matrix[0])
     best = 0
@@ -59,7 +59,7 @@ export const q0085: Solution = {
     free(h);
     return best;
 }`,
-      cpp: `int maximalRectangle(vector < vector<char>>& matrix) {
+      cpp: `int maximalRectangle(vector<vector<char>>& matrix) {
     if (matrix.empty())
         return 0;
     int n = matrix[0].size(), best = 0;
@@ -117,9 +117,9 @@ export const q0085: Solution = {
     return best;
 }`,
     } },
-    { name: '單調堆疊求直方圖面積', idea: '堆疊保存高度不下降的索引；遇更矮柱時結算被彈出的高度。', steps: ['每列更新高度。高度只計算到目前這列為止的連續 1，因此遇到 0 必須歸零。', '掃描高度並多加一根高度 0 的哨兵。以某個高度向兩側找邊界，才能知道可形成矩形的寬度。', '新高度小於堆疊頂時彈出；寬度由新頂與目前索引界定。每算出一個面積都與目前最佳值比較，以免漏掉最大矩形。'], figure: { title: '第 2 列作底邊', steps: [...fig, { note: '掃到尾端 0 時，把高度 2 的三欄一起結算，得到 2×3=6。', views: [grid([[3,0,3,2,2,0]], [[0,3],[0,4]], '高度與結尾哨兵')] }] }, complexity: { time: 'O(mn)', space: 'O(n)', why: '每列每個柱子最多進、出堆疊一次。' }, verdict: '最佳複雜度；哨兵能避免漏算尾端矩形。', code: {
+    { name: '單調堆疊求直方圖面積', idea: '堆疊保存高度不下降的索引；遇更矮柱時結算被彈出的高度。', steps: ['每列更新高度。高度只計算到目前這列為止的連續 1，因此遇到 0 必須歸零。', '掃描高度並多加一根高度 0 的哨兵。以某個高度向兩側找邊界，才能知道可形成矩形的寬度。', '新高度小於堆疊頂時彈出；寬度由新頂與目前索引界定。每算出一個面積都與目前最佳值比較，以免漏掉最大矩形。'], figure: { title: '第 2 列作底邊', steps: [...fig, { note: '掃到尾端 0 時，把高度 2 的三欄一起結算，得到 2×3=6。', views: [grid([[3,1,3,2,2,0]], [[0,3],[0,4]], '高度與結尾哨兵')] }] }, complexity: { time: 'O(mn)', space: 'O(n)', why: '每列每個柱子最多進、出堆疊一次。' }, verdict: '最佳複雜度；哨兵能避免漏算尾端矩形。', code: {
       python: `def maximalRectangle(matrix):
-    if not matrix:  # 遇到較矮的柱子時，結算已形成的矩形。
+    if not matrix:  # 空矩陣沒有矩形
         return 0
     h = [0] * len(matrix[0])
     best = 0
@@ -157,7 +157,7 @@ export const q0085: Solution = {
     free(st);
     return best;
 }`,
-      cpp: `int maximalRectangle(vector < vector<char>>& matrix) {
+      cpp: `int maximalRectangle(vector<vector<char>>& matrix) {
     if (matrix.empty())
         return 0;
     int n = matrix[0].size(), best = 0;

@@ -11,7 +11,7 @@ const centerFig: FigStep[] = [
 ]
 const rowFig: FigStep[] = [
   { note: '逐列取第 i 欄和第 n−1−i 欄。若兩個欄位是同一格,只加一次。', views: [view] },
-  { note: 'n=3 的中央列兩個欄位都為 1,只加中央的 5 一次。', views: [arr([4, 9, 25], { label: '逐列累加示意', done: [3] })] },
+  { note: 'n=3 的中央列兩個欄位都為 1,只加中央的 5 一次。', views: [arr([4, 9, 25], { label: '逐列累加示意', done: [2] })] },
 ]
 
 export const q1572: Solution = {

@@ -30,8 +30,8 @@ function twoFig(): FigStep[] {
 
 function stateFig(): FigStep[] {
   return [
-    { note: '另一種寫法:同一次掃描裡,同時跑兩組 DP —— 一組「確定偷第一間」、一組「確定不偷第一間」。最後一間只能接在「不偷第一間」那組後面', views: [arr(A, { label: 'nums', highlight: [0] })] },
-    { note: '兩組各自滾動 (prev2, prev1);走到最後一間時,「偷第一間」那組不能偷它。結果和方法一相同', views: [arr(A, { label: 'nums', range: [0, A.length - 1], compare: [A.length - 1] }), arr(range(1, A.length - 1).map((i) => A[i]), { label: '中間的房子兩組都能自由選' })] },
+    { note: '另一種寫法:同一次掃描裡,同時跑兩組 DP —— 一組「可用第一間、不碰最後一間」、一組「不碰第一間」。最後一間只能接在「不碰第一間」那組後面', views: [arr(A, { label: 'nums', highlight: [0] })] },
+    { note: '兩組各自滾動 (prev2, prev1);走到最後一間時,「不碰最後一間」那組不能偷它。結果和方法一相同', views: [arr(A, { label: 'nums', range: [0, A.length - 1], compare: [A.length - 1] }), arr(range(1, A.length - 1).map((i) => A[i]), { label: '中間的房子兩組都能自由選' })] },
   ]
 }
 
@@ -129,7 +129,7 @@ private int line(int[] a, int lo, int hi) {
     },
     {
       name: '一次掃描,同時跑兩組 DP',
-      idea: '組 A:強制偷第 0 間(之後的最後一間不能偷);組 B:強制不偷第 0 間。兩組各自用 (prev2, prev1) 滾動,最後 A 不能用最後一間。',
+      idea: '組 A:可以用第 0 間、但不能用最後一間(等於 nums[0..n−2]);組 B:不用第 0 間。兩組各自用 (prev2, prev1) 滾動,最後 A 不能用最後一間。',
       steps: ['A:`(prev2, prev1) = (0, nums[0])`,從第 1 間跑到第 n−2 間', 'B:`(0, 0)`,從第 1 間跑到第 n−1 間', '回傳 `max(A, B)`'],
       figure: { title: `nums = [${A.join(',')}]`, steps: stateFig() },
       complexity: { time: 'O(n)', space: 'O(1)', why: '同上。' },
@@ -139,7 +139,7 @@ private int line(int[] a, int lo, int hi) {
     n = len(nums)
     if n == 1:
         return nums[0]
-    a2, a1 = 0, nums[0]                   # A:偷了第 0 間
+    a2, a1 = 0, nums[0]                   # A:不碰最後一間
     b2, b1 = 0, 0                         # B:沒偷第 0 間
     for i in range(1, n):
         if i < n - 1:                     # A 不能偷最後一間
@@ -196,7 +196,7 @@ private int line(int[] a, int lo, int hi) {
     '只有一間房子:`nums[:-1]` 和 `nums[1:]` 都是空的,答案會變成 0,要先特判',
     '以為要分三種情況(都不偷、偷頭、偷尾):「不偷尾」已經包含「頭尾都不偷」,兩種就夠',
   ],
-  followUp: [{ q: '同樣「環狀拆成兩條線」的題?', a: '918. Maximum Sum Circular Subarray、2560 等環狀陣列問題,常常拆成「不含頭」和「不含尾」兩種。' }],
+  followUp: [{ q: '同樣「環狀拆成兩條線」的題?', a: '環狀陣列的另一招是把陣列複製一份接在後面,例如 503. Next Greater Element II;918. Maximum Sum Circular Subarray 則用「總和 − 最小子陣列和」處理跨頭尾的情況。' }],
   check: {
     kind: 'fn',
     fn: 'rob',

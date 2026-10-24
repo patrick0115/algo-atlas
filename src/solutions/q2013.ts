@@ -80,7 +80,7 @@ function colFig(): FigStep[] {
     out.push({ note: `(${qx},${y}) 在同一行,邊長 = |${y} − ${qy}| = ${Math.abs(d)}。正方形可以往左或往右長`, views: [plane(m, { hl: [Q], cmp: [[qx, y]] })] })
     for (const x of [qx + d, qx - d]) {
       if (x < 0 || x > MAX) {
-        out.push({ note: `往 x = ${x}:超出範圍,跳過`, views: [plane(m, { hl: [Q], cmp: [[qx, y]] })] })
+        out.push({ note: x < 0 ? `往 x = ${x}:超出範圍,跳過` : `往 x = ${x}:圖只畫到 ${MAX},那裡沒有點 → 0`, views: [plane(m, { hl: [Q], cmp: [[qx, y]] })] })
         continue
       }
       const a = m.get(`${qx},${y}`) ?? 0

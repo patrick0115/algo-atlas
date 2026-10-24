@@ -33,7 +33,7 @@ function windowFig(lazy: boolean): FigStep[] {
     }
     best = Math.max(best, r - l + 1)
     out.push({
-      note: `視窗 [${l}, ${r}] = "${S.slice(l, r + 1)}",長度 ${r - l + 1},${lazy ? `maxFreq = ${maxf}` : `最多的字母出現 ${maxf} 次`},要換 ${r - l + 1 - maxf} 個 ≤ ${K} ✓,最長 ${best}`,
+      note: `視窗 [${l}, ${r}] = "${S.slice(l, r + 1)}",長度 ${r - l + 1},${lazy ? `maxFreq = ${maxf}` : `最多的字母出現 ${maxf} 次`},${!lazy && r - l + 1 - maxf > K ? `要換 ${r - l + 1 - maxf} 個 > ${K},視窗仍不合法,但長度沒超過目前最長,只是平移,答案不受影響` : `要換 ${r - l + 1 - maxf} 個 ≤ ${K} ✓`},最長 ${best}`,
       views: [view(r, { highlight: [r] }), cntView([chars[r]])],
     })
   }

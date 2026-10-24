@@ -206,7 +206,7 @@ public:
       idea: '每個人的推文各自存成 `(時間, id)` 的清單。getNewsFeed:把自己和每個追蹤對象「最新的一則」放進最大堆,每次拿出最新的,再把那個人的下一則(較舊的)放進堆,拿滿 10 則就停。',
       steps: ['`time` 全域遞增;`posts[u].append((time, id))`', '`getNewsFeed(u)`:對 `{u} ∪ following[u]` 每個有推文的人,把最後一則 `(time, id, 人, 位置)` 放進最大堆', '`while 堆不空 and len(res) < 10`:拿出最新的,收進 res;那個人還有更舊的就放進堆'],
       figure: { title: '使用者 1 追蹤 2、3 之後 getNewsFeed(1)', steps: mergeFig() },
-      complexity: { time: 'getNewsFeed O(F + 10 log F)', space: 'O(T + F)', why: 'F 是追蹤的人數。建堆 O(F),之後最多拿 10 次,每次 O(log F)。和全站推文數無關。' },
+      complexity: { time: 'getNewsFeed O(F + 10 log F)', space: 'O(T + F)', why: 'F 是追蹤的人數。建堆 O(F),之後最多拿 10 次,每次 O(log F)。和全站推文數無關。JS / C 版每次線性掃所有人取代堆,為 O(10·F)。' },
       verdict: '標準解,本質是 [23. Merge k Sorted Lists](#/q/23)。「只要前 10 個」讓堆的操作次數很少。',
       code: {
         python: `import heapq

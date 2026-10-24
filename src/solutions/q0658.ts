@@ -110,7 +110,7 @@ export const q0658: Solution = {
       steps: ['`lo, hi = 0, n − k`', '`while lo < hi`:`m = (lo + hi) // 2`', '`x − arr[m] > arr[m + k] − x` → `lo = m + 1`;否則 `hi = m`', '回傳 `arr[lo : lo + k]`'],
       figure: { title: `arr = [${A}],k = ${K},x = ${X}`, steps: bsFig() },
       complexity: { time: 'O(log(n − k) + k)', space: 'O(1)', why: '二分找起點,再複製 k 個。' },
-      verdict: '最推薦(最快)。關鍵是比較「視窗左端」和「視窗右邊下一個」:誰比較遠,視窗就該往另一邊移。不要用 abs,否則 x 在兩者中間時會判斷錯。',
+      verdict: '最推薦(最快)。關鍵是比較「視窗左端」和「視窗右邊下一個」:誰比較遠,視窗就該往另一邊移。不要用 abs,否則 x 不在兩者之間(例如兩個都比 x 小)時會判斷錯。',
       code: {
         python: `def findClosestElements(arr, k, x):
     lo, hi = 0, len(arr) - k

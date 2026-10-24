@@ -102,7 +102,7 @@ export const q0118: Solution = {
       steps: ['`for i`:`row = [1]`、`c = 1`', '`for j in 1..i`:`c = c * (i − j + 1) // j`,append', '收進答案'],
       figure: { title: `numRows = ${R}`, steps: combFig() },
       complexity: { time: 'O(n²)', space: 'O(n²)', why: '同樣要輸出全部的數。' },
-      verdict: '每一列可以獨立算出來,不依賴上一列;要單獨求某一列時([119](#/q/119))很方便。',
+      verdict: '每一列可以獨立算出來,不依賴上一列;要單獨求某一列時(119)很方便。',
       code: {
         python: `def generate(numRows):
     res = []

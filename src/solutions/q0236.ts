@@ -8,8 +8,8 @@ const title = 'root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4'
 function ancestorFig(): FigStep[] {
   return [
     { note: '從根節點 3 開始找 p=5。往左走一步就到 5，因此第一條路是 3→5。', views: [tree(T, { cls: { 0: 'visited', 1: 'hl', 2: 'dim' } })] },
-    { note: '先找從根到 5 與 4 的路。兩條路共同經過 3、5。', views: [tree(T, { cls: { 0: 'visited', 1: 'hl' } })] },
     { note: '再找 q=4：從 3 走到 5，接著經過 2 才抵達 4，所以第二條路是 3→5→2→4。', views: [tree(T, { cls: { 0: 'visited', 1: 'visited', 4: 'visited', 10: 'hl' } })] },
+    { note: '比較兩條路：共同經過 3、5。', views: [tree(T, { cls: { 0: 'visited', 1: 'hl' } })] },
     { note: '走向 4 時還會經過 2，但 5 的路在此之前已結束。最後一個共同節點是 5。', views: [tree(T, { cls: { 0: 'visited', 1: 'hl', 4: 'dim', 10: 'dim' } })] },
   ]
 }
@@ -76,8 +76,8 @@ int countNodes(struct TreeNode *n) {
 struct TreeNode *lowestCommonAncestor(struct TreeNode *root, struct TreeNode *p, struct TreeNode *q) {
     int cap = countNodes(root), na = 0, nb = 0;
     struct TreeNode **a = malloc(cap * sizeof(*a)), **b = malloc(cap * sizeof(*b));
-    path(root, p, a, & na);
-    path(root, q, b, & nb);
+    path(root, p, a, &na);
+    path(root, q, b, &nb);
     struct TreeNode *ans = NULL;
     for (int i = 0; i < na && i < nb && a[i] == b[i]; i++)
         ans = a[i];

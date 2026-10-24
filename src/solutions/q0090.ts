@@ -28,7 +28,7 @@ function btFig(): FigStep[] {
   }
   go(0, -1, '[]')
   const pos = recLayout(nodes)
-  return nodes.map((_, k) => ({ note: notes[k], views: [recView(nodes, pos, k, '決策樹(每個綠色節點都是一個子集)')] }))
+  return nodes.map((_, k) => ({ note: notes[k], views: [recView(nodes, pos, k, '決策樹(每個節點都是一個子集)')] }))
 }
 
 function countFig(): FigStep[] {

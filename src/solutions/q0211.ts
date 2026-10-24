@@ -30,7 +30,7 @@ function view(root: TN, cls: Record<string, string> = {}): GraphViewData {
     return x
   }
   place(root, 0)
-  return { kind: 'graph', label: 'Trie(綠色 = 單字結尾)', nodes, edges }
+  return { kind: 'graph', label: 'Trie(淺色實心 = 單字結尾)', nodes, edges }
 }
 
 function build(): TN {

@@ -8,14 +8,14 @@ const T = [1, 2, 3, 4, null, 5, 6, null, null, 7]
 function bfsFig(): FigStep[] {
   return [
     { note: '要找「最深一層、最左邊」的節點。BFS 一層一層走;小技巧:每層**由右往左**放進佇列,這樣最後一個被拿出來的節點就是答案', views: [tree(T, { cls: { 0: 'hl' } })] },
-    { note: '順序:1 → 3 → 2 → 6 → 5 → 4 → 7。最後一個是 7', views: [tree(T, { cls: { 0: 'done', 2: 'done', 1: 'done', 6: 'done', 5: 'done', 3: 'done', 11: 'hl' } })] },
+    { note: '順序:1 → 3 → 2 → 6 → 5 → 4 → 7。最後一個是 7', views: [tree(T, { cls: { 0: 'done', 2: 'done', 1: 'done', 6: 'done', 5: 'done', 3: 'done', 9: 'hl' } })] },
   ]
 }
 
 function dfsFig(): FigStep[] {
   return [
     { note: 'DFS 版:先走左邊再走右邊,記錄「目前看過最深的深度」。第一次到達更深的一層時,遇到的一定是那一層最左邊的節點', views: [tree(T, { cls: { 0: 'path', 1: 'path', 3: 'hl' }, subs: { 3: '深度 2' } })] },
-    { note: '走到 7(深度 3)時第一次到達深度 3 → 記下 7。之後同一層的節點都不會更新', views: [tree(T, { cls: { 0: 'path', 2: 'path', 5: 'path', 11: 'done' }, subs: { 11: '深度 3' } })] },
+    { note: '走到 7(深度 3)時第一次到達深度 3 → 記下 7。之後同一層的節點都不會更新', views: [tree(T, { cls: { 0: 'path', 2: 'path', 5: 'path', 9: 'done' }, subs: { 9: '深度 3' } })] },
   ]
 }
 

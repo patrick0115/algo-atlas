@@ -58,7 +58,7 @@ export const q0191: Solution = {
       steps: ['`count = 0`', '`while n`:`count += n & 1`、`n >>= 1`', '回傳 count'],
       figure: { title: `n = ${N}`, steps: shiftFig() },
       complexity: { time: 'O(位元數) = O(32)', space: 'O(1)', why: '每次丟掉一位。' },
-      verdict: '最直覺。如果 n 是負數(無號題型),C/Java 要用無號右移(`>>>`)才不會無限迴圈。',
+      verdict: '最直覺。如果 n 是負數(無號題型),C 要先轉成 `unsigned`、Java 要用無號右移 `>>>`,才不會無限迴圈。',
       code: {
         python: `def hammingWeight(n):
     count = 0

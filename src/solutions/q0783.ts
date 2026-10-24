@@ -15,7 +15,7 @@ function inFig(): FigStep[] {
 
 function sortFig(): FigStep[] {
   return [
-    { note: '不利用 BST 的性質:隨便走訪收集所有值,再排序', views: [arr([4, 2, 6, 1, 3], { label: '前序收集' })] },
+    { note: '不利用 BST 的性質:隨便走訪收集所有值,再排序', views: [arr([4, 2, 1, 3, 6], { label: '前序收集' })] },
     { note: '排序後看相鄰差 → 1。多了排序的 O(n log n)', views: [arr([1, 2, 3, 4, 6], { label: '排序後', done: [0, 1] })] },
   ]
 }

@@ -64,7 +64,7 @@ export const q0002: Solution = {
       steps: ['`dummy = Node(0)`、`tail = dummy`、`carry = 0`', '`while l1 or l2 or carry`', '`s = (l1 的值或 0) + (l2 的值或 0) + carry`', '`tail.next = Node(s % 10)`、`carry = s // 10`', 'l1、l2、tail 往前走;回傳 `dummy.next`'],
       figure: { title: `l1 = [${A.join(',')}], l2 = [${B.join(',')}]`, steps: iterFig(false) },
       complexity: { time: 'O(max(m, n))', space: 'O(1)', why: '每一位做一次;除了答案本身,只用幾個變數。' },
-      verdict: '標準解。dummy 頭是鏈結串列題的萬用技巧:不用特別處理「答案目前是空的」這種情況([21. Merge Two Sorted Lists](#/p/linked-list) 也用它)。',
+      verdict: '標準解。dummy 頭是鏈結串列題的萬用技巧:不用特別處理「答案目前是空的」這種情況([21. Merge Two Sorted Lists](#/q/21) 也用它)。',
       code: {
         python: `def addTwoNumbers(l1, l2):
     dummy = tail = ListNode(0)

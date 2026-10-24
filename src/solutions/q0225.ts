@@ -5,10 +5,10 @@ import type { FigStep, Solution } from './types'
 
 function oneQFig(): FigStep[] {
   return [
-    { note: '佇列是「先進先出」,堆疊要「後進先出」。只用一個佇列的訣竅:每次 push 新元素後,把它**前面的元素全部轉到後面**,新元素就跑到最前面了', views: [arr([1, 2], { label: '佇列(左邊是隊首)' })] },
-    { note: 'push 3:先放到隊尾 → [1, 2, 3]', views: [arr([1, 2, 3], { label: '佇列', highlight: [2] })] },
-    { note: '再把前面 2 個依序「出隊、再入隊」:1 → 尾、2 → 尾 → [3, 1, 2]。現在隊首就是最後 push 的 3', views: [arr([3, 1, 2], { label: '佇列', highlight: [0] })] },
-    { note: 'pop / top 直接看隊首:pop → 3,剩 [1, 2];top → 1……push 是 O(n),pop、top 是 O(1)', views: [arr([1, 2], { label: '佇列(pop 3 之後)', highlight: [0] })] },
+    { note: '佇列是「先進先出」,堆疊要「後進先出」。只用一個佇列的訣竅:每次 push 新元素後,把它**前面的元素全部轉到後面**,新元素就跑到最前面了', views: [arr([2, 1], { label: '佇列(左邊是隊首)' })] },
+    { note: 'push 3:先放到隊尾 → [2, 1, 3]', views: [arr([2, 1, 3], { label: '佇列', highlight: [2] })] },
+    { note: '再把前面 2 個依序「出隊、再入隊」:2 → 尾、1 → 尾 → [3, 2, 1]。現在隊首就是最後 push 的 3', views: [arr([3, 2, 1], { label: '佇列', highlight: [0] })] },
+    { note: 'pop / top 直接看隊首:pop → 3,剩 [2, 1];top → 2……push 是 O(n),pop、top 是 O(1)', views: [arr([2, 1], { label: '佇列(pop 3 之後)', highlight: [0] })] },
   ]
 }
 

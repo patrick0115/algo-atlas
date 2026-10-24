@@ -23,7 +23,7 @@ function dfsFig(): FigStep[] {
     go(n.right, Math.max(mx, n.val))
   }
   go(root, -Infinity)
-  out.push({ note: `答案 = ${cnt}(綠色的節點)`, views: [tree(T, { cls, subs })] })
+  out.push({ note: `答案 = ${cnt}(標記為好節點的那些節點)`, views: [tree(T, { cls, subs })] })
   return out
 }
 

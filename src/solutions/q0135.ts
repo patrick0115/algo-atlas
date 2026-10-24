@@ -86,7 +86,7 @@ export const q0135: Solution = {
     },
     {
       name: '上下坡計數(O(1) 空間)',
-      idea: '維護目前上坡長度 up、下坡長度 down、山頂高度 peak;上坡加 `up + 1`,下坡加 `down`(整段下坡各多 1),`down >= peak` 時山頂也再加 1。',
+      idea: '維護目前上坡長度 up、下坡長度 down、山頂高度 peak;上坡加 `up + 1`,下坡加 `down`(整段下坡各多 1),`down > peak` 時山頂也再加 1。',
       steps: ['`total = 1`、`up = down = peak = 0`', '上升:`up += 1`、`peak = up`、`down = 0`、`total += up + 1`', '相等:`up = down = peak = 0`、`total += 1`', '下降:`down += 1`、`up = 0`、`total += down + (down > peak ? 1 : 0)`'],
       figure: { title: `ratings = [${R}]`, steps: slopeFig() },
       complexity: { time: 'O(n)', space: 'O(1)', why: '一次掃描、常數變數。' },

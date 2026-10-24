@@ -282,7 +282,7 @@ public:
       idea: '每個 key 存 `(value, freq, lastUsed)`;要淘汰時掃過全部,找 `(freq, lastUsed)` 最小的。',
       steps: ['每次 get / put:`time += 1`,更新該 key 的 freq 和 lastUsed', 'put 新 key 且滿了:掃全部找 (freq, lastUsed) 最小的刪掉', '再插入新 key(freq = 1)'],
       figure: { title: 'capacity = 2', steps: scanFig() },
-      complexity: { time: 'get O(1),put 最壞 O(capacity)', space: 'O(capacity)', why: '淘汰時要掃描。' },
+      complexity: { time: 'get O(1),put 最壞 O(capacity)', space: 'O(capacity)', why: '淘汰時要掃描。C 版沒有 Hash 表,get 也要掃描,為 O(capacity)。' },
       verdict: '規則最直白,先寫這個確認對規則的理解;不符合 O(1) 的要求。',
       code: {
         python: `class LFUCache:

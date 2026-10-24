@@ -66,7 +66,7 @@ export const q0055: Solution = {
       idea: '`can[0] = True`;每個能到的格子 i,把 i+1 到 i+nums[i] 都標成能到。',
       steps: ['`can = [False] * n`、`can[0] = True`', '`for i`:`can[i]` 是 False 就跳過', '把 `i+1 .. min(n−1, i+nums[i])` 都設成 True', '回傳 `can[n−1]`'],
       figure: { title: `nums = [${B.join(',')}]`, steps: dpFig(B) },
-      complexity: { time: 'O(n · k)', space: 'O(n)', why: 'k 是最大跳距,最壞 10⁹ 次操作會超時。' },
+      complexity: { time: 'O(n · min(n, k))', space: 'O(n)', why: 'k 是最大跳距;內層最多走到 n,實際是 O(n · min(n, k)),最壞約 5·10⁷ 次,比貪心慢很多。' },
       verdict: '直觀,但跳距很大時太慢。用來理解「能到的格子是連續區間」。',
       code: {
         python: `def canJump(nums):

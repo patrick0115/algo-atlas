@@ -49,6 +49,34 @@ function stateFig(): FigStep[] {
   return out
 }
 
+function memoFig(): FigStep[] {
+  const n = P.length
+  const memo: number[][] = [Array(n + 2).fill(0), Array(n + 2).fill(0)]
+  const rows: (number | string)[][] = [P.map(() => ''), P.map(() => '')]
+  const table = (col: number): GridViewData => ({
+    kind: 'grid',
+    label: 'memo:f(i, holding) = 從第 i 天起最多還能賺多少',
+    cells: rows.map((r) => [...r]),
+    rowLabels: ['沒股票 F', '有股票 T'],
+    colLabels: P.map((p, i) => `第${i}天 $${p}`),
+    marks: { hl: col >= 0 ? [[0, col], [1, col]] : [] },
+  })
+  const out: FigStep[] = [{ note: '從 f(0, F) 開始遞迴;i ≥ n 時回傳 0。每個 (i, holding) 只算一次,算完存進 memo。遞迴會先算到最後一天,再一路往回填', views: [arr(P, { label: 'prices', mode: 'bars' }), table(-1)] }]
+  for (let i = n - 1; i >= 0; i--) {
+    const p = P[i]
+    memo[1][i] = Math.max(memo[1][i + 1], p + memo[0][i + 2])
+    memo[0][i] = Math.max(memo[0][i + 1], -p + memo[1][i + 1])
+    rows[0][i] = memo[0][i]
+    rows[1][i] = memo[1][i]
+    out.push({
+      note: `第 ${i} 天(價格 ${p}):f(${i}, T) = max(跳過 ${memo[1][i + 1]}, 賣 ${p} + f(${i + 2}, F) = ${p + memo[0][i + 2]}) = ${memo[1][i]};f(${i}, F) = max(跳過 ${memo[0][i + 1]}, 買 −${p} + f(${i + 1}, T) = ${-p + memo[1][i + 1]}) = ${memo[0][i]}`,
+      views: [arr(P, { label: 'prices', mode: 'bars', highlight: [i] }), table(i)],
+    })
+  }
+  out.push({ note: `答案 = f(0, F) = ${memo[0][0]}。賣出時跳到 i + 2,就是冷卻一天`, views: [table(0)] })
+  return out
+}
+
 function machineFig(): FigStep[] {
   return [
     { note: '狀態機:rest →(買)→ hold →(賣)→ sold →(冷卻一天)→ rest。hold、rest 也可以原地不動', views: [arr(['rest', '→買→', 'hold', '→賣→', 'sold', '→冷卻→', 'rest'], { label: '一輪交易' })] },
@@ -76,7 +104,7 @@ export const q0309: Solution = {
       name: '遞迴 + 記憶化(第 i 天、手上有沒有股票)',
       idea: '`f(i, holding)` = 從第 i 天起能賺的最多。沒股票:買(`−p + f(i+1, True)`)或跳過;有股票:賣(`p + f(i+2, False)`,跳過冷卻日)或跳過。',
       steps: ['`i >= n` → 0', '`holding`:`max(f(i+1, True), prices[i] + f(i+2, False))`', '否則:`max(f(i+1, False), −prices[i] + f(i+1, True))`', '記憶化'],
-      figure: { title: `prices = [${P}]`, steps: machineFig() },
+      figure: { title: `prices = [${P}]`, steps: memoFig() },
       complexity: { time: 'O(n)', space: 'O(n)', why: '狀態 2n 個,每個 O(1)。' },
       verdict: '把冷卻寫成「賣完直接跳到 i + 2」,很直觀。',
       code: {
@@ -158,7 +186,7 @@ private int f(int i, int h) {
       name: '狀態機 DP(三個變數)',
       idea: '每天用前一天的 hold、sold、rest 算今天的:`hold = max(hold, rest − p)`、`sold = hold + p`、`rest = max(rest, sold)`。三個要同時更新(用舊值)。',
       steps: ['`hold = −∞, sold = −∞, rest = 0`', '每個價格 p:用舊值算出三個新值', '回傳 `max(sold, rest)`'],
-      figure: { title: `prices = [${P}]`, steps: stateFig() },
+      figure: { title: `prices = [${P}]`, steps: [...machineFig(), ...stateFig()] },
       complexity: { time: 'O(n)', space: 'O(1)', why: '一次掃描,三個變數。' },
       verdict: '最佳解,[[p:state-machine-dp]]「股票系列」的通用模板。改狀態就能解手續費、最多 k 次等變形。',
       code: {

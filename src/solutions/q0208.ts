@@ -15,7 +15,7 @@ interface TN {
 }
 
 /** 字典樹畫成圖:每個節點是一個字母,從根往下讀就是前綴;粗框(done)代表「有單字在這裡結束」 */
-function trieView(root: TN, hl: Set<string> = new Set(), label = 'Trie(從根往下讀就是前綴;綠色 = 有單字在這裡結束)'): GraphViewData {
+function trieView(root: TN, hl: Set<string> = new Set(), label = 'Trie(從根往下讀就是前綴;變淡 = 有單字在這裡結束)'): GraphViewData {
   const nodes: GraphNode[] = []
   const edges: GraphEdge[] = []
   let leaf = 0

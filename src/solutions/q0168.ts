@@ -45,7 +45,7 @@ export const q0168: Solution = {
       steps: ['`res = []`', '`while n > 0`:`n -= 1`', '`res.append(chr(ord("A") + n % 26))`、`n //= 26`', '回傳反轉後的字串'],
       figure: { title: `columnNumber = ${N}`, steps: loopFig() },
       complexity: { time: 'O(log₂₆ n)', space: 'O(log₂₆ n)', why: '每輪除以 26。' },
-      verdict: '最推薦。「沒有 0 的進位制」都用先減 1 這招,[171](#/q/171) 是反過來的題目。',
+      verdict: '最推薦。「沒有 0 的進位制」都用先減 1 這招,171. Excel Sheet Column Number 是反過來的題目。',
       code: {
         python: `def convertToTitle(columnNumber):
     n, res = columnNumber, []

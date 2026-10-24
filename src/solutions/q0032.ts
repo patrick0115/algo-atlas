@@ -37,12 +37,12 @@ export const q0032: Solution = {
     int n = strlen(s), *a = malloc((n + 1) * sizeof(int)), top = 0, best = 0;
     a[0] = -1;
     for (int i = 0; i < n; i++) {
-        if (s[i] == '(')a[++ top] = i;
+        if (s[i] == '(') a[++top] = i;
         else {
             top--;
             if (top < 0)
-                a[++ top] = i;
-            else if (i - a[top] > best)best = i - a[top];
+                a[++top] = i;
+            else if (i - a[top] > best) best = i - a[top];
         }
     }
     free(a);
@@ -52,7 +52,7 @@ export const q0032: Solution = {
     vector<int> a {-1};
     int best = 0;
     for (int i = 0; i < (int)s.size(); i++) {
-        if (s[i] == '(')a.push_back(i);
+        if (s[i] == '(') a.push_back(i);
         else {
             a.pop_back();
             if (a.empty())
@@ -68,7 +68,7 @@ export const q0032: Solution = {
     a.push(-1);
     int best = 0;
     for (int i = 0; i < s.length(); i++) {
-        if (s.charAt(i) == '(')a.push(i);
+        if (s.charAt(i) == '(') a.push(i);
         else {
             a.pop();
             if (a.isEmpty())
@@ -83,7 +83,7 @@ export const q0032: Solution = {
     const a = [-1];
     let best = 0;
     for (let i = 0; i < s.length; i++) {
-        if (s[i] === '(')a.push(i);
+        if (s[i] === '(') a.push(i);
         else {
             a.pop();
             if (!a.length)
@@ -95,12 +95,12 @@ export const q0032: Solution = {
     return best;
 }`,
     } },
-    { name: '動態規劃', idea: 'dp[i] 表示恰好在 i 結尾的有效段長度；尋找能配對當前 ) 的左括號。', steps: ['遇 ( 時 dp[i] = 0。邊界或 dp 初值代表尚未形成有效括號片段。', '遇 ) 時令 j = i - 1 - dp[i-1]。每讀一個括號，就根據它能否配對更新目前片段。', '若 j ≥ 0 且 s[j] 是 (，dp[i] = dp[i-1] + 2 + dp[j-1]。只有連續且完整配對的長度，才可以用來更新最佳答案。'], figure: { title: `s = "${S}"`, steps: [fig[0], { note: '索引 2 的 ) 與索引 1 的 ( 配對，所以 dp[2]=2。', views: [arr([0,0,2,0,0,0], { label: 'dp[i]', highlight: [2] })] }, { note: 'i=4 時，索引 3、4 先配成 ()，再接上前一段，所以 dp[4]=4。', views: [arr([0,0,2,0,4,0], { label: 'dp[i]', highlight: [4] })] }] }, complexity: { time: 'O(n)', space: 'O(n)', why: '每個位置只計算一次，保存 dp 陣列。' }, verdict: '能練習「以 i 結尾」的 DP 定義；索引邊界較易寫錯。', code: {
+    { name: '動態規劃', idea: 'dp[i] 表示恰好在 i 結尾的有效段長度；尋找能配對當前 ) 的左括號。', steps: ['遇 ( 時 dp[i] = 0。邊界或 dp 初值代表尚未形成有效括號片段。', '遇 ) 時令 j = i - 1 - dp[i-1]。每讀一個括號，就根據它能否配對更新目前片段。', '若 j ≥ 0 且 s[j] 是 (，dp[i] = dp[i-1] + 2 + dp[j-1]。只有連續且完整配對的長度，才可以用來更新最佳答案。'], figure: { title: `s = "${S}"`, steps: [{ note: 'dp[i] 先全部是 0;索引 0 是右括號,前面沒有東西可以配,dp[0] = 0。', views: [arr([0,0,0,0,0,0], { label: 'dp[i]', highlight: [0] })] }, { note: '索引 2 的 ) 與索引 1 的 ( 配對，所以 dp[2]=2。', views: [arr([0,0,2,0,0,0], { label: 'dp[i]', highlight: [2] })] }, { note: 'i=4 時，索引 3、4 先配成 ()，再接上前一段，所以 dp[4]=4。', views: [arr([0,0,2,0,4,0], { label: 'dp[i]', highlight: [4] })] }] }, complexity: { time: 'O(n)', space: 'O(n)', why: '每個位置只計算一次，保存 dp 陣列。' }, verdict: '能練習「以 i 結尾」的 DP 定義；索引邊界較易寫錯。', code: {
       python: `def longestValidParentheses(s):
     dp = [0] * len(s)
     best = 0
     for i in range(1, len(s)):  # 逐個括號更新目前的配對狀態。
-        if s[i] == ')':  # 依括號種類決定入堆疊或計算有效長度。
+        if s[i] == ')':  # 只有右括號可能結束一段有效括號。
             j = i - 1 - dp[i - 1]
             if j >= 0 and s[j] == '(':
                 dp[i] = dp[i - 1] + 2 + (dp[j - 1] if j else 0)

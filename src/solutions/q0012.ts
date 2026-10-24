@@ -104,7 +104,7 @@ export const q0012: Solution = {
       steps: ['準備四張表(千位只需要 0..3)', '拆出每一位數字', '查表接起來'],
       figure: { title: `num = ${N}`, steps: digitFig() },
       complexity: { time: 'O(1)', space: 'O(1)', why: '四次查表。' },
-      verdict: '完全沒有迴圈,但要手寫 40 個字串;寫錯一個就錯。',
+      verdict: '完全沒有迴圈,但要手寫 34 個字串;寫錯一個就錯。',
       code: {
         python: `def intToRoman(num):
     M = ['', 'M', 'MM', 'MMM']

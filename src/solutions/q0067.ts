@@ -50,7 +50,7 @@ export const q0067: Solution = {
       steps: ['`i, j = len(a) − 1, len(b) − 1`、`carry = 0`', '`while i >= 0 or j >= 0 or carry`:', '`s = carry + (a[i] if i >= 0) + (b[j] if j >= 0)`', '寫下 `s % 2`,`carry = s // 2`,`i -= 1`、`j -= 1`', '結果反轉'],
       figure: { title: `a = "${A}",b = "${B}"`, steps: carryFig() },
       complexity: { time: 'O(max(m, n))', space: 'O(max(m, n))', why: '每一位處理一次;輸出長度最多 max + 1。' },
-      verdict: '最推薦。「大數加法」的模板,[2. Add Two Numbers](#/q/2)、[415. Add Strings](#/q/415) 都是同一套。',
+      verdict: '最推薦。「大數加法」的模板,[2. Add Two Numbers](#/q/2)、415. Add Strings 都是同一套。',
       code: {
         python: `def addBinary(a, b):
     i, j, carry = len(a) - 1, len(b) - 1, 0

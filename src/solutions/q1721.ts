@@ -23,7 +23,7 @@ function ptrFig(): FigStep[] {
   ;[a[K - 1], a[n - K]] = [a[n - K], a[K - 1]]
   return [
     { note: `先走 ${K - 1} 步,first 停在正數第 ${K} 個(值 ${L[K - 1]})`, views: [chain(L, { cls: { [K - 1]: 'hl' }, subs: { [K - 1]: 'first' } })] },
-    { note: `second 從頭出發,和「從 first 出發的指標」一起走;那個指標走到最後一個節點時,second 正好在倒數第 ${K} 個(兩者距離固定是 n − ${K})`, views: [chain(L, { cls: { [K - 1]: 'hl', [n - K]: 'cur', [n - 1]: 'dim' }, subs: { [K - 1]: 'first', [n - K]: 'second', [n - 1]: 'p' } })] },
+    { note: `second 從頭出發,和「從 first 出發的指標」一起走;那個指標走到最後一個節點時,second 正好在倒數第 ${K} 個(兩者距離固定是 ${K} − 1 = ${K - 1})`, views: [chain(L, { cls: { [K - 1]: 'hl', [n - K]: 'cur', [n - 1]: 'dim' }, subs: { [K - 1]: 'first', [n - K]: 'second', [n - 1]: 'p' } })] },
     { note: `交換 first 和 second 的值(題目允許交換值)→ [${a}]`, views: [chain(a, { cls: { [K - 1]: 'done', [n - K]: 'done' } })] },
   ]
 }

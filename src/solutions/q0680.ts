@@ -26,7 +26,7 @@ function ptrFig(): FigStep[] {
 function bruteFig(): FigStep[] {
   return [
     { note: '暴力:先看本身是不是回文;不是的話,一個一個試著刪掉第 i 個字,再檢查剩下的', views: [arr(S.split(''), { label: '刪掉第 0 個', dim: [0] })] },
-    { note: `刪掉第 3 個("c")→ "abdba" 是回文 → true。每次檢查 O(n),共 n 次 → O(n²),n = 10⁵ 會太慢`, views: [arr(S.split(''), { label: '刪掉第 3 個', dim: [3], done: [0, 1, 2, 4, 5] })] },
+    { note: `刪掉第 2 個("d")→ "abcba" 是回文 → true。每次檢查 O(n),共 n 次 → O(n²),n = 10⁵ 會太慢`, views: [arr(S.split(''), { label: '刪掉第 2 個', dim: [2], done: [0, 1, 3, 4, 5] })] },
   ]
 }
 

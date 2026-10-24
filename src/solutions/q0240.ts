@@ -47,8 +47,8 @@ export const q0240: Solution = {
     }
     return false;
 }`,
-      cpp: `bool searchMatrix(vector < vector<int>>& matrix, int target) {
-    for (auto & row : matrix) {
+      cpp: `bool searchMatrix(vector<vector<int>>& matrix, int target) {
+    for (auto& row : matrix) {
         int l = 0, r = (int)row.size() - 1;
         while (l <= r) {
             int x = l + (r - l) / 2;
@@ -95,13 +95,13 @@ export const q0240: Solution = {
     } },
     { name: '右上角階梯搜尋', idea: '目標較小就向左，較大就向下；每步排除一行或一列。', steps: ['設 r=0、c=n−1。每列的排序讓我們能排除一部分不可能的位置。', '若相等，回傳 true。比較中點或右上角目前值後，才知道要捨棄哪一側。', '若目前值過大，c−−；過小則 r++；越界後回傳 false。找到相等值就可以立即停止；否則持續縮小尚未排除的範圍。'], figure: { title: 'target = 5', steps: fig }, complexity: { time: 'O(m+n)', space: 'O(1)', why: '最多向左 n 次、向下 m 次。' }, verdict: '同時利用列與行排序，是本題最簡潔解。', code: {
       python: `def searchMatrix(matrix, target):
-    if not matrix or not matrix[0]:  # 比較目前值與目標後，排除不可能的區域。
+    if not matrix or not matrix[0]:  # 空矩陣直接回傳 false
         return False
     r, c = (0, len(matrix[0]) - 1)
     while r < len(matrix) and c >= 0:  # 利用每列或右上角的排序資訊縮小搜尋範圍。
         if matrix[r][c] == target:
             return True
-        if matrix[r][c] > target:
+        if matrix[r][c] > target:  # 比較目前值與目標後，排除不可能的區域。
             c -= 1
         else:
             r += 1
@@ -120,7 +120,7 @@ export const q0240: Solution = {
     }
     return false;
 }`,
-      cpp: `bool searchMatrix(vector < vector<int>>& matrix, int target) {
+      cpp: `bool searchMatrix(vector<vector<int>>& matrix, int target) {
     if (matrix.empty() || matrix[0].empty())
         return false;
     int r = 0, c = (int)matrix[0].size() - 1;
