@@ -21,6 +21,7 @@ import { SOLUTIONS } from './solutions'
 import { CONCEPTS, CONCEPT_ORDER, UNITS, conceptsFor } from './concepts'
 import { highlight } from './engine/code'
 import { useLang, useProgress } from './engine/progress'
+import type { Pattern } from './types'
 
 function useHash() {
   const [hash, setHash] = useState(() => window.location.hash.slice(1) || '/')
@@ -412,6 +413,37 @@ const SECTIONS = [
   { id: 'sec-problems', label: '⑤ 題目' },
 ]
 
+function ComplexityCard({ c }: { c: Pattern['complexity'] }) {
+  return (
+    <div className="cx-card">
+      <h3>複雜度</h3>
+      <dl>
+        <dt>時間</dt>
+        <dd>{c.time}</dd>
+        <dt>空間</dt>
+        <dd>{c.space}</dd>
+        {c.cases && (
+          <>
+            <dt>最好</dt>
+            <dd>{c.cases.best}</dd>
+            <dt>平均</dt>
+            <dd>{c.cases.avg}</dd>
+            <dt>最壞</dt>
+            <dd>{c.cases.worst}</dd>
+          </>
+        )}
+        {c.stable && (
+          <>
+            <dt>穩定性</dt>
+            <dd>{c.stable}</dd>
+          </>
+        )}
+      </dl>
+      <p className="muted">{c.why}</p>
+    </div>
+  )
+}
+
 function ProSection({ pro }: { pro: ProNote }) {
   const [showTpl, setShowTpl] = useState(true)
   return (
@@ -517,6 +549,7 @@ function PatternPage({ id }: { id: string }) {
               <b>生活比喻</b>
               {pattern.analogy}
             </p>
+            <ComplexityCard c={pattern.complexity} />
           </section>
 
           <section id="sec-demo" className="sec">
@@ -544,17 +577,6 @@ function PatternPage({ id }: { id: string }) {
               <section>
                 <h3>常見錯誤</h3>
                 <ul>{pattern.pitfalls.map((t) => <li key={t}>{t}</li>)}</ul>
-              </section>
-              <section className="complexity">
-                <h3>複雜度</h3>
-                <p>
-                  <b>時間</b>
-                  {pattern.complexity.time}
-                  <br />
-                  <b>空間</b>
-                  {pattern.complexity.space}
-                </p>
-                <p className="muted">{pattern.complexity.why}</p>
               </section>
             </div>
           </section>

@@ -78,7 +78,7 @@ export const bubbleSort: Pattern = {
     '「最少相鄰交換次數」= 逆序對數量,常和合併排序一起出現',
   ],
   pitfalls: ['內層迴圈的上界是 n−1−i,不是 n−1(後面已經排好)', '沒有「提早結束」的版本,在已排序輸入上也要 O(n²)'],
-  complexity: { time: 'O(n²)', space: 'O(1)', why: '最多 n 輪,每輪最多比較 n 次。已排好時只要一輪,所以最好是 O(n)。' },
+  complexity: { time: 'O(n²)', space: 'O(1)', why: '最多 n 輪,每輪最多比較 n 次。已排好時只要一輪,所以最好是 O(n)。', cases: { best: 'O(n)(已排好,一輪沒交換就停)', avg: 'O(n²)', worst: 'O(n²)(完全倒序)' }, stable: '穩定:只在嚴格大於時交換' },
   demo: {
     title: '把一串數字由小到大排好',
     inputs: sortInputs,
@@ -192,7 +192,7 @@ export const selectionSort: Pattern = {
   watch: ['min 指標會跳到目前看到最小的數', '每輪結束只交換一次'],
   whenToUse: ['「每次選出最大/最小放到定位」的題目,例如 Pancake Sorting、Maximum Swap', '交換次數最少(最多 n−1 次)'],
   pitfalls: ['不是穩定排序:相同的數相對順序可能改變', '不管輸入如何都是 O(n²)'],
-  complexity: { time: 'O(n²)', space: 'O(1)', why: '第 i 輪要掃 n−i 個數,加起來約 n²/2。' },
+  complexity: { time: 'O(n²)', space: 'O(1)', why: '第 i 輪要掃 n−i 個數,加起來約 n²/2。不管輸入長怎樣都要掃完,所以三種情況一樣。', cases: { best: 'O(n²)', avg: 'O(n²)', worst: 'O(n²)' }, stable: '不穩定:長距離交換會打亂相等元素的順序' },
   demo: {
     title: '把一串數字由小到大排好',
     inputs: sortInputs,
@@ -290,7 +290,7 @@ export const insertionSort: Pattern = {
   watch: ['淡色底框是「已排好」的區域,會一格一格長大', '黑色那根就是 key,看它一路往左滑'],
   whenToUse: ['資料幾乎已經排好時非常快(接近 O(n))', '鏈結串列排序(147)、資料一筆一筆進來要維持有序'],
   pitfalls: ['往左找時要先檢查 j >= 0 再讀 a[j]', '比較用 > 而不是 >=,才能保持穩定'],
-  complexity: { time: 'O(n²),幾乎排好時 O(n)', space: 'O(1)', why: '最壞每個數都要往左走到底;已排好時每個數比一次就停。' },
+  complexity: { time: 'O(n²),幾乎排好時 O(n)', space: 'O(1)', why: '最壞每個數都要往左走到底;已排好時每個數比一次就停。移動次數剛好等於逆序對數。', cases: { best: 'O(n)(已排好)', avg: 'O(n²)', worst: 'O(n²)(完全倒序)' }, stable: '穩定:遇到相等就停,不會越過' },
   demo: {
     title: '把一串數字由小到大排好',
     inputs: sortInputs,
@@ -413,7 +413,7 @@ export const mergeSort: Pattern = {
     '需要穩定排序、或要保證最壞 O(n log n)',
   ],
   pitfalls: ['比較用 <=(相等時先拿左邊)才是穩定排序', '別忘了處理其中一邊剩下的元素', '陣列版需要 O(n) 額外空間'],
-  complexity: { time: 'O(n log n)', space: 'O(n)', why: '每一層合併總共處理 n 個數,切一半切到底有 log n 層。' },
+  complexity: { time: 'O(n log n)', space: 'O(n)', why: '每一層合併總共處理 n 個數,切一半切到底有 log n 層。不管輸入長怎樣都一樣切,所以三種情況相同。', cases: { best: 'O(n log n)', avg: 'O(n log n)', worst: 'O(n log n)' }, stable: '穩定:合併時相等先取左半' },
   demo: {
     title: '把一串數字由小到大排好',
     inputs: sortInputs,
@@ -552,7 +552,7 @@ export const quickSort: Pattern = {
     '依條件把陣列分兩堆(奇偶、顏色、正負)就是一次 partition',
   ],
   pitfalls: ['已排序的輸入 + 固定選最右邊 → 退化成 O(n²);實戰要隨機選 pivot', '大量重複元素時要用三路 partition(Sort Colors)'],
-  complexity: { time: '平均 O(n log n),最壞 O(n²)', space: 'O(log n) 遞迴', why: 'pivot 每次大約切一半時有 log n 層,每層總共掃 n 個。' },
+  complexity: { time: '平均 O(n log n),最壞 O(n²)', space: 'O(log n) 遞迴', why: 'pivot 每次大約切一半時有 log n 層,每層總共掃 n 個。pivot 每次都選到最大或最小時退化成 n 層,所以最壞 O(n²);隨機選 pivot 可避免。快速選擇只往一邊遞迴,平均 O(n)。', cases: { best: 'O(n log n)', avg: 'O(n log n)', worst: 'O(n²)(pivot 每次都是極值)' }, stable: '不穩定:partition 會長距離交換' },
   demo: {
     title: '把一串數字由小到大排好(Lomuto partition)',
     inputs: sortInputs,
@@ -699,7 +699,7 @@ export const heapSort: Pattern = {
   watch: ['上面的樹和下面的長條是同一個陣列', '黑色節點正在下沉;灰框是它正在比較的孩子', '淺色底的長條已經被移出堆、定案'],
   whenToUse: ['理解 Heap(優先佇列)怎麼運作:Top-K、合併 K 個串列、Dijkstra 都靠它', '要 O(1) 額外空間又要保證 O(n log n)'],
   pitfalls: ['孩子索引是 2i+1 和 2i+2(0-based)', '建堆要從 n/2−1 往回做,不是從 0 往後'],
-  complexity: { time: 'O(n log n)', space: 'O(1)', why: '建堆 O(n);之後 n 次取出,每次下沉最多走樹高 log n。' },
+  complexity: { time: 'O(n log n)', space: 'O(1)', why: '建堆 O(n);之後 n 次取出,每次下沉最多走樹高 log n。', cases: { best: 'O(n log n)', avg: 'O(n log n)', worst: 'O(n log n)' }, stable: '不穩定:堆頂和尾端交換會打亂順序' },
   demo: {
     title: '把一串數字由小到大排好',
     inputs: sortInputs,
@@ -845,7 +845,7 @@ export const countingSort: Pattern = {
   watch: ['中間那排格子就是「籃子」,看數字一個個被丟進去', '輸出時是按照籃子順序,不是按照原本順序'],
   whenToUse: ['值域很小(例如 0~100、26 個字母)', '「依頻率分組」的題目(Top K Frequent、Sort Characters By Frequency)就是把頻率當桶', 'H-Index 這類「數到 >= h」的題目'],
   pitfalls: ['值域很大(例如 10⁹)時陣列開不下 → 改用 Hash 或比較排序', '有負數要先減掉最小值當位移'],
-  complexity: { time: 'O(n + k)', space: 'O(k)', why: 'k 是值域大小:掃輸入 n 次,掃計數陣列 k 次。' },
+  complexity: { time: 'O(n + k)', space: 'O(k)', why: 'k 是值域大小:掃輸入 n 次,掃計數陣列 k 次。不做比較,所以能低於 O(n log n);但 k 很大時(例如值到 10⁹)就不划算。', cases: { best: 'O(n + k)', avg: 'O(n + k)', worst: 'O(n + k)' }, stable: '穩定:用前綴和從後往前放回時穩定' },
   demo: {
     title: '把一串數字由小到大排好',
     inputs: [{ key: 'nums', label: '要排序的數字', default: '4,2,7,2,5,4,2' }],

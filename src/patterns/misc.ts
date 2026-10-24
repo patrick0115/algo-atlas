@@ -38,7 +38,7 @@ export const greedy: Pattern = {
   watch: ['淡色底框是目前能到達的範圍,會隨著每一格往右擴張', '只要 i 還在框內,就一定走得到 i'],
   whenToUse: ['跳躍遊戲、加油站', '區間問題(依結束時間排序)', '分配問題:分餅乾、兩地調度(依差值排序)', '常和排序、Heap 搭配'],
   pitfalls: ['貪心最大的風險是「看起來對但其實錯」,不確定時先想 DP', '排序的依據是關鍵:依起點、依終點、依差值,結果完全不同'],
-  complexity: { time: 'O(n)(本題)', space: 'O(1)', why: '只掃一遍,維護一個最遠距離。' },
+  complexity: { time: 'O(n) 或 O(n log n)', space: 'O(1) ~ O(n)', why: '貪心本身每一步 O(1),所以多數題是「掃一遍 O(n)」;需要先排序才能貪的(例如區間、配對)是 O(n log n)。動畫那題 Jump Game 只掃一遍、只記一個最遠距離,所以是 O(n)、O(1)。' },
   demo: {
     title: '跳躍遊戲:能不能跳到最後一格(LeetCode 55)',
     inputs: [{ key: 'nums', label: 'nums', default: '2,3,1,1,0,4' }],
@@ -638,7 +638,7 @@ export const bitManipulation: Pattern = {
   watch: ['看每一「行」(同一個位數)的 1:出現偶數次的會變 0', '最下面那一列就是累積的 XOR'],
   whenToUse: ['找只出現一次的數(Single Number 系列)、缺失的數字', '數 1 的個數、反轉位元、兩數相加不用 +', '列舉子集(0 到 2ⁿ − 1 的每個整數就是一個子集)', '位元 DP 的狀態壓縮'],
   pitfalls: ['運算子優先順序很低,記得加括號:(x & 1) == 0', '負數右移在不同語言行為不同(Java 有 >>>)', 'Python 整數沒有位數上限,處理負數要自己 & 0xFFFFFFFF'],
-  complexity: { time: 'O(n)', space: 'O(1)', why: '每個數 XOR 一次,只用一個變數。' },
+  complexity: { time: '每次位元運算 O(1);整題通常 O(n) 或 O(n × 位元數)', space: 'O(1)', why: '整數固定 32 或 64 位元,所以逐位檢查一個數也只是常數時間。用位元列舉子集時是 O(2ⁿ × n)。動畫那題(XOR 找唯一數)每個數 XOR 一次,O(n)、O(1)。' },
   demo: {
     title: '其他數都出現兩次,找出只出現一次的數(LeetCode 136)',
     inputs: [{ key: 'nums', label: 'nums(0~31)', default: '4,1,2,1,2,7,4' }],
@@ -744,7 +744,7 @@ export const math: Pattern = {
   watch: ['每輪劃掉的倍數從 p² 開始,而不是 2p', '到 p² >= n 就可以停了,後面不用再看'],
   whenToUse: ['數質數、質因數分解', '最大公因數 gcd(a, b) = gcd(b, a % b)', '快速冪:pow(x, n) 用 n 的二進位每次平方', '答案很大要 mod 10⁹+7(每一步都取模)', '矩陣旋轉、螺旋矩陣等幾何操作'],
   pitfalls: ['內層從 p × p 開始,外層到 p × p < n', '乘法可能溢位,要用 long 或先取模'],
-  complexity: { time: 'O(n log log n)', space: 'O(n)', why: '每個合數只會被它的質因數劃掉,總次數約 n × (1/2 + 1/3 + 1/5 + …)。' },
+  complexity: { time: '依工具:篩法 O(n log log n)、GCD O(log min(a, b))、快速冪 O(log n)', space: '篩法 O(n),其他 O(1)', why: '篩法:每個合數只會被它的質因數劃掉,總次數約 n × (1/2 + 1/3 + 1/5 + …)。GCD:每做兩次取餘數,較小的數至少減半。快速冪:指數每次除以 2。' },
   demo: {
     title: '數出小於 n 的質數有幾個(LeetCode 204)',
     inputs: [{ key: 'n', label: 'n(2~80)', default: '50' }],
@@ -994,7 +994,7 @@ export const simulation: Pattern = {
   watch: ['每走完一條邊,那一側的邊界就往內縮一格', '單列或單行的矩陣是最容易出錯的情況'],
   whenToUse: ['螺旋矩陣、旋轉矩陣、遊戲規則模擬(生命遊戲)', '題目描述很長、但每一步都很明確', '標籤是 Array / Simulation、看不出特別演算法的題目'],
   pitfalls: ['往左、往上走之前要再檢查一次邊界(否則單列 / 單行會重複走)', '需要「同時更新」的題目(生命遊戲)要先複製或用額外的編碼'],
-  complexity: { time: 'O(R × C)', space: 'O(1)(不算輸出)', why: '每一格只走一次。' },
+  complexity: { time: 'O(模擬的總步數)', space: 'O(1) ~ O(n)(看要不要另開陣列)', why: '模擬就是照規則一步一步做,時間等於總步數。動畫那題(螺旋矩陣)每一格只走一次,所以是 O(R × C)、O(1)(不算輸出)。' },
   demo: {
     title: '螺旋順序走訪矩陣(LeetCode 54)',
     inputs: [

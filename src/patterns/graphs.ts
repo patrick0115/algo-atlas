@@ -934,7 +934,7 @@ export const backtracking: Pattern = {
   watch: ['遞迴樹會一個分支一個分支長出來', '注意「撤銷選擇」—— 回到父節點時 path 要恢復原狀'],
   whenToUse: ['列出所有子集、排列、組合', '組合總和、分割回文、括號生成', 'N 皇后、數獨、單字搜尋(網格回溯)', '題目要「所有解」而不是「幾個解」或「最佳解」'],
   pitfalls: ['記錄答案時要複製一份 path(path[:]),不能存參考', '子集 / 組合用 start 避免重複;排列用 used 陣列', '有重複元素時:先排序,同一層跳過相同的數'],
-  complexity: { time: 'O(2ⁿ × n)(子集)', space: 'O(n)', why: '共有 2ⁿ 個子集,每個複製要 O(n);遞迴深度最多 n。' },
+  complexity: { time: '子集 O(2ⁿ × n)、排列 O(n! × n)、組合 O(C(n, k) × k)', space: 'O(n) 遞迴深度(不算輸出)', why: '時間 ≈ 答案個數 × 複製一個答案的成本。子集有 2ⁿ 個、排列有 n! 個、選 k 個的組合有 C(n, k) 個。剪枝能少走很多分支,但最壞情況不變。遞迴深度最多 n。' },
   demo: {
     title: '列出所有子集(LeetCode 78)',
     inputs: [{ key: 'nums', label: 'nums(最多 4 個)', default: '1,2,3' }],

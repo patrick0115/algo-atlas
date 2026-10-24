@@ -133,7 +133,15 @@ export interface Pattern {
   /** 題目出現哪些訊號時想到它 */
   whenToUse: string[]
   pitfalls: string[]
-  complexity: { time: string; space: string; why: string }
+  complexity: {
+    time: string
+    space: string
+    why: string
+    /** 排序類:最好 / 平均 / 最壞 */
+    cases?: { best: string; avg: string; worst: string }
+    /** 排序類:穩不穩定 + 一句原因 */
+    stable?: string
+  }
   demo: Demo
 }
 

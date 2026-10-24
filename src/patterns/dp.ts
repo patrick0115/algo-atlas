@@ -800,7 +800,7 @@ export const intervalDp: Pattern = {
   watch: ['填表是一條一條斜線往右上推進,不是一列一列', '斜線條紋的格子(i > j)不是合法區間,不使用'],
   whenToUse: ['回文相關:最長回文子序列 / 子字串、回文分割', '「最後一步」在區間中間:戳氣球、切棍子、多邊形三角剖分', '合併石頭、奇怪的印表機'],
   pitfalls: ['外層迴圈是「區間長度」,不是 i', '枚舉切點 k 時,左右兩段的邊界(含不含 k)要想清楚', '時間常常是 O(n³),n 通常不大'],
-  complexity: { time: 'O(n²)(本題)/ O(n³)(枚舉切點)', space: 'O(n²)', why: '有 n² 個區間;需要枚舉切點時每個區間再花 O(n)。' },
+  complexity: { time: 'O(n³),不用枚舉切點時 O(n²)', space: 'O(n²)', why: '共有 n² 個區間 [i, j]。一般的區間 DP 每個區間要枚舉切點 k,再花 O(n),所以是 O(n³)。動畫那題(最長回文子序列)只看兩端,每個區間 O(1),所以是 O(n²)。' },
   demo: {
     title: '最長回文子序列(LeetCode 516)',
     inputs: [{ key: 's', label: 's', default: 'bbbab' }],
