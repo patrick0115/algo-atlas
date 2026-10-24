@@ -5,7 +5,7 @@ import type { Solution } from './types'
 const S = 'abccccdd'
 const F = [
   { note: '統計字元次數：a、b 各 1 次，c 有 4 次，d 有 2 次。大小寫視為不同字元。', views: [arr([1, 1, 4, 2], { label: 'a、b、c、d 的次數' })] },
-  { note: '偶數次的 ccc c 和 dd 都能分配到回文的左右兩邊，共 6 個。', views: [arr([0, 0, 4, 2], { label: '配對可用數', done: [2, 3] })] },
+  { note: '偶數次的 cccc 和 dd 都能分配到回文的左右兩邊，共 6 個。', views: [arr([0, 0, 4, 2], { label: '配對可用數', done: [2, 3] })] },
   { note: 'a 或 b 其中一個可放在中心，只能多用 1 個。', views: [arr([1], { label: '中心', highlight: [0] })] },
   { note: '最長長度 6+1=7，例如 dccaccd。', views: [arr('dccaccd'.split(''), { label: '一個可能的回文', done: [0, 1, 2, 3, 4, 5, 6] })] },
 ]

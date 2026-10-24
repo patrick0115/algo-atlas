@@ -69,7 +69,7 @@ export const q0111: Solution = {
         { note: '佇列先放根 3，深度 1。', views: [tree(T, { cls: { 0: 'hl' } }), arr(['3:1'], { label: '佇列' })] },
         { note: '3 不是葉子，把 9、20 以深度 2 入列。', views: [tree(T, { cls: { 1: 'hl', 2: 'hl' } }), arr(['9:2', '20:2'], { label: '佇列' })] },
         { note: '先取出 9；它沒有孩子，是第一片遇到的葉子。', views: [tree(T, { cls: { 1: 'done' } }), arr(['9:2'], { label: '第一片葉子', done: [0] })] },
-        { note: '回傳它的深度 2，較深的 15、7 無需探索。', views: [tree(T, { cls: { 3: 'dim', 4: 'dim' } }), arr([2], { label: '答案', done: [0] })] },
+        { note: '回傳它的深度 2，較深的 15、7 無需探索。', views: [tree(T, { cls: { 5: 'dim', 6: 'dim' } }), arr([2], { label: '答案', done: [0] })] },
       ] },
       complexity: { time: 'O(n)', space: 'O(w)', why: '最壞每個節點入列一次，w 是最大一層的寬度。' },
       verdict: '通常能提早停止，尤其最近葉子很淺時。',

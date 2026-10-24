@@ -280,7 +280,7 @@ TreeNode buildBst(int[] a, long low, long high) {
       },
     },
   ],
-  pitfalls: ['上下界不合格時，不能提前移動索引；該值可能屬於上層的右子樹。', '節點值可能接近整數邊界；上下界用更寬型別。'],
+  pitfalls: ['上下界不合格時，不能提前移動索引；該值可能屬於上層的右子樹。', '上下界初值用 ±∞（或比 1000 更大的哨兵值）即可。'],
   check: { kind: 'fn', fn: 'bstCheck', cases: [
     { args: [P], out: 1 },
     { args: [[1, 3]], out: 1 },

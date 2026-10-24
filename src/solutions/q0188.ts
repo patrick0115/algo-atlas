@@ -27,7 +27,7 @@ export const q0188: Solution = {
   plain: '給每天股價，最多做 k 次買進再賣出的交易，求最大利潤；同時只能持有一股。',
   statement: '給整數 k 與 prices，最多完成 k 筆交易（一次買進和一次賣出），不可同時持有多股，求最大利潤。可以選擇不交易。',
   examples: [{ input: 'k = 2, prices = [2,4,1]', output: '2' }, { input: 'k = 2, prices = [3,2,6,5,0,3]', output: '7' }],
-  constraints: ['`0 ≤ k ≤ 100`', '`0 ≤ prices.length ≤ 1000`', '`0 ≤ prices[i] ≤ 1000`'],
+  constraints: ['`1 ≤ k ≤ 100`', '`1 ≤ prices.length ≤ 1000`', '`0 ≤ prices[i] ≤ 1000`'],
   insight: ['每天有「持股」與「空手」兩種狀態；買入只能從少一筆的空手狀態來，賣出只能從對應持股狀態來。', '[[p:state-machine-dp]] 可以先寫成每天一列的表，再發現今天只依賴昨天，壓縮到 O(k) 空間。'],
   approaches: [
     {

@@ -10,7 +10,7 @@ export const q0974: Solution = {
   plain: '數出有多少段連續數字，加起來剛好是 k 的倍數。',
   statement: '給整數陣列 nums 與正整數 k，計算總和能被 k 整除的非空連續子陣列數量。',
   examples: [{ input: 'nums = [4,5,0,-2,-3,1], k = 5', output: '7' }, { input: 'nums = [5], k = 9', output: '0' }],
-  constraints: ['1 ≤ nums.length ≤ 3×10⁴；1 ≤ k ≤ 10⁴；元素可為負。'],
+  constraints: ['1 ≤ nums.length ≤ 3×10⁴；2 ≤ k ≤ 10⁴；−10⁴ ≤ nums[i] ≤ 10⁴（元素可為負）。'],
   insight: ['一段的和 = 右端前綴和 − 左端前綴和。', '兩個前綴和除以 k 的餘數相同，差就是 k 的倍數，屬於 [[p:prefix-sum]] 與 [[p:hash-map]]。', '負數餘數在 C、Java、JavaScript 可能為負，必須正規化。'],
   approaches: [
     {

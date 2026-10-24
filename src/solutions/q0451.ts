@@ -273,7 +273,7 @@ char *frequencySort(char *s) {
       idea: '字元最多出現 n 次，把字元放入對應次數的桶，再從高頻桶往低頻桶讀。',
       steps: ['統計各字元次數。', '把每個字元放入 `bucket[count]`。', '從 n 號桶往 1 號桶，每個字元重複 count 次輸出。'],
       figure: { title: 's = "tree"', steps: bucketFig() },
-      complexity: { time: 'O(n + k)', space: 'O(n + k)', why: '掃描 n 個桶與輸出 n 個字元；每種字元只入桶一次。' },
+      complexity: { time: 'O(n + k)', space: 'O(n + k)', why: '掃描 n 個桶與輸出 n 個字元；每種字元只入桶一次。C 版沒有建桶，改成對每個頻率掃 128 種字元，時間 O(128·n)。' },
       verdict: '省去排序，適合想練習 [[p:counting-sort]] 分桶的情境。',
       code: {
         python: `from collections import Counter

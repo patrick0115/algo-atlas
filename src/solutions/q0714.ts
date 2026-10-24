@@ -9,7 +9,7 @@ export const q0714: Solution = {
   plain: '可以反覆買賣股票，但每次賣出要付手續費；求最後最多能賺多少。',
   statement: '給每日股價 prices 和每筆交易手續費 fee。可多次交易，但同一時間只能持有一股；每次完成買賣付一次 fee。求最大利潤。',
   examples: [{ input: 'prices = [1,3,2,8,4,9], fee = 2', output: '8' }, { input: 'prices = [1,3,7,5,10,3], fee = 3', output: '6' }],
-  constraints: ['1 ≤ prices.length ≤ 5×10⁴；價格和 fee 都是正整數。'],
+  constraints: ['1 ≤ prices.length ≤ 5×10⁴；1 ≤ prices[i] < 5×10⁴；0 ≤ fee < 5×10⁴。'],
   insight: ['每天結束只需分兩種狀態：手上有股、手上沒股。', '今天持股可能是昨天已持有，或今天買入；今天空手可能是昨天已空手，或今天賣出。', '這是 [[p:state-machine-dp]]；交易費在賣出時扣一次。'],
   approaches: [
     {
