@@ -203,6 +203,7 @@ export const hrCountingValleys: HrSolution = {
       { args: [2, 'UD'], out: 0 },
       { args: [2, 'DU'], out: 1 },
       { args: [10, 'DUDUUDDUDU'], out: 4 },
+      { args: [6, 'UUDDDU'], out: 1 },
     ],
   },
 }
