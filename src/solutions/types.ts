@@ -76,3 +76,8 @@ export interface Solution {
   followUp?: { q: Rich; a: Rich }[]
   check: Check
 }
+
+/** HackerRank 題解(src/solutions/hr/):用 slug 當身分,其餘欄位和 LeetCode 題解相同;程式碼照 HackerRank 的函式樣板寫 */
+export interface HrSolution extends Omit<Solution, 'id'> {
+  slug: string
+}

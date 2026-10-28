@@ -5,21 +5,21 @@ import { buildPlan } from '../engine/plan'
 import { useProgress } from '../engine/progress'
 import { maxArrayLen, renderView } from '../renderers'
 import { SOLUTIONS } from '../solutions'
-import type { Approach, FigStep, Solution } from '../solutions/types'
+import type { Approach, FigStep, HrSolution, Solution } from '../solutions/types'
 import type { Problem, Status } from '../types'
 import { MultiCode, rich } from './Blocks'
 import { Toc } from './Toc'
 
 // 單題題解頁(#/q/<題號>):題意 → 怎麼想 → 每個解法(想法、圖示、複雜度、五語言程式碼)→ 比較 → 常見錯誤。
 
-const STATUS: { id: Status; label: string }[] = [
+export const STATUS: { id: Status; label: string }[] = [
   { id: 'ok', label: '會' },
   { id: 'fuzzy', label: '模糊' },
   { id: 'no', label: '不會' },
 ]
 const NUM = ['一', '二', '三', '四', '五', '六']
 const BY_ID = new Map(PROBLEMS.map((p) => [p.id, p]))
-const nameOf = (id: string) => findStub(id)?.stub.name ?? id
+export const nameOf = (id: string) => findStub(id)?.stub.name ?? id
 
 /** 有題解的題目,依刷題藍圖的順序排(上一題 / 下一題用);不在藍圖裡的接在後面 */
 export const SOLVED_ORDER: Problem[] = (() => {
@@ -103,67 +103,19 @@ function ApproachView({ a, n }: { a: Approach; n: number }) {
   )
 }
 
-export function SolutionPage({ sol }: { sol: Solution }) {
-  const p = BY_ID.get(sol.id)
-  const { store, mark } = useProgress()
-  const st = store[sol.id]?.status
-  const sections = useMemo(
-    () => [
-      { id: 'qs-desc', label: '題意' },
-      { id: 'qs-think', label: '怎麼想' },
-      ...sol.approaches.map((_, i) => ({ id: `qa-${i}`, label: `方法${NUM[i]}` })),
-      { id: 'qs-cmp', label: '比較' },
-      { id: 'qs-pit', label: '常見錯誤' },
-    ],
-    [sol],
-  )
-  const at = SOLVED_ORDER.findIndex((x) => x.id === sol.id)
-  const prev = SOLVED_ORDER[at - 1]
-  const next = SOLVED_ORDER[at + 1]
+/** SolutionBody 各段的目錄 */
+export const bodySections = (sol: Solution | HrSolution) => [
+  { id: 'qs-desc', label: '題意' },
+  { id: 'qs-think', label: '怎麼想' },
+  ...sol.approaches.map((_, i) => ({ id: `qa-${i}`, label: `方法${NUM[i]}` })),
+  { id: 'qs-cmp', label: '比較' },
+  { id: 'qs-pit', label: '常見錯誤' },
+]
 
+/** 題解內文:題意 → 怎麼想 → 每個解法 → 比較 → 常見錯誤。LeetCode 與 HackerRank 題解頁共用;self 是本頁網址 */
+export function SolutionBody({ sol, self }: { sol: Solution | HrSolution; self: string }) {
   return (
-    <div className="page q-page">
-      <div className="crumb">
-        <a href={`#/plan/${sol.id}`}>刷題藍圖</a>
-        {' · '}
-        <a href="#/q">題解</a>
-        {p && (
-          <>
-            {' · '}
-            <span className={`diff diff-${p.difficulty}`}>{p.difficulty}</span>
-            {p.patterns.map((id) => (
-              <a key={id} className="tag" href={`#/p/${id}`}>
-                {nameOf(id)}
-              </a>
-            ))}
-          </>
-        )}
-      </div>
-      <h1 className="q-title">
-        {sol.id}. {p?.title ?? ''}
-        {p?.titleZh && <span className="q-zh">{p.titleZh}</span>}
-      </h1>
-      <p className="analogy">
-        <b>白話</b>
-        {rich(sol.plain)}
-      </p>
-      <div className="q-head">
-        {p && (
-          <a className="q-lc" href={`https://leetcode.com/problems/${p.slug}/`} target="_blank" rel="noreferrer">
-            到 LeetCode 寫 ↗
-          </a>
-        )}
-        <span className="muted">寫完標記:</span>
-        <span className="mark-buttons">
-          {STATUS.map((s) => (
-            <button key={s.id} className={st === s.id ? 'primary' : ''} onClick={() => mark(sol.id, st === s.id ? null : s.id)}>
-              {s.label}
-            </button>
-          ))}
-        </span>
-      </div>
-      <Toc sections={sections} back={{ href: `#/plan/${sol.id}`, label: '← 藍圖' }} />
-
+    <>
       <section id="qs-desc" className="sec q-sec">
         <h2>題意</h2>
         <p className="lead">{rich(sol.statement)}</p>
@@ -221,7 +173,7 @@ export function SolutionPage({ sol }: { sol: Solution }) {
               {sol.approaches.map((a, i) => (
                 <tr key={a.name}>
                   <td>
-                    <a href={`#/q/${sol.id}`} onClick={(e) => { e.preventDefault(); document.getElementById(`qa-${i}`)?.scrollIntoView({ behavior: 'smooth' }) }}>
+                    <a href={self} onClick={(e) => { e.preventDefault(); document.getElementById(`qa-${i}`)?.scrollIntoView({ behavior: 'smooth' }) }}>
                       {NUM[i]}、{a.name}
                     </a>
                   </td>
@@ -256,6 +208,63 @@ export function SolutionPage({ sol }: { sol: Solution }) {
           </>
         )}
       </section>
+    </>
+  )
+}
+
+export function SolutionPage({ sol }: { sol: Solution }) {
+  const p = BY_ID.get(sol.id)
+  const { store, mark } = useProgress()
+  const st = store[sol.id]?.status
+  const sections = useMemo(() => bodySections(sol), [sol])
+  const at = SOLVED_ORDER.findIndex((x) => x.id === sol.id)
+  const prev = SOLVED_ORDER[at - 1]
+  const next = SOLVED_ORDER[at + 1]
+
+  return (
+    <div className="page q-page">
+      <div className="crumb">
+        <a href={`#/plan/${sol.id}`}>刷題藍圖</a>
+        {' · '}
+        <a href="#/q">題解</a>
+        {p && (
+          <>
+            {' · '}
+            <span className={`diff diff-${p.difficulty}`}>{p.difficulty}</span>
+            {p.patterns.map((id) => (
+              <a key={id} className="tag" href={`#/p/${id}`}>
+                {nameOf(id)}
+              </a>
+            ))}
+          </>
+        )}
+      </div>
+      <h1 className="q-title">
+        {sol.id}. {p?.title ?? ''}
+        {p?.titleZh && <span className="q-zh">{p.titleZh}</span>}
+      </h1>
+      <p className="analogy">
+        <b>白話</b>
+        {rich(sol.plain)}
+      </p>
+      <div className="q-head">
+        {p && (
+          <a className="q-lc" href={`https://leetcode.com/problems/${p.slug}/`} target="_blank" rel="noreferrer">
+            到 LeetCode 寫 ↗
+          </a>
+        )}
+        <span className="muted">寫完標記:</span>
+        <span className="mark-buttons">
+          {STATUS.map((s) => (
+            <button key={s.id} className={st === s.id ? 'primary' : ''} onClick={() => mark(sol.id, st === s.id ? null : s.id)}>
+              {s.label}
+            </button>
+          ))}
+        </span>
+      </div>
+      <Toc sections={sections} back={{ href: `#/plan/${sol.id}`, label: '← 藍圖' }} />
+
+      <SolutionBody sol={sol} self={`#/q/${sol.id}`} />
 
       <nav className="pager">
         {prev ? (

@@ -18,6 +18,8 @@ import { SUMMARIES } from './data/summaries'
 import { ConceptPage } from './components/ConceptPage'
 import { SolutionIndex, SolutionPage } from './components/SolutionPage'
 import { SOLUTIONS } from './solutions'
+import { HR_SOLUTIONS } from './solutions/hr'
+import { HrSolutionPage, TsmcPage } from './components/Tsmc'
 import { CONCEPTS, CONCEPT_ORDER, UNITS, conceptsFor } from './concepts'
 import { highlight } from './engine/code'
 import { useLang, useProgress } from './engine/progress'
@@ -161,6 +163,7 @@ function Sidebar({ current }: { current: string }) {
         {link('rhythm', '#/rhythm', '刷題節奏')}
         {link('plan', '#/plan', '刷題藍圖')}
         {link('review', '#/review', '複習')}
+        {link('tsmc', '#/tsmc', '台積電 HackerRank 衝刺')}
 
         {volume(
           'base',
@@ -608,6 +611,8 @@ export default function App() {
   const qm = hash.match(/^\/q\/(\d+)/)
   const pm = hash.match(/^\/plan\/(\d+)/)
   const sol = qm ? SOLUTIONS[Number(qm[1])] : undefined
+  const hm = hash.match(/^\/h\/([\w-]+)/)
+  const hrSol = hm && Object.hasOwn(HR_SOLUTIONS, hm[1]) ? HR_SOLUTIONS[hm[1]] : undefined
   const concept = cm ? CONCEPTS[cm[1]] : undefined
   const sumCat = sm && SUMMARIES[sm[1]] ? CATEGORIES.find((c) => c.id === sm[1]) : undefined
   const km = hash.match(/^\/k\/([\w-]+)(?:\/([\w-]+))?/)
@@ -615,7 +620,7 @@ export default function App() {
   const kbBook = km ? BOOKS[km[1]] : undefined
   const kbEntry = km ? ENTRIES[km[1]] : undefined
   const appendix = km && km[1] === 'appendix' ? km[2] : undefined
-  const current = km ? `k/${km[1]}${appendix ? `/${appendix}` : ''}` : vm ? `v/${vm[1]}` : m ? m[1] : qm || hash === '/q' ? 'q' : cm ? `c/${cm[1]}` : sm ? `s/${sm[1]}` : hash === '/problems' ? 'problems' : hash === '/review' ? 'review' : hash === '/plan' || pm ? 'plan' : hash === '/rhythm' ? 'rhythm' : ''
+  const current = km ? `k/${km[1]}${appendix ? `/${appendix}` : ''}` : vm ? `v/${vm[1]}` : m ? m[1] : qm || hash === '/q' ? 'q' : cm ? `c/${cm[1]}` : sm ? `s/${sm[1]}` : hash === '/problems' ? 'problems' : hash === '/review' ? 'review' : hash === '/plan' || pm ? 'plan' : hash === '/rhythm' ? 'rhythm' : hash === '/tsmc' || hm ? 'tsmc' : ''
 
   return (
     <div className="layout">
@@ -648,6 +653,10 @@ export default function App() {
           <SummaryPage key={sumCat.id} cat={sumCat} sum={SUMMARIES[sumCat.id]} pager={<Pager at={`s/${sumCat.id}`} />} />
         ) : sol ? (
           <SolutionPage key={sol.id} sol={sol} />
+        ) : hrSol ? (
+          <HrSolutionPage key={hrSol.slug} sol={hrSol} />
+        ) : hash === '/tsmc' || hm ? (
+          <TsmcPage />
         ) : hash === '/q' || qm ? (
           <SolutionIndex />
         ) : hash === '/plan' || pm ? (

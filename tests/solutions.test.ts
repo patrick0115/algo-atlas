@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest'
 import { CONCEPTS } from '../src/concepts'
 import { CATEGORIES } from '../src/data/categories'
 import { PROBLEMS } from '../src/data/problems'
+import { TSMC, TSMC_TOPICS } from '../src/data/tsmc'
 import { SOLUTIONS } from '../src/solutions'
-import type { Check } from '../src/solutions/types'
+import { HR_SOLUTIONS } from '../src/solutions/hr'
+import type { Check, HrSolution, Solution } from '../src/solutions/types'
 import { LANGS } from '../src/types'
 
 const byId = new Map(PROBLEMS.map((p) => [p.id, p]))
@@ -196,6 +198,43 @@ return ${check.cls};`)() as new (...a: unknown[]) => Record<string, (...a: unkno
   }
 }
 
+/** 欄位齊全:至少兩種解法,每種都有圖示、複雜度與指定語言的程式碼 */
+function checkFields(sol: Solution | HrSolution) {
+  expect(sol.statement.length).toBeGreaterThan(10)
+  expect(sol.plain.length, '白話').toBeGreaterThan(10)
+  expect(sol.examples.length).toBeGreaterThan(0)
+  expect(sol.insight.length).toBeGreaterThan(0)
+  expect(sol.pitfalls.length).toBeGreaterThan(0)
+  expect(sol.approaches.length).toBeGreaterThanOrEqual(2)
+  expect(new Set(sol.approaches.map((a) => a.name)).size).toBe(sol.approaches.length)
+  for (const a of sol.approaches) {
+    expect(a.steps.length, a.name).toBeGreaterThan(0)
+    expect(a.figure.steps.length, a.name).toBeGreaterThanOrEqual(2)
+    for (const s of a.figure.steps) expect(s.views.length, `${a.name}: ${s.note}`).toBeGreaterThan(0)
+    expect(a.complexity.time && a.complexity.space && a.complexity.why, a.name).toBeTruthy()
+    const languages = sol.languages ?? LANGS.map((l) => l.id)
+    expect(languages).toContain('javascript')
+    expect(Object.keys(a.code).sort()).toEqual([...languages].sort())
+    for (const lang of languages) expect(a.code[lang]?.trim(), `${a.name} 缺 ${lang}`).toBeTruthy()
+  }
+}
+
+/** 行內連結都指向存在的頁面 */
+function checkLinks(sol: Solution | HrSolution) {
+  for (const t of texts(sol)) {
+    for (const [, kind, id] of t.matchAll(/\[\[([cp]):([\w-]+)\]\]/g)) {
+      expect(kind === 'c' ? id in CONCEPTS : patternIds.has(id), id).toBe(true)
+    }
+    for (const [, path] of t.matchAll(/\]\(#\/(\w+)\/([\w-]+)\)/g).map((m) => [m[0], `${m[1]}/${m[2]}`])) {
+      const [kind, id] = path.split('/')
+      if (kind === 'p') expect(patternIds.has(id), path).toBe(true)
+      else if (kind === 'q') expect(byId.has(Number(id)), path).toBe(true)
+      else if (kind === 'c') expect(id in CONCEPTS, path).toBe(true)
+      else if (kind === 'h') expect(Object.hasOwn(HR_SOLUTIONS, id), path).toBe(true)
+    }
+  }
+}
+
 describe('題解', () => {
   for (const sol of Object.values(SOLUTIONS)) {
     describe(`${sol.id}`, () => {
@@ -204,37 +243,11 @@ describe('題解', () => {
       })
 
       it('欄位齊全:至少兩種解法,每種都有圖示、複雜度與指定語言的程式碼', () => {
-        expect(sol.statement.length).toBeGreaterThan(10)
-        expect(sol.plain.length, '白話').toBeGreaterThan(10)
-        expect(sol.examples.length).toBeGreaterThan(0)
-        expect(sol.insight.length).toBeGreaterThan(0)
-        expect(sol.pitfalls.length).toBeGreaterThan(0)
-        expect(sol.approaches.length).toBeGreaterThanOrEqual(2)
-        expect(new Set(sol.approaches.map((a) => a.name)).size).toBe(sol.approaches.length)
-        for (const a of sol.approaches) {
-          expect(a.steps.length, a.name).toBeGreaterThan(0)
-          expect(a.figure.steps.length, a.name).toBeGreaterThanOrEqual(2)
-          for (const s of a.figure.steps) expect(s.views.length, `${a.name}: ${s.note}`).toBeGreaterThan(0)
-          expect(a.complexity.time && a.complexity.space && a.complexity.why, a.name).toBeTruthy()
-          const languages = sol.languages ?? LANGS.map((l) => l.id)
-          expect(languages).toContain('javascript')
-          expect(Object.keys(a.code).sort()).toEqual([...languages].sort())
-          for (const lang of languages) expect(a.code[lang]?.trim(), `${a.name} 缺 ${lang}`).toBeTruthy()
-        }
+        checkFields(sol)
       })
 
       it('行內連結都指向存在的頁面', () => {
-        for (const t of texts(sol)) {
-          for (const [, kind, id] of t.matchAll(/\[\[([cp]):([\w-]+)\]\]/g)) {
-            expect(kind === 'c' ? id in CONCEPTS : patternIds.has(id), id).toBe(true)
-          }
-          for (const [, path] of t.matchAll(/\]\(#\/(\w+)\/([\w-]+)\)/g).map((m) => [m[0], `${m[1]}/${m[2]}`])) {
-            const [kind, id] = path.split('/')
-            if (kind === 'p') expect(patternIds.has(id), path).toBe(true)
-            else if (kind === 'q') expect(byId.has(Number(id)), path).toBe(true)
-            else if (kind === 'c') expect(id in CONCEPTS, path).toBe(true)
-          }
-        }
+        checkLinks(sol)
       })
 
       for (const a of sol.approaches) {
@@ -244,4 +257,48 @@ describe('題解', () => {
       }
     })
   }
+})
+
+describe('HackerRank 題解', () => {
+  for (const sol of Object.values(HR_SOLUTIONS)) {
+    describe(sol.slug, () => {
+      it('slug 在台積電衝刺清單裡', () => {
+        expect(TSMC.some((e) => e.slug === sol.slug)).toBe(true)
+      })
+
+      it('欄位齊全:至少兩種解法,每種都有圖示、複雜度與指定語言的程式碼', () => {
+        checkFields(sol)
+      })
+
+      it('行內連結都指向存在的頁面', () => {
+        checkLinks(sol)
+      })
+
+      for (const a of sol.approaches) {
+        it(`JavaScript 版通過測資:${a.name}`, async () => {
+          await run(a.code.javascript, sol.check)
+        })
+      }
+    })
+  }
+})
+
+describe('台積電衝刺清單', () => {
+  it('60 題、slug 不重複,每題都抓得到 HackerRank 資料', () => {
+    expect(TSMC.length).toBe(60)
+    expect(new Set(TSMC.map((e) => e.slug)).size).toBe(60)
+    for (const e of TSMC) expect(e.title, e.slug).not.toBe(e.slug)
+  })
+
+  it('各主題題數符合比重', () => {
+    expect(TSMC_TOPICS.reduce((s, t) => s + t.weight, 0)).toBe(100)
+    for (const t of TSMC_TOPICS) expect(Math.abs(TSMC.filter((e) => e.topic === t.id).length - (t.weight * TSMC.length) / 100), t.id).toBeLessThan(1)
+  })
+
+  it('演算法 id 與類似 LeetCode 題號都存在', () => {
+    for (const e of TSMC) {
+      for (const id of e.patterns) expect(patternIds.has(id), `${e.slug} ${id}`).toBe(true)
+      if (e.lc) expect(byId.has(e.lc), `${e.slug} lc ${e.lc}`).toBe(true)
+    }
+  })
 })
