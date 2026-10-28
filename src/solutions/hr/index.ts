@@ -1,6 +1,7 @@
 import type { HrSolution } from '../types'
 import { hr2dArray } from './2d-array'
 import { hrAlternatingCharacters } from './alternating-characters'
+import { hrAngryChildren } from './angry-children'
 import { hrBearAndSteadyGene } from './bear-and-steady-gene'
 import { hrCaesarCipher1 } from './caesar-cipher-1'
 import { hrCamelcase } from './camelcase'
@@ -9,14 +10,23 @@ import { hrCountTriplets1 } from './count-triplets-1'
 import { hrCountingValleys } from './counting-valleys'
 import { hrCrush } from './crush'
 import { hrCtciArrayLeftRotation } from './ctci-array-left-rotation'
+import { hrCtciIceCreamParlor } from './ctci-ice-cream-parlor'
 import { hrCtciMakingAnagrams } from './ctci-making-anagrams'
 import { hrCtciRansomNote } from './ctci-ransom-note'
 import { hrFraudulentActivityNotifications } from './fraudulent-activity-notifications'
+import { hrFrequencyQueries } from './frequency-queries'
+import { hrGreedyFlorist } from './greedy-florist'
 import { hrHackerrankInAString } from './hackerrank-in-a-string'
 import { hrJumpingOnTheClouds } from './jumping-on-the-clouds'
+import { hrLuckBalance } from './luck-balance'
 import { hrMarkAndToys } from './mark-and-toys'
+import { hrMigratoryBirds } from './migratory-birds'
+import { hrMinimumAbsoluteDifferenceInAnArray } from './minimum-absolute-difference-in-an-array'
 import { hrMinimumSwaps2 } from './minimum-swaps-2'
+import { hrMinimumTimeRequired } from './minimum-time-required'
+import { hrMissingNumbers } from './missing-numbers'
 import { hrNewYearChaos } from './new-year-chaos'
+import { hrPairs } from './pairs'
 import { hrPalindromeIndex } from './palindrome-index'
 import { hrPangrams } from './pangrams'
 import { hrReducedString } from './reduced-string'
@@ -32,7 +42,7 @@ import { hrTwoStrings } from './two-strings'
 import { hrWeightedUniformString } from './weighted-uniform-string'
 
 const ALL: HrSolution[] = [
-  hr2dArray, hrAlternatingCharacters, hrBearAndSteadyGene, hrCaesarCipher1, hrCamelcase, hrClosestNumbers, hrCountTriplets1, hrCountingValleys, hrCrush, hrCtciArrayLeftRotation, hrCtciMakingAnagrams, hrCtciRansomNote, hrFraudulentActivityNotifications, hrHackerrankInAString, hrJumpingOnTheClouds, hrMarkAndToys, hrMinimumSwaps2, hrNewYearChaos, hrPalindromeIndex, hrPangrams, hrReducedString, hrRepeatedString, hrRichieRich, hrSeparateTheNumbers, hrSherlockAndAnagrams, hrSherlockAndValidString, hrSockMerchant, hrSpecialPalindromeAgain, hrStrongPassword, hrTwoStrings, hrWeightedUniformString,
+  hr2dArray, hrAlternatingCharacters, hrAngryChildren, hrBearAndSteadyGene, hrCaesarCipher1, hrCamelcase, hrClosestNumbers, hrCountTriplets1, hrCountingValleys, hrCrush, hrCtciArrayLeftRotation, hrCtciIceCreamParlor, hrCtciMakingAnagrams, hrCtciRansomNote, hrFraudulentActivityNotifications, hrFrequencyQueries, hrGreedyFlorist, hrHackerrankInAString, hrJumpingOnTheClouds, hrLuckBalance, hrMarkAndToys, hrMigratoryBirds, hrMinimumAbsoluteDifferenceInAnArray, hrMinimumSwaps2, hrMinimumTimeRequired, hrMissingNumbers, hrNewYearChaos, hrPairs, hrPalindromeIndex, hrPangrams, hrReducedString, hrRepeatedString, hrRichieRich, hrSeparateTheNumbers, hrSherlockAndAnagrams, hrSherlockAndValidString, hrSockMerchant, hrSpecialPalindromeAgain, hrStrongPassword, hrTwoStrings, hrWeightedUniformString,
 ]
 
 export const HR_SOLUTIONS: Record<string, HrSolution> = Object.fromEntries(ALL.map((s) => [s.slug, s]))
