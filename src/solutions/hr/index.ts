@@ -4,25 +4,35 @@ import { hrAlternatingCharacters } from './alternating-characters'
 import { hrBearAndSteadyGene } from './bear-and-steady-gene'
 import { hrCaesarCipher1 } from './caesar-cipher-1'
 import { hrCamelcase } from './camelcase'
+import { hrClosestNumbers } from './closest-numbers'
+import { hrCountTriplets1 } from './count-triplets-1'
 import { hrCountingValleys } from './counting-valleys'
+import { hrCrush } from './crush'
 import { hrCtciArrayLeftRotation } from './ctci-array-left-rotation'
 import { hrCtciMakingAnagrams } from './ctci-making-anagrams'
+import { hrCtciRansomNote } from './ctci-ransom-note'
+import { hrFraudulentActivityNotifications } from './fraudulent-activity-notifications'
 import { hrHackerrankInAString } from './hackerrank-in-a-string'
 import { hrJumpingOnTheClouds } from './jumping-on-the-clouds'
+import { hrMarkAndToys } from './mark-and-toys'
+import { hrMinimumSwaps2 } from './minimum-swaps-2'
+import { hrNewYearChaos } from './new-year-chaos'
 import { hrPalindromeIndex } from './palindrome-index'
 import { hrPangrams } from './pangrams'
 import { hrReducedString } from './reduced-string'
 import { hrRepeatedString } from './repeated-string'
 import { hrRichieRich } from './richie-rich'
 import { hrSeparateTheNumbers } from './separate-the-numbers'
+import { hrSherlockAndAnagrams } from './sherlock-and-anagrams'
 import { hrSherlockAndValidString } from './sherlock-and-valid-string'
 import { hrSockMerchant } from './sock-merchant'
 import { hrSpecialPalindromeAgain } from './special-palindrome-again'
 import { hrStrongPassword } from './strong-password'
+import { hrTwoStrings } from './two-strings'
 import { hrWeightedUniformString } from './weighted-uniform-string'
 
 const ALL: HrSolution[] = [
-  hr2dArray, hrAlternatingCharacters, hrBearAndSteadyGene, hrCaesarCipher1, hrCamelcase, hrCountingValleys, hrCtciArrayLeftRotation, hrCtciMakingAnagrams, hrHackerrankInAString, hrJumpingOnTheClouds, hrPalindromeIndex, hrPangrams, hrReducedString, hrRepeatedString, hrRichieRich, hrSeparateTheNumbers, hrSherlockAndValidString, hrSockMerchant, hrSpecialPalindromeAgain, hrStrongPassword, hrWeightedUniformString,
+  hr2dArray, hrAlternatingCharacters, hrBearAndSteadyGene, hrCaesarCipher1, hrCamelcase, hrClosestNumbers, hrCountTriplets1, hrCountingValleys, hrCrush, hrCtciArrayLeftRotation, hrCtciMakingAnagrams, hrCtciRansomNote, hrFraudulentActivityNotifications, hrHackerrankInAString, hrJumpingOnTheClouds, hrMarkAndToys, hrMinimumSwaps2, hrNewYearChaos, hrPalindromeIndex, hrPangrams, hrReducedString, hrRepeatedString, hrRichieRich, hrSeparateTheNumbers, hrSherlockAndAnagrams, hrSherlockAndValidString, hrSockMerchant, hrSpecialPalindromeAgain, hrStrongPassword, hrTwoStrings, hrWeightedUniformString,
 ]
 
 export const HR_SOLUTIONS: Record<string, HrSolution> = Object.fromEntries(ALL.map((s) => [s.slug, s]))
