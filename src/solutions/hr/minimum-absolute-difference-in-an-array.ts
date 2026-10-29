@@ -45,7 +45,7 @@ export const hrMinimumAbsoluteDifferenceInAnArray: HrSolution = {
   insight: [
     '先用雙層迴圈列出每一組，維護最小絕對差，確認要找的是任意兩個位置。',
     '若把數值由小到大排列，兩個不相鄰的值之間一定夾著另一個值；夾在中間的值和其中一端更近或一樣近。',
-    '因此只要排序後逐個比較相鄰差值，這是 [[p:greedy]] 的局部觀察，也和 [1200](#/q/1200) 的核心相同。',
+    '因此只要排序後逐個比較相鄰差值，這是 [[p:greedy]] 的局部觀察，也和 LeetCode 1200 的核心相同。',
   ],
   approaches: [
     {

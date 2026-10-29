@@ -187,7 +187,6 @@ export const hrStrongPassword: HrSolution = {
   pitfalls: [
     "不要把「缺的類別數」與「缺的長度」直接相加；同一新字能同時滿足兩者。",
     "特殊符號只能用指定的集合判斷。",
-    "一個新增字元能同時補足長度和一種缺少的類別，所以取兩個缺口的最大值。",
   ],
   check: {
     kind: 'fn',

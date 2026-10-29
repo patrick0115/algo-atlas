@@ -207,7 +207,6 @@ export const hrReducedString: HrSolution = {
     },
   ],
   pitfalls: [
-    "刪除一對後，原本不相鄰的兩字可能變成新的一對。",
     "空結果要回傳題目指定的字串 Empty String，不能回傳空字串。",
     "兩字消掉後可能形成新的相鄰同字對；只跑一輪會漏算連鎖消除。",
   ],

@@ -183,7 +183,6 @@ export const hrPangrams: HrSolution = {
   pitfalls: [
     "空白不能算成第 27 種字母。",
     "同一個字母的大寫與小寫只算一種。",
-    "大小寫要合併；空白與標點不能算成英文字母。",
   ],
   check: {
     kind: 'fn',

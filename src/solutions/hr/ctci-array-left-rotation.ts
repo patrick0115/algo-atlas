@@ -28,7 +28,7 @@ function indexFig(): FigStep[] {
 export const hrCtciArrayLeftRotation: HrSolution = {
   slug: 'ctci-array-left-rotation',
   plain: '像隊伍向左輪位：最前面的人移到隊尾，做 d 次後列出新順序。',
-  statement: '給整數陣列 a 和非負整數 d。每次左旋轉會將第一個元素放到最後，其他元素往左移一格。回傳完成 d 次旋轉後的新陣列。',
+  statement: '給整數陣列 a 和整數 d（1 ≤ d ≤ n）。每次左旋轉會將第一個元素放到最後，其他元素往左移一格。回傳完成 d 次旋轉後的新陣列。',
   examples: [
     { input: 'a = [1,2,3,4,5], d = 4', output: '[5,1,2,3,4]', note: '輪轉四次後，原本最後的 5 來到最前。' },
     { input: 'a = [1,2,3], d = 3', output: '[1,2,3]', note: '剛好旋轉一整圈，順序不變。' },
@@ -36,7 +36,7 @@ export const hrCtciArrayLeftRotation: HrSolution = {
   constraints: [
     'a 長度至少 1 → 取模 n 時不會除以零。',
     'a 長度最多 10^5 → 每次搬動整列的 O(nd) 可能太慢。',
-    'd 可與陣列長度相同或更大 → 先取 d mod n，完整圈數不影響結果。',
+    'd 可等於陣列長度 → 先取 d mod n，轉滿一圈等於沒轉。',
   ],
   insight: [
     '先照操作描述做：取出第一個元素、其餘往前、元素放尾端，重複 d 次。',
@@ -149,7 +149,7 @@ export const hrCtciArrayLeftRotation: HrSolution = {
   ],
   pitfalls: [
     '左旋轉時答案第一格是原本索引 d，不是 n-d。',
-    '旋轉 n 次會回到原樣；d 大於 n 時要繞圈。',
+    '旋轉 n 次會回到原樣；d = n 時答案就是原陣列。',
     '若用 C 回傳新陣列，必須設定 result_count。',
   ],
   followUp: [

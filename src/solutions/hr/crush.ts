@@ -110,7 +110,7 @@ export const hrCrush: HrSolution = {
       steps: ['建立 n+1 格零差分陣列。', '每筆 [a,b,k] 執行 diff[a−1] += k 與 diff[b] -= k。', '從左向右累加 diff，得到當前格的實際值並更新最大。'],
       figure: { title: 'n = 10，三筆範例操作', steps: diffFig() },
       complexity: { time: 'O(n + q)', space: 'O(n)', why: '每筆只做常數次修改，最後只掃 n 格。' },
-      verdict: '能處理大量長區間；同一技巧可對照 [1109](#/q/1109)。',
+      verdict: '能處理大量長區間；同一技巧可對照 LeetCode 1109。',
       code: {
         python: `def arrayManipulation(n, queries):
     diff = [0] * (n + 1)

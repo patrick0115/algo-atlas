@@ -230,7 +230,7 @@ int sherlockAndAnagrams(char* s) {
   pitfalls: [
     '同長片段才可能互為重排；簽名本身已含長度資訊。',
     '配對是無序的，掃描時只與先前片段配對即可，不能再除以二。',
-    '相同字母重複出現要記次數，單純 Set 無法區分 ab 與 aab。',
+    '相同字母重複出現要記次數，單純 Set 無法區分 aab 與 abb。',
   ],
   check: {
     kind: 'fn', fn: 'sherlockAndAnagrams',

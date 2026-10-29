@@ -58,7 +58,7 @@ export const hrHackerrankInAString: HrSolution = {
     { input: 's = "hackerworld"', output: 'NO', note: '前半段雖有 hacker，後面湊不出剩下的 rank。' },
   ],
   constraints: [
-    's 至少 1 個字母 → 比對過程可直接從索引 0 開始。',
+    's 至少 10 個字母 → 最短的輸入和 hackerrank 一樣長，不必另外處理更短的字串。',
     's 最多 10^4 個字母 → 逐字掃描 O(n) 足夠快，重複搜尋會徒增成本。',
     '字元皆為小寫英文字母 → 可直接用字元相等比較，不必處理大小寫轉換。',
   ],

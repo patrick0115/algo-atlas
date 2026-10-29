@@ -255,7 +255,6 @@ export const hrSpecialPalindromeAgain: HrSolution = {
     "不是所有回文都算特殊，例如 abccba 的外側字母不全相同。",
     "中央不同型態的中央段必須恰好一個字元。",
     "全相同段的計數可能超過 32 位整數。",
-    "中央不同字元必須單獨成段；中央段長於一便不符合第二種形狀。",
   ],
   check: {
     kind: 'fn',
