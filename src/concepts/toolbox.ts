@@ -323,6 +323,69 @@ const cppStl: Concept = {
       ],
     },
     {
+      title: '刷題怎麼選',
+      blocks: [
+        {
+          t: 'table',
+          cols: ['題目需要什麼', 'C++', 'Python'],
+          rows: [
+            ['索引是 0..n-1、範圍小(例如 a–z 計數)', '`vector<int>`', '`[0] * 26`'],
+            ['用任意鍵找值、計數(字串、負數、大數字)', '`unordered_map<K,V>`', '`dict` / `Counter` / `defaultdict`'],
+            ['只記「出現過沒」、去重複', '`unordered_set<K>`', '`set`'],
+            ['要照鍵排好順序', '`map<K,V>` / `set<K>`', '`sorted()`,或 `sortedcontainers`'],
+            ['找「>= x 的最小值」或「<= x 的最大值」', '`set` / `map` 的 `lower_bound`', '`bisect` + 已排序的 `list`'],
+            ['鍵會重複又要排序(滑動視窗中位數)', '`multiset<K>`', '`SortedList`'],
+            ['一直拿出最大或最小(Top K、Dijkstra)', '`priority_queue<T>`', '`heapq`(只有最小堆積,最大堆積存負數)'],
+            ['後進先出(括號配對、單調堆疊)', '`stack<T>`,或直接用 `vector`', '`list` 的 `append` / `pop()`'],
+            ['先進先出(BFS)', '`queue<T>`', '`collections.deque`'],
+            ['頭尾都要進出(單調佇列)', '`deque<T>`', '`collections.deque`'],
+            ['已知位置的中間插入 / 刪除(LRU 快取)', '`list<T>` + `unordered_map`', '`OrderedDict`'],
+          ],
+          note: '判斷順序:鍵是 0..n-1 的小整數 → `vector`;要排序或找前後 → `map` / `set`,不用 → `unordered_map` / `unordered_set`;只一直拿最大或最小 → `priority_queue`。',
+        },
+      ],
+    },
+    {
+      title: 'vector 與 unordered_map 在記憶體裡長怎樣',
+      blocks: [
+        {
+          t: 'pre',
+          text: `vector<int> v = {3, 7, 1};
+
+ v 本體(3 個指標)          heap 上的連續記憶體
+┌───────────┐             ┌────┬────┬────┬────┐
+│ begin   ──┼────────────►│ 3  │ 7  │ 1  │ 空 │
+│ end     ──┼──────► [3]  └────┴────┴────┴────┘
+│ cap_end ──┼──────► [4]   [0]  [1]  [2]  [3]
+└───────────┘
+size = end - begin = 3      capacity = cap_end - begin = 4
+v[i] 的位置 = begin + i × 4 byte → 直接算出來,O(1)
+
+空間滿了再 push_back:
+舊: │3│7│1│9│          配置 2 倍大 → 整份複製過去 → 釋放舊的
+新: │3│7│1│9│5│ │ │ │`,
+          caption: '偶爾要搬家,但平均下來 `push_back` 仍是 O(1)。搬家之後,舊的指標、參考和迭代器全部失效:走訪 `v` 時不要同時 `push_back`。',
+        },
+        {
+          t: 'pre',
+          text: `unordered_map<string, int> m = {{"apple",3}, {"cat",1}, {"dog",5}};
+
+hash("apple") % 8 = 2    hash("cat") % 8 = 5    hash("dog") % 8 = 2
+
+ 桶子陣列
+ [0] → ∅
+ [1] → ∅
+ [2] → (apple, 3) → (dog, 5) → ∅     ← 碰撞:串在一起
+ [3] → ∅
+ [4] → ∅
+ [5] → (cat, 1) → ∅
+ [6] → ∅
+ [7] → ∅`,
+          caption: '每個 (鍵, 值) 是另外配置的節點,散在記憶體各處,所以同樣 O(1),`vector` 比 `unordered_map` 快好幾倍。元素數 ÷ 桶數超過 1 時會 rehash:桶數加倍、全部重放。原理見 [[c:hashing]]。',
+        },
+      ],
+    },
+    {
       title: '各容器怎麼操作',
       blocks: [
         {
@@ -359,6 +422,12 @@ s.find("bc") != string::npos;                   // 「有沒有出現」的寫�
 to_string(42);  stoi("42");  stoll("10000000000");   // 數字 ↔ 字串
 s.size();  s.empty();`,
           },
+        },
+        {
+          t: 'note',
+          kind: 'tip',
+          title: '`size()` 和 `length()` 完全一樣',
+          text: '`string` 的 `s.size()` 和 `s.length()` 回傳值、型別、複雜度(O(1))都相同。`length()` 是字串原本的名字;`size()` 是為了和 STL 容器一致才加的,`vector`、`map` 都只有 `size()`,所以統一寫 `size()`。兩者算的都是 **byte 數**:UTF-8 的中文一個字算 3;Python 的 `len(s)` 算的是字元數,中文一個字算 1,`len(s.encode())` 才等於 C++ 的 `s.size()`。',
         },
         {
           t: 'code',
