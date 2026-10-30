@@ -69,7 +69,7 @@ export const hrMinimumTimeRequired: HrSolution = {
             if day % period == 0:
                 made += 1
     return day`,
-        c: `long long minTime(int machines_count, long long* machines, long long goal) {
+        c: `long minTime(int machines_count, long* machines, long goal) {
     long long day = 0;
     long long made = 0;
     while (made < goal) {
@@ -80,7 +80,7 @@ export const hrMinimumTimeRequired: HrSolution = {
     }
     return day;
 }`,
-        cpp: `long long minTime(vector<long long> machines, long long goal) {
+        cpp: `long minTime(vector<long> machines, long goal) {
     long long day = 0;
     long long made = 0;
     while (made < goal) {
@@ -143,7 +143,7 @@ static long minTime(long[] machines, long goal) {
         else:
             low = mid + 1
     return low`,
-        c: `long long minTime(int machines_count, long long* machines, long long goal) {
+        c: `long minTime(int machines_count, long* machines, long goal) {
     long long fastest = machines[0];
     for (int i = 1; i < machines_count; i++) {
         if (machines[i] < fastest) fastest = machines[i];
@@ -161,7 +161,7 @@ static long minTime(long[] machines, long goal) {
     }
     return low;
 }`,
-        cpp: `long long minTime(vector<long long> machines, long long goal) {
+        cpp: `long minTime(vector<long> machines, long goal) {
     long long fastest = *min_element(machines.begin(), machines.end());
     long long low = 1, high = fastest * (long long)goal;
     while (low < high) {

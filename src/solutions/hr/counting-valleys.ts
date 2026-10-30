@@ -20,7 +20,7 @@ function prefixFig(): FigStep[] {
   ]
   const ends = levels.flatMap((h, i) => (h === 0 && i > 0 && levels[i - 1] < 0 ? [i] : []))
   out.push({
-    note: `找「前一步是負的、這一步回到 0」的位置:第 ${ends.join('、')} 步 → 共 ${ends.length} 個山谷`,
+    note: `找「前一步是負的、這一步回到 0」的位置:第 ${ends.map(i => i + 1).join('、')} 步 → 共 ${ends.length} 個山谷`,
     views: [arr(PATH.split(''), { label: 'path', highlight: ends }), arr(levels, { label: '走完後的海拔', highlight: ends, dim: levels.flatMap((h, i) => (h >= 0 && !ends.includes(i) ? [i] : [])) })],
   })
   return out
@@ -35,7 +35,7 @@ function onePassFig(): FigStep[] {
     const end = PATH[i] === 'U' && level === 0
     if (end) valleys++
     out.push({
-      note: `第 ${i} 步 ${PATH[i]} → level = ${level}${end ? `,是 U 而且剛好回到 0 → 走出一個山谷,valleys = ${valleys}` : level < 0 ? '(在海平面下)' : ''}`,
+      note: `第 ${i + 1} 步 ${PATH[i]} → level = ${level}${end ? `,是 U 而且剛好回到 0 → 走出一個山谷,valleys = ${valleys}` : level < 0 ? '(在海平面下)' : ''}`,
       views: [arr(PATH.split(''), { label: 'path', highlight: [i], done: end ? [i] : [], dim: Array.from({ length: i }, (_, k) => k) })],
     })
   }

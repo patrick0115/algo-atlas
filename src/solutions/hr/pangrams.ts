@@ -3,11 +3,11 @@ import { count26 } from '../fig'
 import type { FigStep, HrSolution } from '../types'
 
 function firstFig(): FigStep[] {
-  const s = 'The quick brown fox jumps over the lazy dog', seen: string[] = [], out: FigStep[] = []
-  for (let i = 0; i < s.length; i++) {
-    const ch = s[i].toLowerCase()
-    if (ch >= 'a' && ch <= 'z' && !seen.includes(ch)) seen.push(ch)
-    if (i < 5 || i % 5 === 4 || i === s.length - 1) out.push({ note: `掃到索引 ${i} 的 ${s[i]}；字母集合已有 ${seen.length} 種${seen.length === 26 ? '，所以是 pangram' : '，還需繼續找'}。`, views: [arr(s.split(''), { label: '句子', highlight: [i] }), arr([...seen], { label: '已找到的不同字母' })] })
+  const s = 'The quick brown fox jumps over the lazy dog', lower = s.toLowerCase(), out: FigStep[] = []
+  const letters = 'abcdefghijklmnopqrstuvwxyz'.split('')
+  for (let k = 0; k < 26; k++) {
+    const at = lower.indexOf(letters[k])
+    out.push({ note: `搜尋字母 ${letters[k]}：${at >= 0 ? `在索引 ${at} 找到，換下一個字母` : '整句都找不到，回傳 not pangram'}${k === 25 && at >= 0 ? '；26 個字母都找到，所以是 pangram' : ''}。`, views: [arr(s.split(''), { label: '句子', highlight: at >= 0 ? [at] : [] }), arr(letters, { label: '要找的字母', highlight: [k], done: Array.from({ length: k }, (_, j) => j) })] })
   }
   return out
 }
@@ -45,7 +45,7 @@ export const hrPangrams: HrSolution = {
       name: "對每個字母搜尋整句",
       idea: "逐一檢查 a 到 z 是否在轉小寫後的句子中。",
       steps: ["先把整句轉成小寫。","從 a 到 z 逐一搜尋。","若有任何字母找不到，立刻回傳 not pangram。","全部找到就回傳 pangram。"],
-      figure: { title: "s = \"aB cdef...\"", steps: firstFig() },
+      figure: { title: "s = \"The quick brown fox jumps over the lazy dog\"", steps: firstFig() },
       complexity: {
         time: "O(26n)",
         space: "O(n)",
@@ -114,7 +114,7 @@ export const hrPangrams: HrSolution = {
       name: "一次掃描記錄字母",
       idea: "用 26 格記下出現過的字母，達到 26 種即可成功。",
       steps: ["建立 26 格 false，seen = 0。","逐字轉成小寫；空白跳過。","若該字母尚未出現，標記並把 seen 加一。","seen 達 26 時回傳 pangram；掃完仍不足就回傳 not pangram。"],
-      figure: { title: "s = \"aB cdef...\"", steps: secondFig() },
+      figure: { title: "s = \"The quick brown fox jumps over the lazy dog\"", steps: secondFig() },
       complexity: {
         time: "O(n)",
         space: "O(1)",

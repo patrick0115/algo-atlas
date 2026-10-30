@@ -190,8 +190,12 @@ int* missingNumbers(int arr_count, int* arr, int brr_count, int* brr, int* resul
     return answer;
 }`,
         javascript: `function missingNumbers(arr, brr) {
-  const base = Math.min(...brr);
-  const top = Math.max(...brr);
+  // brr 可到 2 * 10^5 筆,Math.min(...brr) 展開成參數會超過呼叫堆疊上限
+  let base = brr[0], top = brr[0];
+  for (const x of brr) {
+    if (x < base) base = x;
+    if (x > top) top = x;
+  }
   const count = new Array(top - base + 1).fill(0);
   for (const x of brr) count[x - base]++;
   for (const x of arr) count[x - base]--;

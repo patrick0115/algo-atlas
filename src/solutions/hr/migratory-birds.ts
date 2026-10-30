@@ -17,11 +17,12 @@ function repeatedFig(): FigStep[] {
         views: [arr(BIRDS, { label: '觀察紀錄', highlight: [i] }), kv([['目前鳥種', id], ['數量', count], ['暫時最多', best]], '重掃狀態')],
       })
     }
-    if (count > best) {
+    const better = count > best
+    if (better) {
       best = count
       winner = id
     }
-    steps.push({ note: `鳥種 ${id} 有 ${count} 隻；${count > best ? '更新' : '比較後'}目前勝出編號 ${winner}，最多 ${best} 隻。`, views: [kv([['勝出編號', winner], ['最多隻數', best]], '比較結果')] })
+    steps.push({ note: `鳥種 ${id} 有 ${count} 隻；${better ? '更新' : '比較後'}目前勝出編號 ${winner}，最多 ${best} 隻。`, views: [kv([['勝出編號', winner], ['最多隻數', best]], '比較結果')] })
   }
   return steps
 }

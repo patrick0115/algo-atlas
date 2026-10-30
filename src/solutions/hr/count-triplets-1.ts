@@ -42,7 +42,7 @@ export const hrCountTriplets1: HrSolution = {
     { input: 'arr = [1,3,9,9,27,81], r = 3', output: '6', note: '兩個 9 是不同位置，因此各自能參與不同組合。' },
   ],
   constraints: [
-    '3 ≤ n ≤ 10^5 → 三層迴圈 O(n³) 不可行。',
+    '1 ≤ n ≤ 10^5 → 三層迴圈 O(n³) 不可行；n < 3 時湊不出三元組，答案是 0。',
     'r ≥ 1、數值為正整數 → 中間項的前項可用整除檢查；r=1 時重複值仍須逐位置計數。',
     '答案可能達 C(n,3) → 要用 64 位整數計數，C/C++/Java 的 long long/long。',
   ],
@@ -68,7 +68,7 @@ export const hrCountTriplets1: HrSolution = {
                 if arr[j] == arr[i] * r and arr[k] == arr[j] * r:
                     answer += 1  # 每組索引都算一次
     return answer`,
-        c: `long long countTriplets(int arr_count, long long* arr, long long r) {
+        c: `long countTriplets(int arr_count, long* arr, long r) {
     long long answer = 0;
     for (int i = 0; i < arr_count; i++) {
         for (int j = i + 1; j < arr_count; j++) {
@@ -79,7 +79,7 @@ export const hrCountTriplets1: HrSolution = {
     }
     return answer;
 }`,
-        cpp: `long long countTriplets(vector<long long> arr, long long r) {
+        cpp: `long countTriplets(vector<long> arr, long r) {
     long long answer = 0;
     for (int i = 0; i < (int)arr.size(); i++) {
         for (int j = i + 1; j < (int)arr.size(); j++) {
@@ -145,7 +145,7 @@ CountSlot* findSlot(CountSlot* table, int capacity, long long key) {
     return &table[pos];
 }
 
-long long countTriplets(int arr_count, long long* arr, long long r) {
+long countTriplets(int arr_count, long* arr, long r) {
     int capacity = 1;
     while (capacity < arr_count * 4) capacity <<= 1;
     CountSlot* left = calloc(capacity, sizeof(CountSlot));
@@ -166,7 +166,7 @@ long long countTriplets(int arr_count, long long* arr, long long r) {
     free(right);
     return answer;
 }`,
-        cpp: `long long countTriplets(vector<long long> arr, long long r) {
+        cpp: `long countTriplets(vector<long> arr, long r) {
     unordered_map<long long, long long> left, right;
     for (long long x : arr) right[x]++;
     long long answer = 0;
