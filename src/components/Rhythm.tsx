@@ -4,6 +4,7 @@ import { PROBLEMS } from '../data/problems'
 import { SOLUTIONS } from '../solutions'
 import { loadLog, useProgress, type LogEntry } from '../engine/progress'
 import { dueProblems } from '../engine/review'
+import { loadHrLog, type HrLogEntry } from '../engine/hr'
 import { categoryProgress, conversion, dailyCounts, dayKey, punctuality, recent, statusCounts, streak, weekly } from '../engine/rhythm'
 
 // 刷題節奏:熱力圖、每週題數、連續天數、各分類完成度、狀態分布、複習準時率、最近紀錄。
@@ -29,11 +30,15 @@ const md = (t: number) => {
 }
 const pct = (a: number, b: number) => (b ? `${Math.round((a / b) * 100)}%` : '—')
 
+/** 熱力圖與連續天數:LeetCode 和 HackerRank 合併算,任一邊有寫那天就算有寫 */
+export const mergedDaily = (log: LogEntry[], hrLog: HrLogEntry[]) => dailyCounts([...log, ...hrLog.map((e) => ({ id: e.slug, at: e.at }))])
+
 function useRhythm() {
   const { store } = useProgress()
   const log: LogEntry[] = useMemo(() => loadLog(), [store])
+  const hrLog = useMemo(() => loadHrLog(), [])
   const now = Date.now()
-  const daily = dailyCounts(log)
+  const daily = mergedDaily(log, hrLog)
   return { store, log, now, daily, st: streak(daily, now) }
 }
 
@@ -84,7 +89,7 @@ export function RhythmCard() {
   )
 }
 
-function Heatmap({ daily, now }: { daily: Map<string, number>; now: number }) {
+export function Heatmap({ daily, now }: { daily: Map<string, number>; now: number }) {
   // 53 週 × 7 天,最右一欄是本週;週一在最上面
   const end = new Date(now)
   end.setHours(0, 0, 0, 0)
@@ -117,7 +122,7 @@ function Heatmap({ daily, now }: { daily: Map<string, number>; now: number }) {
         ))}
       </div>
       <p className="muted small">
-        近一年每天寫了幾題(同一題一天只算一次)。由淺到深:0、1、2、3–4、5 題以上。
+        近一年每天寫了幾題(含 HackerRank,同一題一天只算一次)。由淺到深:0、1、2、3–4、5 題以上。
       </p>
     </div>
   )
@@ -147,7 +152,7 @@ export function Rhythm() {
         紀錄存在這個瀏覽器裡,換裝置會分開記。
       </p>
 
-      {log.length === 0 ? (
+      {log.length === 0 && daily.size === 0 ? (
         <p className="muted">
           還沒有紀錄。到<a href="#/plan">刷題藍圖</a>挑一題,寫完標記之後這裡就會開始累積。
         </p>

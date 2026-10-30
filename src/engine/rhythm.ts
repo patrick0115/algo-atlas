@@ -20,9 +20,9 @@ function dayStart(t: number): number {
   return d.getTime()
 }
 
-/** 每天寫了幾題(同一天同一題只算一次) */
-export function dailyCounts(log: LogEntry[]): Map<string, number> {
-  const seen = new Map<string, Set<number>>()
+/** 每天寫了幾題(同一天同一題只算一次);id 可以是 LeetCode 題號或 HackerRank slug */
+export function dailyCounts(log: { id: number | string; at: number }[]): Map<string, number> {
+  const seen = new Map<string, Set<number | string>>()
   for (const e of log) {
     const k = dayKey(e.at)
     if (!seen.has(k)) seen.set(k, new Set())
