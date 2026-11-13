@@ -112,6 +112,7 @@ export function TsmcPage() {
   const sch = exam ? hrSchedule(ORDER, store, firstMarks(hrLog), now, parseYmd(exam)) : null
   const today = sch?.days[0].slugs ?? []
   const todayDone = today.filter((s) => store[s]).length
+  const [onlyDone, setOnlyDone] = useState(false)
 
   return (
     <div className="page">
@@ -237,16 +238,26 @@ export function TsmcPage() {
         </table>
       </div>
 
-      {TSMC_TOPICS.map((t) => (
-        <section key={t.id} id={`tsmc-${t.id}`} className="sec">
-          <h2>{t.name}</h2>
-          <ol className="q-index">
-            {TSMC.filter((e) => e.topic === t.id).map((e) => (
-              <Row key={e.slug} e={e} store={store} />
-            ))}
-          </ol>
-        </section>
-      ))}
+      <div className="plan-settings">
+        <label>
+          <input type="checkbox" checked={onlyDone} onChange={(ev) => setOnlyDone(ev.target.checked)} /> 只顯示我做過的題（{done}）
+        </label>
+      </div>
+      {onlyDone && done === 0 && <p className="muted">還沒標記任何題目。到各題按「會 / 模糊 / 不會」就會出現在這裡。</p>}
+      {TSMC_TOPICS.map((t) => {
+        const es = TSMC.filter((e) => e.topic === t.id && (!onlyDone || store[e.slug]))
+        if (onlyDone && es.length === 0) return null
+        return (
+          <section key={t.id} id={`tsmc-${t.id}`} className="sec">
+            <h2>{t.name}</h2>
+            <ol className="q-index">
+              {es.map((e) => (
+                <Row key={e.slug} e={e} store={store} />
+              ))}
+            </ol>
+          </section>
+        )
+      })}
     </div>
   )
 }
