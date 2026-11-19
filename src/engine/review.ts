@@ -1,10 +1,13 @@
-import type { Difficulty, Problem, Status } from '../types'
+import type { Problem, Status } from '../types'
 import type { Record_ } from './progress'
 import { CATEGORIES } from '../data/categories'
 
+// 這裡的函式(到期計算、模式辨識測驗)目前沒有頁面在用,只剩測試與統計頁的
+// 「進步率 / 準時率」計算會參考 INTERVAL_DAYS。複習分頁已移除。
+
 const DAY = 86_400_000
 
-/** 標記後隔幾天再複習:不會的明天再看,會的兩週後確認一次 */
+/** 標記後隔幾天算「該再寫一次」:不會的明天再看,會的兩週後確認一次 */
 export const INTERVAL_DAYS: Record<Status, number> = { no: 1, fuzzy: 3, ok: 14 }
 
 export function dueAt(r: Record_): number {
@@ -16,16 +19,6 @@ export function dueProblems(problems: Problem[], store: Record<number, Record_>,
   return problems
     .filter((p) => store[p.id] && dueAt(store[p.id]) <= now)
     .sort((a, b) => dueAt(store[a.id]) - dueAt(store[b.id]))
-}
-
-/**
- * 通用版到期篩選:給一串題目與「怎麼拿到它的進度紀錄」,挑出到期的、最早到期排前面。
- * LeetCode 和 HackerRank 共用這個(兩邊的進度紀錄都是 { status, at })。
- */
-export function dueFilter<T>(items: T[], rec: (t: T) => Record_ | undefined, now: number): T[] {
-  return items
-    .filter((t) => { const r = rec(t); return !!r && dueAt(r) <= now })
-    .sort((a, b) => dueAt(rec(a)!) - dueAt(rec(b)!))
 }
 
 export interface Quiz {
@@ -53,44 +46,4 @@ export function makeQuiz(pool: Problem[], rand: () => number = Math.random): Qui
     ;[options[i], options[j]] = [options[j], options[i]]
   }
   return { problem, options, answer }
-}
-
-// ---- 混合測驗:LeetCode 與 HackerRank 放在一起 ----
-
-/** 測驗 / 複習共用的題目,兩個平台抹平成同一種形狀 */
-export interface QuizItem {
-  platform: 'lc' | 'hr'
-  /** 原本的 id:LeetCode 數字題號、HackerRank slug */
-  id: number | string
-  title: string
-  titleZh: string
-  difficulty: Difficulty
-  patterns: string[]
-  /** 解題關鍵 */
-  reviewKey?: string
-  /** 本站連結(題解頁,沒有題解就是外站) */
-  href: string
-}
-
-export interface MixedQuiz {
-  item: QuizItem
-  options: string[]
-  answer: string
-}
-
-/** 和 makeQuiz 同邏輯,但吃抹平後的 QuizItem(可混兩個平台) */
-export function makeMixedQuiz(pool: QuizItem[], rand: () => number = Math.random): MixedQuiz | null {
-  const candidates = pool.filter((p) => p.patterns.length > 0)
-  if (!candidates.length) return null
-  const item = candidates[Math.floor(rand() * candidates.length)]
-  const answer = item.patterns[0]
-  const others = ALL_PATTERNS.filter((id) => !item.patterns.includes(id))
-  const picks: string[] = []
-  while (picks.length < 3 && others.length) picks.push(others.splice(Math.floor(rand() * others.length), 1)[0])
-  const options = [answer, ...picks]
-  for (let i = options.length - 1; i > 0; i--) {
-    const j = Math.floor(rand() * (i + 1))
-    ;[options[i], options[j]] = [options[j], options[i]]
-  }
-  return { item, options, answer }
 }

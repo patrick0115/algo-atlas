@@ -6,7 +6,6 @@ import { PATTERNS } from './patterns'
 import { Player } from './engine/Player'
 import { Plan } from './components/Plan'
 import { ProblemList } from './components/ProblemList'
-import { Review } from './components/Review'
 import { Rhythm, RhythmCard } from './components/Rhythm'
 import { APPENDIX_KINDS, AppendixPage, BookList, BookPage, EntryPage, KbAttached, SemiOverview, entryHref, setHostName } from './components/KbPage'
 import { hostOf } from './kb/merge'
@@ -161,7 +160,6 @@ function Sidebar({ current }: { current: string }) {
       <div className="side-body">
         <input className="side-search" type="search" placeholder="搜尋演算法、詞條…" value={q} onChange={(e) => setQ(e.target.value)} />
         {link('plan', '#/plan', '今天刷什麼')}
-        {link('review', '#/review', '複習')}
         {link('rhythm', '#/rhythm', '統計')}
 
         {volume(
@@ -365,7 +363,7 @@ function Home() {
         </div>
         <div>
           <b>⑤ 練習</b>
-          <span>相關題目、標記會不會,進複習排程</span>
+          <span>相關題目、標記會或不會,追蹤進度</span>
         </div>
       </div>
 
@@ -619,7 +617,7 @@ export default function App() {
   const kbBook = km ? BOOKS[km[1]] : undefined
   const kbEntry = km ? ENTRIES[km[1]] : undefined
   const appendix = km && km[1] === 'appendix' ? km[2] : undefined
-  const current = km ? `k/${km[1]}${appendix ? `/${appendix}` : ''}` : vm ? `v/${vm[1]}` : m ? m[1] : qm || hash === '/q' ? 'q' : cm ? `c/${cm[1]}` : sm ? `s/${sm[1]}` : hash === '/problems' ? 'problems' : hash === '/review' ? 'review' : hash === '/plan' || pm || hash === '/tsmc' || hm ? 'plan' : hash === '/rhythm' ? 'rhythm' : ''
+  const current = km ? `k/${km[1]}${appendix ? `/${appendix}` : ''}` : vm ? `v/${vm[1]}` : m ? m[1] : qm || hash === '/q' ? 'q' : cm ? `c/${cm[1]}` : sm ? `s/${sm[1]}` : hash === '/problems' ? 'problems' : hash === '/plan' || pm || hash === '/tsmc' || hm ? 'plan' : hash === '/rhythm' ? 'rhythm' : ''
 
   return (
     <div className="layout">
@@ -659,11 +657,9 @@ export default function App() {
         ) : hash === '/q' || qm ? (
           <SolutionIndex />
         ) : hash === '/plan' || pm ? (
-          <Plan key={pm?.[1]} focus={pm ? Number(pm[1]) : undefined} />
+          <Plan />
         ) : hash === '/rhythm' ? (
           <Rhythm />
-        ) : hash === '/review' ? (
-          <Review />
         ) : hash === '/problems' ? (
           <div className="page">
             <h1>全部題目</h1>

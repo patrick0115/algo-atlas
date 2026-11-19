@@ -5,11 +5,10 @@ import { TSMC, TSMC_TOPICS } from '../data/tsmc'
 import { SOLUTIONS } from '../solutions'
 import { HR_SOLUTIONS } from '../solutions/hr'
 import { loadLog, useProgress, type LogEntry } from '../engine/progress'
-import { dueFilter, dueProblems } from '../engine/review'
 import { loadHr, loadHrLog, type HrLogEntry, type HrStore } from '../engine/hr'
-import { categoryProgress, conversion, dailyCounts, dayKey, punctuality, recent, statusCounts, streak, weekly, type AnyEntry } from '../engine/rhythm'
+import { categoryProgress, conversion, dailyCounts, dayKey, recent, statusCounts, streak, weekly, type AnyEntry } from '../engine/rhythm'
 
-// 統計:熱力圖、每週題數、連續天數、各分類完成度、狀態分布、複習準時率、最近紀錄。
+// 統計:熱力圖、每週題數、連續天數、各分類完成度、狀態分布、進步率、最近紀錄。
 // LeetCode 和 HackerRank 全部合併算。
 
 const DAY = 86_400_000
@@ -68,9 +67,6 @@ function useRhythm() {
 
 /** 所有狀態紀錄合起來(兩個平台) */
 const allStatus = (store: Record<number, { status: Status }>, hrStore: HrStore) => [...Object.values(store), ...Object.values(hrStore)]
-/** 今天到期的複習,兩個平台合計 */
-const dueCount = (store: Record<number, { status: Status; at: number; first?: number }>, hrStore: HrStore, now: number) =>
-  dueProblems(PROBLEMS, store, now).length + dueFilter(TSMC, (e) => hrStore[e.slug], now).length
 
 /** 首頁頂端的摘要卡 */
 export function RhythmCard() {
@@ -79,7 +75,6 @@ export function RhythmCard() {
   const weeks = weekly(merged, now, 12)
   const thisWeek = weeks[weeks.length - 1].count
   const sc = statusCounts(allStatus(store, hrStore))
-  const due = dueCount(store, hrStore, now)
   const max = Math.max(target, ...weeks.map((w) => w.count))
   return (
     <section className="rhythm-card">
@@ -102,12 +97,6 @@ export function RhythmCard() {
             {sc.ok} <small>模糊 {sc.fuzzy} · 不會 {sc.no}</small>
           </b>
           <span>標成「會」的題目</span>
-        </div>
-        <div>
-          <b>{due}</b>
-          <span>
-            <a href="#/review">今天到期的複習</a>
-          </span>
         </div>
       </div>
       <div className="spark" title="近 12 週每週新題數">
@@ -190,7 +179,6 @@ export function Rhythm() {
   const sc = statusCounts(allStatus(store, hrStore))
   const total = sc.ok + sc.fuzzy + sc.no
   const conv = conversion(merged)
-  const pun = punctuality(merged)
   const cats = categoryProgress(PROBLEMS, store)
   const hrTopics = TSMC_TOPICS.map((t) => {
     const es = TSMC.filter((e) => e.topic === t.id)
@@ -212,7 +200,7 @@ export function Rhythm() {
     <div className="page rhythm">
       <h1>統計</h1>
       <p className="lead">
-        每次在題目上標「會 / 模糊 / 不會」都會記一筆(LeetCode 和 HackerRank 都算)。這頁把紀錄整理成進度:哪幾天有寫、每週寫多少、哪一類還弱、複習有沒有準時。
+        每次在題目上標「會 / 模糊 / 不會」都會記一筆(LeetCode 和 HackerRank 都算)。這頁把紀錄整理成進度:哪幾天有寫、每週寫多少、哪一類還弱。
         紀錄存在這個瀏覽器裡,換裝置會分開記。
       </p>
 
@@ -296,13 +284,7 @@ export function Rhythm() {
                 <div>
                   <b>{pct(conv.turned, conv.from)}</b>
                   <span>
-                    不會 / 模糊 → 會({conv.turned}/{conv.from} 題)
-                  </span>
-                </div>
-                <div>
-                  <b>{pct(pun.onTime, pun.total)}</b>
-                  <span>
-                    複習準時率(到期後一天內重寫,{pun.onTime}/{pun.total} 次)
+                    進步率:不會 / 模糊 → 會({conv.turned}/{conv.from} 題)
                   </span>
                 </div>
               </div>
