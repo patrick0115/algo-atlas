@@ -19,7 +19,7 @@ import { ConceptPage } from './components/ConceptPage'
 import { SolutionIndex, SolutionPage } from './components/SolutionPage'
 import { SOLUTIONS } from './solutions'
 import { HR_SOLUTIONS } from './solutions/hr'
-import { HrSolutionPage, TsmcPage } from './components/Tsmc'
+import { HrSolutionPage } from './components/Tsmc'
 import { CONCEPTS, CONCEPT_ORDER, UNITS, conceptsFor } from './concepts'
 import { highlight } from './engine/code'
 import { useLang, useProgress } from './engine/progress'
@@ -160,10 +160,9 @@ function Sidebar({ current }: { current: string }) {
       </div>
       <div className="side-body">
         <input className="side-search" type="search" placeholder="搜尋演算法、詞條…" value={q} onChange={(e) => setQ(e.target.value)} />
-        {link('rhythm', '#/rhythm', '刷題節奏')}
-        {link('plan', '#/plan', '刷題藍圖')}
+        {link('plan', '#/plan', '今天刷什麼')}
         {link('review', '#/review', '複習')}
-        {link('tsmc', '#/tsmc', '台積電 HackerRank 衝刺')}
+        {link('rhythm', '#/rhythm', '統計')}
 
         {volume(
           'base',
@@ -399,7 +398,7 @@ function Home() {
       </section>
 
       <p className="home-plan">
-        <a href="#/plan">刷題藍圖 →</a> <span className="muted">NeetCode 150 排成每週進度,每天挑題、寫完標記</span>
+        <a href="#/plan">今天刷什麼 →</a> <span className="muted">NeetCode 150 排成每週進度,每天挑題、寫完標記;台積電 HackerRank 衝刺也在這頁</span>
       </p>
       <AlgoGrid />
     </div>
@@ -620,7 +619,7 @@ export default function App() {
   const kbBook = km ? BOOKS[km[1]] : undefined
   const kbEntry = km ? ENTRIES[km[1]] : undefined
   const appendix = km && km[1] === 'appendix' ? km[2] : undefined
-  const current = km ? `k/${km[1]}${appendix ? `/${appendix}` : ''}` : vm ? `v/${vm[1]}` : m ? m[1] : qm || hash === '/q' ? 'q' : cm ? `c/${cm[1]}` : sm ? `s/${sm[1]}` : hash === '/problems' ? 'problems' : hash === '/review' ? 'review' : hash === '/plan' || pm ? 'plan' : hash === '/rhythm' ? 'rhythm' : hash === '/tsmc' || hm ? 'tsmc' : ''
+  const current = km ? `k/${km[1]}${appendix ? `/${appendix}` : ''}` : vm ? `v/${vm[1]}` : m ? m[1] : qm || hash === '/q' ? 'q' : cm ? `c/${cm[1]}` : sm ? `s/${sm[1]}` : hash === '/problems' ? 'problems' : hash === '/review' ? 'review' : hash === '/plan' || pm || hash === '/tsmc' || hm ? 'plan' : hash === '/rhythm' ? 'rhythm' : ''
 
   return (
     <div className="layout">
@@ -656,7 +655,7 @@ export default function App() {
         ) : hrSol ? (
           <HrSolutionPage key={hrSol.slug} sol={hrSol} />
         ) : hash === '/tsmc' || hm ? (
-          <TsmcPage />
+          <Redirect to="#/plan" />
         ) : hash === '/q' || qm ? (
           <SolutionIndex />
         ) : hash === '/plan' || pm ? (

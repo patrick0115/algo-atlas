@@ -1,12 +1,20 @@
 import type { Problem, Status } from '../types'
-import type { LogEntry, Record_ } from './progress'
+import type { Record_ } from './progress'
 import { INTERVAL_DAYS } from './review'
 import { weekStart } from './plan'
 import { CATEGORIES } from '../data/categories'
 
-// 刷題節奏:全部從作答紀錄(log)算出來,只做計算、不碰畫面。
+// 統計:全部從作答紀錄(log)算出來,只做計算、不碰畫面。
+// 作答紀錄可以是 LeetCode(數字題號)或 HackerRank(slug 字串),所以 id 一律 number | string。
 
 const DAY = 86_400_000
+
+/** 合併後的作答紀錄:LeetCode 用數字題號、HackerRank 用 slug */
+export interface AnyEntry {
+  id: number | string
+  s: Status
+  at: number
+}
 
 /** 本地時間的日期鍵,例:2026-10-24 */
 export function dayKey(t: number): string {
@@ -72,8 +80,8 @@ export function streak(daily: Map<string, number>, now: number): Streak {
 }
 
 /** 近 n 週每週寫了幾題(第一次寫的新題,不含複習);最後一個是本週 */
-export function weekly(log: LogEntry[], now: number, n: number): { start: number; count: number }[] {
-  const firstAt = new Map<number, number>()
+export function weekly(log: AnyEntry[], now: number, n: number): { start: number; count: number }[] {
+  const firstAt = new Map<number | string, number>()
   for (const e of log) if (!firstAt.has(e.id) || e.at < firstAt.get(e.id)!) firstAt.set(e.id, e.at)
   const ws = weekStart(now)
   const weeks = Array.from({ length: n }, (_, i) => ({ start: weekStart(ws - (n - 1 - i) * 7 * DAY + DAY), count: 0 }))
@@ -109,14 +117,15 @@ export function categoryProgress(problems: Problem[], store: Record<number, Reco
   }).filter((c) => c.total > 0)
 }
 
-export function statusCounts(store: Record<number, Record_>): Record<Status, number> {
+/** 傳進所有進度紀錄的狀態(LeetCode 與 HackerRank 合併時各傳一份再接起來) */
+export function statusCounts(records: { status: Status }[]): Record<Status, number> {
   const out: Record<Status, number> = { ok: 0, fuzzy: 0, no: 0 }
-  for (const r of Object.values(store)) out[r.status]++
+  for (const r of records) out[r.status]++
   return out
 }
 
-function byProblem(log: LogEntry[]): Map<number, LogEntry[]> {
-  const m = new Map<number, LogEntry[]>()
+function byProblem(log: AnyEntry[]): Map<number | string, AnyEntry[]> {
+  const m = new Map<number | string, AnyEntry[]>()
   for (const e of [...log].sort((a, b) => a.at - b.at)) {
     if (!m.has(e.id)) m.set(e.id, [])
     m.get(e.id)!.push(e)
@@ -125,7 +134,7 @@ function byProblem(log: LogEntry[]): Map<number, LogEntry[]> {
 }
 
 /** 曾經標過「不會 / 模糊」的題目,後來變成「會」的比例 */
-export function conversion(log: LogEntry[]): { from: number; turned: number } {
+export function conversion(log: AnyEntry[]): { from: number; turned: number } {
   let from = 0
   let turned = 0
   for (const es of byProblem(log).values()) {
@@ -138,7 +147,7 @@ export function conversion(log: LogEntry[]): { from: number; turned: number } {
 }
 
 /** 複習準時率:同一題相鄰兩筆紀錄,後一筆落在到期日後一天以內算準時 */
-export function punctuality(log: LogEntry[]): { total: number; onTime: number } {
+export function punctuality(log: AnyEntry[]): { total: number; onTime: number } {
   let total = 0
   let onTime = 0
   for (const es of byProblem(log).values()) {
@@ -152,14 +161,14 @@ export function punctuality(log: LogEntry[]): { total: number; onTime: number } 
 }
 
 export interface Recent {
-  entry: LogEntry
+  entry: AnyEntry
   /** 這題上一筆的狀態;沒有就是新題 */
   prev: Status | null
 }
 
-export function recent(log: LogEntry[], n: number): Recent[] {
+export function recent(log: AnyEntry[], n: number): Recent[] {
   const sorted = [...log].sort((a, b) => a.at - b.at)
-  const last = new Map<number, Status>()
+  const last = new Map<number | string, Status>()
   const out: Recent[] = []
   for (const e of sorted) {
     out.push({ entry: e, prev: last.get(e.id) ?? null })

@@ -3,11 +3,15 @@ import type { Status } from '../types'
 import { PROBLEMS } from '../data/problems'
 import { findStub } from '../data/categories'
 import { useProgress } from '../engine/progress'
+import { loadHr } from '../engine/hr'
+import { TSMC } from '../data/tsmc'
 import { hasSolution } from '../solutions'
-import { dueProblems } from '../engine/review'
+import { dueFilter, dueProblems } from '../engine/review'
 import { addDays, buildPlan, EXTENDED_STAGE, extendedPool, EXTRA_STAGE, extraPool, extrasFor, nextUp, schedule, weekStart, weeksLeft, type PlanItem } from '../engine/plan'
+import { TsmcSprint } from './Tsmc'
 
-// 刷題藍圖頁:上面挑今天要寫的題目,下面是整條路線的每週排程。
+// 今天刷什麼:上半是 LeetCode 核心路線(挑今天要寫的題、整條路線的每週排程),
+// 下半嵌入台積電 HackerRank 衝刺。沒寫的題每天照「今天」重排,拖到越晚、每天份量越多。
 // 設定與「今天」清單存在 localStorage,只在本機。
 
 const KEY = 'lcv:plan:v1'
@@ -144,7 +148,8 @@ export function Plan({ focus }: { focus?: number }) {
   const remaining = plan.length - sch.done
   const buffer = left - sch.weeks.length
   const needPerWeek = left > 0 ? Math.ceil(remaining / left) : remaining
-  const due = dueProblems(PROBLEMS, store, now).length
+  const hrStore = useMemo(() => loadHr(), [])
+  const due = dueProblems(PROBLEMS, store, now).length + dueFilter(TSMC, (e) => hrStore[e.slug], now).length
   const upcoming = nextUp(plan, store, todayIds, 1)
   const nextExtra = extras.flat().find((it) => !store[it.problem.id] && !todayIds.includes(it.problem.id))
   const extDone = ext.filter((it) => store[it.problem.id]).length
@@ -218,9 +223,9 @@ export function Plan({ focus }: { focus?: number }) {
 
   return (
     <div className="page plan">
-      <h1>刷題藍圖</h1>
+      <h1>今天刷什麼</h1>
       <p className="lead">
-        核心題是 NeetCode 150,依「基本功 → 樹與 Heap → 回溯、貪心與圖 → 動態規劃」排好,先修的演算法在前、
+        LeetCode 核心題是 NeetCode 150,依「基本功 → 樹與 Heap → 回溯、貪心與圖 → 動態規劃」排好,先修的演算法在前、
         同一個演算法內由易到難,Hard 集中在最後衝刺。每週另附幾題同主題的加練,有空再寫。
         核心題多寫就往前推、少寫就往後延,只要每週不低於「保底」就趕得上目標日。
       </p>
@@ -385,6 +390,8 @@ export function Plan({ focus }: { focus?: number }) {
         </header>
         <ol>{extNext.map(routeRow)}</ol>
       </section>
+
+      <TsmcSprint />
     </div>
   )
 }

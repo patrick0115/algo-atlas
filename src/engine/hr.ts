@@ -2,7 +2,8 @@ import { useState } from 'react'
 import type { Status } from '../types'
 import { addDays } from './plan'
 
-// HackerRank 衝刺的進度與作答紀錄。用 slug 當鍵,和 LeetCode 的複習進度分開存,不進複習排程。
+// HackerRank 衝刺的進度與作答紀錄。用 slug 當鍵,和 LeetCode 的進度分開存。
+// 統計與複習頁會把兩邊合併:HackerRank 題也會照同一套間隔(review.ts)排進複習。
 
 const KEY = 'lcv:hr:v1'
 const LOG_KEY = 'lcv:hr:log:v1'

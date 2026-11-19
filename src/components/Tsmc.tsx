@@ -12,8 +12,8 @@ import { Heatmap, mergedDaily } from './Rhythm'
 import { STATUS, SolutionBody, bodySections, nameOf } from './SolutionPage'
 import { Toc } from './Toc'
 
-// 台積電 HackerRank 衝刺(#/tsmc)與 HackerRank 單題題解頁(#/h/<slug>)。
-// 衝刺頁上半是倒數到測驗日的每天進度與節奏,下半是照主題分的題目清單。
+// 台積電 HackerRank 衝刺(嵌在「今天刷什麼」#/plan 裡)與 HackerRank 單題題解頁(#/h/<slug>)。
+// 衝刺區塊上半是倒數到測驗日的每天進度與節奏,下半是照主題分的題目清單。
 
 const PLAN_KEY = 'lcv:hr:plan:v1'
 
@@ -100,7 +100,8 @@ function Row({ e, store, mark }: { e: TsmcEntry; store: HrStore; mark?: (slug: s
   )
 }
 
-export function TsmcPage() {
+/** 台積電 HackerRank 衝刺,嵌在「今天刷什麼」頁裡的一個區塊 */
+export function TsmcSprint() {
   const { store, mark } = useHrProgress()
   const [exam, setExam] = useExamDate()
   const [now] = useState(() => Date.now())
@@ -115,8 +116,8 @@ export function TsmcPage() {
   const [onlyDone, setOnlyDone] = useState(false)
 
   return (
-    <div className="page">
-      <h1>台積電 HackerRank 衝刺</h1>
+    <section className="sec tsmc-sprint">
+      <h2 id="tsmc-sprint">台積電 HackerRank 衝刺</h2>
       <p className="lead">
         台積電軟體、IT 職缺的第一關常是 HackerRank 線上測驗:3 題、90 分鐘,難度多半是 Easy / Easy / Medium 或 Easy / Medium / Medium,
         題目偏陣列和字串處理,要顧很多邊界情況。下面 60 題照常考比例分配,大部分來自 HackerRank 面試準備題組(Interview Preparation Kit)。
@@ -202,7 +203,7 @@ export function TsmcPage() {
       <h2>節奏</h2>
       <Heatmap daily={daily} now={now} />
       <p className="muted small">
-        和 LeetCode 合併算。完整統計在<a href="#/rhythm">刷題節奏</a>。
+        和 LeetCode 合併算。完整統計在<a href="#/rhythm">統計</a>頁。
       </p>
 
       <h2>比例分配</h2>
@@ -223,7 +224,7 @@ export function TsmcPage() {
               return (
                 <tr key={t.id}>
                   <td>
-                    <a href={`#/tsmc`} onClick={(ev) => { ev.preventDefault(); document.getElementById(`tsmc-${t.id}`)?.scrollIntoView({ behavior: 'smooth' }) }}>
+                    <a href={`#/plan`} onClick={(ev) => { ev.preventDefault(); document.getElementById(`tsmc-${t.id}`)?.scrollIntoView({ behavior: 'smooth' }) }}>
                       {t.name}
                     </a>
                   </td>
@@ -258,7 +259,7 @@ export function TsmcPage() {
           </section>
         )
       })}
-    </div>
+    </section>
   )
 }
 
@@ -274,7 +275,7 @@ export function HrSolutionPage({ sol }: { sol: HrSolution }) {
   return (
     <div className="page q-page">
       <div className="crumb">
-        <a href="#/tsmc">台積電 HackerRank 衝刺</a>
+        <a href="#/plan">台積電 HackerRank 衝刺</a>
         {e && (
           <>
             {' · '}
@@ -309,7 +310,7 @@ export function HrSolutionPage({ sol }: { sol: HrSolution }) {
           ))}
         </span>
       </div>
-      <Toc sections={sections} back={{ href: '#/tsmc', label: '← 衝刺清單' }} />
+      <Toc sections={sections} back={{ href: '#/plan', label: '← 衝刺清單' }} />
 
       <SolutionBody sol={sol} self={`#/h/${sol.slug}`} />
 
@@ -323,7 +324,7 @@ export function HrSolutionPage({ sol }: { sol: HrSolution }) {
         ) : (
           <span />
         )}
-        <a href="#/tsmc" className="pager-plan">
+        <a href="#/plan" className="pager-plan">
           回到衝刺清單
         </a>
         {next && (

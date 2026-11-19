@@ -224,7 +224,7 @@ export function SolutionPage({ sol }: { sol: Solution }) {
   return (
     <div className="page q-page">
       <div className="crumb">
-        <a href={`#/plan/${sol.id}`}>刷題藍圖</a>
+        <a href={`#/plan/${sol.id}`}>今天刷什麼</a>
         {' · '}
         <a href="#/q">題解</a>
         {p && (
@@ -277,7 +277,7 @@ export function SolutionPage({ sol }: { sol: Solution }) {
           <span />
         )}
         <a href={`#/plan/${sol.id}`} className="pager-plan">
-          回到刷題藍圖
+          回到今天刷什麼
         </a>
         {next && (
           <a href={`#/q/${next.id}`} className="next">
@@ -301,12 +301,12 @@ export function SolutionIndex() {
       <h1>題解</h1>
       <p>
         <a className="back-plan" href="#/plan">
-          ← 回到刷題藍圖
+          ← 回到今天刷什麼
         </a>
       </p>
       <p className="lead">
         每題都有:用自己的話重述的題意、從限制條件反推複雜度、怎麼一步步想到解法,以及多個解法 ——
-        每個解法附逐步圖示、時間 / 空間複雜度與原因、五種語言的程式碼。依<a href="#/plan">刷題藍圖</a>的順序陸續補上。
+        每個解法附逐步圖示、時間 / 空間複雜度與原因、五種語言的程式碼。依<a href="#/plan">今天刷什麼</a>的順序陸續補上。
       </p>
       <p className="legend">
         NeetCode 150 已完成 {in150} / {total} 題
