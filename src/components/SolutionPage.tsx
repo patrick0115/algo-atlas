@@ -33,8 +33,7 @@ export const SOLVED_ORDER: Problem[] = (() => {
   return [...inPlan, ...rest]
 })()
 
-function Figure({ fig }: { fig: { title: string; steps: FigStep[] } }) {
-  const [i, setI] = useState(0)
+function Figure({ fig, i, setI }: { fig: { title: string; steps: FigStep[] }; i: number; setI: (n: number) => void }) {
   const s = fig.steps[i]
   return (
     <div className="q-fig">
@@ -63,6 +62,7 @@ function Figure({ fig }: { fig: { title: string; steps: FigStep[] } }) {
 }
 
 function ApproachView({ a, n }: { a: Approach; n: number }) {
+  const [step, setStep] = useState(0)
   return (
     <section id={`qa-${n}`} className="sec q-sec">
       <h2>
@@ -93,8 +93,8 @@ function ApproachView({ a, n }: { a: Approach; n: number }) {
           <p className="muted">{rich(a.complexity.why)}</p>
         </section>
       </div>
-      <Figure fig={a.figure} />
-      <MultiCode code={a.code} />
+      <Figure fig={a.figure} i={step} setI={setStep} />
+      <MultiCode code={a.code} active={a.figure.steps[step]?.line} />
       <div className="c-note c-note-key">
         <b>評價 · 什麼時候選它</b>
         <p>{rich(a.verdict)}</p>

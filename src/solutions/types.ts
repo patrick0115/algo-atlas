@@ -9,6 +9,8 @@ import type { Lang, View } from '../types'
 export interface FigStep {
   note: Rich
   views: View[]
+  /** 這一步對應 JavaScript 版程式碼的第幾行(1 起算);播放到這一步時那一行會高亮。只標 JS 版,切到其他語言不高亮。 */
+  line?: number
 }
 
 export interface Approach {

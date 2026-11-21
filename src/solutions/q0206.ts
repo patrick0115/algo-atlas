@@ -10,7 +10,7 @@ function iterFig(): FigStep[] {
   const n = V.length
   // next[i] = 節點 i 目前指向誰(-1 = 右邊的 null,-2 = 左邊的 null)
   const next = V.map((_, i) => (i + 1 < n ? i + 1 : -1))
-  const draw = (prev: number, cur: number, nxt: number | undefined, note: string): FigStep => {
+  const draw = (prev: number, cur: number, nxt: number | undefined, note: string, line: number): FigStep => {
     const subs: Record<number, string> = {}
     const add = (i: number, name: string) => {
       subs[i] = subs[i] ? `${subs[i]},${name}` : name
@@ -20,6 +20,7 @@ function iterFig(): FigStep[] {
     if (nxt !== undefined) add(nxt, 'next')
     return {
       note,
+      line,
       views: [
         chain(V, {
           label: '串列(節點下方是指標名稱,∅ 是 null)',
@@ -30,26 +31,27 @@ function iterFig(): FigStep[] {
       ],
     }
   }
-  const out: FigStep[] = [draw(-1, 0, undefined, '三個指標:prev(已經反轉好那段的頭,一開始是 null)、cur(正在處理的節點)、next(先記住 cur 原本的下一個,不然改完箭頭就找不到了)')]
+  const out: FigStep[] = [draw(-1, 0, undefined, '三個指標:prev(已經反轉好那段的頭,一開始是 null)、cur(正在處理的節點)、next(先記住 cur 原本的下一個,不然改完箭頭就找不到了)', 2)]
   let prev = -1
   let cur = 0
   while (cur !== -1) {
     const nxt = next[cur]
-    out.push(draw(prev, cur, nxt === -1 ? -1 : nxt, `① 先記住 next = cur.next(${nxt === -1 ? 'null' : V[nxt]})`))
+    out.push(draw(prev, cur, nxt === -1 ? -1 : nxt, `① 先記住 next = cur.next(${nxt === -1 ? 'null' : V[nxt]})`, 4))
     next[cur] = prev === -1 ? -2 : prev
-    out.push(draw(prev, cur, nxt === -1 ? -1 : nxt, `② 把 cur(${V[cur]})的箭頭改成指向 prev(${prev === -1 ? 'null' : V[prev]})`))
+    out.push(draw(prev, cur, nxt === -1 ? -1 : nxt, `② 把 cur(${V[cur]})的箭頭改成指向 prev(${prev === -1 ? 'null' : V[prev]})`, 5))
     prev = cur
+    out.push(draw(prev, cur, nxt === -1 ? -1 : nxt, `③ prev = cur:prev 前進到剛反轉好的這個節點(${V[prev]}),它成為「已反轉那段」的新頭。注意 cur 還沒動,next 標籤也還在`, 6))
     cur = nxt
-    out.push(draw(prev, cur, undefined, `③ prev、cur 都往前一步:prev = ${V[prev]},cur = ${cur === -1 ? 'null' : V[cur]}`))
+    out.push(draw(prev, cur, undefined, `④ cur = next:cur 前進到原本存起來的下一個節點(${cur === -1 ? 'null' : V[cur]})。這就是你說「看不到」的那一步`, 7))
   }
-  out.push({ note: `cur 走到 null,全部箭頭都反過來了。新的頭是 prev(${V[prev]})`, views: [chain([...V].reverse(), { label: '反轉後', tail: true })] })
+  out.push({ note: `cur 走到 null,全部箭頭都反過來了。新的頭是 prev(${V[prev]})`, line: 9, views: [chain([...V].reverse(), { label: '反轉後', tail: true })] })
   return out
 }
 
 function recurFig(): FigStep[] {
-  const out: FigStep[] = [{ note: '遞迴的想法:先把「head 後面那一整段」反轉好,再把 head 接到那段的尾巴', views: [chain(V, { label: '原本', tail: true, cls: { 0: 'hl' } })] }]
+  const out: FigStep[] = [{ note: '遞迴的想法:先把「head 後面那一整段」反轉好,再把 head 接到那段的尾巴', line: 3, views: [chain(V, { label: '原本', tail: true, cls: { 0: 'hl' } })] }]
   for (let d = 0; d < V.length; d++)
-    out.push({ note: `reverse(${V[d]}):${d < V.length - 1 ? `先遞迴去反轉從 ${V[d + 1]} 開始的那段` : '只剩一個節點(下一個是 null)→ 它自己就是反轉後的頭,直接回傳'}`, views: [chain(V, { label: '遞迴往下', tail: true, cls: { [d]: 'hl' }, subs: { [d]: `第 ${d + 1} 層` } })] })
+    out.push({ note: `reverse(${V[d]}):${d < V.length - 1 ? `先遞迴去反轉從 ${V[d + 1]} 開始的那段` : '只剩一個節點(下一個是 null)→ 它自己就是反轉後的頭,直接回傳'}`, line: d < V.length - 1 ? 3 : 2, views: [chain(V, { label: '遞迴往下', tail: true, cls: { [d]: 'hl' }, subs: { [d]: `第 ${d + 1} 層` } })] })
   const n = V.length
   const next = V.map((_, i) => (i + 1 < n ? i + 1 : -1))
   for (let d = n - 2; d >= 0; d--) {
@@ -57,10 +59,11 @@ function recurFig(): FigStep[] {
     next[d] = -2
     out.push({
       note: `回到 reverse(${V[d]}):後面那段已經反轉好(頭是 ${V[n - 1]})。head.next 就是那段的尾巴 ${V[d + 1]},讓它指回 head:head.next.next = head;再把 head.next 設成 null`,
+      line: 4,
       views: [chain(V, { label: '往上回傳', edges: next.map((t, i) => [i, t, t === -2 || (t >= 0 && t < i) ? 'done' : undefined] as [number, number, string?]), cls: { [d]: 'hl', [n - 1]: 'done' }, subs: { [n - 1]: '新的頭' } })],
     })
   }
-  out.push({ note: '每一層都回傳同一個「新的頭」(原本的最後一個節點)', views: [arr([...V].reverse(), { label: '結果' })] })
+  out.push({ note: '每一層都回傳同一個「新的頭」(原本的最後一個節點)', line: 6, views: [arr([...V].reverse(), { label: '結果' })] })
   return out
 }
 
@@ -190,9 +193,9 @@ export const q0206: Solution = {
       figure: {
         title: 'head = [1,2,3,4]',
         steps: [
-          { note: '先走一遍,把每個節點的「地址」依序存進陣列', views: [chain(V, { tail: true }), arr(V.map((v) => `節點${v}`), { label: 'nodes' })] },
-          { note: '從陣列尾巴往前,一個一個把 next 接到前一格的節點', views: [arr(V.map((v) => `節點${v}`).reverse(), { label: '倒過來接' })] },
-          { note: '完成:4 → 3 → 2 → 1 → null', views: [chain([...V].reverse(), { tail: true })] },
+          { note: '先走一遍,把每個節點的「地址」依序存進陣列', line: 3, views: [chain(V, { tail: true }), arr(V.map((v) => `節點${v}`), { label: 'nodes' })] },
+          { note: '從陣列尾巴往前,一個一個把 next 接到前一格的節點', line: 5, views: [arr(V.map((v) => `節點${v}`).reverse(), { label: '倒過來接' })] },
+          { note: '完成:4 → 3 → 2 → 1 → null', line: 7, views: [chain([...V].reverse(), { tail: true })] },
         ],
       },
       complexity: { time: 'O(n)', space: 'O(n)', why: '走兩遍;陣列存 n 個節點。' },

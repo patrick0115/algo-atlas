@@ -119,10 +119,23 @@ export function CodeLines({ code, lang, active }: { code: string; lang: Lang; ac
   )
 }
 
-export function MultiCode({ title, code }: { title?: string; code: Partial<Record<Lang, string>> }) {
+export function MultiCode({
+  title,
+  code,
+  active,
+  activeLang = 'javascript',
+}: {
+  title?: string
+  code: Partial<Record<Lang, string>>
+  /** 要高亮的行(1 起算);只在顯示 activeLang 時才高亮 */
+  active?: number
+  activeLang?: Lang
+}) {
   const [pref, setLang] = useLang()
+  const [picked, setPicked] = useState(false)
   const langs = LANGS.filter((l) => code[l.id] !== undefined)
-  const lang = code[pref] !== undefined ? pref : langs[0].id
+  // 這題有逐步高亮(active)、且使用者還沒手動切語言時,預設顯示基準語言,讓高亮一進來就看得到
+  const lang = active !== undefined && !picked && code[activeLang] !== undefined ? activeLang : code[pref] !== undefined ? pref : langs[0].id
   const [copied, setCopied] = useState(false)
   const copy = async () => {
     try {
@@ -138,19 +151,29 @@ export function MultiCode({ title, code }: { title?: string; code: Partial<Recor
       <div className="tabs">
         {langs.length > 1 ? (
           langs.map((l) => (
-            <button key={l.id} className={l.id === lang ? 'active' : ''} onClick={() => setLang(l.id)}>
+            <button
+              key={l.id}
+              className={l.id === lang ? 'active' : ''}
+              onClick={() => {
+                setLang(l.id)
+                setPicked(true)
+              }}
+            >
               {l.label}
             </button>
           ))
         ) : (
           <button className="active">{langs[0].label}</button>
         )}
-        <span className="tabs-spacer c-code-title">{title}</span>
+        <span className="tabs-spacer c-code-title">
+          {title}
+          {active !== undefined && lang !== activeLang && <span className="muted"> ·切到 JavaScript 看逐行高亮</span>}
+        </span>
         <button className="copy" onClick={copy} title="複製這個語言的全部程式碼">
           {copied ? '已複製 ✓' : '複製'}
         </button>
       </div>
-      <CodeLines code={code[lang]!} lang={lang} />
+      <CodeLines code={code[lang]!} lang={lang} active={lang === activeLang ? active : undefined} />
     </div>
   )
 }
