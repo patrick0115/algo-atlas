@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import type { Book, Entry, KbBlock, KbSection } from '../kb/types'
-import { BOOKS, ENTRIES, OVERVIEW, routeOfOld } from '../kb'
+import { BOOKS, OVERVIEW, routeOfOld } from '../kb'
 import { BOOK_META, VOLUMES } from '../kb/volumes'
 import { MOUNTS } from '../kb/widgets'
 import { attachedTo, hostOf } from '../kb/merge'
@@ -348,9 +348,3 @@ export function AppendixPage({ kind }: { kind: string }) {
 }
 
 export const APPENDIX_KINDS = Object.entries(APPENDIX).map(([id, name]) => ({ id, name }))
-
-/** 詞條搜尋:比對編號、名稱、一句話說明 */
-export function searchEntries(kw: string) {
-  if (!kw) return []
-  return Object.values(ENTRIES).filter(({ entry: e }) => `${e.tag} ${e.name} ${e.sub}`.toLowerCase().includes(kw))
-}

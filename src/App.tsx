@@ -103,10 +103,7 @@ function volOfCurrent(current: string): string {
 }
 
 function Sidebar({ current }: { current: string }) {
-  const [q, setQ] = useState('')
   const [open, setOpen] = useState(false)
-  const kw = q.trim().toLowerCase()
-  const match = (p: { id: string; name: string }) => !kw || p.name.toLowerCase().includes(kw) || p.id.includes(kw)
   const vol = volOfCurrent(current)
   const link = (key: string, href: string, label: ReactNode, extra = '') => (
     <a key={key} href={href} className={`side-link${current === key ? ' active' : ''}${extra}`}>
@@ -120,12 +117,11 @@ function Sidebar({ current }: { current: string }) {
     if (!b) return null
     const meta = BOOK_META[id]
     const here = current === `k/${id}` || ENTRIES[current.slice(2)]?.book.id === id
-    const es = b.entries.filter((e) => !kw || `${e.tag} ${e.name} ${e.sub}`.toLowerCase().includes(kw))
-    if (kw && !es.length && !match({ id: id.toLowerCase(), name: meta.name })) return null
+    const es = b.entries
     return (
       <div key={id} className="side-group">
         {link(`k/${id}`, `#/k/${id}`, `${id} ${meta.name}`, ' side-book')}
-        {(here || kw) && es.map((e) => link(`k/${e.id}`, entryHref(e.id), `${e.tag} ${e.name}`, ' side-entry'))}
+        {here && es.map((e) => link(`k/${e.id}`, entryHref(e.id), `${e.tag} ${e.name}`, ' side-entry'))}
       </div>
     )
   }
@@ -133,7 +129,7 @@ function Sidebar({ current }: { current: string }) {
   const volume = (id: string, body: ReactNode) => {
     const v = VOLUMES.find((x) => x.id === id)!
     return (
-      <details key={id} className="side-vol" open={!!kw || vol === id}>
+      <details key={id} className="side-vol" open={vol === id}>
         <summary>
           <a href={`#/v/${id}`} className={current === `v/${id}` ? 'active' : ''}>
             {v.name}
@@ -158,7 +154,6 @@ function Sidebar({ current }: { current: string }) {
         </button>
       </div>
       <div className="side-body">
-        <input className="side-search" type="search" placeholder="搜尋演算法、詞條…" value={q} onChange={(e) => setQ(e.target.value)} />
         {link('plan', '#/plan', '今天刷什麼')}
         {link('rhythm', '#/rhythm', '統計')}
 
@@ -166,8 +161,7 @@ function Sidebar({ current }: { current: string }) {
           'base',
           <>
             {UNITS.map((u) => {
-              const cs = u.concepts.filter(match)
-              if (!cs.length) return null
+              const cs = u.concepts
               return (
                 <div key={u.id} className="side-group">
                   <div className="side-cat">{u.name}</div>
@@ -192,8 +186,7 @@ function Sidebar({ current }: { current: string }) {
           'algo',
           <>
             {CATEGORIES.map((c) => {
-              const ps = c.patterns.filter(match)
-              if (!ps.length) return null
+              const ps = c.patterns
               return (
                 <div key={c.id} className="side-group">
                   <div className="side-cat">{c.name}</div>
@@ -208,7 +201,7 @@ function Sidebar({ current }: { current: string }) {
                       PATTERNS[p.id] ? '' : ' todo',
                     ),
                   )}
-                  {SUMMARIES[c.id] && !kw && link(`s/${c.id}`, `#/s/${c.id}`, `${c.name}總結`, ' side-sum')}
+                  {SUMMARIES[c.id] && link(`s/${c.id}`, `#/s/${c.id}`, `${c.name}總結`, ' side-sum')}
                 </div>
               )
             })}
@@ -226,7 +219,7 @@ function Sidebar({ current }: { current: string }) {
 
         {['semi', 'sys', 'swe'].map((id) => volume(id, VOLUMES.find((v) => v.id === id)!.books.map((b) => bookGroup(b.id))))}
 
-        <details className="side-vol" open={!!kw || vol === 'appendix'}>
+        <details className="side-vol" open={vol === 'appendix'}>
           <summary>附錄</summary>
           {APPENDIX_KINDS.map((a) => link(`k/appendix/${a.id}`, `#/k/appendix/${a.id}`, a.name))}
         </details>
