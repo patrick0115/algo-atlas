@@ -4,16 +4,16 @@ import { chain } from './fig'
 // 328. Odd Even Linked List
 const V = [1,2,3,4,5]
 const fig = [
-  { note: '奇偶指的是位置（第 1、3、5 個），不是節點的數值。先分成奇位 1→3→5 與偶位 2→4。', views: [chain(V, { label: '原串列', cls: { 0: 'hl', 2: 'hl', 4: 'hl' } }), chain([1,3,5], { label: '奇位' }), chain([2,4], { label: '偶位' })] },
-  { note: '先把 odd 指向第 1 個節點 1，even 指向第 2 個節點 2，並保存偶數鏈的頭 2。', views: [chain(V, { label: '起始指標', cls: { 0: 'hl', 1: 'visited' } })] },
-  { note: '第一次改接後，奇數鏈已有 1→3，偶數鏈已有 2→4；兩條鏈各自保留原有次序。', views: [chain([1,3], { label: 'odd 鏈', cls: { 1: 'hl' } }), chain([2,4], { label: 'even 鏈', cls: { 1: 'hl' } })] },
-  { note: '第二次改接後，奇數鏈變成 1→3→5，偶數鏈是 2→4（4 的 next 變成空）；even 走到空，迴圈結束。', views: [chain([1,3,5], { label: 'odd 鏈', cls: { 2: 'hl' } }), chain([2,4], { label: 'even 鏈' })] },
-  { note: '把奇位尾巴接到偶位頭，得到 1→3→5→2→4。', views: [chain([1,3,5,2,4], { label: '結果', tail: true, cls: { 0: 'done', 1: 'done', 2: 'done', 3: 'done', 4: 'done' } })] },
+  { note: '奇偶指的是位置（第 1、3、5 個），不是節點的數值。先分成奇位 1→3→5 與偶位 2→4。', line: 4, views: [chain(V, { label: '原串列', cls: { 0: 'hl', 2: 'hl', 4: 'hl' } }), chain([1,3,5], { label: '奇位' }), chain([2,4], { label: '偶位' })] },
+  { note: '先把 odd 指向第 1 個節點 1，even 指向第 2 個節點 2，並保存偶數鏈的頭 2。', line: 4, views: [chain(V, { label: '起始指標', cls: { 0: 'hl', 1: 'visited' } })] },
+  { note: '第一次改接後，奇數鏈已有 1→3，偶數鏈已有 2→4；兩條鏈各自保留原有次序。', line: 7, /* TODO: 可能要拆格 */ views: [chain([1,3], { label: 'odd 鏈', cls: { 1: 'hl' } }), chain([2,4], { label: 'even 鏈', cls: { 1: 'hl' } })] },
+  { note: '第二次改接後，奇數鏈變成 1→3→5，偶數鏈是 2→4（4 的 next 變成空）；even 走到空，迴圈結束。', line: 7, /* TODO: 可能要拆格 */ views: [chain([1,3,5], { label: 'odd 鏈', cls: { 2: 'hl' } }), chain([2,4], { label: 'even 鏈' })] },
+  { note: '把奇位尾巴接到偶位頭，得到 1→3→5→2→4。', line: 12, views: [chain([1,3,5,2,4], { label: '結果', tail: true, cls: { 0: 'done', 1: 'done', 2: 'done', 3: 'done', 4: 'done' } })] },
 ]
 const collectFig = [
-  { note: '掃到位置 1、2 時，先把節點 1 放入 odd 陣列、節點 2 放入 even 陣列。', views: [chain(V, { label: '掃描前兩個節點', cls: { 0: 'done', 1: 'done' } })] },
-  { note: '繼續掃描位置 3 到 5，odd 收到 [1,3,5]，even 收到 [2,4]，兩組內部順序沒有改變。', views: [chain([1,3,5], { label: 'odd' }), chain([2,4], { label: 'even' })] },
-  { note: '依 odd 再 even 的順序改接 next，並把最後一個節點的 next 設成空值。', views: [chain([1,3,5,2,4], { label: '改接後', tail: true, cls: { 0: 'done', 1: 'done', 2: 'done', 3: 'done', 4: 'done' } })] },
+  { note: '掃到位置 1、2 時，先把節點 1 放入 odd 陣列、節點 2 放入 even 陣列。', line: 5, views: [chain(V, { label: '掃描前兩個節點', cls: { 0: 'done', 1: 'done' } })] },
+  { note: '繼續掃描位置 3 到 5，odd 收到 [1,3,5]，even 收到 [2,4]，兩組內部順序沒有改變。', line: 5, views: [chain([1,3,5], { label: 'odd' }), chain([2,4], { label: 'even' })] },
+  { note: '依 odd 再 even 的順序改接 next，並把最後一個節點的 next 設成空值。', line: 7, views: [chain([1,3,5,2,4], { label: '改接後', tail: true, cls: { 0: 'done', 1: 'done', 2: 'done', 3: 'done', 4: 'done' } })] },
 ]
 
 export const q0328: Solution = {

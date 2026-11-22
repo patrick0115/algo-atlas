@@ -5,10 +5,10 @@ import type { GridViewData } from '../types'
 const M = [[1,5,9],[10,11,13],[12,13,15]]
 const grid = (hl: [number,number][] = [], label = 'matrix'): GridViewData => ({ kind: 'grid', label, cells: M, marks: { hl } })
 const fig = [
-  { note: '每列各自遞增，將每列第一個值放進最小堆積：1、10、12。', views: [grid([[0,0],[1,0],[2,0]], '每列起點')] },
-  { note: '第一次取出最小值 1，接著把同一列的下一格 5 放進堆積；堆積目前有 5、10、12。', views: [grid([[0,1],[1,0],[2,0]], '取出 1 後')] },
-  { note: '第二次取出 5，再補入同列的 9；每次取出的值依序是全矩陣下一個最小值。', views: [grid([[0,2],[1,0],[2,0]], '取出 5 後')] },
-  { note: '依序取出 1、5、9、10、11、12、13、13，第 8 個是 13。', views: [grid([[1,2],[2,1]], '第 8 小是 13')] },
+  { note: '每列各自遞增，將每列第一個值放進最小堆積：1、10、12。', line: 33, views: [grid([[0,0],[1,0],[2,0]], '每列起點')] },
+  { note: '第一次取出最小值 1，接著把同一列的下一格 5 放進堆積；堆積目前有 5、10、12。', line: 36 /* TODO: 可能要拆格 */, views: [grid([[0,1],[1,0],[2,0]], '取出 1 後')] },
+  { note: '第二次取出 5，再補入同列的 9；每次取出的值依序是全矩陣下一個最小值。', line: 36 /* TODO: 可能要拆格 */, views: [grid([[0,2],[1,0],[2,0]], '取出 5 後')] },
+  { note: '依序取出 1、5、9、10、11、12、13、13，第 8 個是 13。', line: 41 /* TODO: 可能要拆格 */, views: [grid([[1,2],[2,1]], '第 8 小是 13')] },
 ]
 
 export const q0378: Solution = {
@@ -144,7 +144,7 @@ int kthSmallest(int **matrix, int n, int *cols, int k) {
     return x;
 }`,
     } },
-    { name: '對值域二分', idea: '尋找最小的 x，使矩陣中 ≤ x 的元素數量至少 k。', steps: ['lo=左上角，hi=右下角', '令 mid=floor((lo+hi)/2)，從左下角數 ≤ mid 的元素', '若數量 ≥ k，hi=mid；否則 lo=mid+1', 'lo==hi 時回傳'], figure: { title: 'k = 8', steps: [{ note: '值域先是 [1,15]。猜 mid=8 時只有 1、5 兩格 ≤8，不足 8 格，所以下界改為 9。', views: [grid([[0,0],[0,1]], '≤ 8')] }, { note: '在 [9,15] 猜 mid=12，有六格 ≤12，仍未達到第 8 小，因此下界再移到 13。', views: [grid([[0,0],[0,1],[0,2],[1,0],[1,1],[2,0]], '≤ 12')] }, { note: '檢查 13 時已有八格 ≤13，而 12 只有六格；最小的可行值就是 13。', views: [grid([[1,2],[2,1]], '邊界 13')] }] }, complexity: { time: 'O(n log V)', space: 'O(1)', why: '每次沿矩陣階梯走 O(n)，值域 V 二分。' }, verdict: '矩陣很大、k 很大時有利；重複值也適用。', code: {
+    { name: '對值域二分', idea: '尋找最小的 x，使矩陣中 ≤ x 的元素數量至少 k。', steps: ['lo=左上角，hi=右下角', '令 mid=floor((lo+hi)/2)，從左下角數 ≤ mid 的元素', '若數量 ≥ k，hi=mid；否則 lo=mid+1', 'lo==hi 時回傳'], figure: { title: 'k = 8', steps: [{ note: '值域先是 [1,15]。猜 mid=8 時只有 1、5 兩格 ≤8，不足 8 格，所以下界改為 9。', line: 15 /* TODO: 可能要拆格 */, views: [grid([[0,0],[0,1]], '≤ 8')] }, { note: '在 [9,15] 猜 mid=12，有六格 ≤12，仍未達到第 8 小，因此下界再移到 13。', line: 15 /* TODO: 可能要拆格 */, views: [grid([[0,0],[0,1],[0,2],[1,0],[1,1],[2,0]], '≤ 12')] }, { note: '檢查 13 時已有八格 ≤13，而 12 只有六格；最小的可行值就是 13。', line: 20 /* TODO: 可能要拆格 */, views: [grid([[1,2],[2,1]], '邊界 13')] }] }, complexity: { time: 'O(n log V)', space: 'O(1)', why: '每次沿矩陣階梯走 O(n)，值域 V 二分。' }, verdict: '矩陣很大、k 很大時有利；重複值也適用。', code: {
       python: `def kthSmallest(matrix, k):
     n = len(matrix)
     lo, hi = (matrix[0][0], matrix[-1][-1])

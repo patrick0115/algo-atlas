@@ -7,29 +7,29 @@ import type { FigStep, Solution } from './types'
 function mainFig(): FigStep[] {
   const a: number[] = []
   const pos = new Map<number, number>()
-  const snap = (note: string, hlA: number[] = [], hlK: number[] = []): FigStep => ({ note, views: [arr([...a], { label: 'vals(陣列)', highlight: hlA }), kv([...pos.entries()], '值 → 在陣列的哪一格', hlK)] })
-  const out: FigStep[] = [snap('兩樣東西配合:陣列 vals 負責「隨機抽一個」(抽索引就好),Hash 表 pos 負責「某個值在不在、在第幾格」')]
+  const snap = (note: string, line: number, hlA: number[] = [], hlK: number[] = []): FigStep => ({ note, line, views: [arr([...a], { label: 'vals(陣列)', highlight: hlA }), kv([...pos.entries()], '值 → 在陣列的哪一格', hlK)] })
+  const out: FigStep[] = [snap('兩樣東西配合:陣列 vals 負責「隨機抽一個」(抽索引就好),Hash 表 pos 負責「某個值在不在、在第幾格」', 3)]
   for (const v of [10, 20, 30, 40]) {
     pos.set(v, a.length)
     a.push(v)
   }
-  out.push(snap('insert 10、20、30、40:各自接到陣列尾巴,pos 記下它們的位置。都是 O(1)', [0, 1, 2, 3]))
-  out.push(snap('remove 20:陣列中間刪除要搬動後面所有元素(O(n))。訣竅:把**最後一個**(40)搬到 20 的位置,再砍掉尾巴', [1, 3], [20, 40]))
+  out.push(snap('insert 10、20、30、40:各自接到陣列尾巴,pos 記下它們的位置。都是 O(1)', 10, [0, 1, 2, 3]))
+  out.push(snap('remove 20:陣列中間刪除要搬動後面所有元素(O(n))。訣竅:把**最後一個**(40)搬到 20 的位置,再砍掉尾巴', 16, [1, 3], [20, 40]))
   const i = pos.get(20)!
   const last = a[a.length - 1]
   a[i] = last
   pos.set(last, i)
   a.pop()
   pos.delete(20)
-  out.push(snap(`40 搬到第 ${i} 格,pos[40] 改成 ${i},刪掉 pos[20]。整個過程只碰兩格 → O(1)`, [i], [40]))
-  out.push(snap(`getRandom:隨機抽一個索引 0..${a.length - 1},回傳 vals[那格]。每個值機率都是 1/${a.length}`, [0, 1, 2]))
+  out.push(snap(`40 搬到第 ${i} 格,pos[40] 改成 ${i},刪掉 pos[20]。整個過程只碰兩格 → O(1)`, 17, [i], [40])) // TODO: 可能要拆格(17 補洞、18 改 pos、19 pop、20 刪 pos 併成一格)
+  out.push(snap(`getRandom:隨機抽一個索引 0..${a.length - 1},回傳 vals[那格]。每個值機率都是 1/${a.length}`, 25, [0, 1, 2]))
   return out
 }
 
 function setFig(): FigStep[] {
   return [
-    { note: '只用 Hash 集合:insert、remove 都是 O(1)', views: [arr([10, 30, 40], { label: '集合(順序不固定)' })] },
-    { note: 'getRandom 時集合沒辦法「拿第 k 個」,只能先倒成陣列再抽 → 這一步變 O(n)', views: [arr([10, 30, 40], { label: '轉成陣列', highlight: [1] })] },
+    { note: '只用 Hash 集合:insert、remove 都是 O(1)', line: 8, views: [arr([10, 30, 40], { label: '集合(順序不固定)' })] },
+    { note: 'getRandom 時集合沒辦法「拿第 k 個」,只能先倒成陣列再抽 → 這一步變 O(n)', line: 17, views: [arr([10, 30, 40], { label: '轉成陣列', highlight: [1] })] },
   ]
 }
 

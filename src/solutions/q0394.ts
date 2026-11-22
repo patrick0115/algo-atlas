@@ -7,17 +7,17 @@ const S = '3[a2[c]]'
 
 function stackFig(): FigStep[] {
   return [
-    { note: '規則 k[內容] = 內容重複 k 次,而且可以一層包一層。遇到 "[" 代表要進入新的一層:把「目前累積的字串」和「重複次數」先存到堆疊,重新開始累積', views: [arr(S.split(''), { label: 's' }), arr([], { label: '堆疊(之前的字串, 次數)' })] },
-    { note: '讀到 "3[":存 ("", 3),cur 清空。讀 "a" → cur = "a"。讀到 "2[":存 ("a", 2),cur 清空', views: [arr(S.split(''), { label: 's', done: [0, 1, 2, 3, 4] }), arr(['("", 3)', '("a", 2)'], { label: '堆疊' }), arr([''], { label: 'cur' })] },
-    { note: '讀 "c" → cur = "c"。讀到第一個 "]":pop ("a", 2) → cur = "a" + "c" × 2 = "acc"', views: [arr(S.split(''), { label: 's', done: [0, 1, 2, 3, 4, 5, 6] }), arr(['("", 3)'], { label: '堆疊' }), arr(['acc'], { label: 'cur' })] },
-    { note: '讀到第二個 "]":pop ("", 3) → cur = "" + "acc" × 3 = "accaccacc"', views: [arr([], { label: '堆疊' }), arr(['accaccacc'], { label: 'cur(答案)', done: [0] })] },
+    { note: '規則 k[內容] = 內容重複 k 次,而且可以一層包一層。遇到 "[" 代表要進入新的一層:把「目前累積的字串」和「重複次數」先存到堆疊,重新開始累積', line: 2, views: [arr(S.split(''), { label: 's' }), arr([], { label: '堆疊(之前的字串, 次數)' })] },
+    { note: '讀到 "3[":存 ("", 3),cur 清空。讀 "a" → cur = "a"。讀到 "2[":存 ("a", 2),cur 清空', line: 7, /* TODO: 可能要拆格 */ views: [arr(S.split(''), { label: 's', done: [0, 1, 2, 3, 4] }), arr(['("", 3)', '("a", 2)'], { label: '堆疊' }), arr([''], { label: 'cur' })] },
+    { note: '讀 "c" → cur = "c"。讀到第一個 "]":pop ("a", 2) → cur = "a" + "c" × 2 = "acc"', line: 12, /* TODO: 可能要拆格 */ views: [arr(S.split(''), { label: 's', done: [0, 1, 2, 3, 4, 5, 6] }), arr(['("", 3)'], { label: '堆疊' }), arr(['acc'], { label: 'cur' })] },
+    { note: '讀到第二個 "]":pop ("", 3) → cur = "" + "acc" × 3 = "accaccacc"', line: 12, views: [arr([], { label: '堆疊' }), arr(['accaccacc'], { label: 'cur(答案)', done: [0] })] },
   ]
 }
 
 function recFig(): FigStep[] {
   return [
-    { note: '遞迴版:decode(i) 從位置 i 開始解析,遇到 "]" 或字串結尾就回傳「解出來的字串, 下一個位置」。遇到數字 k 和 "[",就遞迴解析括號裡面', views: [arr(S.split(''), { label: 's', range: [2, 6] })] },
-    { note: '括號裡的 "a2[c]" 又遞迴一次:裡面的 "c" 回傳給外層,外層組出 "acc",再被最外層重複 3 次。結構跟巢狀括號一模一樣', views: [arr(['decode("3[…]")', '→ decode("a2[…]")', '→ decode("c")'], { label: '遞迴往下' })] },
+    { note: '遞迴版:decode(i) 從位置 i 開始解析,遇到 "]" 或字串結尾就回傳「解出來的字串, 下一個位置」。遇到數字 k 和 "[",就遞迴解析括號裡面', line: 4, views: [arr(S.split(''), { label: 's', range: [2, 6] })] },
+    { note: '括號裡的 "a2[c]" 又遞迴一次:裡面的 "c" 回傳給外層,外層組出 "acc",再被最外層重複 3 次。結構跟巢狀括號一模一樣', line: 10, views: [arr(['decode("3[…]")', '→ decode("a2[…]")', '→ decode("c")'], { label: '遞迴往下' })] },
   ]
 }
 

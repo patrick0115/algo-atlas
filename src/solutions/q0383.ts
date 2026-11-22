@@ -2,16 +2,16 @@ import { arr } from '../engine/helpers'
 import type { FigStep, Solution } from './types'
 
 const figCount: FigStep[] = [
-  { note: '要拼出 aa，雜誌 aab 至少要提供兩個 a。先統計雜誌字母數量。', views: [arr(['a', 'a', 'b'], { label: 'magazine' }), arr([2, 1], { label: 'a / b 庫存' })] },
-  { note: '取出 ransomNote 的第一個 a，a 庫存由 2 減至 1。', views: [arr(['a', 'a'], { label: 'ransomNote', highlight: [0] }), arr([1, 1], { label: 'a / b 庫存' })] },
-  { note: '取出第二個 a，a 庫存由 1 減至 0；沒有任何字母欠缺。', views: [arr(['a', 'a'], { label: 'ransomNote', done: [0, 1] }), arr([0, 1], { label: 'a / b 庫存' })] },
-  { note: '所有需要的字母都有庫存，回傳 true；若任一庫存變成負數就應立即回傳 false。', views: [arr([1], { label: '可拼出（1 = true）', done: [0] })] },
+  { note: '要拼出 aa，雜誌 aab 至少要提供兩個 a。先統計雜誌字母數量。', line: 4, views: [arr(['a', 'a', 'b'], { label: 'magazine' }), arr([2, 1], { label: 'a / b 庫存' })] },
+  { note: '取出 ransomNote 的第一個 a，a 庫存由 2 減至 1。', line: 8, views: [arr(['a', 'a'], { label: 'ransomNote', highlight: [0] }), arr([1, 1], { label: 'a / b 庫存' })] },
+  { note: '取出第二個 a，a 庫存由 1 減至 0；沒有任何字母欠缺。', line: 8, views: [arr(['a', 'a'], { label: 'ransomNote', done: [0, 1] }), arr([0, 1], { label: 'a / b 庫存' })] },
+  { note: '所有需要的字母都有庫存，回傳 true；若任一庫存變成負數就應立即回傳 false。', line: 13, views: [arr([1], { label: '可拼出（1 = true）', done: [0] })] },
 ]
 const figSort: FigStep[] = [
-  { note: '把兩個字串排序，讓同一字母排在一起。', views: [arr(['a', 'a'], { label: 'ransomNote' }), arr(['a', 'a', 'b'], { label: 'magazine' })] },
-  { note: '兩邊的第一個 a 相同，雙指標都右移，表示消耗雜誌的一個 a。', views: [arr(['a', 'a'], { label: '需求', highlight: [0] }), arr(['a', 'a', 'b'], { label: '庫存', highlight: [0] })] },
-  { note: '第二個 a 也匹配，需求指標走到末端。', views: [arr(['a', 'a'], { label: '需求', done: [0, 1] }), arr(['a', 'a', 'b'], { label: '庫存', done: [0, 1], dim: [2] })] },
-  { note: '需求全部匹配即回傳 true；多出來的 b 不影響結果。', views: [arr([1], { label: '答案（1 = true）', done: [0] })] },
+  { note: '把兩個字串排序，讓同一字母排在一起。', line: 2, views: [arr(['a', 'a'], { label: 'ransomNote' }), arr(['a', 'a', 'b'], { label: 'magazine' })] },
+  { note: '兩邊的第一個 a 相同，雙指標都右移，表示消耗雜誌的一個 a。', line: 7, views: [arr(['a', 'a'], { label: '需求', highlight: [0] }), arr(['a', 'a', 'b'], { label: '庫存', highlight: [0] })] },
+  { note: '第二個 a 也匹配，需求指標走到末端。', line: 7, views: [arr(['a', 'a'], { label: '需求', done: [0, 1] }), arr(['a', 'a', 'b'], { label: '庫存', done: [0, 1], dim: [2] })] },
+  { note: '需求全部匹配即回傳 true；多出來的 b 不影響結果。', line: 16, views: [arr([1], { label: '答案（1 = true）', done: [0] })] },
 ]
 
 export const q0383: Solution = {

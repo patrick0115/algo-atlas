@@ -19,13 +19,13 @@ function scanFig(): FigStep[] {
   const ids = POSTS.map(([u, t]) => `u${u}:${t}`)
   const want = new Set([1, ...FOLLOWS[1]])
   const out: FigStep[] = [
-    { note: '最簡單的存法:所有推文依時間放在同一條清單(右邊最新)。getNewsFeed(1) 時從最新往回看,只挑「使用者 1 自己或他追蹤的人」發的,湊滿 10 則就停', views: [arr(ids, { label: '全部推文(右邊最新)' }), kv([[1, `追蹤 ${FOLLOWS[1].join('、')}`]], 'follows')] },
+    { note: '最簡單的存法:所有推文依時間放在同一條清單(右邊最新)。getNewsFeed(1) 時從最新往回看,只挑「使用者 1 自己或他追蹤的人」發的,湊滿 10 則就停', line: 14, views: [arr(ids, { label: '全部推文(右邊最新)' }), kv([[1, `追蹤 ${FOLLOWS[1].join('、')}`]], 'follows')] },
   ]
   const got: number[] = []
   for (let i = POSTS.length - 1; i >= 0; i--) {
     const ok = want.has(POSTS[i][0])
     if (ok) got.push(POSTS[i][1])
-    out.push({ note: `看推文 ${POSTS[i][1]}(使用者 ${POSTS[i][0]}):${ok ? '要 → 收進動態' : '不要'}`, views: [arr(ids, { label: '全部推文', highlight: ok ? [i] : [], compare: ok ? [] : [i] }), arr(got, { label: '動態(新 → 舊)' })] })
+    out.push({ note: `看推文 ${POSTS[i][1]}(使用者 ${POSTS[i][0]}):${ok ? '要 → 收進動態' : '不要'}`, line: 16, views: [arr(ids, { label: '全部推文', highlight: ok ? [i] : [], compare: ok ? [] : [i] }), arr(got, { label: '動態(新 → 舊)' })] })
   }
   return out
 }
@@ -37,14 +37,14 @@ function mergeFig(): FigStep[] {
   const ptr: Record<number, number> = Object.fromEntries(users.map((u) => [u, per[u].length - 1]))
   const views = (hl?: number) =>
     users.map((u) => arr(per[u].map(([tm, t]) => `t${tm}:${t}`), { label: `使用者 ${u} 的推文(右邊最新)`, highlight: hl === u ? [ptr[u]] : [], dim: per[u].map((_, i) => i).filter((i) => i > ptr[u]) }))
-  const out: FigStep[] = [{ note: '每個人的推文各自存一條清單(本身就依時間排好)。動態 = 把「自己 + 追蹤的人」這幾條清單**從尾巴往前合併**,用最大堆每次拿最新的一則', views: views() }]
+  const out: FigStep[] = [{ note: '每個人的推文各自存一條清單(本身就依時間排好)。動態 = 把「自己 + 追蹤的人」這幾條清單**從尾巴往前合併**,用最大堆每次拿最新的一則', line: 17, views: views() }]
   const got: number[] = []
   for (;;) {
     const cands = users.filter((u) => ptr[u] >= 0)
     if (!cands.length || got.length === 10) break
     const best = cands.reduce((a, b) => (per[a][ptr[a]][0] > per[b][ptr[b]][0] ? a : b))
     got.push(per[best][ptr[best]][1])
-    out.push({ note: `堆裡有每條清單「目前最新的一則」:${cands.map((u) => `t${per[u][ptr[u]][0]}`).join('、')}。最新的是使用者 ${best} 的推文 ${per[best][ptr[best]][1]} → 拿出來,換成他的下一則`, views: [...views(best), arr(got, { label: '動態(新 → 舊)' })] })
+    out.push({ note: `堆裡有每條清單「目前最新的一則」:${cands.map((u) => `t${per[u][ptr[u]][0]}`).join('、')}。最新的是使用者 ${best} 的推文 ${per[best][ptr[best]][1]} → 拿出來,換成他的下一則`, line: 28, views: [...views(best), arr(got, { label: '動態(新 → 舊)' })] })
     ptr[best]--
   }
   return out

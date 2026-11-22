@@ -4,16 +4,16 @@ import type { Solution } from './types'
 // 395. Longest Substring with At Least K Repeating Characters
 const S = 'aaabb'
 const F1 = [
-  { note: '整段 aaabb 中，a 有 3 個、b 有 2 個；k=3，所以 b 不可能出現在合格子字串裡。', views: [arr(S.split(''), { label: 's', dim: [3, 4] })] },
-  { note: '以 b 為切點，前面留下 aaa，後面沒有其他片段。', views: [arr('aaa'.split(''), { label: '候選片段', highlight: [0, 1, 2] })] },
-  { note: 'aaa 的 a 出現 3 次，符合至少 k 次。', views: [arr([3], { label: 'a 的次數', done: [0] })] },
-  { note: '最長長度是 3。', views: [arr([3], { label: '答案', done: [0] })] },
+  { note: '整段 aaabb 中，a 有 3 個、b 有 2 個；k=3，所以 b 不可能出現在合格子字串裡。', line: 4, views: [arr(S.split(''), { label: 's', dim: [3, 4] })] },
+  { note: '以 b 為切點，前面留下 aaa，後面沒有其他片段。', line: 8, views: [arr('aaa'.split(''), { label: '候選片段', highlight: [0, 1, 2] })] },
+  { note: 'aaa 的 a 出現 3 次，符合至少 k 次。', line: 11, views: [arr([3], { label: 'a 的次數', done: [0] })] },
+  { note: '最長長度是 3。', line: 9, views: [arr([3], { label: '答案', done: [0] })] },
 ]
 const F2 = [
-  { note: '先限定窗口內恰有 1 種字母；讀入 a、a、a，a 的次數逐步達到 3。', views: [arr('aaa'.split(''), { label: '窗口', highlight: [0, 1, 2] })] },
-  { note: '再讀入 b，種類變 2，超過目標；左端逐步右移，直到只剩 b。', views: [arr('aaab'.split(''), { label: '暫時超標', dim: [0, 1, 2], highlight: [3] })] },
-  { note: '窗口 aaa 曾有 1 種字母，且這種字母至少出現 3 次，記錄長度 3。', views: [arr([3], { label: '最佳長度', done: [0] })] },
-  { note: '再試 2 種字母；整段 aaabb 中 b 只有 2 次，不合格。答案仍是 3。', views: [arr(S.split(''), { label: 's', dim: [3, 4], done: [0, 1, 2] })] },
+  { note: '先限定窗口內恰有 1 種字母；讀入 a、a、a，a 的次數逐步達到 3。', line: 9, /* TODO: 可能要拆格 */ views: [arr('aaa'.split(''), { label: '窗口', highlight: [0, 1, 2] })] },
+  { note: '再讀入 b，種類變 2，超過目標；左端逐步右移，直到只剩 b。', line: 10, /* TODO: 可能要拆格 */ views: [arr('aaab'.split(''), { label: '暫時超標', dim: [0, 1, 2], highlight: [3] })] },
+  { note: '窗口 aaa 曾有 1 種字母，且這種字母至少出現 3 次，記錄長度 3。', line: 15, views: [arr([3], { label: '最佳長度', done: [0] })] },
+  { note: '再試 2 種字母；整段 aaabb 中 b 只有 2 次，不合格。答案仍是 3。', line: 15, views: [arr(S.split(''), { label: 's', dim: [3, 4], done: [0, 1, 2] })] },
 ]
 
 export const q0395: Solution = {

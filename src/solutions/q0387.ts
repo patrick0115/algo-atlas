@@ -4,9 +4,9 @@ import type { Solution } from './types'
 // 387. First Unique Character in a String
 const S = 'loveleetcode'
 const bruteFig = [
-  { note: '先把索引 0 的 l 當候選，重新掃完整串後發現 l 出現兩次，因此不能回傳 0。', views: [arr(S.split(''), { label: '檢查 l', highlight: [0,4] })] },
-  { note: '改查索引 1 的 o，同樣重新掃完整串；o 在索引 9 又出現一次，所以繼續往右。', views: [arr(S.split(''), { label: '檢查 o', highlight: [1,9] })] },
-  { note: '索引 2 的 v 在整串只出現一次，它是第一個通過檢查的候選，因此回傳 2。', views: [arr(S.split(''), { label: '找到 v', done: [0,1], highlight: [2] })] },
+  { note: '先把索引 0 的 l 當候選，重新掃完整串後發現 l 出現兩次，因此不能回傳 0。', line: 7, views: [arr(S.split(''), { label: '檢查 l', highlight: [0,4] })] },
+  { note: '改查索引 1 的 o，同樣重新掃完整串；o 在索引 9 又出現一次，所以繼續往右。', line: 7, views: [arr(S.split(''), { label: '檢查 o', highlight: [1,9] })] },
+  { note: '索引 2 的 v 在整串只出現一次，它是第一個通過檢查的候選，因此回傳 2。', line: 8, views: [arr(S.split(''), { label: '找到 v', done: [0,1], highlight: [2] })] },
 ]
 
 export const q0387: Solution = {
@@ -67,7 +67,7 @@ export const q0387: Solution = {
     return -1;
 }`,
     } },
-    { name: '26 格頻率表', idea: '第一次掃描計次，第二次依原順序找次數等於 1 的字元。', steps: ['freq[26] 歸零。先確定每個候選字元是否真的只出現一次。', '掃 s，freq[字母−a]++。照原字串順序檢查，才能選到索引最小的唯一字元。', '再從左向右掃，第一個 freq=1 的位置就是答案。若都沒有則回傳 −1。'], figure: { title: `s = "${S}"`, steps: [{ note: '先掃完整個字串建立 26 格頻率表，l、o 各出現兩次，而 v 只出現一次。', views: [arr(['l:2','o:2','v:1','e:4'], { label: '部分頻率', highlight: [2] })] }, { note: '第二輪回到索引 0，l 的頻率是 2，接著索引 1 的 o 也是 2，兩個都跳過。', views: [arr(S.split(''), { label: '第二輪掃描', done: [0,1] })] }, { note: '索引 2 的 v 頻率是 1，它是第一個符合條件的字元，因此回傳 2。', views: [arr(S.split(''), { label: '答案索引 2', highlight: [2], dim: [0,1] })] }] }, complexity: { time: 'O(n)', space: 'O(1)', why: '兩次線性掃描；26 格陣列是固定大小。' }, verdict: '本題推薦方法。', code: {
+    { name: '26 格頻率表', idea: '第一次掃描計次，第二次依原順序找次數等於 1 的字元。', steps: ['freq[26] 歸零。先確定每個候選字元是否真的只出現一次。', '掃 s，freq[字母−a]++。照原字串順序檢查，才能選到索引最小的唯一字元。', '再從左向右掃，第一個 freq=1 的位置就是答案。若都沒有則回傳 −1。'], figure: { title: `s = "${S}"`, steps: [{ note: '先掃完整個字串建立 26 格頻率表，l、o 各出現兩次，而 v 只出現一次。', line: 4, views: [arr(['l:2','o:2','v:1','e:4'], { label: '部分頻率', highlight: [2] })] }, { note: '第二輪回到索引 0，l 的頻率是 2，接著索引 1 的 o 也是 2，兩個都跳過。', line: 6, views: [arr(S.split(''), { label: '第二輪掃描', done: [0,1] })] }, { note: '索引 2 的 v 頻率是 1，它是第一個符合條件的字元，因此回傳 2。', line: 7, views: [arr(S.split(''), { label: '答案索引 2', highlight: [2], dim: [0,1] })] }] }, complexity: { time: 'O(n)', space: 'O(1)', why: '兩次線性掃描；26 格陣列是固定大小。' }, verdict: '本題推薦方法。', code: {
       python: `def firstUniqChar(s):
     cnt = [0] * 26
     for ch in s:  # 先統計字母次數，再依原順序尋找答案。

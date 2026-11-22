@@ -20,7 +20,7 @@ function countSteps(): FigStep[] {
   A.forEach((x, i) => {
     m.set(x, (m.get(x) ?? 0) + 1)
     if (i === 0 || i === A.length - 1 || i === 4)
-      out.push({ note: i === A.length - 1 ? '第一步:用 Hash Map 數完每個數出現幾次' : `計數中… nums[${i}] = ${x},次數 +1`, views: [arr(A, { label: 'nums', highlight: [i], dim: range(0, i - 1) }), kv(m, 'count(數 → 次數)', [x])] })
+      out.push({ note: i === A.length - 1 ? '第一步:用 Hash Map 數完每個數出現幾次' : `計數中… nums[${i}] = ${x},次數 +1`, line: 3, views: [arr(A, { label: 'nums', highlight: [i], dim: range(0, i - 1) }), kv(m, 'count(數 → 次數)', [x])] })
   })
   return out
 }
@@ -31,9 +31,9 @@ function sortFig(): FigStep[] {
   const sorted = [...keys].sort((a, b) => m.get(b)! - m.get(a)!)
   return [
     ...countSteps(),
-    { note: '把所有「不同的數」列出來', views: [arr(keys, { label: '不同的數' }), arr(keys.map((x) => m.get(x)!), { label: '次數' })] },
-    { note: '依次數由大到小排序', views: [arr(sorted, { label: '依次數排序後' }), arr(sorted.map((x) => m.get(x)!), { label: '次數' })] },
-    { note: `取前 k = ${K} 個:[${sorted.slice(0, K).join(', ')}]`, views: [arr(sorted, { label: '依次數排序後', done: range(0, K - 1), dim: range(K, sorted.length - 1) }), arr(sorted.map((x) => m.get(x)!), { label: '次數', done: range(0, K - 1), dim: range(K, sorted.length - 1) })] },
+    { note: '把所有「不同的數」列出來', line: 4, views: [arr(keys, { label: '不同的數' }), arr(keys.map((x) => m.get(x)!), { label: '次數' })] },
+    { note: '依次數由大到小排序', line: 5, views: [arr(sorted, { label: '依次數排序後' }), arr(sorted.map((x) => m.get(x)!), { label: '次數' })] },
+    { note: `取前 k = ${K} 個:[${sorted.slice(0, K).join(', ')}]`, line: 6, views: [arr(sorted, { label: '依次數排序後', done: range(0, K - 1), dim: range(K, sorted.length - 1) }), arr(sorted.map((x) => m.get(x)!), { label: '次數', done: range(0, K - 1), dim: range(K, sorted.length - 1) })] },
   ]
 }
 
@@ -68,22 +68,22 @@ function heapFig(): FigStep[] {
     }
   }
   const out: FigStep[] = [...countSteps()]
-  out.push({ note: `準備一個「最小堆」,最多只放 k = ${K} 個。堆頂(黑色)永遠是目前留下來的裡面次數最少的`, views: [kv(m, 'count'), heapView(h, 'min-heap(節點下方是次數)')] })
+  out.push({ note: `準備一個「最小堆」,最多只放 k = ${K} 個。堆頂(黑色)永遠是目前留下來的裡面次數最少的`, line: 5, views: [kv(m, 'count'), heapView(h, 'min-heap(節點下方是次數)')] })
   for (const [x, c] of m) {
     h.push([c, x])
     up()
     if (h.length > K) {
-      out.push({ note: `放入 ${x}(×${c}),堆裡有 ${h.length} 個,超過 k 了`, views: [kv(m, 'count', [x]), heapView(h, 'min-heap(節點下方是次數)')] })
+      out.push({ note: `放入 ${x}(×${c}),堆裡有 ${h.length} 個,超過 k 了`, line: 26, views: [kv(m, 'count', [x]), heapView(h, 'min-heap(節點下方是次數)')] })
       const top = h[0]
       h[0] = h[h.length - 1]
       h.pop()
       down()
-      out.push({ note: `踢掉堆頂 ${top[1]}(×${top[0]}):它是次數最少的,不可能是前 k 名`, views: [kv(m, 'count', [x]), heapView(h, 'min-heap(節點下方是次數)')] })
+      out.push({ note: `踢掉堆頂 ${top[1]}(×${top[0]}):它是次數最少的,不可能是前 k 名`, line: 27, views: [kv(m, 'count', [x]), heapView(h, 'min-heap(節點下方是次數)')] })
     } else {
-      out.push({ note: `放入 ${x}(×${c}),堆裡還不到 k 個,直接放`, views: [kv(m, 'count', [x]), heapView(h, 'min-heap(節點下方是次數)')] })
+      out.push({ note: `放入 ${x}(×${c}),堆裡還不到 k 個,直接放`, line: 26, views: [kv(m, 'count', [x]), heapView(h, 'min-heap(節點下方是次數)')] })
     }
   }
-  out.push({ note: `全部處理完,堆裡剩下的 [${h.map((p) => p[1]).join(', ')}] 就是答案`, views: [heapView(h, 'min-heap(節點下方是次數)')] })
+  out.push({ note: `全部處理完,堆裡剩下的 [${h.map((p) => p[1]).join(', ')}] 就是答案`, line: 29, views: [heapView(h, 'min-heap(節點下方是次數)')] })
   return out
 }
 
@@ -92,16 +92,16 @@ function bucketFig(): FigStep[] {
   const buckets: number[][] = Array.from({ length: A.length + 1 }, () => [])
   const view = (opt: Parameters<typeof arr>[1] = {}) => arr(buckets.map((b) => (b.length ? b.join(',') : '·')), { label: 'bucket[次數] = 出現這麼多次的數', ...opt })
   const out: FigStep[] = [...countSteps()]
-  out.push({ note: `次數最多就是 n = ${A.length},所以開 n+1 個桶,桶的索引 = 次數`, views: [kv(m, 'count'), view()] })
+  out.push({ note: `次數最多就是 n = ${A.length},所以開 n+1 個桶,桶的索引 = 次數`, line: 4, views: [kv(m, 'count'), view()] })
   for (const [x, c] of m) {
     buckets[c].push(x)
-    out.push({ note: `${x} 出現 ${c} 次 → 放進 bucket[${c}]`, views: [kv(m, 'count', [x]), view({ highlight: [c] })] })
+    out.push({ note: `${x} 出現 ${c} 次 → 放進 bucket[${c}]`, line: 5, views: [kv(m, 'count', [x]), view({ highlight: [c] })] })
   }
   const res: number[] = []
   for (let f = A.length; f >= 1 && res.length < K; f--) {
     if (!buckets[f].length) continue
     res.push(...buckets[f])
-    out.push({ note: `從最大的次數往回走:bucket[${f}] 有 [${buckets[f].join(', ')}],收進答案 → [${res.join(', ')}]${res.length >= K ? `,湊滿 k = ${K} 個,結束` : ''}`, views: [view({ highlight: [f], dim: range(f + 1, A.length) })] })
+    out.push({ note: `從最大的次數往回走:bucket[${f}] 有 [${buckets[f].join(', ')}],收進答案 → [${res.join(', ')}]${res.length >= K ? `,湊滿 k = ${K} 個,結束` : ''}`, line: 9, views: [view({ highlight: [f], dim: range(f + 1, A.length) })] })
   }
   return out
 }

@@ -17,16 +17,16 @@ function setFig(): FigStep[] {
       if (iv.length && iv[iv.length - 1][1] === v - 1) iv[iv.length - 1][1] = v
       else iv.push([v, v])
     }
-    out.push({ note: `addNum(${x}) → 集合 {${s.join(', ')}}。getIntervals 時從小到大掃,連續的數接成一段 → ${iv.map((p) => `[${p}]`).join(' ')}`, views: [arr(s, { label: '排序後的數' }), intervalsView(iv, { label: '區間' })] })
+    out.push({ note: `addNum(${x}) → 集合 {${s.join(', ')}}。getIntervals 時從小到大掃,連續的數接成一段 → ${iv.map((p) => `[${p}]`).join(' ')}`, line: 7, /* TODO: 可能要拆格 */ views: [arr(s, { label: '排序後的數' }), intervalsView(iv, { label: '區間' })] })
   }
   return out
 }
 
 function mergeFig(): FigStep[] {
   return [
-    { note: '直接維護排好序、互不重疊的區間清單。加入 x 時用二分找到它該在的位置,看能不能和左邊或右邊的區間接上', views: [intervalsView([[1, 1], [3, 3], [7, 7]], { label: '加入 2 之前' })] },
-    { note: '加入 2:左邊 [1,1] 的結尾是 1 = 2 − 1、右邊 [3,3] 的開頭是 3 = 2 + 1 → 兩邊一起合併成 [1,3]', views: [intervalsView([[1, 3], [7, 7]], { label: '加入 2 之後', cls: { 0: 'hl' } })] },
-    { note: '加入 6:只能接到右邊 [7,7] → [6,7]。查詢時直接回傳清單,O(區間數)', views: [intervalsView([[1, 3], [6, 7]], { label: '加入 6 之後', cls: { 1: 'hl' } })] },
+    { note: '直接維護排好序、互不重疊的區間清單。加入 x 時用二分找到它該在的位置,看能不能和左邊或右邊的區間接上', line: 9, views: [intervalsView([[1, 1], [3, 3], [7, 7]], { label: '加入 2 之前' })] },
+    { note: '加入 2:左邊 [1,1] 的結尾是 1 = 2 − 1、右邊 [3,3] 的開頭是 3 = 2 + 1 → 兩邊一起合併成 [1,3]', line: 18, views: [intervalsView([[1, 3], [7, 7]], { label: '加入 2 之後', cls: { 0: 'hl' } })] },
+    { note: '加入 6:只能接到右邊 [7,7] → [6,7]。查詢時直接回傳清單,O(區間數)', line: 21, views: [intervalsView([[1, 3], [6, 7]], { label: '加入 6 之後', cls: { 1: 'hl' } })] },
   ]
 }
 

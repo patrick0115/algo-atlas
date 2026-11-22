@@ -3,16 +3,16 @@ import type { FigStep, Solution } from './types'
 
 const A = [1, 7, 4, 9, 2, 5]
 const dpFig: FigStep[] = [
-  { note: 'up[i] 是以 i 結尾且最後一步上升的最長長度；down[i] 則是最後一步下降。每格至少可單獨成長度 1。', views: [arr(A, { label: 'nums' }), arr([1, 1, 1, 1, 1, 1], { label: '初始 up / down' })] },
-  { note: '7 大於先前的 1，所以 up[1] = down[0] + 1 = 2，得到 [1,7]。', views: [arr(A, { label: 'nums', done: [0], highlight: [1] }), arr([1, 2], { label: 'up[0..1]' })] },
-  { note: '4 小於先前的 7，因此 down[2] = up[1] + 1 = 3，得到 [1,7,4]。', views: [arr(A, { label: 'nums', done: [0, 1], highlight: [2] }), arr([1, 1, 3], { label: 'down[0..2]' })] },
-  { note: '後面 9、2、5 交替上升下降，長度依序變 4、5、6；答案為 6。', views: [arr(A, { label: '最長擺動子序列', done: [0, 1, 2, 3, 4, 5] }), arr([6], { label: '答案', done: [0] })] },
+  { note: 'up[i] 是以 i 結尾且最後一步上升的最長長度；down[i] 則是最後一步下降。每格至少可單獨成長度 1。', line: 3, views: [arr(A, { label: 'nums' }), arr([1, 1, 1, 1, 1, 1], { label: '初始 up / down' })] },
+  { note: '7 大於先前的 1，所以 up[1] = down[0] + 1 = 2，得到 [1,7]。', line: 9, views: [arr(A, { label: 'nums', done: [0], highlight: [1] }), arr([1, 2], { label: 'up[0..1]' })] },
+  { note: '4 小於先前的 7，因此 down[2] = up[1] + 1 = 3，得到 [1,7,4]。', line: 11, views: [arr(A, { label: 'nums', done: [0, 1], highlight: [2] }), arr([1, 1, 3], { label: 'down[0..2]' })] },
+  { note: '後面 9、2、5 交替上升下降，長度依序變 4、5、6；答案為 6。', line: 16 /* TODO: 可能要拆格 */, views: [arr(A, { label: '最長擺動子序列', done: [0, 1, 2, 3, 4, 5] }), arr([6], { label: '答案', done: [0] })] },
 ]
 const greedyFig: FigStep[] = [
-  { note: '只關心相鄰差的正負是否翻轉；第一個 1 先構成長度 1。', views: [arr(A, { label: 'nums', highlight: [0] })] },
-  { note: '1→7 是上升，選入 7，長度變 2。', views: [arr(A, { label: 'nums', done: [0, 1] }), arr([2], { label: '長度' })] },
-  { note: '7→4 是下降，方向翻轉，選入 4，長度變 3。', views: [arr(A, { label: 'nums', done: [0, 1, 2] }), arr([3], { label: '長度' })] },
-  { note: '4→9 上升、9→2 下降、2→5 上升，三次翻轉使答案到 6。', views: [arr(A, { label: 'nums', done: [0, 1, 2, 3, 4, 5] }), arr([6], { label: '答案', done: [0] })] },
+  { note: '只關心相鄰差的正負是否翻轉；第一個 1 先構成長度 1。', line: 2, views: [arr(A, { label: 'nums', highlight: [0] })] },
+  { note: '1→7 是上升，選入 7，長度變 2。', line: 7, views: [arr(A, { label: 'nums', done: [0, 1] }), arr([2], { label: '長度' })] },
+  { note: '7→4 是下降，方向翻轉，選入 4，長度變 3。', line: 7, views: [arr(A, { label: 'nums', done: [0, 1, 2] }), arr([3], { label: '長度' })] },
+  { note: '4→9 上升、9→2 下降、2→5 上升，三次翻轉使答案到 6。', line: 7 /* TODO: 可能要拆格 */, views: [arr(A, { label: 'nums', done: [0, 1, 2, 3, 4, 5] }), arr([6], { label: '答案', done: [0] })] },
 ]
 
 export const q0376: Solution = {

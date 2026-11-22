@@ -9,22 +9,22 @@ const bits = (x: number) => x.toString(2).padStart(W, '0').split('')
 function loopFig(): FigStep[] {
   let a = 11
   let b = 5
-  const out: FigStep[] = [{ note: '二進位加法拆成兩部分:**不進位的和** = a ^ b(1+0=1、1+1=0);**進位** = (a & b) << 1(兩個都是 1 的位置,往左進一位)。答案 = 不進位的和 + 進位 → 又是一個加法,重複直到沒有進位', views: [arr(bits(a), { label: `a = ${a}` }), arr(bits(b), { label: `b = ${b}` })] }]
+  const out: FigStep[] = [{ note: '二進位加法拆成兩部分:**不進位的和** = a ^ b(1+0=1、1+1=0);**進位** = (a & b) << 1(兩個都是 1 的位置,往左進一位)。答案 = 不進位的和 + 進位 → 又是一個加法,重複直到沒有進位', line: 2, views: [arr(bits(a), { label: `a = ${a}` }), arr(bits(b), { label: `b = ${b}` })] }]
   while (b !== 0) {
     const sum = a ^ b
     const carry = (a & b) << 1
-    out.push({ note: `a ^ b = ${sum}(不進位的和),(a & b) << 1 = ${carry}(進位)→ 下一輪算 ${sum} + ${carry}`, views: [arr(bits(sum), { label: `a ^ b = ${sum}` }), arr(bits(carry), { label: `carry = ${carry}`, highlight: bits(carry).flatMap((c, i) => (c === '1' ? [i] : [])) })] })
+    out.push({ note: `a ^ b = ${sum}(不進位的和),(a & b) << 1 = ${carry}(進位)→ 下一輪算 ${sum} + ${carry}`, line: 3 /* TODO: 可能要拆格 */, views: [arr(bits(sum), { label: `a ^ b = ${sum}` }), arr(bits(carry), { label: `carry = ${carry}`, highlight: bits(carry).flatMap((c, i) => (c === '1' ? [i] : [])) })] })
     a = sum
     b = carry
   }
-  out.push({ note: `進位變 0 → 答案 ${a}`, views: [arr(bits(a), { label: `答案 = ${a}`, done: [0, 1, 2, 3, 4] })] })
+  out.push({ note: `進位變 0 → 答案 ${a}`, line: 6, views: [arr(bits(a), { label: `答案 = ${a}`, done: [0, 1, 2, 3, 4] })] })
   return out
 }
 
 function columnFig(): FigStep[] {
   return [
-    { note: '也可以模擬直式加法:從最低位開始,每一位看 a 的位元、b 的位元、進位三個數', views: [arr(['a 位元', 'b 位元', '進位'], { label: '每一位的輸入' })] },
-    { note: '這一位的結果 = 三者 XOR;新的進位 = 至少兩個是 1(多數決)。做滿 32 位', views: [arr(['s = x ^ y ^ c', 'c = (x & y) | (c & (x ^ y))'], { label: '全加器' })] },
+    { note: '也可以模擬直式加法:從最低位開始,每一位看 a 的位元、b 的位元、進位三個數', line: 4, views: [arr(['a 位元', 'b 位元', '進位'], { label: '每一位的輸入' })] },
+    { note: '這一位的結果 = 三者 XOR;新的進位 = 至少兩個是 1(多數決)。做滿 32 位', line: 5 /* TODO: 可能要拆格 */, views: [arr(['s = x ^ y ^ c', 'c = (x & y) | (c & (x ^ y))'], { label: '全加器' })] },
   ]
 }
 

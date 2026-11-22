@@ -9,11 +9,11 @@ const PICK = 6
 function bsFig(): FigStep[] {
   let lo = 1
   let hi = N
-  const out: FigStep[] = [{ note: `答案在 1..${N} 之間。每次猜正中間:系統回答「太大(−1)」「太小(1)」或「猜中(0)」,每次都能把範圍砍半`, views: [arr(range(1, N), { label: '可能的答案', range: [0, N - 1] })] }]
+  const out: FigStep[] = [{ note: `答案在 1..${N} 之間。每次猜正中間:系統回答「太大(−1)」「太小(1)」或「猜中(0)」,每次都能把範圍砍半`, line: 4, views: [arr(range(1, N), { label: '可能的答案', range: [0, N - 1] })] }]
   while (lo <= hi) {
     const m = lo + ((hi - lo) >> 1)
     const g = m > PICK ? -1 : m < PICK ? 1 : 0
-    out.push({ note: `猜 ${m} → ${g === 0 ? '猜中!' : g < 0 ? `太大了,答案在 ${lo}..${m - 1}` : `太小了,答案在 ${m + 1}..${hi}`}`, views: [arr(range(1, N), { label: '可能的答案', range: [lo - 1, hi - 1], highlight: [m - 1], done: g === 0 ? [m - 1] : [] })] })
+    out.push({ note: `猜 ${m} → ${g === 0 ? '猜中!' : g < 0 ? `太大了,答案在 ${lo}..${m - 1}` : `太小了,答案在 ${m + 1}..${hi}`}`, line: g === 0 ? 8 : g < 0 ? 9 : 10, views: [arr(range(1, N), { label: '可能的答案', range: [lo - 1, hi - 1], highlight: [m - 1], done: g === 0 ? [m - 1] : [] })] })
     if (g === 0) break
     if (g < 0) hi = m - 1
     else lo = m + 1
@@ -23,8 +23,8 @@ function bsFig(): FigStep[] {
 
 function terFig(): FigStep[] {
   return [
-    { note: '三分搜尋:一次猜兩個點 m1、m2,把範圍切成三段。看起來每輪砍掉 2/3,但每輪要問兩次', views: [arr(range(1, N), { label: '1..10', highlight: [3, 6] })] },
-    { note: `猜 4(太小)、猜 7(太大)→ 答案在 5..6。總詢問次數 ≈ 2·log₃ n ≈ 1.26·log₂ n,反而比二分多`, views: [arr(range(1, N), { label: '1..10', range: [4, 5] })] },
+    { note: '三分搜尋:一次猜兩個點 m1、m2,把範圍切成三段。看起來每輪砍掉 2/3,但每輪要問兩次', line: 6, views: [arr(range(1, N), { label: '1..10', highlight: [3, 6] })] },
+    { note: `猜 4(太小)、猜 7(太大)→ 答案在 5..6。總詢問次數 ≈ 2·log₃ n ≈ 1.26·log₂ n,反而比二分多`, line: 14 /* TODO: 可能要拆格 */, views: [arr(range(1, N), { label: '1..10', range: [4, 5] })] },
   ]
 }
 

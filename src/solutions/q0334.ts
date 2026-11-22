@@ -5,19 +5,19 @@ const A = [2, 1, 5, 0, 4, 6]
 
 function boundsFig(): FigStep[] {
   return [
-    { note: '對每個中間位置 i，要知道左邊最小值與右邊最大值；以 nums[4]=4 為例，左邊最小是 0，右邊最大是 6。', views: [arr(A, { label: 'nums', highlight: [4], compare: [3, 5] })] },
-    { note: '從左掃得到左側最小值陣列：第 4 格左邊最小為 0（索引 3）。', views: [arr(['—', 2, 1, 1, 0, 0], { label: 'leftMin[i]：i 左邊最小' })] },
-    { note: '從右掃得到右側最大值：第 4 格右邊最大為 6（索引 5）。', views: [arr([6, 6, 6, 6, 6, '—'], { label: 'rightMax[i]：i 右邊最大' })] },
-    { note: '位置 4 滿足 0<4<6，索引 3<4<5，回傳 true。', views: [arr(A, { label: '找到 0,4,6', highlight: [3, 4, 5] })] },
+    { note: '對每個中間位置 i，要知道左邊最小值與右邊最大值；以 nums[4]=4 為例，左邊最小是 0，右邊最大是 6。', line: 3, views: [arr(A, { label: 'nums', highlight: [4], compare: [3, 5] })] },
+    { note: '從左掃得到左側最小值陣列：第 4 格左邊最小為 0（索引 3）。', line: 6, views: [arr(['—', 2, 1, 1, 0, 0], { label: 'leftMin[i]：i 左邊最小' })] },
+    { note: '從右掃得到右側最大值：第 4 格右邊最大為 6（索引 5）。', line: 9, views: [arr([6, 6, 6, 6, 6, '—'], { label: 'rightMax[i]：i 右邊最大' })] },
+    { note: '位置 4 滿足 0<4<6，索引 3<4<5，回傳 true。', line: 12, views: [arr(A, { label: '找到 0,4,6', highlight: [3, 4, 5] })] },
   ]
 }
 
 function greedyFig(): FigStep[] {
   return [
-    { note: '維持 smallest（目前最小值）與 middle（某個遞增二元組的第二值）。讀 2、1 後 smallest=1。', views: [arr(A, { label: '已讀 2,1', done: [0], highlight: [1] })] },
-    { note: '讀 5 時，它大於 smallest，設 middle=5，已有候選二元組 1<5。', views: [arr(A, { label: '候選 1,5', highlight: [1, 2] })] },
-    { note: '讀 0 時更新 smallest=0；讀 4 時更新 middle=4，得到更容易延伸的候選 0<4。', views: [arr(A, { label: '候選 0,4', highlight: [3, 4] })] },
-    { note: '讀 6 時，6>middle=4，已找到 0<4<6，回傳 true。', views: [arr(A, { label: '三個索引依序遞增', highlight: [3, 4, 5] })] },
+    { note: '維持 smallest（目前最小值）與 middle（某個遞增二元組的第二值）。讀 2、1 後 smallest=1。', line: 6, /* TODO: 可能要拆格 */ views: [arr(A, { label: '已讀 2,1', done: [0], highlight: [1] })] },
+    { note: '讀 5 時，它大於 smallest，設 middle=5，已有候選二元組 1<5。', line: 8, views: [arr(A, { label: '候選 1,5', highlight: [1, 2] })] },
+    { note: '讀 0 時更新 smallest=0；讀 4 時更新 middle=4，得到更容易延伸的候選 0<4。', line: 8, /* TODO: 可能要拆格 */ views: [arr(A, { label: '候選 0,4', highlight: [3, 4] })] },
+    { note: '讀 6 時，6>middle=4，已找到 0<4<6，回傳 true。', line: 10, views: [arr(A, { label: '三個索引依序遞增', highlight: [3, 4, 5] })] },
   ]
 }
 

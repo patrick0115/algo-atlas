@@ -7,23 +7,23 @@ const S = ['h', 'e', 'l', 'l', 'o']
 
 function twoPtrFig(): FigStep[] {
   const a = [...S]
-  const out: FigStep[] = [{ note: '左右各放一個指標,從兩端往中間走:每一步把兩端的字交換,就像把一排人頭尾對調', views: [arr([...a], { label: 's', pointers: [{ name: 'L', index: 0 }, { name: 'R', index: a.length - 1, color: 'b' }] })] }]
+  const out: FigStep[] = [{ note: '左右各放一個指標,從兩端往中間走:每一步把兩端的字交換,就像把一排人頭尾對調', line: 2, views: [arr([...a], { label: 's', pointers: [{ name: 'L', index: 0 }, { name: 'R', index: a.length - 1, color: 'b' }] })] }]
   let l = 0
   let r = a.length - 1
   while (l < r) {
     ;[a[l], a[r]] = [a[r], a[l]]
-    out.push({ note: `交換 s[${l}] 和 s[${r}],然後 L 往右、R 往左`, views: [arr([...a], { label: 's', highlight: [l, r], done: [...Array.from({ length: l }, (_, k) => k), ...Array.from({ length: a.length - 1 - r }, (_, k) => a.length - 1 - k)], pointers: [{ name: 'L', index: l }, { name: 'R', index: r, color: 'b' }] })] })
+    out.push({ note: `交換 s[${l}] 和 s[${r}],然後 L 往右、R 往左`, line: 2, views: [arr([...a], { label: 's', highlight: [l, r], done: [...Array.from({ length: l }, (_, k) => k), ...Array.from({ length: a.length - 1 - r }, (_, k) => a.length - 1 - k)], pointers: [{ name: 'L', index: l }, { name: 'R', index: r, color: 'b' }] })] })
     l++
     r--
   }
-  out.push({ note: `L 和 R 相遇(中間那個字不用動),反轉完成 → [${a.map((c) => `"${c}"`).join(',')}]`, views: [arr(a, { label: 's', done: a.map((_, i) => i) })] })
+  out.push({ note: `L 和 R 相遇(中間那個字不用動),反轉完成 → [${a.map((c) => `"${c}"`).join(',')}]`, line: 2, views: [arr(a, { label: 's', done: a.map((_, i) => i) })] })
   return out
 }
 
 function recFig(): FigStep[] {
   return [
-    { note: '遞迴版:「反轉 s[l..r]」= 交換兩端,再反轉 s[l+1..r−1](一個更小的同樣問題)', views: [arr(['o', 'e', 'l', 'l', 'h'], { label: 'swap(0, 4) 之後', highlight: [0, 4], range: [1, 3] })] },
-    { note: '一層一層往內,直到 l ≥ r 停下。每層用掉一格呼叫堆疊,所以額外空間是 O(n),不符合題目的 O(1) 要求', views: [arr(['o', 'l', 'l', 'e', 'h'], { label: 'swap(1, 3) 之後', highlight: [1, 3], range: [2, 2] })] },
+    { note: '遞迴版:「反轉 s[l..r]」= 交換兩端,再反轉 s[l+1..r−1](一個更小的同樣問題)', line: 4, views: [arr(['o', 'e', 'l', 'l', 'h'], { label: 'swap(0, 4) 之後', highlight: [0, 4], range: [1, 3] })] },
+    { note: '一層一層往內,直到 l ≥ r 停下。每層用掉一格呼叫堆疊,所以額外空間是 O(n),不符合題目的 O(1) 要求', line: 5, /* TODO: 可能要拆格 */ views: [arr(['o', 'l', 'l', 'e', 'h'], { label: 'swap(1, 3) 之後', highlight: [1, 3], range: [2, 2] })] },
   ]
 }
 

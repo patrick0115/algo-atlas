@@ -8,11 +8,11 @@ const N = 49
 function bsFig(): FigStep[] {
   let lo = 1
   let hi = N
-  const out: FigStep[] = [{ note: `不用 sqrt:在 1..${N} 二分搜尋一個 m,使 m × m == ${N}。m 越大,m² 越大 → 可以二分`, views: [arr([lo, hi], { label: '範圍 [lo, hi]' })] }]
+  const out: FigStep[] = [{ note: `不用 sqrt:在 1..${N} 二分搜尋一個 m,使 m × m == ${N}。m 越大,m² 越大 → 可以二分`, line: 2, views: [arr([lo, hi], { label: '範圍 [lo, hi]' })] }]
   while (lo <= hi) {
     const m = (lo + hi) >> 1
     const sq = m * m
-    out.push({ note: `m = ${m}:${m}² = ${sq} ${sq === N ? `= ${N} → 是完全平方數!` : sq < N ? `< ${N} → lo = ${m + 1}` : `> ${N} → hi = ${m - 1}`}`, views: [arr([lo, m, hi], { label: 'lo / m / hi', highlight: [1], done: sq === N ? [1] : [] })] })
+    out.push({ note: `m = ${m}:${m}² = ${sq} ${sq === N ? `= ${N} → 是完全平方數!` : sq < N ? `< ${N} → lo = ${m + 1}` : `> ${N} → hi = ${m - 1}`}`, line: sq === N ? 5 : sq < N ? 6 : 7, views: [arr([lo, m, hi], { label: 'lo / m / hi', highlight: [1], done: sq === N ? [1] : [] })] })
     if (sq === N) break
     if (sq < N) lo = m + 1
     else hi = m - 1
@@ -29,8 +29,8 @@ function newtonFig(): FigStep[] {
   }
   xs.push(x)
   return [
-    { note: `牛頓法:從 x = ${N} 開始,不斷用 x = (x + n/x) / 2 更新(取整數)。這是在逼近 √n,每一步都會大幅靠近`, views: [arr(xs, { label: 'x 的變化', highlight: [0] })] },
-    { note: `${xs.join(' → ')}:x² ≤ n 時停下。${x}² = ${x * x} ${x * x === N ? `= ${N} → true` : `≠ ${N} → false`}`, views: [arr(xs, { label: 'x 的變化', done: [xs.length - 1] })] },
+    { note: `牛頓法:從 x = ${N} 開始,不斷用 x = (x + n/x) / 2 更新(取整數)。這是在逼近 √n,每一步都會大幅靠近`, line: 2, views: [arr(xs, { label: 'x 的變化', highlight: [0] })] },
+    { note: `${xs.join(' → ')}:x² ≤ n 時停下。${x}² = ${x * x} ${x * x === N ? `= ${N} → true` : `≠ ${N} → false`}`, line: 4, views: [arr(xs, { label: 'x 的變化', done: [xs.length - 1] })] },
   ]
 }
 

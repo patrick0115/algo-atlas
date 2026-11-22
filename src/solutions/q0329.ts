@@ -17,7 +17,7 @@ function memoFig(): FigStep[] {
   const m = M.length
   const n = M[0].length
   const memo: (number | string)[][] = M.map((r) => r.map(() => ''))
-  const out: FigStep[] = [{ note: 'f(r, c) = 從 (r, c) 出發、一路往**更大**的鄰居走,最長能走幾格。格子裡「值→f」', views: [view(memo, [], 'matrix')] }]
+  const out: FigStep[] = [{ note: 'f(r, c) = 從 (r, c) 出發、一路往**更大**的鄰居走,最長能走幾格。格子裡「值→f」', line: 2, views: [view(memo, [], 'matrix')] }]
   const f = (r: number, c: number): number => {
     if (memo[r][c] !== '') return memo[r][c] as number
     let best = 1
@@ -28,19 +28,19 @@ function memoFig(): FigStep[] {
     }
     memo[r][c] = best
     const bigger = [[1, 0], [-1, 0], [0, 1], [0, -1]].map(([dr, dc]) => [r + dr, c + dc] as Cell).filter(([a, b]) => a >= 0 && b >= 0 && a < m && b < n && M[a][b] > M[r][c])
-    out.push({ note: bigger.length ? `(${r},${c}) 值 ${M[r][c]}:比它大的鄰居是 ${bigger.map(([a, b]) => `${M[a][b]}(f=${memo[a][b]})`).join('、')} → f = 1 + 最大的 = ${best}` : `(${r},${c}) 值 ${M[r][c]}:四周沒有更大的 → f = 1`, views: [view(memo, [[r, c]], 'memo')] })
+    out.push({ note: bigger.length ? `(${r},${c}) 值 ${M[r][c]}:比它大的鄰居是 ${bigger.map(([a, b]) => `${M[a][b]}(f=${memo[a][b]})`).join('、')} → f = 1 + 最大的 = ${best}` : `(${r},${c}) 值 ${M[r][c]}:四周沒有更大的 → f = 1`, line: bigger.length ? 8 : 9, views: [view(memo, [[r, c]], 'memo')] })
     return best
   }
   let best = 0
   for (let r = 0; r < m; r++) for (let c = 0; c < n; c++) best = Math.max(best, f(r, c))
-  out.push({ note: `所有 f 的最大值 = ${best}:1 → 2 → 6 → 9`, views: [view(memo, [], '答案', [[2, 1], [2, 0], [1, 0], [0, 0]])] })
+  out.push({ note: `所有 f 的最大值 = ${best}:1 → 2 → 6 → 9`, line: 12, views: [view(memo, [], '答案', [[2, 1], [2, 0], [1, 0], [0, 0]])] })
   return out.slice(0, 7).concat(out.slice(-1))
 }
 
 function topoFig(): FigStep[] {
   return [
-    { note: '把「小 → 大」的相鄰關係看成有向邊,這是一張**沒有環**的圖(嚴格遞增不可能繞回來)。最長路徑 = 拓撲排序的層數', views: [view(M.map((r) => r.map(() => '')), [[2, 1], [2, 2], [0, 2]], '沒有更小鄰居的格子(1、1、4):第 1 層')] },
-    { note: '從「沒有更小鄰居」的格子開始 BFS,一層一層剝:每剝一層長度 +1。剝了幾層就是答案', views: [view(M.map((r) => r.map(() => '')), [[0, 0]], '最後一層:左上角的 9 = 第 4 層')] },
+    { note: '把「小 → 大」的相鄰關係看成有向邊,這是一張**沒有環**的圖(嚴格遞增不可能繞回來)。最長路徑 = 拓撲排序的層數', line: 10, views: [view(M.map((r) => r.map(() => '')), [[2, 1], [2, 2], [0, 2]], '沒有更小鄰居的格子(1、1、4):第 1 層')] },
+    { note: '從「沒有更小鄰居」的格子開始 BFS,一層一層剝:每剝一層長度 +1。剝了幾層就是答案', line: 13, views: [view(M.map((r) => r.map(() => '')), [[0, 0]], '最後一層:左上角的 9 = 第 4 層')] },
   ]
 }
 

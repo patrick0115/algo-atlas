@@ -4,16 +4,16 @@ import type { FigStep, Solution } from './types'
 const A = [4, 9, 5]
 const B = [9, 4, 9, 8, 4]
 const fig1: FigStep[] = [
-  { note: '先把 nums1 加入集合，重複數值只留一次。', views: [arr(A, { label: 'nums1' })] },
-  { note: '掃 nums2，第一個 9 在集合中，加入答案並刪除候選值。', views: [arr(B, { label: 'nums2', highlight: [0] }), arr([9], { label: '答案' })] },
-  { note: '接著 4 也命中；後面的 9、4 已刪除，所以不再加入。', views: [arr(B, { label: 'nums2', done: [0, 1], dim: [2, 4] }), arr([9, 4], { label: '答案' })] },
-  { note: '8 不在集合中；答案含 9、4 各一次。', views: [arr([9, 4], { label: '交集', done: [0, 1] })] },
+  { note: '先把 nums1 加入集合，重複數值只留一次。', line: 2, views: [arr(A, { label: 'nums1' })] },
+  { note: '掃 nums2，第一個 9 在集合中，加入答案並刪除候選值。', line: 6, /* TODO: 可能要拆格 */ views: [arr(B, { label: 'nums2', highlight: [0] }), arr([9], { label: '答案' })] },
+  { note: '接著 4 也命中；後面的 9、4 已刪除，所以不再加入。', line: 6, /* TODO: 可能要拆格 */ views: [arr(B, { label: 'nums2', done: [0, 1], dim: [2, 4] }), arr([9, 4], { label: '答案' })] },
+  { note: '8 不在集合中；答案含 9、4 各一次。', line: 10, views: [arr([9, 4], { label: '交集', done: [0, 1] })] },
 ]
 const fig2: FigStep[] = [
-  { note: '排序兩個陣列，讓相同數字排在一起。', views: [arr([4, 5, 9], { label: 'nums1' }), arr([4, 4, 8, 9, 9], { label: 'nums2' })] },
-  { note: '兩邊都指向 4，記下 4，雙指標一起右移。', views: [arr([4, 5, 9], { label: 'nums1', highlight: [0] }), arr([4, 4, 8, 9, 9], { label: 'nums2', highlight: [0] })] },
-  { note: '右側 4 小於左側 5，移右指標；接著 5 小於 8，移左指標。', views: [arr([4, 5, 9], { label: 'nums1', highlight: [2] }), arr([4, 4, 8, 9, 9], { label: 'nums2', highlight: [2] })] },
-  { note: '右側 8 小於 9，移右指標；兩邊遇到 9，記下 9。', views: [arr([4, 9], { label: '交集', done: [0, 1] })] },
+  { note: '排序兩個陣列，讓相同數字排在一起。', line: 2, views: [arr([4, 5, 9], { label: 'nums1' }), arr([4, 4, 8, 9, 9], { label: 'nums2' })] },
+  { note: '兩邊都指向 4，記下 4，雙指標一起右移。', line: 14, views: [arr([4, 5, 9], { label: 'nums1', highlight: [0] }), arr([4, 4, 8, 9, 9], { label: 'nums2', highlight: [0] })] },
+  { note: '右側 4 小於左側 5，移右指標；接著 5 小於 8，移左指標。', line: 11, /* TODO: 可能要拆格 */ views: [arr([4, 5, 9], { label: 'nums1', highlight: [2] }), arr([4, 4, 8, 9, 9], { label: 'nums2', highlight: [2] })] },
+  { note: '右側 8 小於 9，移右指標；兩邊遇到 9，記下 9。', line: 14, /* TODO: 可能要拆格 */ views: [arr([4, 9], { label: '交集', done: [0, 1] })] },
 ]
 const wrap = {
   python: `

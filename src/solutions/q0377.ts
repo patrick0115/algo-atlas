@@ -4,12 +4,12 @@ import type { FigStep, Solution } from './types'
 // 377. Combination Sum IV
 const A = [1, 2, 3]
 const bottomFig: FigStep[] = [
-  { note: '順序算不同:1+3、3+1 是兩種。先決定最後放哪個數。', views: [arr(A, { label: '可用數字' }), arr([1, 1, 2, 4, 7], { label: 'dp[0..4]', done: [4] })] },
-  { note: 'dp[4] = dp[3] + dp[2] + dp[1] = 4 + 2 + 1 = 7。dp[0] = 1 代表空序列。', views: [arr([4, 2, 1, 7], { label: '以 1、2、3 結尾及總數', done: [3] })] },
+  { note: '順序算不同:1+3、3+1 是兩種。先決定最後放哪個數。', line: 2, views: [arr(A, { label: '可用數字' }), arr([1, 1, 2, 4, 7], { label: 'dp[0..4]', done: [4] })] },
+  { note: 'dp[4] = dp[3] + dp[2] + dp[1] = 4 + 2 + 1 = 7。dp[0] = 1 代表空序列。', line: 5, views: [arr([4, 2, 1, 7], { label: '以 1、2、3 結尾及總數', done: [3] })] },
 ]
 const memoFig: FigStep[] = [
-  { note: '也能問「剩下 x 要怎麼湊」:每次先選一個數 v,再解 x−v。重複的 x 用備忘錄保存。', views: [arr([4, 3, 2, 1, 0], { label: '遞迴餘額' })] },
-  { note: '到 0 是一種完成方式;小於 0 則不是。', views: [arr([1, 1, 2, 4, 7], { label: '備忘錄結果', done: [4] })] },
+  { note: '也能問「剩下 x 要怎麼湊」:每次先選一個數 v,再解 x−v。重複的 x 用備忘錄保存。', line: 7, views: [arr([4, 3, 2, 1, 0], { label: '遞迴餘額' })] },
+  { note: '到 0 是一種完成方式;小於 0 則不是。', line: 4, views: [arr([1, 1, 2, 4, 7], { label: '備忘錄結果', done: [4] })] },
 ]
 
 export const q0377: Solution = {

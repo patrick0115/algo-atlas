@@ -24,18 +24,18 @@ function g(used: number[], cur: string): GraphViewData {
 
 function hierFig(): FigStep[] {
   return [
-    { note: '每張機票都要用一次 → 要找一條走過「每條邊剛好一次」的路(歐拉路徑)。從 JFK 出發,每次選字典序最小的目的地', views: [g([], 'JFK'), kv([['JFK', 'KUL, NRT'], ['NRT', 'JFK']], '鄰接表(排序後)')] },
-    { note: '貪心先走 KUL(字典序比較小)→ 但 KUL 沒有出去的票了,卡住!這時還有兩張票沒用', views: [g([0], 'KUL'), arr([], { label: '答案(倒著加)' })] },
-    { note: 'Hierholzer 的關鍵:**卡住的點一定是終點** → 把 KUL 放進答案(倒著放),退回 JFK 繼續', views: [g([0], 'JFK'), arr(['KUL'], { label: '答案(倒著加)' })] },
-    { note: 'JFK → NRT → JFK,再也沒有票:依序把 JFK、NRT、JFK 放進答案', views: [g([0, 1, 2], 'JFK'), arr(['KUL', 'JFK', 'NRT', 'JFK'], { label: '答案(倒著加)' })] },
-    { note: '倒過來就是答案:JFK → NRT → JFK → KUL。它用掉了所有票,而且在所有可行路線裡字典序最小', views: [arr(['JFK', 'NRT', 'JFK', 'KUL'], { label: '答案', done: [0, 1, 2, 3] })] },
+    { note: '每張機票都要用一次 → 要找一條走過「每條邊剛好一次」的路(歐拉路徑)。從 JFK 出發,每次選字典序最小的目的地', line: 3, views: [g([], 'JFK'), kv([['JFK', 'KUL, NRT'], ['NRT', 'JFK']], '鄰接表(排序後)')] },
+    { note: '貪心先走 KUL(字典序比較小)→ 但 KUL 沒有出去的票了,卡住!這時還有兩張票沒用', line: 10, views: [g([0], 'KUL'), arr([], { label: '答案(倒著加)' })] },
+    { note: 'Hierholzer 的關鍵:**卡住的點一定是終點** → 把 KUL 放進答案(倒著放),退回 JFK 繼續', line: 11, views: [g([0], 'JFK'), arr(['KUL'], { label: '答案(倒著加)' })] },
+    { note: 'JFK → NRT → JFK,再也沒有票:依序把 JFK、NRT、JFK 放進答案', line: 11, views: [g([0, 1, 2], 'JFK'), arr(['KUL', 'JFK', 'NRT', 'JFK'], { label: '答案(倒著加)' })] },
+    { note: '倒過來就是答案:JFK → NRT → JFK → KUL。它用掉了所有票,而且在所有可行路線裡字典序最小', line: 14, views: [arr(['JFK', 'NRT', 'JFK', 'KUL'], { label: '答案', done: [0, 1, 2, 3] })] },
   ]
 }
 
 function btFig(): FigStep[] {
   return [
-    { note: '回溯:從 JFK 開始,目的地照字典序一個一個試。用掉一張票就從鄰接表拿掉,走不完就放回去', views: [g([0], 'KUL'), arr(['JFK', 'KUL'], { label: '路線' })] },
-    { note: 'JFK → KUL 之後沒有票,但還剩 2 張 → 失敗,把 KUL 這張票放回去,改試 NRT。第一個用完所有票的路線就是答案', views: [g([1, 2, 0], 'KUL'), arr(['JFK', 'NRT', 'JFK', 'KUL'], { label: '路線', done: [0, 1, 2, 3] })] },
+    { note: '回溯:從 JFK 開始,目的地照字典序一個一個試。用掉一張票就從鄰接表拿掉,走不完就放回去', line: 15, views: [g([0], 'KUL'), arr(['JFK', 'KUL'], { label: '路線' })] },
+    { note: 'JFK → KUL 之後沒有票,但還剩 2 張 → 失敗,把 KUL 這張票放回去,改試 NRT。第一個用完所有票的路線就是答案', line: 18, /* TODO: 可能要拆格 */ views: [g([1, 2, 0], 'KUL'), arr(['JFK', 'NRT', 'JFK', 'KUL'], { label: '路線', done: [0, 1, 2, 3] })] },
   ]
 }
 

@@ -10,16 +10,16 @@ function dpFig(): FigStep[] {
   dp[1] = 1
   for (let i = 2; i <= N; i++) for (let j = 1; j < i; j++) dp[i] = Math.max(dp[i], j * (i - j), j * dp[i - j])
   return [
-    { note: `把 ${N} 拆成至少兩個正整數的和,讓它們的乘積最大。dp[i] = i 拆開後的最大乘積`, views: [arr([N], { label: 'n' })] },
-    { note: '先切下第一塊 j,剩下的 i − j 可以「不再拆」(乘 i − j)或「繼續拆」(乘 dp[i − j]),取較大者:`dp[i] = max(j × (i−j), j × dp[i−j])`', views: [arr(dp.slice(1), { label: 'dp[1..10]', mode: 'bars' })] },
-    { note: `dp[10] = ${dp[N]}:10 = 3 + 3 + 4 → 3 × 3 × 4 = 36`, views: [arr([3, 3, 4], { label: '拆法', done: [0, 1, 2] }), arr([dp[N]], { label: '答案', done: [0] })] },
+    { note: `把 ${N} 拆成至少兩個正整數的和,讓它們的乘積最大。dp[i] = i 拆開後的最大乘積`, line: 2, views: [arr([N], { label: 'n' })] },
+    { note: '先切下第一塊 j,剩下的 i − j 可以「不再拆」(乘 i − j)或「繼續拆」(乘 dp[i − j]),取較大者:`dp[i] = max(j × (i−j), j × dp[i−j])`', line: 4, views: [arr(dp.slice(1), { label: 'dp[1..10]', mode: 'bars' })] },
+    { note: `dp[10] = ${dp[N]}:10 = 3 + 3 + 4 → 3 × 3 × 4 = 36`, line: 5, views: [arr([3, 3, 4], { label: '拆法', done: [0, 1, 2] }), arr([dp[N]], { label: '答案', done: [0] })] },
   ]
 }
 
 function mathFig(): FigStep[] {
   return [
-    { note: '數學觀察:拆出 ≥ 5 的數不划算(例如 5 拆成 2 + 3 → 6 > 5);4 = 2 + 2 一樣;所以只會用 2 和 3。而 3 × 3 > 2 × 2 × 2 → 盡量用 3', views: [arr([2, 3], { label: '只用這兩種' })] },
-    { note: 'n % 3 == 0 → 3^(n/3);餘 1 → 把一個 3 + 1 換成 2 + 2:3^(n/3 − 1) × 4;餘 2 → 3^(n/3) × 2。特例 n = 2、3 必須拆開,答案是 1、2', views: [arr([36], { label: '10 = 3 + 3 + 4 → 36', done: [0] })] },
+    { note: '數學觀察:拆出 ≥ 5 的數不划算(例如 5 拆成 2 + 3 → 6 > 5);4 = 2 + 2 一樣;所以只會用 2 和 3。而 3 × 3 > 2 × 2 × 2 → 盡量用 3', line: 2, views: [arr([2, 3], { label: '只用這兩種' })] },
+    { note: 'n % 3 == 0 → 3^(n/3);餘 1 → 把一個 3 + 1 換成 2 + 2:3^(n/3 − 1) × 4;餘 2 → 3^(n/3) × 2。特例 n = 2、3 必須拆開,答案是 1、2', line: 4, /* TODO: 可能要拆格 */ views: [arr([36], { label: '10 = 3 + 3 + 4 → 36', done: [0] })] },
   ]
 }
 

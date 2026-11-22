@@ -7,16 +7,16 @@ const T = [3, 4, 5, 1, 3, null, 1]
 
 function pairFig(): FigStep[] {
   return [
-    { note: '房子排成一棵樹,不能同時偷相連的兩間(父子)。每個節點回傳兩個數:(偷我, 不偷我)時,這棵子樹最多能拿多少', views: [tree(T)] },
-    { note: '葉子:偷 = 自己的錢,不偷 = 0。節點 4(孩子 1、3):偷 4 → 4 + 0 + 0 = 4;不偷 4 → max(1,0) + max(3,0) = 4', views: [tree(T, { subs: { 3: '(1, 0)', 4: '(3, 0)', 6: '(1, 0)', 1: '(4, 4)', 2: '(5, 1)' } })] },
-    { note: '根 3:偷 → 3 + 「不偷 4」(4)+「不偷 5」(1)= 8;不偷 → max(4, 4) + max(5, 1) = 9。答案 max(8, 9) = 9', views: [tree(T, { subs: { 0: '(8, 9)' }, cls: { 1: 'done', 2: 'done' } })] },
+    { note: '房子排成一棵樹,不能同時偷相連的兩間(父子)。每個節點回傳兩個數:(偷我, 不偷我)時,這棵子樹最多能拿多少', line: 2, views: [tree(T)] },
+    { note: '葉子:偷 = 自己的錢,不偷 = 0。節點 4(孩子 1、3):偷 4 → 4 + 0 + 0 = 4;不偷 4 → max(1,0) + max(3,0) = 4', line: 5, views: [tree(T, { subs: { 3: '(1, 0)', 4: '(3, 0)', 6: '(1, 0)', 1: '(4, 4)', 2: '(5, 1)' } })] },
+    { note: '根 3:偷 → 3 + 「不偷 4」(4)+「不偷 5」(1)= 8;不偷 → max(4, 4) + max(5, 1) = 9。答案 max(8, 9) = 9', line: 5, views: [tree(T, { subs: { 0: '(8, 9)' }, cls: { 1: 'done', 2: 'done' } })] },
   ]
 }
 
 function memoFig(): FigStep[] {
   return [
-    { note: '直覺的遞迴:rob(node) = max(偷 node + rob(孫子們), rob(左) + rob(右))。孫子會被重複計算很多次', views: [tree(T, { cls: { 0: 'hl', 3: 'cur', 4: 'cur', 6: 'cur' } })] },
-    { note: '用 Hash 表記住每個節點的 rob 結果(記憶化),每個節點只算一次 → O(n)', views: [tree(T, { cls: { 1: 'done', 2: 'done', 3: 'done', 4: 'done', 6: 'done' } })] },
+    { note: '直覺的遞迴:rob(node) = max(偷 node + rob(孫子們), rob(左) + rob(右))。孫子會被重複計算很多次', line: 9, views: [tree(T, { cls: { 0: 'hl', 3: 'cur', 4: 'cur', 6: 'cur' } })] },
+    { note: '用 Hash 表記住每個節點的 rob 結果(記憶化),每個節點只算一次 → O(n)', line: 10, views: [tree(T, { cls: { 1: 'done', 2: 'done', 3: 'done', 4: 'done', 6: 'done' } })] },
   ]
 }
 

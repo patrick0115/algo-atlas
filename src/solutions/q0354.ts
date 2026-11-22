@@ -4,16 +4,16 @@ import type { Solution } from './types'
 // 354. Russian Doll Envelopes
 const E = [[5, 4], [6, 4], [6, 7], [2, 3]]
 const dpFig = [
-  { note: '按寬由小到大排列；同寬的信封不能互裝，必須另外比較高。', views: [arr(['2×3', '5×4', '6×4', '6×7'], { label: '排序後' })] },
-  { note: '2×3 自己形成長度 1 的鏈。', views: [arr([1, 0, 0, 0], { label: 'dp', highlight: [0] })] },
-  { note: '5×4 可裝下 2×3，長度變 2；6×4 高度沒有嚴格增加，只能接 2×3。', views: [arr([1, 2, 2, 0], { label: 'dp', highlight: [1, 2] })] },
-  { note: '6×7 可接 5×4，得到 2×3 → 5×4 → 6×7，答案 3。', views: [arr([1, 2, 2, 3], { label: 'dp', done: [3] })] },
+  { note: '按寬由小到大排列；同寬的信封不能互裝，必須另外比較高。', line: 2, views: [arr(['2×3', '5×4', '6×4', '6×7'], { label: '排序後' })] },
+  { note: '2×3 自己形成長度 1 的鏈。', line: 3, views: [arr([1, 0, 0, 0], { label: 'dp', highlight: [0] })] },
+  { note: '5×4 可裝下 2×3，長度變 2；6×4 高度沒有嚴格增加，只能接 2×3。', line: 8, /* TODO: 可能要拆格 */ views: [arr([1, 2, 2, 0], { label: 'dp', highlight: [1, 2] })] },
+  { note: '6×7 可接 5×4，得到 2×3 → 5×4 → 6×7，答案 3。', line: 8, views: [arr([1, 2, 2, 3], { label: 'dp', done: [3] })] },
 ]
 const lisFig = [
-  { note: '寬度升序；同寬時高度降序：2×3、5×4、6×7、6×4。這樣同寬的兩個不會被 LIS 一起選。', views: [arr([3, 4, 7, 4], { label: '高度序列' })] },
-  { note: '處理高度 3：長度 1 的最佳尾端是 3。', views: [arr([3], { label: 'tails', highlight: [0] })] },
-  { note: '處理 4、7：兩者都比尾端大，tails 變成 [3,4,7]。', views: [arr([3, 4, 7], { label: 'tails', highlight: [1, 2] })] },
-  { note: '最後的 4 取代第二格，不會增加長度；最長鏈仍是 3。', views: [arr([3, 4, 7], { label: 'tails', done: [0, 1, 2] })] },
+  { note: '寬度升序；同寬時高度降序：2×3、5×4、6×7、6×4。這樣同寬的兩個不會被 LIS 一起選。', line: 2, views: [arr([3, 4, 7, 4], { label: '高度序列' })] },
+  { note: '處理高度 3：長度 1 的最佳尾端是 3。', line: 11, views: [arr([3], { label: 'tails', highlight: [0] })] },
+  { note: '處理 4、7：兩者都比尾端大，tails 變成 [3,4,7]。', line: 11, /* TODO: 可能要拆格 */ views: [arr([3, 4, 7], { label: 'tails', highlight: [1, 2] })] },
+  { note: '最後的 4 取代第二格，不會增加長度；最長鏈仍是 3。', line: 11, views: [arr([3, 4, 7], { label: 'tails', done: [0, 1, 2] })] },
 ]
 
 export const q0354: Solution = {

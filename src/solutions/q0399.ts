@@ -12,16 +12,16 @@ const POS = { 0: { x: 0, y: 0 }, 1: { x: 2, y: 0 }, 2: { x: 4, y: 0 } }
 function dfsFig(): FigStep[] {
   const edges = [[0, 1, 2], [1, 0, 0.5], [1, 2, 3], [2, 1, 0.333]]
   return [
-    { note: 'a / b = 2 可以看成一條 a → b、權重 2 的邊;反方向 b → a 權重 1/2。變數是點,等式是邊', views: [graphView(3, edges, { directed: true, pos: POS, subs: { 0: 'a', 1: 'b', 2: 'c' } })] },
-    { note: '問 a / c:從 a 走到 c,把路上的權重**相乘**:a → b(×2)→ c(×3)= 6。因為 (a/b) × (b/c) = a/c', views: [graphView(3, edges, { directed: true, pos: POS, subs: { 0: 'a', 1: 'b', 2: 'c' }, edgeCls: { 0: 'hl', 2: 'hl' } })] },
-    { note: 'b / a = 0.5;a / e:e 沒出現過 → −1;a / a = 1;x / x:x 沒出現過 → −1(不是 1)', views: [arr(['6', '0.5', '-1', '1', '-1'], { label: '答案', done: [0, 1, 2, 3, 4] })] },
+    { note: 'a / b = 2 可以看成一條 a → b、權重 2 的邊;反方向 b → a 權重 1/2。變數是點,等式是邊', line: 8, /* TODO: 可能要拆格 */ views: [graphView(3, edges, { directed: true, pos: POS, subs: { 0: 'a', 1: 'b', 2: 'c' } })] },
+    { note: '問 a / c:從 a 走到 c,把路上的權重**相乘**:a → b(×2)→ c(×3)= 6。因為 (a/b) × (b/c) = a/c', line: 16, /* TODO: 可能要拆格 */ views: [graphView(3, edges, { directed: true, pos: POS, subs: { 0: 'a', 1: 'b', 2: 'c' }, edgeCls: { 0: 'hl', 2: 'hl' } })] },
+    { note: 'b / a = 0.5;a / e:e 沒出現過 → −1;a / a = 1;x / x:x 沒出現過 → −1(不是 1)', line: 21, views: [arr(['6', '0.5', '-1', '1', '-1'], { label: '答案', done: [0, 1, 2, 3, 4] })] },
   ]
 }
 
 function ufFig(): FigStep[] {
   return [
-    { note: '帶權併查集:每個變數記錄 `weight[x] = x / root`。合併 a / b = 2 時,把 a 的根接到 b 的根,並算好權重', views: [arr(['a/root = 6', 'b/root = 3', 'c/root = 1'], { label: '合併完(root = c)' })] },
-    { note: '查詢 a / c:同根 → `weight[a] / weight[c] = 6 / 1 = 6`;不同根或沒出現過 → −1', views: [arr([6], { label: 'a / c', done: [0] })] },
+    { note: '帶權併查集:每個變數記錄 `weight[x] = x / root`。合併 a / b = 2 時,把 a 的根接到 b 的根,並算好權重', line: 20, /* TODO: 可能要拆格 */ views: [arr(['a/root = 6', 'b/root = 3', 'c/root = 1'], { label: '合併完(root = c)' })] },
+    { note: '查詢 a / c:同根 → `weight[a] / weight[c] = 6 / 1 = 6`;不同根或沒出現過 → −1', line: 23, views: [arr([6], { label: 'a / c', done: [0] })] },
   ]
 }
 

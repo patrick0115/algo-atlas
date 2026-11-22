@@ -8,14 +8,14 @@ const S = 'abc'
 const T = 'ahbgdc'
 
 function ptrFig(): FigStep[] {
-  const out: FigStep[] = [{ note: 's 是不是 t 的子序列 = 能不能在 t 裡**依序**找到 s 的每個字(中間可以跳過)。i 指 s 下一個要找的字,j 掃 t', views: [arr(S.split(''), { label: 's', pointers: [{ name: 'i', index: 0 }] }), arr(T.split(''), { label: 't', pointers: [{ name: 'j', index: 0, color: 'b' }] })] }]
+  const out: FigStep[] = [{ note: 's 是不是 t 的子序列 = 能不能在 t 裡**依序**找到 s 的每個字(中間可以跳過)。i 指 s 下一個要找的字,j 掃 t', line: 2, views: [arr(S.split(''), { label: 's', pointers: [{ name: 'i', index: 0 }] }), arr(T.split(''), { label: 't', pointers: [{ name: 'j', index: 0, color: 'b' }] })] }]
   let i = 0
   for (let j = 0; j < T.length && i < S.length; j++) {
     const hit = T[j] === S[i]
-    out.push({ note: hit ? `t[${j}] = "${T[j]}" 正是要找的 s[${i}] → 找到,i 前進` : `t[${j}] = "${T[j]}" 不是 "${S[i]}" → 跳過`, views: [arr(S.split(''), { label: 's', done: Array.from({ length: i + (hit ? 1 : 0) }, (_, k) => k), pointers: [{ name: 'i', index: Math.min(i, S.length - 1) }] }), arr(T.split(''), { label: 't', highlight: hit ? [j] : [], dim: hit ? [] : [j], pointers: [{ name: 'j', index: j, color: 'b' }] })] })
+    out.push({ note: hit ? `t[${j}] = "${T[j]}" 正是要找的 s[${i}] → 找到,i 前進` : `t[${j}] = "${T[j]}" 不是 "${S[i]}" → 跳過`, line: 3, views: [arr(S.split(''), { label: 's', done: Array.from({ length: i + (hit ? 1 : 0) }, (_, k) => k), pointers: [{ name: 'i', index: Math.min(i, S.length - 1) }] }), arr(T.split(''), { label: 't', highlight: hit ? [j] : [], dim: hit ? [] : [j], pointers: [{ name: 'j', index: j, color: 'b' }] })] })
     if (hit) i++
   }
-  out.push({ note: `i 走到 s 的結尾(${i} = len(s))→ 全部都找到了 → true`, views: [arr(S.split(''), { label: 's', done: [0, 1, 2] })] })
+  out.push({ note: `i 走到 s 的結尾(${i} = len(s))→ 全部都找到了 → true`, line: 4, views: [arr(S.split(''), { label: 's', done: [0, 1, 2] })] })
   return out
 }
 
@@ -26,8 +26,8 @@ function nextFig(): FigStep[] {
   for (let j = n - 1; j >= 0; j--) letters.forEach((c, r) => (nxt[r][j] = T[j] === c ? j : nxt[r][j + 1]))
   const view = (hl: [number, number][] = []): GridViewData => ({ kind: 'grid', label: 'next[c][j] = 從 t[j] 開始往右,字母 c 第一次出現的位置(− = 沒有)', cells: nxt.map((r) => [...r]), rowLabels: letters, colLabels: [...T.split('').map((c, j) => `${j}:${c}`), 'end'], marks: { hl } })
   return [
-    { note: 'Follow-up:如果有很多個 s 要問同一個 t,先替 t 建一張「下一個某字母在哪」的表,從右往左填:next[c][j] = t[j] == c ? j : next[c][j+1]', views: [view()] },
-    { note: '查 "abc":從 j = 0 查 a → 0,跳到 1;查 b → 2,跳到 3;查 c → 5。每個字母一步跳到位,不用一格一格掃', views: [view([[letters.indexOf('a'), 0], [letters.indexOf('b'), 1], [letters.indexOf('c'), 3]])] },
+    { note: 'Follow-up:如果有很多個 s 要問同一個 t,先替 t 建一張「下一個某字母在哪」的表,從右往左填:next[c][j] = t[j] == c ? j : next[c][j+1]', line: 5, /* TODO: 可能要拆格 */ views: [view()] },
+    { note: '查 "abc":從 j = 0 查 a → 0,跳到 1;查 b → 2,跳到 3;查 c → 5。每個字母一步跳到位,不用一格一格掃', line: 10, /* TODO: 可能要拆格 */ views: [view([[letters.indexOf('a'), 0], [letters.indexOf('b'), 1], [letters.indexOf('c'), 3]])] },
   ]
 }
 

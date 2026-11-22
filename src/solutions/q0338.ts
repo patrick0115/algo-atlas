@@ -8,18 +8,18 @@ const N = 8
 function shiftFig(): FigStep[] {
   const ans: (number | string)[] = Array(N + 1).fill('')
   ans[0] = 0
-  const out: FigStep[] = [{ note: 'i 的二進位,去掉最後一位就是 i >> 1(i / 2)。所以 i 的 1 的個數 = (i >> 1) 的個數 + 最後一位(i & 1)。i >> 1 比 i 小,早就算好了', views: [arr(range(0, N).map((i) => i.toString(2)), { label: '二進位' }), arr([...ans], { label: 'ans' })] }]
+  const out: FigStep[] = [{ note: 'i 的二進位,去掉最後一位就是 i >> 1(i / 2)。所以 i 的 1 的個數 = (i >> 1) 的個數 + 最後一位(i & 1)。i >> 1 比 i 小,早就算好了', line: 2, views: [arr(range(0, N).map((i) => i.toString(2)), { label: '二進位' }), arr([...ans], { label: 'ans' })] }]
   for (let i = 1; i <= N; i++) {
     ans[i] = (ans[i >> 1] as number) + (i & 1)
-    out.push({ note: `${i} = ${i.toString(2)}:ans[${i >> 1}](${(i >> 1).toString(2) || '0'})= ${ans[i >> 1]},最後一位 ${i & 1} → ${ans[i]}`, views: [arr(range(0, N).map((k) => k.toString(2)), { label: '二進位', highlight: [i], compare: [i >> 1] }), arr([...ans], { label: 'ans', highlight: [i], compare: [i >> 1] })] })
+    out.push({ note: `${i} = ${i.toString(2)}:ans[${i >> 1}](${(i >> 1).toString(2) || '0'})= ${ans[i >> 1]},最後一位 ${i & 1} → ${ans[i]}`, line: 3, views: [arr(range(0, N).map((k) => k.toString(2)), { label: '二進位', highlight: [i], compare: [i >> 1] }), arr([...ans], { label: 'ans', highlight: [i], compare: [i >> 1] })] })
   }
   return out
 }
 
 function lowbitFig(): FigStep[] {
   return [
-    { note: '`i & (i − 1)` 會把 i 最右邊的 1 變成 0。例如 12 = 1100,11 = 1011,相 & → 1000 = 8', views: [arr(['1100', '1011', '1000'], { label: '[i, i−1, i & (i−1)]', highlight: [2] })] },
-    { note: '所以 ans[i] = ans[i & (i − 1)] + 1:比 i 少一個 1 的數,早就算好了。ans[12] = ans[8] + 1 = 2', views: [arr([0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2], { label: 'ans[0..12]', highlight: [12], compare: [8] })] },
+    { note: '`i & (i − 1)` 會把 i 最右邊的 1 變成 0。例如 12 = 1100,11 = 1011,相 & → 1000 = 8', line: 5, views: [arr(['1100', '1011', '1000'], { label: '[i, i−1, i & (i−1)]', highlight: [2] })] },
+    { note: '所以 ans[i] = ans[i & (i − 1)] + 1:比 i 少一個 1 的數,早就算好了。ans[12] = ans[8] + 1 = 2', line: 5, /* TODO: 可能要拆格 */ views: [arr([0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2], { label: 'ans[0..12]', highlight: [12], compare: [8] })] },
   ]
 }
 

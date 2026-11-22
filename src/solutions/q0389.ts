@@ -2,16 +2,16 @@ import { arr } from '../engine/helpers'
 import type { FigStep, Solution } from './types'
 
 const countFig: FigStep[] = [
-  { note: 's = abcd，t = abcde；先統計 s 中每個字母的數量。', views: [arr(['a', 'b', 'c', 'd'], { label: 's' }), arr([1, 1, 1, 1, 0], { label: 'a..e 計數' })] },
-  { note: '掃 t 的 a、b，將對應庫存各減 1；目前沒有負數。', views: [arr(['a', 'b', 'c', 'd', 'e'], { label: 't', done: [0, 1] }), arr([0, 0, 1, 1, 0], { label: 'a..e 剩餘' })] },
-  { note: '再掃 c、d，四個原有字母都抵消為 0。', views: [arr(['a', 'b', 'c', 'd', 'e'], { label: 't', done: [0, 1, 2, 3] }), arr([0, 0, 0, 0, 0], { label: 'a..e 剩餘' })] },
-  { note: '最後讀到 e，庫存變成 −1，這就是額外加入的字母。', views: [arr(['a', 'b', 'c', 'd', 'e'], { label: 't', highlight: [4] }), arr(['e'], { label: '答案', done: [0] })] },
+  { note: 's = abcd，t = abcde；先統計 s 中每個字母的數量。', line: 4, views: [arr(['a', 'b', 'c', 'd'], { label: 's' }), arr([1, 1, 1, 1, 0], { label: 'a..e 計數' })] },
+  { note: '掃 t 的 a、b，將對應庫存各減 1；目前沒有負數。', line: 8, views: [arr(['a', 'b', 'c', 'd', 'e'], { label: 't', done: [0, 1] }), arr([0, 0, 1, 1, 0], { label: 'a..e 剩餘' })] },
+  { note: '再掃 c、d，四個原有字母都抵消為 0。', line: 8, views: [arr(['a', 'b', 'c', 'd', 'e'], { label: 't', done: [0, 1, 2, 3] }), arr([0, 0, 0, 0, 0], { label: 'a..e 剩餘' })] },
+  { note: '最後讀到 e，庫存變成 −1，這就是額外加入的字母。', line: 10, views: [arr(['a', 'b', 'c', 'd', 'e'], { label: 't', highlight: [4] }), arr(['e'], { label: '答案', done: [0] })] },
 ]
 const xorFig: FigStep[] = [
-  { note: '把所有字元視為字元碼並做 XOR；同一字元出現兩次會互相抵消。', views: [arr(['a', 'b', 'c', 'd'], { label: 's' }), arr(['a', 'b', 'c', 'd', 'e'], { label: 't' })] },
-  { note: 's 的 a 與 t 的 a 配對抵消；b 也抵消。XOR 的先後順序不影響結果。', views: [arr(['a', 'b', 'c', 'd', 'e'], { label: 't', dim: [0, 1] })] },
-  { note: 'c、d 也各出現兩次而抵消；只剩下 t 裡額外的 e。', views: [arr(['a', 'b', 'c', 'd', 'e'], { label: 't', dim: [0, 1, 2, 3], highlight: [4] })] },
-  { note: '把最後留下的字元碼轉回字元，答案為 e。', views: [arr(['e'], { label: '答案', done: [0] })] },
+  { note: '把所有字元視為字元碼並做 XOR；同一字元出現兩次會互相抵消。', line: 2, views: [arr(['a', 'b', 'c', 'd'], { label: 's' }), arr(['a', 'b', 'c', 'd', 'e'], { label: 't' })] },
+  { note: 's 的 a 與 t 的 a 配對抵消；b 也抵消。XOR 的先後順序不影響結果。', line: 7, views: [arr(['a', 'b', 'c', 'd', 'e'], { label: 't', dim: [0, 1] })] },
+  { note: 'c、d 也各出現兩次而抵消；只剩下 t 裡額外的 e。', line: 7, views: [arr(['a', 'b', 'c', 'd', 'e'], { label: 't', dim: [0, 1, 2, 3], highlight: [4] })] },
+  { note: '把最後留下的字元碼轉回字元，答案為 e。', line: 9, views: [arr(['e'], { label: '答案', done: [0] })] },
 ]
 const WRAP = {
   python: `
