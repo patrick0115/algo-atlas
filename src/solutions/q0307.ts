@@ -3,16 +3,16 @@ import type { FigStep, Solution } from './types'
 
 const A = [1, 3, 5]
 const bitFig: FigStep[] = [
-  { note: '建構時記住原陣列 [1,3,5]，樹狀陣列的 1 起始索引內容為 [1,4,5]。', views: [arr(A, { label: 'nums' }), arr([1, 4, 5], { label: 'BIT 索引 1..3' })] },
-  { note: 'sumRange(0,2) = prefix(3)−prefix(0) = 9；prefix 從索引 3 取 5，再跳索引 2 取 4。', views: [arr([1, 4, 5], { label: 'BIT', highlight: [1, 2] }), arr([9], { label: '區間和' })] },
-  { note: 'update(1,2) 把 3 改成 2，差值 −1；從 BIT 索引 2 開始更新，4 變成 3。', views: [arr([1, 2, 5], { label: '更新後 nums', highlight: [1] }), arr([1, 3, 5], { label: '更新後 BIT', highlight: [1] })] },
-  { note: '再次 sumRange(0,2)，prefix(3)=5+3=8，答案變成 8。', views: [arr([8], { label: '新區間和', done: [0] })] },
+  { note: '建構時記住原陣列 [1,3,5]，樹狀陣列的 1 起始索引內容為 [1,4,5]。', line: 6, views: [arr(A, { label: 'nums' }), arr([1, 4, 5], { label: 'BIT 索引 1..3' })] },
+  { note: 'sumRange(0,2) = prefix(3)−prefix(0) = 9；prefix 從索引 3 取 5，再跳索引 2 取 4。', line: 33, views: [arr([1, 4, 5], { label: 'BIT', highlight: [1, 2] }), arr([9], { label: '區間和' })] },
+  { note: 'update(1,2) 把 3 改成 2，差值 −1；從 BIT 索引 2 開始更新，4 變成 3。', line: 29, views: [arr([1, 2, 5], { label: '更新後 nums', highlight: [1] }), arr([1, 3, 5], { label: '更新後 BIT', highlight: [1] })] },
+  { note: '再次 sumRange(0,2)，prefix(3)=5+3=8，答案變成 8。', line: 33, views: [arr([8], { label: '新區間和', done: [0] })] },
 ]
 const segFig: FigStep[] = [
-  { note: '將 [1,3,5] 放在線段樹葉節點，父節點存孩子總和；整段的根節點值為 9。', views: [arr(A, { label: '葉節點' }), arr([9], { label: '總和' })] },
-  { note: '查詢 [0,2] 時，沿樹向上收集完全落在區間內的節點，得到 9。', views: [arr(A, { label: '查詢範圍', done: [0, 1, 2] }), arr([9], { label: '查詢結果' })] },
-  { note: '把索引 1 的葉節點從 3 改成 2，沿途重新計算父節點。', views: [arr([1, 2, 5], { label: '更新後葉節點', highlight: [1] }), arr([8], { label: '新根節點值' })] },
-  { note: '查詢 [0,2] 現在得到 8；其他不含索引 1 的區間仍不受影響。', views: [arr([1, 2, 5], { label: '查詢範圍', done: [0, 1, 2] }), arr([8], { label: '答案', done: [0] })] },
+  { note: '將 [1,3,5] 放在線段樹葉節點，父節點存孩子總和；整段的根節點值為 9。', line: 9, views: [arr(A, { label: '葉節點' }), arr([9], { label: '總和' })] },
+  { note: '查詢 [0,2] 時，沿樹向上收集完全落在區間內的節點，得到 9。', line: 26, views: [arr(A, { label: '查詢範圍', done: [0, 1, 2] }), arr([9], { label: '查詢結果' })] },
+  { note: '把索引 1 的葉節點從 3 改成 2，沿途重新計算父節點。', line: 18, views: [arr([1, 2, 5], { label: '更新後葉節點', highlight: [1] }), arr([8], { label: '新根節點值' })] },
+  { note: '查詢 [0,2] 現在得到 8；其他不含索引 1 的區間仍不受影響。', line: 36, views: [arr([1, 2, 5], { label: '查詢範圍', done: [0, 1, 2] }), arr([8], { label: '答案', done: [0] })] },
 ]
 
 export const q0307: Solution = {

@@ -9,22 +9,22 @@ function copyFig(): FigStep[] {
   const nz = A.filter((x) => x !== 0)
   const res = [...nz, ...Array(A.length - nz.length).fill(0)]
   return [
-    { note: '先把非 0 的數依序抄到前面:寫入位置 w 從 0 開始,每抄一個 w + 1', views: [arr(A, { label: 'nums', highlight: A.map((x, i) => (x ? i : -1)).filter((i) => i >= 0) }), arr([...nz, ...Array(A.length - nz.length).fill('')], { label: '前面放非 0', done: nz.map((_, i) => i) })] },
-    { note: `非 0 的有 ${nz.length} 個,剩下的位置全部補 0`, views: [arr(res, { label: '結果', highlight: res.map((_, i) => (i >= nz.length ? i : -1)).filter((i) => i >= 0) })] },
+    { note: '先把非 0 的數依序抄到前面:寫入位置 w 從 0 開始,每抄一個 w + 1', line: 3, views: [arr(A, { label: 'nums', highlight: A.map((x, i) => (x ? i : -1)).filter((i) => i >= 0) }), arr([...nz, ...Array(A.length - nz.length).fill('')], { label: '前面放非 0', done: nz.map((_, i) => i) })] },
+    { note: `非 0 的有 ${nz.length} 個,剩下的位置全部補 0`, line: 4, views: [arr(res, { label: '結果', highlight: res.map((_, i) => (i >= nz.length ? i : -1)).filter((i) => i >= 0) })] },
   ]
 }
 
 function swapFig(): FigStep[] {
   const a = [...A]
   let w = 0
-  const out: FigStep[] = [{ note: 'w = 下一個非 0 數該放的位置。i 往右掃,遇到非 0 就和 w 交換,w + 1。w 左邊永遠是「已經排好的非 0」,w 到 i 之間全是 0', views: [arr([...a], { label: 'nums', pointers: [{ name: 'w', index: 0 }, { name: 'i', index: 0, color: 'b' }] })] }]
+  const out: FigStep[] = [{ note: 'w = 下一個非 0 數該放的位置。i 往右掃,遇到非 0 就和 w 交換,w + 1。w 左邊永遠是「已經排好的非 0」,w 到 i 之間全是 0', line: 2, views: [arr([...a], { label: 'nums', pointers: [{ name: 'w', index: 0 }, { name: 'i', index: 0, color: 'b' }] })] }]
   for (let i = 0; i < a.length; i++) {
     if (a[i] !== 0) {
       ;[a[w], a[i]] = [a[i], a[w]]
-      out.push({ note: `nums[${i}] = ${a[w]} 不是 0 → 和 nums[${w}] 交換,w 變 ${w + 1}`, views: [arr([...a], { label: 'nums', highlight: [w, i], done: Array.from({ length: w }, (_, k) => k), pointers: [{ name: 'w', index: w }, { name: 'i', index: i, color: 'b' }] })] })
+      out.push({ note: `nums[${i}] = ${a[w]} 不是 0 → 和 nums[${w}] 交換,w 變 ${w + 1}`, line: 4, views: [arr([...a], { label: 'nums', highlight: [w, i], done: Array.from({ length: w }, (_, k) => k), pointers: [{ name: 'w', index: w }, { name: 'i', index: i, color: 'b' }] })] })
       w++
     } else {
-      out.push({ note: `nums[${i}] 是 0 → 跳過,w 停在 ${w}`, views: [arr([...a], { label: 'nums', dim: [i], done: Array.from({ length: w }, (_, k) => k), pointers: [{ name: 'w', index: w }, { name: 'i', index: i, color: 'b' }] })] })
+      out.push({ note: `nums[${i}] 是 0 → 跳過,w 停在 ${w}`, line: 3, views: [arr([...a], { label: 'nums', dim: [i], done: Array.from({ length: w }, (_, k) => k), pointers: [{ name: 'w', index: w }, { name: 'i', index: i, color: 'b' }] })] })
     }
   }
   return out

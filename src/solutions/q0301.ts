@@ -4,16 +4,16 @@ import type { Solution } from './types'
 // 301. Remove Invalid Parentheses
 const S = '()())()'
 const F = [
-  { note: '原字串 ()())() 在第五個字元出現多餘的右括號，整串不合法。', views: [arr(S.split(''), { label: '原字串', highlight: [4] })] },
-  { note: 'BFS 第 0 層只放原字串；不合法，就刪掉一個括號形成下一層。', views: [arr([0, 1], { label: '已嘗試的刪除數', highlight: [0] })] },
-  { note: '刪一個括號後，可得到 (())() 或 ()()()，兩者都合法。', views: [arr(['(())()', '()()()'], { label: '第 1 層合法結果', done: [0, 1] })] },
-  { note: '第 1 層已有答案，不再探索刪兩個括號的字串；回傳兩個結果。', views: [arr(['(())()', '()()()'], { label: '最少刪除', done: [0, 1] })] },
+  { note: '原字串 ()())() 在第五個字元出現多餘的右括號，整串不合法。', line: 6, views: [arr(S.split(''), { label: '原字串', highlight: [4] })] },
+  { note: 'BFS 第 0 層只放原字串；不合法，就刪掉一個括號形成下一層。', line: 10, /* TODO: 可能要拆格 */ views: [arr([0, 1], { label: '已嘗試的刪除數', highlight: [0] })] },
+  { note: '刪一個括號後，可得到 (())() 或 ()()()，兩者都合法。', line: 12, views: [arr(['(())()', '()()()'], { label: '第 1 層合法結果', done: [0, 1] })] },
+  { note: '第 1 層已有答案，不再探索刪兩個括號的字串；回傳兩個結果。', line: 13, views: [arr(['(())()', '()()()'], { label: '最少刪除', done: [0, 1] })] },
 ]
 const G = [
-  { note: '先掃描原字串，確認要刪 0 個左括號、1 個右括號。', views: [arr([0, 1], { label: '左刪 / 右刪' })] },
-  { note: 'DFS 掃到多餘的右括號時，可以刪它，但總刪除配額只能用一次。', views: [arr(S.split(''), { label: '考慮刪除', highlight: [4] })] },
-  { note: '一條路保留 (())()，另一條保留 ()()()；掃描時右括號數不可超過左括號。', views: [arr(['(())()', '()()()'], { label: '合法分支', done: [0, 1] })] },
-  { note: '相同位置的重複括號只探索一次，集合去重後得到兩個答案。', views: [arr(['(())()', '()()()'], { label: '結果', done: [0, 1] })] },
+  { note: '先掃描原字串，確認要刪 0 個左括號、1 個右括號。', line: 3, views: [arr([0, 1], { label: '左刪 / 右刪' })] },
+  { note: 'DFS 掃到多餘的右括號時，可以刪它，但總刪除配額只能用一次。', line: 18, views: [arr(S.split(''), { label: '考慮刪除', highlight: [4] })] },
+  { note: '一條路保留 (())()，另一條保留 ()()()；掃描時右括號數不可超過左括號。', line: 20, /* TODO: 可能要拆格 */ views: [arr(['(())()', '()()()'], { label: '合法分支', done: [0, 1] })] },
+  { note: '相同位置的重複括號只探索一次，集合去重後得到兩個答案。', line: 13, views: [arr(['(())()', '()()()'], { label: '結果', done: [0, 1] })] },
 ]
 
 export const q0301: Solution = {

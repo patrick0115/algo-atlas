@@ -3,16 +3,16 @@ import type { FigStep, Solution } from './types'
 
 const V = [4, 5, 1, 9]
 const copyFig: FigStep[] = [
-  { note: '只拿到值為 5 的節點，拿不到它的前一個節點 4；因此無法直接讓 4.next 跳過 5。', views: [chain(V, { label: '只拿到 5', cls: { 1: 'hl' } })] },
-  { note: '5 的下一個節點是 1；把 1 的值複製到目前節點，表面上原本的 5 就消失了。', views: [chain([4, 1, 1, 9], { label: '複製下一個值', cls: { 1: 'hl', 2: 'dim' } })] },
-  { note: '再把目前節點的 next 指向 1.next，也就是 9，跳過原本值為 1 的節點。', views: [chain([4, 1, 9], { label: '跳過下一個節點', cls: { 1: 'hl' } })] },
-  { note: '結果為 [4,1,9]；節點身分仍是原本的 5，但它的值已變成 1。', views: [chain([4, 1, 9], { label: '完成' })] },
+  { note: '只拿到值為 5 的節點，拿不到它的前一個節點 4；因此無法直接讓 4.next 跳過 5。', line: 2, views: [chain(V, { label: '只拿到 5', cls: { 1: 'hl' } })] },
+  { note: '5 的下一個節點是 1；把 1 的值複製到目前節點，表面上原本的 5 就消失了。', line: 2, views: [chain([4, 1, 1, 9], { label: '複製下一個值', cls: { 1: 'hl', 2: 'dim' } })] },
+  { note: '再把目前節點的 next 指向 1.next，也就是 9，跳過原本值為 1 的節點。', line: 3, views: [chain([4, 1, 9], { label: '跳過下一個節點', cls: { 1: 'hl' } })] },
+  { note: '結果為 [4,1,9]；節點身分仍是原本的 5，但它的值已變成 1。', line: 3, views: [chain([4, 1, 9], { label: '完成' })] },
 ]
 const shiftFig: FigStep[] = [
-  { note: '從給定節點 5 起，逐一把後一個節點的值往前複製。', views: [chain(V, { label: '原串列', cls: { 1: 'hl' } })] },
-  { note: '先把 1 複製到 5 的位置；再把 9 複製到原本 1 的位置。', views: [chain([4, 1, 9, 9], { label: '向前搬值', cls: { 1: 'done', 2: 'done', 3: 'dim' } })] },
-  { note: '現在最後兩節點值都是 9，讓倒數第二個 next 指向空，移除尾端。', views: [chain([4, 1, 9], { label: '移除尾端' })] },
-  { note: '最後結果同樣是 [4,1,9]，但這種做法會一路搬動後綴的值。', views: [chain([4, 1, 9], { label: '完成' })] },
+  { note: '從給定節點 5 起，逐一把後一個節點的值往前複製。', line: 2, views: [chain(V, { label: '原串列', cls: { 1: 'hl' } })] },
+  { note: '先把 1 複製到 5 的位置；再把 9 複製到原本 1 的位置。', line: 3, /* TODO: 可能要拆格 */ views: [chain([4, 1, 9, 9], { label: '向前搬值', cls: { 1: 'done', 2: 'done', 3: 'dim' } })] },
+  { note: '現在最後兩節點值都是 9，讓倒數第二個 next 指向空，移除尾端。', line: 7, views: [chain([4, 1, 9], { label: '移除尾端' })] },
+  { note: '最後結果同樣是 [4,1,9]，但這種做法會一路搬動後綴的值。', line: 7, views: [chain([4, 1, 9], { label: '完成' })] },
 ]
 const WRAP = {
   python: `

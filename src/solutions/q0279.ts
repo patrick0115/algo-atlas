@@ -3,12 +3,12 @@ import type { FigStep, Solution } from './types'
 
 // 279. Perfect Squares
 const dpFig: FigStep[] = [
-  { note: '12 可以拆成 4 + 4 + 4,共 3 個平方數。', views: [arr([1, 4, 9], { label: '可用平方數' }), arr([4, 4, 4], { label: '最佳拆法' })] },
-  { note: '`dp[x]` 是湊成 x 最少要幾個平方數。最後拿一個 s,剩餘 x−s 已經算好。', views: [arr([0, 1, 2, 3, 1, 2, 3, 4, 2, 1, 2, 3, 3], { label: 'dp[0..12]', done: [12] })] },
+  { note: '12 可以拆成 4 + 4 + 4,共 3 個平方數。', line: 2, views: [arr([1, 4, 9], { label: '可用平方數' }), arr([4, 4, 4], { label: '最佳拆法' })] },
+  { note: '`dp[x]` 是湊成 x 最少要幾個平方數。最後拿一個 s,剩餘 x−s 已經算好。', line: 5, views: [arr([0, 1, 2, 3, 1, 2, 3, 4, 2, 1, 2, 3, 3], { label: 'dp[0..12]', done: [12] })] },
 ]
 const bfsFig: FigStep[] = [
-  { note: '把餘數當節點,每減去一個平方數就走一條邊。從 12 開始逐層搜尋。', views: [arr([12], { label: '起點' }), arr([11, 8, 3], { label: '減 1、4、9' })] },
-  { note: '第一次走到 0 就是最少步數。12 → 8 → 4 → 0,共 3 步。', views: [arr([12, 8, 4, 0], { label: '最短路徑', done: [3] })] },
+  { note: '把餘數當節點,每減去一個平方數就走一條邊。從 12 開始逐層搜尋。', line: 9, views: [arr([12], { label: '起點' }), arr([11, 8, 3], { label: '減 1、4、9' })] },
+  { note: '第一次走到 0 就是最少步數。12 → 8 → 4 → 0,共 3 步。', line: 10, views: [arr([12, 8, 4, 0], { label: '最短路徑', done: [3] })] },
 ]
 
 export const q0279: Solution = {

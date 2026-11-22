@@ -7,8 +7,8 @@ const A = [-2, 0, 3, -5, 2, -1]
 
 function bruteFig(): FigStep[] {
   return [
-    { note: '最直接:每次查詢 sumRange(l, r) 就把 nums[l..r] 加一遍', views: [arr(A, { label: 'nums', range: [0, 2] })] },
-    { note: 'sumRange(2, 5) = 3 + (−5) + 2 + (−1) = −1。每次查詢 O(n);查詢 10⁴ 次、n = 10⁴ 時要 10⁸ 次加法', views: [arr(A, { label: 'nums', range: [2, 5], highlight: [2, 3, 4, 5] })] },
+    { note: '最直接:每次查詢 sumRange(l, r) 就把 nums[l..r] 加一遍', line: 8, views: [arr(A, { label: 'nums', range: [0, 2] })] },
+    { note: 'sumRange(2, 5) = 3 + (−5) + 2 + (−1) = −1。每次查詢 O(n);查詢 10⁴ 次、n = 10⁴ 時要 10⁸ 次加法', line: 8, views: [arr(A, { label: 'nums', range: [2, 5], highlight: [2, 3, 4, 5] })] },
   ]
 }
 
@@ -16,9 +16,9 @@ function prefixFig(): FigStep[] {
   const pre = [0]
   for (const x of A) pre.push(pre[pre.length - 1] + x)
   return [
-    { note: '建構時先算前綴和:pre[i] = nums[0] + … + nums[i−1](pre[0] = 0,多一格是為了不用處理 l = 0 的特例)', views: [arr(A, { label: 'nums' }), arr(pre, { label: 'pre(長度 n+1)' })] },
-    { note: `sumRange(2, 5) = pre[6] − pre[2] = ${pre[6]} − ${pre[2]} = ${pre[6] - pre[2]}:「前 6 個的和」減掉「前 2 個的和」,剩下的就是 2..5`, views: [arr(pre, { label: 'pre', highlight: [6], compare: [2] }), arr(A, { label: 'nums', range: [2, 5] })] },
-    { note: `sumRange(0, 2) = pre[3] − pre[0] = ${pre[3]} − 0 = ${pre[3]}。每次查詢只要一次減法`, views: [arr(pre, { label: 'pre', highlight: [3], compare: [0] })] },
+    { note: '建構時先算前綴和:pre[i] = nums[0] + … + nums[i−1](pre[0] = 0,多一格是為了不用處理 l = 0 的特例)', line: 4, views: [arr(A, { label: 'nums' }), arr(pre, { label: 'pre(長度 n+1)' })] },
+    { note: `sumRange(2, 5) = pre[6] − pre[2] = ${pre[6]} − ${pre[2]} = ${pre[6] - pre[2]}:「前 6 個的和」減掉「前 2 個的和」,剩下的就是 2..5`, line: 8, views: [arr(pre, { label: 'pre', highlight: [6], compare: [2] }), arr(A, { label: 'nums', range: [2, 5] })] },
+    { note: `sumRange(0, 2) = pre[3] − pre[0] = ${pre[3]} − 0 = ${pre[3]}。每次查詢只要一次減法`, line: 8, views: [arr(pre, { label: 'pre', highlight: [3], compare: [0] })] },
   ]
 }
 

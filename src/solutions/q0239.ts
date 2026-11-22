@@ -9,7 +9,7 @@ const K = 3
 function dequeFig(): FigStep[] {
   const dq: number[] = []
   const res: number[] = []
-  const out: FigStep[] = [{ note: '雙端佇列裡放**索引**,對應的值由前往後**遞減**。最前面永遠是目前視窗的最大值', views: [arr(A, { label: 'nums' }), arr([], { label: '佇列(值)' }), arr([], { label: '答案' })] }]
+  const out: FigStep[] = [{ note: '雙端佇列裡放**索引**,對應的值由前往後**遞減**。最前面永遠是目前視窗的最大值', line: 2, views: [arr(A, { label: 'nums' }), arr([], { label: '佇列(值)' }), arr([], { label: '答案' })] }]
   A.forEach((x, i) => {
     const popped: number[] = []
     while (dq.length && A[dq[dq.length - 1]] <= x) popped.push(A[dq.pop()!])
@@ -22,15 +22,15 @@ function dequeFig(): FigStep[] {
       expired !== null ? `前面的 ${expired} 已經離開視窗 → 從前面丟掉` : '',
       i >= K - 1 ? `視窗 [${i - K + 1}..${i}] 的最大值 = 佇列最前面 ${A[dq[0]]}` : '視窗還沒滿',
     ].filter(Boolean)
-    out.push({ note: msg.join(';'), views: [arr(A, { label: 'nums', highlight: range(Math.max(0, i - K + 1), i), dim: range(0, i - K) }), arr(dq.map((j) => A[j]), { label: '佇列(值)', highlight: [0] }), arr([...res], { label: '答案' })] })
+    out.push({ note: msg.join(';'), line: 6, /* TODO: 可能要拆格 */ views: [arr(A, { label: 'nums', highlight: range(Math.max(0, i - K + 1), i), dim: range(0, i - K) }), arr(dq.map((j) => A[j]), { label: '佇列(值)', highlight: [0] }), arr([...res], { label: '答案' })] })
   })
   return out
 }
 
 function heapFig(): FigStep[] {
   return [
-    { note: '最大堆:把 (值, 索引) 放進堆。堆頂就是目前看過的最大值', views: [arr(A, { label: 'nums', highlight: [0, 1, 2] }), arr([3, 1, -1], { label: '堆(大的在前)', highlight: [0] })] },
-    { note: '視窗往右移時,不急著刪除離開的元素;只在**堆頂**已經不在視窗裡時才把它彈掉(延遲刪除)', views: [arr(A, { label: 'nums', highlight: [3, 4, 5], dim: [0, 1, 2] }), arr([5, 3, 3, 1, -1, -3], { label: '堆', highlight: [0] })] },
+    { note: '最大堆:把 (值, 索引) 放進堆。堆頂就是目前看過的最大值', line: 24, views: [arr(A, { label: 'nums', highlight: [0, 1, 2] }), arr([3, 1, -1], { label: '堆(大的在前)', highlight: [0] })] },
+    { note: '視窗往右移時,不急著刪除離開的元素;只在**堆頂**已經不在視窗裡時才把它彈掉(延遲刪除)', line: 25, views: [arr(A, { label: 'nums', highlight: [3, 4, 5], dim: [0, 1, 2] }), arr([5, 3, 3, 1, -1, -3], { label: '堆', highlight: [0] })] },
   ]
 }
 

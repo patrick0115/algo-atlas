@@ -7,19 +7,19 @@ const title = 'root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4'
 
 function ancestorFig(): FigStep[] {
   return [
-    { note: '從根節點 3 開始找 p=5。往左走一步就到 5，因此第一條路是 3→5。', views: [tree(T, { cls: { 0: 'visited', 1: 'hl', 2: 'dim' } })] },
-    { note: '再找 q=4：從 3 走到 5，接著經過 2 才抵達 4，所以第二條路是 3→5→2→4。', views: [tree(T, { cls: { 0: 'visited', 1: 'visited', 4: 'visited', 10: 'hl' } })] },
-    { note: '比較兩條路：共同經過 3、5。', views: [tree(T, { cls: { 0: 'visited', 1: 'hl' } })] },
-    { note: '走向 4 時還會經過 2，但 5 的路在此之前已結束。最後一個共同節點是 5。', views: [tree(T, { cls: { 0: 'visited', 1: 'hl', 4: 'dim', 10: 'dim' } })] },
+    { note: '從根節點 3 開始找 p=5。往左走一步就到 5，因此第一條路是 3→5。', line: 12, views: [tree(T, { cls: { 0: 'visited', 1: 'hl', 2: 'dim' } })] },
+    { note: '再找 q=4：從 3 走到 5，接著經過 2 才抵達 4，所以第二條路是 3→5→2→4。', line: 13, views: [tree(T, { cls: { 0: 'visited', 1: 'visited', 4: 'visited', 10: 'hl' } })] },
+    { note: '比較兩條路：共同經過 3、5。', line: 15, views: [tree(T, { cls: { 0: 'visited', 1: 'hl' } })] },
+    { note: '走向 4 時還會經過 2，但 5 的路在此之前已結束。最後一個共同節點是 5。', line: 16, views: [tree(T, { cls: { 0: 'visited', 1: 'hl', 4: 'dim', 10: 'dim' } })] },
   ]
 }
 
 function dfsFig(): FigStep[] {
   return [
-    { note: '從 3 往左遞迴到 5；因為 5 就是 p，這次呼叫直接把 5 回報給根節點。', views: [tree(T, { cls: { 0: 'visited', 1: 'hl' } })] },
-    { note: '後序搜尋：空節點回傳空；遇到 p 或 q 就回傳該節點。先看左右子樹有沒有找到目標。', views: [tree(T, { cls: { 1: 'hl', 10: 'visited' } })] },
-    { note: '節點 5 本身就是 p，且 q=4 位於它的子樹，因此答案可以是目標節點本身。', views: [tree(T, { cls: { 1: 'hl', 10: 'visited', 4: 'visited' } })] },
-    { note: '根節點 3 收到左邊回報的 5、右邊的空值，因此沿用 5 作答案；若兩邊都有目標，才會回報自己。', views: [tree(T, { cls: { 0: 'visited', 1: 'hl', 2: 'dim' } })] },
+    { note: '從 3 往左遞迴到 5；因為 5 就是 p，這次呼叫直接把 5 回報給根節點。', line: 4, views: [tree(T, { cls: { 0: 'visited', 1: 'hl' } })] },
+    { note: '後序搜尋：空節點回傳空；遇到 p 或 q 就回傳該節點。先看左右子樹有沒有找到目標。', line: 2, views: [tree(T, { cls: { 1: 'hl', 10: 'visited' } })] },
+    { note: '節點 5 本身就是 p，且 q=4 位於它的子樹，因此答案可以是目標節點本身。', line: 3, views: [tree(T, { cls: { 1: 'hl', 10: 'visited', 4: 'visited' } })] },
+    { note: '根節點 3 收到左邊回報的 5、右邊的空值，因此沿用 5 作答案；若兩邊都有目標，才會回報自己。', line: 6, views: [tree(T, { cls: { 0: 'visited', 1: 'hl', 2: 'dim' } })] },
   ]
 }
 

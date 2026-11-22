@@ -13,48 +13,48 @@ function sortFig(): FigStep[] {
   const ss = [...s].sort()
   const ts = [...t].sort()
   const out: FigStep[] = [
-    { note: '先比長度:都是 7,可能是異位詞。長度不同的話直接回傳 false', views: [arr(s, { label: 's' }), arr(t, { label: 't' })] },
-    { note: '兩個字串各自排序。異位詞「用的字母一模一樣」,排序後一定長得一樣', views: [arr(ss, { label: 'sorted(s)' }), arr(ts, { label: 'sorted(t)' })] },
+    { note: '先比長度:都是 7,可能是異位詞。長度不同的話直接回傳 false', line: 2, views: [arr(s, { label: 's' }), arr(t, { label: 't' })] },
+    { note: '兩個字串各自排序。異位詞「用的字母一模一樣」,排序後一定長得一樣', line: 3, views: [arr(ss, { label: 'sorted(s)' }), arr(ts, { label: 'sorted(t)' })] },
   ]
   for (let i = 0; i < ss.length; i += 3) {
     const seg = range(i, Math.min(i + 2, ss.length - 1))
     out.push({
       note: `逐格比對第 ${seg[0]}~${seg.at(-1)} 格:${seg.map((k) => ss[k]).join('')} = ${seg.map((k) => ts[k]).join('')}`,
-      views: [arr(ss, { label: 'sorted(s)', compare: seg, done: range(0, i - 1) }), arr(ts, { label: 'sorted(t)', compare: seg, done: range(0, i - 1) })],
+      line: 4, views: [arr(ss, { label: 'sorted(s)', compare: seg, done: range(0, i - 1) }), arr(ts, { label: 'sorted(t)', compare: seg, done: range(0, i - 1) })],
     })
   }
-  out.push({ note: '每一格都相同 → 回傳 true', views: [arr(ss, { label: 'sorted(s)', done: range(0, 6) }), arr(ts, { label: 'sorted(t)', done: range(0, 6) })] })
+  out.push({ note: '每一格都相同 → 回傳 true', line: 4, views: [arr(ss, { label: 'sorted(s)', done: range(0, 6) }), arr(ts, { label: 'sorted(t)', done: range(0, 6) })] })
   return out
 }
 
 function countFig(): FigStep[] {
   const cnt = Array(26).fill(0)
-  const out: FigStep[] = [{ note: '準備 26 格的計數陣列,一格對應一個字母,全部是 0', views: [arr([...S], { label: 's' }), arr([...T], { label: 't' }), count26(cnt, 'count')] }]
+  const out: FigStep[] = [{ note: '準備 26 格的計數陣列,一格對應一個字母,全部是 0', line: 3, views: [arr([...S], { label: 's' }), arr([...T], { label: 't' }), count26(cnt, 'count')] }]
   for (let i = 0; i < S.length; i++) {
     cnt[idx(S[i])]++
     cnt[idx(T[i])]--
     out.push({
       note: `第 ${i} 格:s 的 ${S[i]} 讓 count[${S[i]}] +1,t 的 ${T[i]} 讓 count[${T[i]}] −1`,
-      views: [arr([...S], { label: 's', highlight: [i], dim: range(0, i - 1) }), arr([...T], { label: 't', highlight: [i], dim: range(0, i - 1) }), count26(cnt, 'count', [idx(S[i]), idx(T[i])])],
+      line: 5, views: [arr([...S], { label: 's', highlight: [i], dim: range(0, i - 1) }), arr([...T], { label: 't', highlight: [i], dim: range(0, i - 1) }), count26(cnt, 'count', [idx(S[i]), idx(T[i])])],
     })
   }
-  out.push({ note: '走完了,26 格全部是 0:s 多出來的字母剛好被 t 抵銷 → true', views: [count26(cnt, 'count')] })
+  out.push({ note: '走完了,26 格全部是 0:s 多出來的字母剛好被 t 抵銷 → true', line: 8, views: [count26(cnt, 'count')] })
   return out
 }
 
 function mapFig(): FigStep[] {
   const m = new Map<string, number>()
   const view = (hl: string[] = []) => kv([...m].sort(), 'count(只記出現過的字元)', hl)
-  const out: FigStep[] = [{ note: '準備一個空的 Hash Map:key 是字元,value 是 s 比 t 多出現幾次', views: [view()] }]
+  const out: FigStep[] = [{ note: '準備一個空的 Hash Map:key 是字元,value 是 s 比 t 多出現幾次', line: 3, views: [view()] }]
   for (let i = 0; i < S.length; i++) {
     m.set(S[i], (m.get(S[i]) ?? 0) + 1)
-    out.push({ note: `走 s:${S[i]} 次數 +1`, views: [arr([...S], { label: 's', highlight: [i], dim: range(0, i - 1) }), view([S[i]])] })
+    out.push({ note: `走 s:${S[i]} 次數 +1`, line: 4, views: [arr([...S], { label: 's', highlight: [i], dim: range(0, i - 1) }), view([S[i]])] })
   }
   for (let i = 0; i < T.length; i++) {
     m.set(T[i], (m.get(T[i]) ?? 0) - 1)
-    out.push({ note: `走 t:${T[i]} 次數 −1${m.get(T[i])! < 0 ? ',變成負的 → 可以直接回傳 false' : ''}`, views: [arr([...T], { label: 't', highlight: [i], dim: range(0, i - 1) }), view([T[i]])] })
+    out.push({ note: `走 t:${T[i]} 次數 −1${m.get(T[i])! < 0 ? ',變成負的 → 可以直接回傳 false' : ''}`, line: m.get(T[i])! < 0 ? 7 : 6, views: [arr([...T], { label: 't', highlight: [i], dim: range(0, i - 1) }), view([T[i]])] })
   }
-  out.push({ note: '全部歸零 → true。和 26 格陣列一樣的想法,只是 key 可以是任何字元(中文、emoji 都行)', views: [view()] })
+  out.push({ note: '全部歸零 → true。和 26 格陣列一樣的想法,只是 key 可以是任何字元(中文、emoji 都行)', line: 10, views: [view()] })
   return out
 }
 

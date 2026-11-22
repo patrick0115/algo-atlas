@@ -12,15 +12,15 @@ function mapFig(): FigStep[] {
   const words = W.split(' ')
   const pw = new Map<string, string>()
   const wp = new Map<string, string>()
-  const out: FigStep[] = [{ note: '先把 s 用空白切成單字。單字數和 pattern 長度不同 → 直接 false', views: [arr(P.split(''), { label: 'pattern' }), arr(words, { label: '單字' })] }]
+  const out: FigStep[] = [{ note: '先把 s 用空白切成單字。單字數和 pattern 長度不同 → 直接 false', line: 2, views: [arr(P.split(''), { label: 'pattern' }), arr(words, { label: '單字' })] }]
   words.forEach((w, i) => {
     const c = P[i]
     const isNew = !pw.has(c)
     pw.set(c, w)
     wp.set(w, c)
-    out.push({ note: isNew ? `${c} 第一次出現 → 記 ${c}→${w}、${w}→${c}` : `${c} 之前對應 ${w},這次也是 ✓`, views: [arr(P.split(''), { label: 'pattern', highlight: [i] }), arr(words, { label: '單字', highlight: [i] }), kv([...pw.entries()], '字母 → 單字', [c]), kv([...wp.entries()], '單字 → 字母', [w])] })
+    out.push({ note: isNew ? `${c} 第一次出現 → 記 ${c}→${w}、${w}→${c}` : `${c} 之前對應 ${w},這次也是 ✓`, line: isNew ? 8 : 7, views: [arr(P.split(''), { label: 'pattern', highlight: [i] }), arr(words, { label: '單字', highlight: [i] }), kv([...pw.entries()], '字母 → 單字', [c]), kv([...wp.entries()], '單字 → 字母', [w])] })
   })
-  out.push({ note: `反例 pattern = "${P}"、s = "${BAD}":a→dog 後,b 想對應 dog,但 dog 已經是 a 的了 → false`, views: [arr(P.split(''), { label: 'pattern', highlight: [1] }), arr(BAD.split(' '), { label: '單字', highlight: [1] }), kv([['dog', 'a']], '單字 → 字母', ['dog'])] })
+  out.push({ note: `反例 pattern = "${P}"、s = "${BAD}":a→dog 後,b 想對應 dog,但 dog 已經是 a 的了 → false`, line: 7, views: [arr(P.split(''), { label: 'pattern', highlight: [1] }), arr(BAD.split(' '), { label: '單字', highlight: [1] }), kv([['dog', 'a']], '單字 → 字母', ['dog'])] })
   return out
 }
 
@@ -28,8 +28,8 @@ function idxFig(): FigStep[] {
   const words = W.split(' ')
   const enc = <T,>(xs: T[]) => xs.map((x) => xs.indexOf(x))
   return [
-    { note: '和 [205](#/q/205) 一樣的另一招:把每個元素換成「它第一次出現的位置」(比第一次出現或上次出現都可以,程式用上次出現)', views: [arr(P.split(''), { label: 'pattern' }), arr(enc(P.split('')), { label: '第一次出現的位置' })] },
-    { note: `單字也這樣換:[${enc(words)}],和 pattern 的 [${enc(P.split(''))}] 相同 → true`, views: [arr(words, { label: '單字' }), arr(enc(words), { label: '第一次出現的位置', done: [0, 1, 2, 3] })] },
+    { note: '和 [205](#/q/205) 一樣的另一招:把每個元素換成「它第一次出現的位置」(比第一次出現或上次出現都可以,程式用上次出現)', line: 4, views: [arr(P.split(''), { label: 'pattern' }), arr(enc(P.split('')), { label: '第一次出現的位置' })] },
+    { note: `單字也這樣換:[${enc(words)}],和 pattern 的 [${enc(P.split(''))}] 相同 → true`, line: 6, views: [arr(words, { label: '單字' }), arr(enc(words), { label: '第一次出現的位置', done: [0, 1, 2, 3] })] },
   ]
 }
 

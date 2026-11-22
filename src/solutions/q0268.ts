@@ -10,21 +10,21 @@ function sumFig(): FigStep[] {
   const total = (n * (n + 1)) / 2
   const s = A.reduce((a, b) => a + b, 0)
   return [
-    { note: `0..${n} 全部都在的話,總和是 0 + 1 + … + ${n} = ${n}·${n + 1}/2 = ${total}`, views: [arr(range(0, n), { label: `完整的 0..${n}` })] },
-    { note: `陣列的總和是 ${A.join(' + ')} = ${s}。少掉的就是 ${total} − ${s} = ${total - s}`, views: [arr(A, { label: 'nums' }), arr(range(0, n), { label: `0..${n}`, highlight: [total - s] })] },
+    { note: `0..${n} 全部都在的話,總和是 0 + 1 + … + ${n} = ${n}·${n + 1}/2 = ${total}`, line: 2, views: [arr(range(0, n), { label: `完整的 0..${n}` })] },
+    { note: `陣列的總和是 ${A.join(' + ')} = ${s}。少掉的就是 ${total} − ${s} = ${total - s}`, line: 3, views: [arr(A, { label: 'nums' }), arr(range(0, n), { label: `0..${n}`, highlight: [total - s] })] },
   ]
 }
 
 function xorFig(): FigStep[] {
   const n = A.length
   let x = n
-  const out: FigStep[] = [{ note: `把 0..${n} 和陣列裡的數**全部** XOR 起來:出現兩次的互相抵消(a ^ a = 0),只剩缺的那個。x 從 n = ${n} 開始`, views: [arr(A, { label: 'nums' }), arr([x], { label: 'x' })] }]
+  const out: FigStep[] = [{ note: `把 0..${n} 和陣列裡的數**全部** XOR 起來:出現兩次的互相抵消(a ^ a = 0),只剩缺的那個。x 從 n = ${n} 開始`, line: 2, views: [arr(A, { label: 'nums' }), arr([x], { label: 'x' })] }]
   A.forEach((v, i) => {
     const before = x
     x ^= i ^ v
-    out.push({ note: `x ^= ${i}(索引)^ ${v}(值):${before} → ${x}`, views: [arr(A, { label: 'nums', highlight: [i] }), arr([x], { label: 'x', highlight: [0] })] })
+    out.push({ note: `x ^= ${i}(索引)^ ${v}(值):${before} → ${x}`, line: 3, views: [arr(A, { label: 'nums', highlight: [i] }), arr([x], { label: 'x', highlight: [0] })] })
   })
-  out.push({ note: `答案 ${x}`, views: [arr([x], { label: 'x', done: [0] })] })
+  out.push({ note: `答案 ${x}`, line: 4, views: [arr([x], { label: 'x', done: [0] })] })
   return out
 }
 

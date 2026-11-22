@@ -17,8 +17,8 @@ function dpFig(): FigStep[] {
   const dp: (number | string)[][] = Array.from({ length: n }, () => Array(n).fill(''))
   for (let l = 0; l < n; l++) for (let r = l; r < Math.min(n, l + 2); r++) dp[l][r] = 0
   const out: FigStep[] = [
-    { note: '先在兩端補上 1(戳到邊界時就當成乘 1)。反過來想:不要想「第一個戳誰」,要想「**最後**戳誰」', views: [arr(V, { label: 'nums(兩端補 1)', dim: [0, n - 1] })] },
-    { note: '在區間 (l, r) 裡,如果 k 是**最後**被戳的,那時它的左右鄰居一定是 l 和 r(中間其他都戳完了)→ 得分 V[l]·V[k]·V[r] + dp[l][k] + dp[k][r]。兩邊的子問題互不影響!', views: [arr(V, { label: '例:l = 0, r = 5, k = 4 最後戳', highlight: [4], compare: [0, 5] })] },
+    { note: '先在兩端補上 1(戳到邊界時就當成乘 1)。反過來想:不要想「第一個戳誰」,要想「**最後**戳誰」', line: 2, views: [arr(V, { label: 'nums(兩端補 1)', dim: [0, n - 1] })] },
+    { note: '在區間 (l, r) 裡,如果 k 是**最後**被戳的,那時它的左右鄰居一定是 l 和 r(中間其他都戳完了)→ 得分 V[l]·V[k]·V[r] + dp[l][k] + dp[k][r]。兩邊的子問題互不影響!', line: 7, views: [arr(V, { label: '例:l = 0, r = 5, k = 4 最後戳', highlight: [4], compare: [0, 5] })] },
   ]
   for (let len = 2; len < n; len++) {
     const hl: Cell[] = []
@@ -35,16 +35,16 @@ function dpFig(): FigStep[] {
       hl.push([l, r])
       if (!ex) ex = `例如 dp[${l}][${r}]:最後戳 ${bk}(值 ${V[bk]})最好 = ${V[l]}·${V[bk]}·${V[r]} + dp[${l}][${bk}] + dp[${bk}][${r}] = ${best}`
     }
-    out.push({ note: `區間長度 ${len}(裡面有 ${len - 1} 顆氣球):${ex}`, views: [table(dp, hl)] })
+    out.push({ note: `區間長度 ${len}(裡面有 ${len - 1} 顆氣球):${ex}`, line: 7, views: [table(dp, hl)] })
   }
-  out.push({ note: `答案 dp[0][${n - 1}] = ${dp[0][n - 1]}`, views: [table(dp, [[0, n - 1]])] })
+  out.push({ note: `答案 dp[0][${n - 1}] = ${dp[0][n - 1]}`, line: 9, views: [table(dp, [[0, n - 1]])] })
   return out
 }
 
 function bruteFig(): FigStep[] {
   return [
-    { note: '暴力:試所有戳的順序。戳掉 1 之後 3 和 5 變成鄰居 → 每一步都會改變剩下的鄰居關係', views: [arr(A, { label: 'nums', highlight: [1] }), arr([3, 5, 8], { label: '戳掉 1 之後(得 3·1·5 = 15)' })] },
-    { note: 'n 顆氣球有 n! 種順序,n = 300 完全不可能。「第一個戳誰」會讓左右兩邊互相影響,很難拆成子問題', views: [arr([3, 5, 8], { label: '剩下', highlight: [1] }), arr([3, 8], { label: '再戳 5(得 3·5·8 = 120)' })] },
+    { note: '暴力:試所有戳的順序。戳掉 1 之後 3 和 5 變成鄰居 → 每一步都會改變剩下的鄰居關係', line: 2, views: [arr(A, { label: 'nums', highlight: [1] }), arr([3, 5, 8], { label: '戳掉 1 之後(得 3·1·5 = 15)' })] },
+    { note: 'n 顆氣球有 n! 種順序,n = 300 完全不可能。「第一個戳誰」會讓左右兩邊互相影響,很難拆成子問題', line: 2, views: [arr([3, 5, 8], { label: '剩下', highlight: [1] }), arr([3, 8], { label: '再戳 5(得 3·5·8 = 120)' })] },
   ]
 }
 
@@ -65,11 +65,11 @@ function memoFig(): FigStep[] {
   const out: FigStep[] = [...bruteFig()]
   for (let k = 1; k < n - 1; k++) {
     const v = V[0] * V[k] * V[n - 1] + f(0, k) + f(k, n - 1)
-    out.push({ note: `f(0, ${n - 1}) 試「最後戳 k = ${k}」(值 ${V[k]}):${V[0]}·${V[k]}·${V[n - 1]} + f(0, ${k}) + f(${k}, ${n - 1}) = ${V[0] * V[k] * V[n - 1]} + ${f(0, k)} + ${f(k, n - 1)} = ${v}`, views: [arr(V, { label: '最後戳 k,左右鄰居是 l = 0、r = ' + (n - 1), highlight: [k], compare: [0, n - 1] })] })
+    out.push({ note: `f(0, ${n - 1}) 試「最後戳 k = ${k}」(值 ${V[k]}):${V[0]}·${V[k]}·${V[n - 1]} + f(0, ${k}) + f(${k}, ${n - 1}) = ${V[0] * V[k] * V[n - 1]} + ${f(0, k)} + ${f(k, n - 1)} = ${v}`, line: 8, views: [arr(V, { label: '最後戳 k,左右鄰居是 l = 0、r = ' + (n - 1), highlight: [k], compare: [0, n - 1] })] })
   }
   const dp: (number | string)[][] = Array.from({ length: n }, (_, l) => Array.from({ length: n }, (_, r) => memo.get(`${l},${r}`) ?? ''))
   const hl: Cell[] = [...memo.keys()].map((s) => s.split(',').map(Number) as Cell)
-  out.push({ note: `取最大 → f(0, ${n - 1}) = ${total}。遞迴途中算過的 f(l, r) 都存進 memo,下次直接拿;子問題只有 O(n²) 個`, views: [table(dp, hl)] })
+  out.push({ note: `取最大 → f(0, ${n - 1}) = ${total}。遞迴途中算過的 f(l, r) 都存進 memo,下次直接拿;子問題只有 O(n²) 個`, line: 9, views: [table(dp, hl)] })
   return out
 }
 

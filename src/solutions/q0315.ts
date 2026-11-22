@@ -6,19 +6,19 @@ const A = [5, 2, 6, 1]
 
 function bruteFig(): FigStep[] {
   return [
-    { note: '對 5 看右邊 [2,6,1]：2、1 比 5 小，共 2 個。', views: [arr(A, { label: 'nums', highlight: [0], compare: [1, 3] })] },
-    { note: '對 2 看 [6,1]：只有 1 比 2 小，記 1。', views: [arr(A, { label: 'nums', highlight: [1], compare: [3] })] },
-    { note: '對 6 看 [1]：1 比 6 小，記 1。', views: [arr(A, { label: 'nums', highlight: [2], compare: [3] })] },
-    { note: '最後的 1 右邊沒有數，記 0；答案 [2,1,1,0]。', views: [arr([2, 1, 1, 0], { label: '答案', done: [0, 1, 2, 3] })] },
+    { note: '對 5 看右邊 [2,6,1]：2、1 比 5 小，共 2 個。', line: 5, views: [arr(A, { label: 'nums', highlight: [0], compare: [1, 3] })] },
+    { note: '對 2 看 [6,1]：只有 1 比 2 小，記 1。', line: 5, views: [arr(A, { label: 'nums', highlight: [1], compare: [3] })] },
+    { note: '對 6 看 [1]：1 比 6 小，記 1。', line: 5, views: [arr(A, { label: 'nums', highlight: [2], compare: [3] })] },
+    { note: '最後的 1 右邊沒有數，記 0；答案 [2,1,1,0]。', line: 10, views: [arr([2, 1, 1, 0], { label: '答案', done: [0, 1, 2, 3] })] },
   ]
 }
 
 function bitFig(): FigStep[] {
   return [
-    { note: '先把不同值排序成 [1,2,5,6]，映射為名次 1、2、3、4；從右向左處理，已加入的值恰好都在目前位置右邊。', views: [kv([[1, 1], [2, 2], [5, 3], [6, 4]], '值 → 名次')] },
-    { note: '先加入最右邊的 1（名次 1）；它右邊沒有值，答案[3]=0。', views: [arr([1], { label: '已加入的值', done: [0] })] },
-    { note: '處理 6：查名次小於 4 的個數，目前有 1 個；再加入 6。處理 2：查名次小於 2 的個數，也有 1 個。', views: [arr([1, 6, 2], { label: '已加入的值', done: [0, 1, 2] })] },
-    { note: '處理 5：已加入的 1、2 比它小，查到 2；結果 [2,1,1,0]。Fenwick 樹讓「查前綴個數」和「加入一個值」都很快。', views: [arr([2, 1, 1, 0], { label: '答案', done: [0, 1, 2, 3] })] },
+    { note: '先把不同值排序成 [1,2,5,6]，映射為名次 1、2、3、4；從右向左處理，已加入的值恰好都在目前位置右邊。', line: 3, views: [kv([[1, 1], [2, 2], [5, 3], [6, 4]], '值 → 名次')] },
+    { note: '先加入最右邊的 1（名次 1）；它右邊沒有值，答案[3]=0。', line: 12, /* TODO: 可能要拆格 */ views: [arr([1], { label: '已加入的值', done: [0] })] },
+    { note: '處理 6：查名次小於 4 的個數，目前有 1 個；再加入 6。處理 2：查名次小於 2 的個數，也有 1 個。', line: 8, /* TODO: 可能要拆格 */ views: [arr([1, 6, 2], { label: '已加入的值', done: [0, 1, 2] })] },
+    { note: '處理 5：已加入的 1、2 比它小，查到 2；結果 [2,1,1,0]。Fenwick 樹讓「查前綴個數」和「加入一個值」都很快。', line: 9, views: [arr([2, 1, 1, 0], { label: '答案', done: [0, 1, 2, 3] })] },
   ]
 }
 

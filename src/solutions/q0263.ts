@@ -3,12 +3,12 @@ import type { FigStep, Solution } from './types'
 
 // 263. Ugly Number
 const divideFig: FigStep[] = [
-  { note: '醜數的質因數只能有 2、3、5。6 = 2 × 3,把允許的因數都除掉後會剩 1。', views: [arr([6, 3, 1], { label: '6 ÷ 2 ÷ 3', done: [2] })] },
-  { note: '14 ÷ 2 = 7,剩下 7 不能再除以 2、3、5,因此不是醜數。', views: [arr([14, 7], { label: '14 ÷ 2', highlight: [1] })] },
+  { note: '醜數的質因數只能有 2、3、5。6 = 2 × 3,把允許的因數都除掉後會剩 1。', line: 4, views: [arr([6, 3, 1], { label: '6 ÷ 2 ÷ 3', done: [2] })] },
+  { note: '14 ÷ 2 = 7,剩下 7 不能再除以 2、3、5,因此不是醜數。', line: 5, views: [arr([14, 7], { label: '14 ÷ 2', highlight: [1] })] },
 ]
 const recursionFig: FigStep[] = [
-  { note: '也可遞迴:若目前 n 能被 2、3、5 中任一個整除,去判斷除完的商。', views: [arr([30, 15, 5, 1], { label: '30 → 15 → 5 → 1', done: [3] })] },
-  { note: '遞迴走到 1 就成功;走到不能被這三個數整除的其他數就失敗。', views: [arr(['1: 是', '7: 否'], { label: '終點' })] },
+  { note: '也可遞迴:若目前 n 能被 2、3、5 中任一個整除,去判斷除完的商。', line: 5, views: [arr([30, 15, 5, 1], { label: '30 → 15 → 5 → 1', done: [3] })] },
+  { note: '遞迴走到 1 就成功;走到不能被這三個數整除的其他數就失敗。', line: 3, views: [arr(['1: 是', '7: 否'], { label: '終點' })] },
 ]
 
 export const q0263: Solution = {

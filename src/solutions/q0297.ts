@@ -9,7 +9,7 @@ const T = [1, 2, 3, null, null, 4, 5]
 function preFig(): FigStep[] {
   const order: (number | string)[] = []
   const visit: Record<number, string> = {}
-  const out: FigStep[] = [{ note: '序列化:前序遍歷(根 → 左 → 右),遇到空的孩子也要寫下來(用 #)。有了 # 才知道哪裡結束,樹的形狀才能唯一還原', views: [tree(T)] }]
+  const out: FigStep[] = [{ note: '序列化:前序遍歷(根 → 左 → 右),遇到空的孩子也要寫下來(用 #)。有了 # 才知道哪裡結束,樹的形狀才能唯一還原', line: 3, views: [tree(T)] }]
   const idxOf = [0, 1, 2, -1, -1, 5, 6]
   const walk = (i: number) => {
     if (i >= T.length || T[i] === null) {
@@ -18,20 +18,20 @@ function preFig(): FigStep[] {
     }
     order.push(T[i]!)
     visit[idxOf[i]] = 'done'
-    if (order.length <= 7) out.push({ note: `拜訪 ${T[i]},寫下它`, views: [tree(T, { cls: { ...visit, [i]: 'hl' } }), arr([...order], { label: '字串' })] })
+    if (order.length <= 7) out.push({ note: `拜訪 ${T[i]},寫下它`, line: 6, views: [tree(T, { cls: { ...visit, [i]: 'hl' } }), arr([...order], { label: '字串' })] })
     walk(2 * i + 1)
     walk(2 * i + 2)
   }
   walk(0)
-  out.push({ note: `完整的字串:"${order.join(',')}"`, views: [arr(order, { label: 'serialize 的結果', done: order.flatMap((v, i) => (v === '#' ? [] : [i])) })] })
-  out.push({ note: '反序列化:用同樣的前序順序讀回來。讀到數字就建節點,再遞迴建左子樹、右子樹;讀到 # 就回傳 null', views: [arr(order, { label: '依序讀', highlight: [0] }), tree(T, { cls: { 0: 'hl' } })] })
+  out.push({ note: `完整的字串:"${order.join(',')}"`, line: 11, views: [arr(order, { label: 'serialize 的結果', done: order.flatMap((v, i) => (v === '#' ? [] : [i])) })] })
+  out.push({ note: '反序列化:用同樣的前序順序讀回來。讀到數字就建節點,再遞迴建左子樹、右子樹;讀到 # 就回傳 null', line: 15, views: [arr(order, { label: '依序讀', highlight: [0] }), tree(T, { cls: { 0: 'hl' } })] })
   return out
 }
 
 function bfsFig(): FigStep[] {
   return [
-    { note: '層序(BFS)版本:一層一層寫下來,空的寫 null。這就是 LeetCode 題目輸入的格式', views: [tree(T), arr([1, 2, 3, 'null', 'null', 4, 5, 'null', 'null', 'null', 'null'], { label: '層序' })] },
-    { note: '還原時用佇列:每從佇列拿出一個節點,就從字串依序讀兩個值當它的左、右孩子', views: [arr([1, 2, 3, 'null', 'null', 4, 5], { label: '讀到這裡', highlight: [5, 6] }), tree(T, { cls: { 2: 'hl', 5: 'done', 6: 'done' } })] },
+    { note: '層序(BFS)版本:一層一層寫下來,空的寫 null。這就是 LeetCode 題目輸入的格式', line: 6, /* TODO: 可能要拆格 */ views: [tree(T), arr([1, 2, 3, 'null', 'null', 4, 5, 'null', 'null', 'null', 'null'], { label: '層序' })] },
+    { note: '還原時用佇列:每從佇列拿出一個節點,就從字串依序讀兩個值當它的左、右孩子', line: 19, views: [arr([1, 2, 3, 'null', 'null', 4, 5], { label: '讀到這裡', highlight: [5, 6] }), tree(T, { cls: { 2: 'hl', 5: 'done', 6: 'done' } })] },
   ]
 }
 

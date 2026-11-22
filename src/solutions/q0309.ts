@@ -22,6 +22,7 @@ function stateFig(): FigStep[] {
   const out: FigStep[] = [
     {
       note: '每天結束時你一定在三種狀態之一:**持有**股票、**今天剛賣**(明天要冷卻)、**手上沒股票也不在冷卻**。只要記住每種狀態的最佳利潤',
+      line: 2,
       views: [arr(P, { label: 'prices', mode: 'bars' }), stateTable(rows, -1)],
     },
   ]
@@ -42,10 +43,11 @@ function stateFig(): FigStep[] {
     rows[2][i] = rest
     out.push({
       note: msg,
+      line: 3,
       views: [arr(P, { label: 'prices', mode: 'bars', highlight: [i], dim: range(0, i - 1) }), stateTable(rows, i)],
     })
   })
-  out.push({ note: `最後一天不能還拿著股票 → 答案 = max(sold, rest) = ${Math.max(sold, rest)}(第 0 天買、第 1 天賣、第 2 天冷卻、第 3 天買、第 4 天賣)`, views: [stateTable(rows, P.length - 1)] })
+  out.push({ note: `最後一天不能還拿著股票 → 答案 = max(sold, rest) = ${Math.max(sold, rest)}(第 0 天買、第 1 天賣、第 2 天冷卻、第 3 天買、第 4 天賣)`, line: 4, views: [stateTable(rows, P.length - 1)] })
   return out
 }
 
@@ -61,7 +63,7 @@ function memoFig(): FigStep[] {
     colLabels: P.map((p, i) => `第${i}天 $${p}`),
     marks: { hl: col >= 0 ? [[0, col], [1, col]] : [] },
   })
-  const out: FigStep[] = [{ note: '從 f(0, F) 開始遞迴;i ≥ n 時回傳 0。每個 (i, holding) 只算一次,算完存進 memo。遞迴會先算到最後一天,再一路往回填', views: [arr(P, { label: 'prices', mode: 'bars' }), table(-1)] }]
+  const out: FigStep[] = [{ note: '從 f(0, F) 開始遞迴;i ≥ n 時回傳 0。每個 (i, holding) 只算一次,算完存進 memo。遞迴會先算到最後一天,再一路往回填', line: 11, views: [arr(P, { label: 'prices', mode: 'bars' }), table(-1)] }]
   for (let i = n - 1; i >= 0; i--) {
     const p = P[i]
     memo[1][i] = Math.max(memo[1][i + 1], p + memo[0][i + 2])
@@ -70,17 +72,18 @@ function memoFig(): FigStep[] {
     rows[1][i] = memo[1][i]
     out.push({
       note: `第 ${i} 天(價格 ${p}):f(${i}, T) = max(跳過 ${memo[1][i + 1]}, 賣 ${p} + f(${i + 2}, F) = ${p + memo[0][i + 2]}) = ${memo[1][i]};f(${i}, F) = max(跳過 ${memo[0][i + 1]}, 買 −${p} + f(${i + 1}, T) = ${-p + memo[1][i + 1]}) = ${memo[0][i]}`,
+      line: 9,
       views: [arr(P, { label: 'prices', mode: 'bars', highlight: [i] }), table(i)],
     })
   }
-  out.push({ note: `答案 = f(0, F) = ${memo[0][0]}。賣出時跳到 i + 2,就是冷卻一天`, views: [table(0)] })
+  out.push({ note: `答案 = f(0, F) = ${memo[0][0]}。賣出時跳到 i + 2,就是冷卻一天`, line: 11, views: [table(0)] })
   return out
 }
 
 function machineFig(): FigStep[] {
   return [
-    { note: '狀態機:rest →(買)→ hold →(賣)→ sold →(冷卻一天)→ rest。hold、rest 也可以原地不動', views: [arr(['rest', '→買→', 'hold', '→賣→', 'sold', '→冷卻→', 'rest'], { label: '一輪交易' })] },
-    { note: '冷卻的限制就藏在「sold 只能走到 rest、不能直接買」這條規則裡:買入只能從 rest 出發', views: [arr(['hold ← max(hold, rest − p)', 'sold ← hold + p', 'rest ← max(rest, sold)'], { label: '轉移' })] },
+    { note: '狀態機:rest →(買)→ hold →(賣)→ sold →(冷卻一天)→ rest。hold、rest 也可以原地不動', line: 2, views: [arr(['rest', '→買→', 'hold', '→賣→', 'sold', '→冷卻→', 'rest'], { label: '一輪交易' })] },
+    { note: '冷卻的限制就藏在「sold 只能走到 rest、不能直接買」這條規則裡:買入只能從 rest 出發', line: 3, views: [arr(['hold ← max(hold, rest − p)', 'sold ← hold + p', 'rest ← max(rest, sold)'], { label: '轉移' })] },
   ]
 }
 

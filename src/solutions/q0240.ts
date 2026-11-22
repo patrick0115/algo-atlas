@@ -5,10 +5,10 @@ import type { GridViewData } from '../types'
 const M = [[1,4,7,11],[2,5,8,12],[3,6,9,16],[10,13,14,17]]
 const view = (r: number, c: number, note: string): GridViewData => ({ kind: 'grid', label: note, cells: M, marks: { hl: [[r,c]], dim: M.flatMap((row,i)=>row.flatMap((_,j)=>i<r||j>c?[[i,j] as [number,number]]:[])) } })
 const fig = [
-  { note: '從右上角 11 出發，目標 5 比 11 小；11 下方只會更大，因此排除這一欄，向左移。', views: [view(0,3,'右上角開始')] },
-  { note: '來到 7、4。4 比 5 小，左邊更小，因此整列的左半都不可能，往下移。', views: [view(0,1,'4 < 5，向下')] },
-  { note: '從 (0,1) 往下走，列索引變成 1，欄索引仍是 1；新位置的值是 5。', views: [view(1,1,'向下移動一格')] },
-  { note: '走到 (1,1) 的 5，找到目標。每步都能排除一列或一行。', views: [view(1,1,'找到 5')] },
+  { note: '從右上角 11 出發，目標 5 比 11 小；11 下方只會更大，因此排除這一欄，向左移。', line: 4, views: [view(0,3,'右上角開始')] },
+  { note: '來到 7、4。4 比 5 小，左邊更小，因此整列的左半都不可能，往下移。', line: 11, /* TODO: 可能要拆格 */ views: [view(0,1,'4 < 5，向下')] },
+  { note: '從 (0,1) 往下走，列索引變成 1，欄索引仍是 1；新位置的值是 5。', line: 6, views: [view(1,1,'向下移動一格')] },
+  { note: '走到 (1,1) 的 5，找到目標。每步都能排除一列或一行。', line: 7, views: [view(1,1,'找到 5')] },
 ]
 
 export const q0240: Solution = {
@@ -19,7 +19,7 @@ export const q0240: Solution = {
   constraints: ['1 ≤ m,n ≤ 300；矩陣值可為負。', '兩個方向各自排序，但把矩陣攤平後不一定排序。'],
   insight: ['對每一列做二分搜尋可行，複雜度 O(m log n)。', '右上角有特殊性：左邊更小，下邊更大；比較一次就能排掉一整行或一整列。', '這是 [[p:binary-search]] 的有序資訊運用。'],
   approaches: [
-    { name: '逐列二分搜尋', idea: '每一列都是已排序陣列，對每列查 target。', steps: ['對每列設 l=0、r=n−1。每列的排序讓我們能排除一部分不可能的位置。', '比較中點與 target，縮小左右範圍。比較中點或右上角目前值後，才知道要捨棄哪一側。', '任一列找到就回傳 true；全找不到回傳 false。找到相等值就可以立即停止；否則持續縮小尚未排除的範圍。'], figure: { title: 'target = 5', steps: [{ note: '第一列的搜尋範圍先是 [1,4,7,11]，中點 4 比目標 5 小，因此左界移到 7。', views: [view(0,1,'第一列：比較 4')] }, { note: '接著比較 7，它又比 5 大，第一列的搜尋範圍因此縮空。', views: [view(0,2,'第一列：比較 7')] }, { note: '第二列從中點 5 開始比較，剛好等於目標，立即回傳 true。', views: [view(1,1,'第二列找到 5')] }] }, complexity: { time: 'O(m log n)', space: 'O(1)', why: '每列各做一次二分搜尋。' }, verdict: '可直接利用列排序，未利用行排序。', code: {
+    { name: '逐列二分搜尋', idea: '每一列都是已排序陣列，對每列查 target。', steps: ['對每列設 l=0、r=n−1。每列的排序讓我們能排除一部分不可能的位置。', '比較中點與 target，縮小左右範圍。比較中點或右上角目前值後，才知道要捨棄哪一側。', '任一列找到就回傳 true；全找不到回傳 false。找到相等值就可以立即停止；否則持續縮小尚未排除的範圍。'], figure: { title: 'target = 5', steps: [{ note: '第一列的搜尋範圍先是 [1,4,7,11]，中點 4 比目標 5 小，因此左界移到 7。', line: 8, views: [view(0,1,'第一列：比較 4')] }, { note: '接著比較 7，它又比 5 大，第一列的搜尋範圍因此縮空。', line: 11, views: [view(0,2,'第一列：比較 7')] }, { note: '第二列從中點 5 開始比較，剛好等於目標，立即回傳 true。', line: 7, views: [view(1,1,'第二列找到 5')] }] }, complexity: { time: 'O(m log n)', space: 'O(1)', why: '每列各做一次二分搜尋。' }, verdict: '可直接利用列排序，未利用行排序。', code: {
       python: `def searchMatrix(matrix, target):
     for row in matrix:  # 利用每列或右上角的排序資訊縮小搜尋範圍。
         l, r = (0, len(row) - 1)

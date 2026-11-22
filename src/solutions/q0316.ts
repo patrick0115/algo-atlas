@@ -5,19 +5,19 @@ const S = 'cbacdcbc'
 
 function choiceFig(): FigStep[] {
   return [
-    { note: '從左找候選開頭：c、b 後面還會出現；掃到 a 時，前綴 cba 裡字典序最小是 a，選它。', views: [arr([...S], { label: 's', highlight: [0, 1, 2] })] },
-    { note: '選 a 後只能用它右邊的 cdcbc；移除之後所有 a（這裡沒有），再選下一個字。', views: [arr([...'cdcbc'], { label: '剩餘字串', highlight: [0] })] },
-    { note: 'cdcbc 的前綴到第一個只出現一次的 d 為止是 cd，選較小的 c；剩下 dcbc 移除 c 得 db。', views: [arr([...'cdcbc'], { label: '選 c', highlight: [0, 1] }), arr([...'db'], { label: '下一輪' })] },
-    { note: '剩餘 db 依序選 d、b，答案 acdb。每次選字後都只看右側，保持子序列順序。', views: [arr([...'acdb'], { label: '答案', done: [0, 1, 2, 3] })] },
+    { note: '從左找候選開頭：c、b 後面還會出現；掃到 a 時，前綴 cba 裡字典序最小是 a，選它。', line: 11, views: [arr([...S], { label: 's', highlight: [0, 1, 2] })] },
+    { note: '選 a 後只能用它右邊的 cdcbc；移除之後所有 a（這裡沒有），再選下一個字。', line: 19, views: [arr([...'cdcbc'], { label: '剩餘字串', highlight: [0] })] },
+    { note: 'cdcbc 的前綴到第一個只出現一次的 d 為止是 cd，選較小的 c；剩下 dcbc 移除 c 得 db。', line: 14, /* TODO: 可能要拆格 */ views: [arr([...'cdcbc'], { label: '選 c', highlight: [0, 1] }), arr([...'db'], { label: '下一輪' })] },
+    { note: '剩餘 db 依序選 d、b，答案 acdb。每次選字後都只看右側，保持子序列順序。', line: 20, views: [arr([...'acdb'], { label: '答案', done: [0, 1, 2, 3] })] },
   ]
 }
 
 function stackFig(): FigStep[] {
   return [
-    { note: '先統計各字元後續出現次數。掃到 c 時入堆疊；掃到 b 時，c 比 b 大而且之後還有 c，彈出 c 再放 b。', views: [arr([...'cb'], { label: '已掃描', done: [0], highlight: [1] }), arr(['b'], { label: '堆疊' })] },
-    { note: '掃到 a 時，b 之後還有，彈出 b；放入 a，讓結果盡量小。', views: [arr([...'cba'], { label: '已掃描', highlight: [2] }), arr(['a'], { label: '堆疊' })] },
-    { note: '再掃 c、d，堆疊變成 a,c,d。雖然 d 比後面的 b 大，但 d 已沒有下一次，不能彈出。', views: [arr([...'acdb'], { label: '候選結果', done: [0, 1, 2], highlight: [3] })] },
-    { note: '後面的 c、b 已在堆疊中就略過；最終 acdb，每個字元恰好一次。', views: [arr([...'acdb'], { label: '答案', done: [0, 1, 2, 3] })] },
+    { note: '先統計各字元後續出現次數。掃到 c 時入堆疊；掃到 b 時，c 比 b 大而且之後還有 c，彈出 c 再放 b。', line: 14, /* TODO: 可能要拆格 */ views: [arr([...'cb'], { label: '已掃描', done: [0], highlight: [1] }), arr(['b'], { label: '堆疊' })] },
+    { note: '掃到 a 時，b 之後還有，彈出 b；放入 a，讓結果盡量小。', line: 14, /* TODO: 可能要拆格 */ views: [arr([...'cba'], { label: '已掃描', highlight: [2] }), arr(['a'], { label: '堆疊' })] },
+    { note: '再掃 c、d，堆疊變成 a,c,d。雖然 d 比後面的 b 大，但 d 已沒有下一次，不能彈出。', line: 14, /* TODO: 可能要拆格 */ views: [arr([...'acdb'], { label: '候選結果', done: [0, 1, 2], highlight: [3] })] },
+    { note: '後面的 c、b 已在堆疊中就略過；最終 acdb，每個字元恰好一次。', line: 20, views: [arr([...'acdb'], { label: '答案', done: [0, 1, 2, 3] })] },
   ]
 }
 

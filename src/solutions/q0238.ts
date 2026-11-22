@@ -6,12 +6,12 @@ import type { FigStep, Solution } from './types'
 const A = [2, 3, 4, 5]
 
 function bruteFig(): FigStep[] {
-  const out: FigStep[] = [{ note: '對每個位置 i,把「除了自己以外」的所有數乘起來', views: [arr(A, { label: 'nums' })] }]
+  const out: FigStep[] = [{ note: '對每個位置 i,把「除了自己以外」的所有數乘起來', line: 3, views: [arr(A, { label: 'nums' })] }]
   const ans: (number | string)[] = A.map(() => '?')
   A.forEach((_, i) => {
     const p = A.reduce((acc, v, j) => (j === i ? acc : acc * v), 1)
     ans[i] = p
-    out.push({ note: `answer[${i}] = ${A.filter((_, j) => j !== i).join(' × ')} = ${p}(走了 n − 1 個數)`, views: [arr(A, { label: 'nums', dim: [i], compare: range(0, A.length - 1).filter((j) => j !== i) }), arr(ans, { label: 'answer', highlight: [i] })] })
+    out.push({ note: `answer[${i}] = ${A.filter((_, j) => j !== i).join(' × ')} = ${p}(走了 n − 1 個數)`, line: 6, views: [arr(A, { label: 'nums', dim: [i], compare: range(0, A.length - 1).filter((j) => j !== i) }), arr(ans, { label: 'answer', highlight: [i] })] })
   })
   return out
 }
@@ -20,41 +20,41 @@ function prefixFig(): FigStep[] {
   const n = A.length
   const L: (number | string)[] = Array(n).fill('?')
   const R: (number | string)[] = Array(n).fill('?')
-  const out: FigStep[] = [{ note: '觀察:answer[i] = (i 左邊所有數的乘積) × (i 右邊所有數的乘積)。分別先算好', views: [arr(A, { label: 'nums' })] }]
+  const out: FigStep[] = [{ note: '觀察:answer[i] = (i 左邊所有數的乘積) × (i 右邊所有數的乘積)。分別先算好', line: 3, views: [arr(A, { label: 'nums' })] }]
   L[0] = 1
-  out.push({ note: 'left[0] = 1:最左邊的左邊沒有數,乘積是 1(空乘積)', views: [arr(A, { label: 'nums' }), arr(L, { label: 'left[i] = nums[0..i−1] 的乘積', highlight: [0] })] })
+  out.push({ note: 'left[0] = 1:最左邊的左邊沒有數,乘積是 1(空乘積)', line: 3, views: [arr(A, { label: 'nums' }), arr(L, { label: 'left[i] = nums[0..i−1] 的乘積', highlight: [0] })] })
   for (let i = 1; i < n; i++) {
     L[i] = (L[i - 1] as number) * A[i - 1]
-    out.push({ note: `left[${i}] = left[${i - 1}] × nums[${i - 1}] = ${L[i - 1]} × ${A[i - 1]} = ${L[i]}`, views: [arr(A, { label: 'nums', compare: [i - 1] }), arr(L, { label: 'left[i] = nums[0..i−1] 的乘積', highlight: [i] })] })
+    out.push({ note: `left[${i}] = left[${i - 1}] × nums[${i - 1}] = ${L[i - 1]} × ${A[i - 1]} = ${L[i]}`, line: 4, views: [arr(A, { label: 'nums', compare: [i - 1] }), arr(L, { label: 'left[i] = nums[0..i−1] 的乘積', highlight: [i] })] })
   }
   R[n - 1] = 1
-  out.push({ note: `right[${n - 1}] = 1:最右邊的右邊沒有數`, views: [arr(A, { label: 'nums' }), arr(L, { label: 'left' }), arr(R, { label: 'right[i] = nums[i+1..n−1] 的乘積', highlight: [n - 1] })] })
+  out.push({ note: `right[${n - 1}] = 1:最右邊的右邊沒有數`, line: 3, views: [arr(A, { label: 'nums' }), arr(L, { label: 'left' }), arr(R, { label: 'right[i] = nums[i+1..n−1] 的乘積', highlight: [n - 1] })] })
   for (let i = n - 2; i >= 0; i--) {
     R[i] = (R[i + 1] as number) * A[i + 1]
-    out.push({ note: `right[${i}] = right[${i + 1}] × nums[${i + 1}] = ${R[i + 1]} × ${A[i + 1]} = ${R[i]}`, views: [arr(A, { label: 'nums', compare: [i + 1] }), arr(L, { label: 'left' }), arr(R, { label: 'right[i] = nums[i+1..n−1] 的乘積', highlight: [i] })] })
+    out.push({ note: `right[${i}] = right[${i + 1}] × nums[${i + 1}] = ${R[i + 1]} × ${A[i + 1]} = ${R[i]}`, line: 5, views: [arr(A, { label: 'nums', compare: [i + 1] }), arr(L, { label: 'left' }), arr(R, { label: 'right[i] = nums[i+1..n−1] 的乘積', highlight: [i] })] })
   }
   const ans = L.map((v, i) => (v as number) * (R[i] as number))
-  out.push({ note: `answer[i] = left[i] × right[i] → [${ans.join(', ')}]`, views: [arr(L, { label: 'left' }), arr(R, { label: 'right' }), arr(ans, { label: 'answer', done: range(0, n - 1) })] })
+  out.push({ note: `answer[i] = left[i] × right[i] → [${ans.join(', ')}]`, line: 6, views: [arr(L, { label: 'left' }), arr(R, { label: 'right' }), arr(ans, { label: 'answer', done: range(0, n - 1) })] })
   return out
 }
 
 function o1Fig(): FigStep[] {
   const n = A.length
   const ans: (number | string)[] = Array(n).fill('?')
-  const out: FigStep[] = [{ note: '同樣的想法,但不另外開 left / right:先把左乘積直接寫進 answer,再從右往左用一個變數 suffix 乘上去', views: [arr(A, { label: 'nums' }), arr(ans, { label: 'answer' })] }]
+  const out: FigStep[] = [{ note: '同樣的想法,但不另外開 left / right:先把左乘積直接寫進 answer,再從右往左用一個變數 suffix 乘上去', line: 3, views: [arr(A, { label: 'nums' }), arr(ans, { label: 'answer' })] }]
   let prefix = 1
   for (let i = 0; i < n; i++) {
     ans[i] = prefix
-    out.push({ note: `第一趟(左 → 右):answer[${i}] = prefix = ${prefix},然後 prefix ×= nums[${i}] → ${prefix * A[i]}`, views: [arr(A, { label: 'nums', highlight: [i] }), arr(ans, { label: 'answer(目前存的是左乘積)', highlight: [i] })] })
+    out.push({ note: `第一趟(左 → 右):answer[${i}] = prefix = ${prefix},然後 prefix ×= nums[${i}] → ${prefix * A[i]}`, line: 6, /* TODO: 可能要拆格 */ views: [arr(A, { label: 'nums', highlight: [i] }), arr(ans, { label: 'answer(目前存的是左乘積)', highlight: [i] })] })
     prefix *= A[i]
   }
   let suffix = 1
   for (let i = n - 1; i >= 0; i--) {
     ans[i] = (ans[i] as number) * suffix
-    out.push({ note: `第二趟(右 → 左):answer[${i}] ×= suffix(${suffix})→ ${ans[i]},然後 suffix ×= nums[${i}] → ${suffix * A[i]}`, views: [arr(A, { label: 'nums', highlight: [i] }), arr(ans, { label: 'answer', highlight: [i], done: range(i + 1, n - 1) })] })
+    out.push({ note: `第二趟(右 → 左):answer[${i}] ×= suffix(${suffix})→ ${ans[i]},然後 suffix ×= nums[${i}] → ${suffix * A[i]}`, line: 11, /* TODO: 可能要拆格 */ views: [arr(A, { label: 'nums', highlight: [i] }), arr(ans, { label: 'answer', highlight: [i], done: range(i + 1, n - 1) })] })
     suffix *= A[i]
   }
-  out.push({ note: `完成:[${ans.join(', ')}]。除了輸出陣列,只用了 prefix、suffix 兩個變數`, views: [arr(ans, { label: 'answer', done: range(0, n - 1) })] })
+  out.push({ note: `完成:[${ans.join(', ')}]。除了輸出陣列,只用了 prefix、suffix 兩個變數`, line: 14, views: [arr(ans, { label: 'answer', done: range(0, n - 1) })] })
   return out
 }
 

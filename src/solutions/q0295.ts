@@ -8,7 +8,7 @@ const STREAM = [5, 15, 1, 3, 8]
 function heapFig(): FigStep[] {
   const lo: number[] = [] // 左半(最大堆)
   const hi: number[] = [] // 右半(最小堆)
-  const out: FigStep[] = [{ note: '把資料切成兩半:**左半**用最大堆(隨時拿得到左半最大的)、**右半**用最小堆(隨時拿得到右半最小的)。保持左半個數 = 右半,或多一個', views: [arr([], { label: '左半(最大堆)' }), arr([], { label: '右半(最小堆)' })] }]
+  const out: FigStep[] = [{ note: '把資料切成兩半:**左半**用最大堆(隨時拿得到左半最大的)、**右半**用最小堆(隨時拿得到右半最小的)。保持左半個數 = 右半,或多一個', line: 30, views: [arr([], { label: '左半(最大堆)' }), arr([], { label: '右半(最小堆)' })] }]
   for (const x of STREAM) {
     lo.push(x)
     lo.sort((a, b) => b - a)
@@ -24,6 +24,8 @@ function heapFig(): FigStep[] {
     const med = lo.length > hi.length ? lo[0] : (lo[0] + hi[0]) / 2
     out.push({
       note: `加入 ${x}:先放進左半,把左半最大的 ${moved} 移到右半${back !== null ? `;右半比較多,把右半最小的 ${back} 移回左半` : ''}。中位數 = ${lo.length > hi.length ? `左半最大 ${lo[0]}` : `(${lo[0]} + ${hi[0]}) / 2 = ${med}`}`,
+      line: back !== null ? 36 : 35,
+      /* TODO: 可能要拆格 */
       views: [arr([...lo], { label: '左半(最大堆)', highlight: [0] }), arr([...hi], { label: '右半(最小堆)', highlight: lo.length > hi.length ? [] : [0] })],
     })
   }
@@ -32,8 +34,8 @@ function heapFig(): FigStep[] {
 
 function sortFig(): FigStep[] {
   return [
-    { note: '最直接:維護一個排好序的陣列。新數字用二分搜尋找位置插進去,中位數就是正中間', views: [arr([1, 5, 15], { label: '排序陣列' })] },
-    { note: '加入 3:二分找到位置 1 插入,後面的元素要整個往後搬 → 插入是 O(n)', views: [arr([1, 3, 5, 15], { label: '排序陣列', highlight: [1], compare: [1, 2] })] },
+    { note: '最直接:維護一個排好序的陣列。新數字用二分搜尋找位置插進去,中位數就是正中間', line: 4, views: [arr([1, 5, 15], { label: '排序陣列' })] },
+    { note: '加入 3:二分找到位置 1 插入,後面的元素要整個往後搬 → 插入是 O(n)', line: 6, views: [arr([1, 3, 5, 15], { label: '排序陣列', highlight: [1], compare: [1, 2] })] },
   ]
 }
 

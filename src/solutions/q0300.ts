@@ -7,23 +7,23 @@ const A = [10, 9, 2, 5, 3, 7, 101, 18]
 
 function dpFig(): FigStep[] {
   const dp: (number | string)[] = A.map(() => '')
-  const out: FigStep[] = [{ note: 'dp[i] = 以 nums[i] **結尾**的最長遞增子序列長度。它可以接在前面任何一個「比它小」的數後面 → dp[i] = 1 + max(dp[j]),j < i 且 nums[j] < nums[i]', views: [arr(A, { label: 'nums', mode: 'bars' }), arr(dp, { label: 'dp' })] }]
+  const out: FigStep[] = [{ note: 'dp[i] = 以 nums[i] **結尾**的最長遞增子序列長度。它可以接在前面任何一個「比它小」的數後面 → dp[i] = 1 + max(dp[j]),j < i 且 nums[j] < nums[i]', line: 2, views: [arr(A, { label: 'nums', mode: 'bars' }), arr(dp, { label: 'dp' })] }]
   for (let i = 0; i < A.length; i++) {
     let best = 0
     let from = -1
     for (let j = 0; j < i; j++) if (A[j] < A[i] && (dp[j] as number) > best) (best = dp[j] as number), (from = j)
     dp[i] = best + 1
     const smaller = range(0, i - 1).filter((j) => A[j] < A[i])
-    out.push({ note: `nums[${i}] = ${A[i]}:前面比它小的有 ${smaller.map((j) => A[j]).join('、') || '(沒有)'}${from >= 0 ? `,其中 dp 最大的是 ${A[from]}(${best})` : ''} → dp[${i}] = ${dp[i]}`, views: [arr(A, { label: 'nums', mode: 'bars', highlight: [i], compare: smaller }), arr(dp, { label: 'dp', highlight: [i], compare: from >= 0 ? [from] : [] })] })
+    out.push({ note: `nums[${i}] = ${A[i]}:前面比它小的有 ${smaller.map((j) => A[j]).join('、') || '(沒有)'}${from >= 0 ? `,其中 dp 最大的是 ${A[from]}(${best})` : ''} → dp[${i}] = ${dp[i]}`, line: 4, views: [arr(A, { label: 'nums', mode: 'bars', highlight: [i], compare: smaller }), arr(dp, { label: 'dp', highlight: [i], compare: from >= 0 ? [from] : [] })] })
   }
   const mx = Math.max(...(dp as number[]))
-  out.push({ note: `答案 = dp 裡最大的 ${mx}(例如 2, 3, 7, 18)`, views: [arr(dp, { label: 'dp', done: dp.flatMap((v, i) => (v === mx ? [i] : [])) })] })
+  out.push({ note: `答案 = dp 裡最大的 ${mx}(例如 2, 3, 7, 18)`, line: 5, views: [arr(dp, { label: 'dp', done: dp.flatMap((v, i) => (v === mx ? [i] : [])) })] })
   return out
 }
 
 function tailsFig(): FigStep[] {
   const tails: number[] = []
-  const out: FigStep[] = [{ note: 'tails[k] = 「長度 k+1 的遞增子序列」裡,**最小的結尾**是多少。結尾越小,後面越容易接上更多數。tails 一定是遞增的 → 可以二分', views: [arr(A, { label: 'nums' }), arr(tails, { label: 'tails' })] }]
+  const out: FigStep[] = [{ note: 'tails[k] = 「長度 k+1 的遞增子序列」裡,**最小的結尾**是多少。結尾越小,後面越容易接上更多數。tails 一定是遞增的 → 可以二分', line: 2, views: [arr(A, { label: 'nums' }), arr(tails, { label: 'tails' })] }]
   A.forEach((x, i) => {
     let lo = 0
     let hi = tails.length
@@ -35,9 +35,9 @@ function tailsFig(): FigStep[] {
     const append = lo === tails.length
     const old = tails[lo]
     tails[lo] = x
-    out.push({ note: append ? `${x} 比 tails 裡所有數都大 → 接在最後,最長變成 ${tails.length}` : `二分找到第一個 ≥ ${x} 的位置 ${lo}(原本是 ${old})→ 換成 ${x}:長度 ${lo + 1} 的子序列有了更小的結尾`, views: [arr(A, { label: 'nums', highlight: [i], dim: range(0, i - 1) }), arr([...tails], { label: 'tails', highlight: [lo] })] })
+    out.push({ note: append ? `${x} 比 tails 裡所有數都大 → 接在最後,最長變成 ${tails.length}` : `二分找到第一個 ≥ ${x} 的位置 ${lo}(原本是 ${old})→ 換成 ${x}:長度 ${lo + 1} 的子序列有了更小的結尾`, line: 10, views: [arr(A, { label: 'nums', highlight: [i], dim: range(0, i - 1) }), arr([...tails], { label: 'tails', highlight: [lo] })] })
   })
-  out.push({ note: `tails 的長度 ${tails.length} 就是答案。注意 tails 本身不一定是一個真的子序列,只有長度有意義`, views: [arr(tails, { label: 'tails', done: range(0, tails.length - 1) })] })
+  out.push({ note: `tails 的長度 ${tails.length} 就是答案。注意 tails 本身不一定是一個真的子序列,只有長度有意義`, line: 12, views: [arr(tails, { label: 'tails', done: range(0, tails.length - 1) })] })
   return out
 }
 

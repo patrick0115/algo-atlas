@@ -9,7 +9,7 @@ const AMT = 6
 function dpFig(): FigStep[] {
   const dp: (number | string)[] = Array(AMT + 1).fill('∞')
   dp[0] = 0
-  const out: FigStep[] = [{ note: `dp[a] = 湊出金額 a 最少要幾枚硬幣。dp[0] = 0。要湊 a,最後一枚硬幣可能是任何一種 c → dp[a] = min(dp[a − c] + 1)`, views: [arr(COINS, { label: 'coins' }), arr(dp, { label: 'dp[0..amount]' })] }]
+  const out: FigStep[] = [{ note: `dp[a] = 湊出金額 a 最少要幾枚硬幣。dp[0] = 0。要湊 a,最後一枚硬幣可能是任何一種 c → dp[a] = min(dp[a − c] + 1)`, line: 2, views: [arr(COINS, { label: 'coins' }), arr(dp, { label: 'dp[0..amount]' })] }]
   for (let a = 1; a <= AMT; a++) {
     const tries: string[] = []
     let best = Infinity
@@ -24,16 +24,16 @@ function dpFig(): FigStep[] {
       if (v < best) (best = v), (from = a - c)
     }
     dp[a] = best === Infinity ? '∞' : best
-    out.push({ note: `dp[${a}]:最後一枚試 ${tries.join('、')} → ${dp[a]}`, views: [arr(COINS, { label: 'coins' }), arr(dp, { label: 'dp', highlight: [a], compare: from >= 0 ? [from] : [], done: range(0, a - 1) })] })
+    out.push({ note: `dp[${a}]:最後一枚試 ${tries.join('、')} → ${dp[a]}`, line: 5, views: [arr(COINS, { label: 'coins' }), arr(dp, { label: 'dp', highlight: [a], compare: from >= 0 ? [from] : [], done: range(0, a - 1) })] })
   }
-  out.push({ note: `答案 dp[${AMT}] = ${dp[AMT]}(3 + 3)。注意貪心(先拿最大的 4)會得到 4 + 1 + 1 = 3 枚,不是最少`, views: [arr(dp, { label: 'dp', done: [AMT] })] })
+  out.push({ note: `答案 dp[${AMT}] = ${dp[AMT]}(3 + 3)。注意貪心(先拿最大的 4)會得到 4 + 1 + 1 = 3 枚,不是最少`, line: 6, views: [arr(dp, { label: 'dp', done: [AMT] })] })
   return out
 }
 
 function bfsFig(): FigStep[] {
   const seen = new Set([AMT])
   let level = [AMT]
-  const out: FigStep[] = [{ note: '換成圖的角度:金額是節點,用一枚硬幣就從 a 走到 a − c。最少幾枚 = 從 amount 走到 0 的最短步數 → BFS', views: [arr(level, { label: '第 0 步' })] }]
+  const out: FigStep[] = [{ note: '換成圖的角度:金額是節點,用一枚硬幣就從 a 走到 a − c。最少幾枚 = 從 amount 走到 0 的最短步數 → BFS', line: 4, views: [arr(level, { label: '第 0 步' })] }]
   for (let step = 1; level.length; step++) {
     const next: number[] = []
     for (const a of level)
@@ -44,7 +44,7 @@ function bfsFig(): FigStep[] {
           next.push(b)
         }
       }
-    out.push({ note: `用 ${step} 枚硬幣能到的剩餘金額:${next.join('、')}${next.includes(0) ? ` → 碰到 0 了,答案 ${step}` : ''}`, views: [arr(next, { label: `第 ${step} 步`, highlight: next.includes(0) ? [next.indexOf(0)] : [] })] })
+    out.push({ note: `用 ${step} 枚硬幣能到的剩餘金額:${next.join('、')}${next.includes(0) ? ` → 碰到 0 了,答案 ${step}` : ''}`, line: next.includes(0) ? 11 : 14, views: [arr(next, { label: `第 ${step} 步`, highlight: next.includes(0) ? [next.indexOf(0)] : [] })] })
     if (next.includes(0)) break
     level = next
   }

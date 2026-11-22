@@ -9,10 +9,10 @@ const B = [3, 1, 3, 4, 2]
 
 function setFig(): FigStep[] {
   const seen: number[] = []
-  const out: FigStep[] = [{ note: '最直接:邊走邊記看過的數,第一個「已經看過」的就是重複的', views: [arr(B, { label: 'nums' }), kv([], 'seen')] }]
+  const out: FigStep[] = [{ note: '最直接:邊走邊記看過的數,第一個「已經看過」的就是重複的', line: 2, views: [arr(B, { label: 'nums' }), kv([], 'seen')] }]
   for (let i = 0; i < B.length; i++) {
     const dup = seen.includes(B[i])
-    out.push({ note: dup ? `${B[i]} 已經看過 → 答案 ${B[i]}` : `${B[i]} 沒看過,記下來`, views: [arr(B, { label: 'nums', highlight: [i], dim: range(0, i - 1) }), kv(seen.map((v) => [v, '✓']), 'seen', [B[i]])] })
+    out.push({ note: dup ? `${B[i]} 已經看過 → 答案 ${B[i]}` : `${B[i]} 沒看過,記下來`, line: dup ? 4 : 5, /* TODO: 可能要拆格 */ views: [arr(B, { label: 'nums', highlight: [i], dim: range(0, i - 1) }), kv(seen.map((v) => [v, '✓']), 'seen', [B[i]])] })
     if (dup) return out
     seen.push(B[i])
   }
@@ -23,19 +23,20 @@ function bsFig(): FigStep[] {
   const n = B.length - 1
   let lo = 1
   let hi = n
-  const out: FigStep[] = [{ note: `值只會在 1 ~ ${n}。鴿籠原理:如果「≤ mid 的數」超過 mid 個,重複的數一定 ≤ mid。對「值」二分,不是對位置`, views: [arr(B, { label: 'nums' }), arr(range(1, n), { label: '可能的答案(值)', range: [0, n - 1] })] }]
+  const out: FigStep[] = [{ note: `值只會在 1 ~ ${n}。鴿籠原理:如果「≤ mid 的數」超過 mid 個,重複的數一定 ≤ mid。對「值」二分,不是對位置`, line: 2, views: [arr(B, { label: 'nums' }), arr(range(1, n), { label: '可能的答案(值)', range: [0, n - 1] })] }]
   while (lo < hi) {
     const mid = (lo + hi) >> 1
     const cnt = B.filter((x) => x <= mid).length
     const left = cnt > mid
     out.push({
       note: `mid = ${mid}:nums 裡 ≤ ${mid} 的數有 ${cnt} 個 ${left ? `> ${mid} → 1~${mid} 這 ${mid} 個值擠了 ${cnt} 個數,重複的一定在這裡 → hi = mid` : `≤ ${mid} → 1~${mid} 沒有擠,重複的在右邊 → lo = mid + 1`}`,
+      line: left ? 7 : 8,
       views: [arr(B, { label: 'nums', highlight: B.flatMap((x, i) => (x <= mid ? [i] : [])) }), arr(range(1, n), { label: '可能的答案(值)', range: [lo - 1, hi - 1], compare: [mid - 1] })],
     })
     if (left) hi = mid
     else lo = mid + 1
   }
-  out.push({ note: `lo == hi = ${lo} → 答案 ${lo}`, views: [arr(range(1, n), { label: '答案', highlight: [lo - 1] })] })
+  out.push({ note: `lo == hi = ${lo} → 答案 ${lo}`, line: 10, views: [arr(range(1, n), { label: '答案', highlight: [lo - 1] })] })
   return out
 }
 
@@ -44,21 +45,21 @@ function floydFig(): FigStep[] {
   let slow = B[0]
   let fast = B[B[0]]
   const out: FigStep[] = [
-    { note: `把陣列看成鏈結串列:索引 i 的「next」是 nums[i]。從 0 出發:0 → ${B[0]} → ${B[B[0]]} → …。有兩個位置的值都指向同一個數(重複的數),所以一定形成環,**環的入口就是答案**`, views: [arr(B, { label: 'nums(索引 i → 下一站 nums[i])' })] },
+    { note: `把陣列看成鏈結串列:索引 i 的「next」是 nums[i]。從 0 出發:0 → ${B[0]} → ${B[B[0]]} → …。有兩個位置的值都指向同一個數(重複的數),所以一定形成環,**環的入口就是答案**`, line: 2, views: [arr(B, { label: 'nums(索引 i → 下一站 nums[i])' })] },
   ]
   while (slow !== fast) {
-    out.push({ note: `第一階段找相遇點:slow = ${slow}、fast = ${fast}`, views: [arr(B, { label: 'nums', pointers: [{ name: 'slow', index: slow }, { name: 'fast', index: fast, color: 'b' }] })] })
+    out.push({ note: `第一階段找相遇點:slow = ${slow}、fast = ${fast}`, line: 3, views: [arr(B, { label: 'nums', pointers: [{ name: 'slow', index: slow }, { name: 'fast', index: fast, color: 'b' }] })] })
     slow = nx(slow)
     fast = nx(nx(fast))
   }
-  out.push({ note: `slow 和 fast 在 ${slow} 相遇(在環裡)`, views: [arr(B, { label: 'nums', highlight: [slow], pointers: [{ name: 'slow=fast', index: slow }] })] })
+  out.push({ note: `slow 和 fast 在 ${slow} 相遇(在環裡)`, line: 3, views: [arr(B, { label: 'nums', highlight: [slow], pointers: [{ name: 'slow=fast', index: slow }] })] })
   let p = 0
   while (p !== slow) {
-    out.push({ note: `第二階段找入口:一個從 0 出發、一個從相遇點出發,都一次一步。現在 ${p} 和 ${slow}`, views: [arr(B, { label: 'nums', pointers: [{ name: 'p', index: p }, { name: 'slow', index: slow, color: 'b' }] })] })
+    out.push({ note: `第二階段找入口:一個從 0 出發、一個從相遇點出發,都一次一步。現在 ${p} 和 ${slow}`, line: 8, views: [arr(B, { label: 'nums', pointers: [{ name: 'p', index: p }, { name: 'slow', index: slow, color: 'b' }] })] })
     p = nx(p)
     slow = nx(slow)
   }
-  out.push({ note: `兩個在 ${p} 相遇 → 環的入口是 ${p},它就是重複的數`, views: [arr(B, { label: 'nums', highlight: B.flatMap((x, i) => (x === p ? [i] : [])) })] })
+  out.push({ note: `兩個在 ${p} 相遇 → 環的入口是 ${p},它就是重複的數`, line: 12, views: [arr(B, { label: 'nums', highlight: B.flatMap((x, i) => (x === p ? [i] : [])) })] })
   return out
 }
 
