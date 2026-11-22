@@ -8,13 +8,13 @@ const A = [4, 1, 2, 1, 2]
 
 function xorFig(): FigStep[] {
   let x = 0
-  const out: FigStep[] = [{ note: 'XOR(^)的兩個性質:a ^ a = 0(自己和自己抵消)、a ^ 0 = a。而且順序不重要。所以把全部 XOR 起來,成對的都會抵消,只剩落單的那個', views: [arr(A, { label: 'nums' }), arr([x.toString(2).padStart(3, '0')], { label: 'x(二進位)' })] }]
+  const out: FigStep[] = [{ note: 'XOR(^)的兩個性質:a ^ a = 0(自己和自己抵消)、a ^ 0 = a。而且順序不重要。所以把全部 XOR 起來,成對的都會抵消,只剩落單的那個', line: 2, views: [arr(A, { label: 'nums' }), arr([x.toString(2).padStart(3, '0')], { label: 'x(二進位)' })] }]
   A.forEach((v, i) => {
     const before = x
     x ^= v
-    out.push({ note: `${before} ^ ${v} = ${x}(${before.toString(2).padStart(3, '0')} ^ ${v.toString(2).padStart(3, '0')} = ${x.toString(2).padStart(3, '0')})`, views: [arr(A, { label: 'nums', highlight: [i], dim: range(0, i - 1) }), arr([x.toString(2).padStart(3, '0')], { label: 'x(二進位)', highlight: [0] })] })
+    out.push({ note: `${before} ^ ${v} = ${x}(${before.toString(2).padStart(3, '0')} ^ ${v.toString(2).padStart(3, '0')} = ${x.toString(2).padStart(3, '0')})`, line: 3, views: [arr(A, { label: 'nums', highlight: [i], dim: range(0, i - 1) }), arr([x.toString(2).padStart(3, '0')], { label: 'x(二進位)', highlight: [0] })] })
   })
-  out.push({ note: `1 和 2 各出現兩次互相抵消,剩下 ${x}`, views: [arr([x], { label: '答案', done: [0] })] })
+  out.push({ note: `1 和 2 各出現兩次互相抵消,剩下 ${x}`, line: 4, views: [arr([x], { label: '答案', done: [0] })] })
   return out
 }
 
@@ -23,7 +23,7 @@ function hashFig(): FigStep[] {
   const out: FigStep[] = []
   A.forEach((v, i) => {
     cnt.set(v, (cnt.get(v) ?? 0) + 1)
-    if (i === 0 || i === A.length - 1) out.push({ note: i === 0 ? '用雜湊表數每個數出現幾次' : '數完後,找次數是 1 的那個 → 4', views: [arr(A, { label: 'nums', highlight: [i] }), kv([...cnt.entries()], '次數', i === A.length - 1 ? [4] : [v])] })
+    if (i === 0 || i === A.length - 1) out.push({ note: i === 0 ? '用雜湊表數每個數出現幾次' : '數完後,找次數是 1 的那個 → 4', line: i === 0 ? 3 : 4, views: [arr(A, { label: 'nums', highlight: [i] }), kv([...cnt.entries()], '次數', i === A.length - 1 ? [4] : [v])] })
   })
   return out
 }

@@ -8,16 +8,16 @@ const A = [-10, -3, 0, 5, 9]
 
 function recFig(): FigStep[] {
   return [
-    { note: '要「高度平衡」:左右子樹高度差 ≤ 1。取正中間的數當根,左半邊、右半邊的數量就差不多,兩邊各自再遞迴', views: [arr(A, { label: 'nums', highlight: [2] })] },
-    { note: '根 0;左半 [−10, −3] 的中間(取左中位數)是 −10,右半 [5, 9] 的中間是 5', views: [arr(A, { label: 'nums', highlight: [0, 3], done: [2] })] },
-    { note: '再往下:−3 接在 −10 的右邊、9 接在 5 的右邊。中序走訪剛好還原成原本的排序陣列', views: [tree([0, -10, 5, null, -3, null, 9])] },
+    { note: '要「高度平衡」:左右子樹高度差 ≤ 1。取正中間的數當根,左半邊、右半邊的數量就差不多,兩邊各自再遞迴', line: 4, views: [arr(A, { label: 'nums', highlight: [2] })] },
+    { note: '根 0;左半 [−10, −3] 的中間(取左中位數)是 −10,右半 [5, 9] 的中間是 5', line: 4, views: [arr(A, { label: 'nums', highlight: [0, 3], done: [2] })] },
+    { note: '再往下:−3 接在 −10 的右邊、9 接在 5 的右邊。中序走訪剛好還原成原本的排序陣列', line: 5, views: [tree([0, -10, 5, null, -3, null, 9])] },
   ]
 }
 
 function stackFig(): FigStep[] {
   return [
-    { note: '迭代版:堆疊放「(節點, 這個節點負責的範圍 l..r)」。先建根(中間值),再把左右兩半的工作放進堆疊', views: [arr(A, { label: 'nums', range: [0, 4], highlight: [2] })] },
-    { note: '每次取出一份工作:範圍的中間建成節點、接到父親的左或右,剩下兩半再放回堆疊。建出來的樹和遞迴版一樣', views: [tree([0, -10, 5, null, -3, null, 9])] },
+    { note: '迭代版:堆疊放「(節點, 這個節點負責的範圍 l..r)」。先建根(中間值),再把左右兩半的工作放進堆疊', line: 5, views: [arr(A, { label: 'nums', range: [0, 4], highlight: [2] })] },
+    { note: '每次取出一份工作:範圍的中間建成節點、接到父親的左或右,剩下兩半再放回堆疊。建出來的樹和遞迴版一樣', line: 10, views: [tree([0, -10, 5, null, -3, null, 9])] }, // TODO: 可能要拆格
   ]
 }
 

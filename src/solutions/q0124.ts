@@ -13,6 +13,7 @@ function dfsFig(): FigStep[] {
   const out: FigStep[] = [
     {
       note: '路徑可以從任何節點開始、在任何節點結束,但不能分岔。換個角度:每條路徑都有一個「最高點」,路徑從最高點往左下延伸一段、往右下延伸一段',
+      line: 2,
       views: [tree(T, { label: '樹' })],
     },
   ]
@@ -28,19 +29,20 @@ function dfsFig(): FigStep[] {
     cls[n.i] = 'done'
     out.push({
       note: `節點 ${n.val}:左邊最多貢獻 ${l}、右邊最多貢獻 ${r}(負的就不要,當 0)。以它為最高點的路徑 = ${n.val} + ${l} + ${r} = ${through}${better ? ' → 目前最大' : ''}。往上回傳「只能選一邊」的 ${n.val} + max(${l}, ${r}) = ${gain[n.i]}`,
+      line: 6,
       views: [tree(T, { label: 'subs = 回傳給父節點的值', cls: { ...cls, [n.i]: 'hl' }, subs: { ...gain } }), arr([best], { label: '目前最大路徑和' })],
     })
     return gain[n.i]
   }
   dfs(root)
-  out.push({ note: `答案 ${best}:15 → 20 → 7`, views: [tree(T, { cls: { 2: 'done', 5: 'done', 6: 'done' } }), arr([best], { label: '答案', done: [0] })] })
+  out.push({ note: `答案 ${best}:15 → 20 → 7`, line: 10, views: [tree(T, { cls: { 2: 'done', 5: 'done', 6: 'done' } }), arr([best], { label: '答案', done: [0] })] })
   return out
 }
 
 function bruteFig(): FigStep[] {
   return [
-    { note: '暴力:把每個節點當作最高點,另外各算一次「往左下最多能拿多少」「往右下最多能拿多少」', views: [tree(T, { cls: { 0: 'hl' } })] },
-    { note: '「往下最多能拿多少」每次都重新算整棵子樹 → 同一個子樹被算很多次,O(n²)。用後序遍歷一次算好就是 O(n)', views: [tree(T, { cls: { 2: 'hl', 5: 'dim', 6: 'dim' } })] },
+    { note: '暴力:把每個節點當作最高點,另外各算一次「往左下最多能拿多少」「往右下最多能拿多少」', line: 6, views: [tree(T, { cls: { 0: 'hl' } })] },
+    { note: '「往下最多能拿多少」每次都重新算整棵子樹 → 同一個子樹被算很多次,O(n²)。用後序遍歷一次算好就是 O(n)', line: 2, views: [tree(T, { cls: { 2: 'hl', 5: 'dim', 6: 'dim' } })] },
   ]
 }
 

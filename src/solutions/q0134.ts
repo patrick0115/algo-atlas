@@ -9,7 +9,7 @@ const DIFF = GAS.map((g, i) => g - COST[i])
 
 function bruteFig(): FigStep[] {
   const n = GAS.length
-  const out: FigStep[] = [{ note: '每一站「加油 − 開到下一站的耗油」= 這一段的淨收入。從某一站出發,一路加總,途中油箱不能變負', views: [arr(GAS, { label: 'gas' }), arr(COST, { label: 'cost' }), arr(DIFF, { label: 'gas − cost(淨收入)' })] }]
+  const out: FigStep[] = [{ note: '每一站「加油 − 開到下一站的耗油」= 這一段的淨收入。從某一站出發,一路加總,途中油箱不能變負', line: 3, views: [arr(GAS, { label: 'gas' }), arr(COST, { label: 'cost' }), arr(DIFF, { label: 'gas − cost(淨收入)' })] }]
   for (let s = 0; s < n; s++) {
     let tank = 0
     let k = 0
@@ -18,7 +18,7 @@ function bruteFig(): FigStep[] {
       if (tank < 0) break
     }
     const ok = k === n
-    out.push({ note: `從第 ${s} 站出發:${ok ? '繞完一圈油箱都沒變負 → 答案是 ' + s : `走到第 ${(s + k) % n} 站時油箱變成負的 → 不行`}`, views: [arr(DIFF, { label: '淨收入', highlight: [s], compare: range(0, Math.min(k, n - 1)).map((d) => (s + d) % n) })] })
+    out.push({ note: `從第 ${s} 站出發:${ok ? '繞完一圈油箱都沒變負 → 答案是 ' + s : `走到第 ${(s + k) % n} 站時油箱變成負的 → 不行`}`, line: ok ? 10 : 8, views: [arr(DIFF, { label: '淨收入', highlight: [s], compare: range(0, Math.min(k, n - 1)).map((d) => (s + d) % n) })] })
     if (ok) break
   }
   return out
@@ -28,17 +28,17 @@ function greedyFig(): FigStep[] {
   let total = 0
   let tank = 0
   let start = 0
-  const out: FigStep[] = [{ note: '兩個觀察:① 淨收入總和 ≥ 0 就一定有解,< 0 一定無解。② 如果從 start 出發,在第 i 站油箱變負,那 start 到 i 之間的任何一站出發也都會在 i 之前卡住 → 直接從 i + 1 重新開始', views: [arr(DIFF, { label: '淨收入' })] }]
+  const out: FigStep[] = [{ note: '兩個觀察:① 淨收入總和 ≥ 0 就一定有解,< 0 一定無解。② 如果從 start 出發,在第 i 站油箱變負,那 start 到 i 之間的任何一站出發也都會在 i 之前卡住 → 直接從 i + 1 重新開始', line: 2, views: [arr(DIFF, { label: '淨收入' })] }]
   DIFF.forEach((d, i) => {
     total += d
     tank += d
     if (tank < 0) {
-      out.push({ note: `第 ${i} 站:油箱 = ${tank} < 0,從 ${start} 到 ${i} 都不能當起點 → 起點改成 ${i + 1},油箱歸零`, views: [arr(DIFF, { label: '淨收入', range: [start, i], compare: [i] })] })
+      out.push({ note: `第 ${i} 站:油箱 = ${tank} < 0,從 ${start} 到 ${i} 都不能當起點 → 起點改成 ${i + 1},油箱歸零`, line: 8, views: [arr(DIFF, { label: '淨收入', range: [start, i], compare: [i] })] })
       start = i + 1
       tank = 0
-    } else out.push({ note: `第 ${i} 站:油箱 = ${tank} ≥ 0,繼續(起點 ${start})`, views: [arr(DIFF, { label: '淨收入', range: [start, i], highlight: [i] })] })
+    } else out.push({ note: `第 ${i} 站:油箱 = ${tank} ≥ 0,繼續(起點 ${start})`, line: 7, views: [arr(DIFF, { label: '淨收入', range: [start, i], highlight: [i] })] })
   })
-  out.push({ note: `淨收入總和 = ${total} ${total >= 0 ? `≥ 0 → 有解,答案是最後的起點 ${start}` : '< 0 → 無解 −1'}`, views: [arr(DIFF, { label: '淨收入', highlight: total >= 0 ? [start] : [] })] })
+  out.push({ note: `淨收入總和 = ${total} ${total >= 0 ? `≥ 0 → 有解,答案是最後的起點 ${start}` : '< 0 → 無解 −1'}`, line: 12, views: [arr(DIFF, { label: '淨收入', highlight: total >= 0 ? [start] : [] })] })
   return out
 }
 

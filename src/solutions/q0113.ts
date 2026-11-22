@@ -5,19 +5,19 @@ const T = [5, 4, 8, 11, null, 13, 4, 7, 2, null, null, 5, 1]
 
 function dfsFig(): FigStep[] {
   return [
-    { note: '從根 5 出發，目標還差 22−5=17；沿左子樹到 4，再到 11，路徑目前 [5,4,11]。', views: [tree(T, { cls: { 0: 'done', 1: 'done', 3: 'hl' } })] },
-    { note: '先走到葉子 7：總和 5+4+11+7=27，不等於 22；回溯移除 7，改走葉子 2。', views: [tree(T, { cls: { 7: 'dim', 8: 'hl' } })] },
-    { note: '5+4+11+2=22，複製路徑 [5,4,11,2] 存入答案，再回溯。', views: [tree(T, { cls: { 0: 'done', 1: 'done', 3: 'done', 8: 'done' } })] },
-    { note: '右邊找到另一條 [5,8,4,5]，也是 22；葉子 1 則不符合。', views: [tree(T, { cls: { 0: 'done', 2: 'done', 6: 'done', 11: 'done', 12: 'dim' } })] },
+    { note: '從根 5 出發，目標還差 22−5=17；沿左子樹到 4，再到 11，路徑目前 [5,4,11]。', line: 8, views: [tree(T, { cls: { 0: 'done', 1: 'done', 3: 'hl' } })] },
+    { note: '先走到葉子 7：總和 5+4+11+7=27，不等於 22；回溯移除 7，改走葉子 2。', line: 10, views: [tree(T, { cls: { 7: 'dim', 8: 'hl' } })] }, // TODO: 可能要拆格
+    { note: '5+4+11+2=22，複製路徑 [5,4,11,2] 存入答案，再回溯。', line: 11, views: [tree(T, { cls: { 0: 'done', 1: 'done', 3: 'done', 8: 'done' } })] },
+    { note: '右邊找到另一條 [5,8,4,5]，也是 22；葉子 1 則不符合。', line: 11, views: [tree(T, { cls: { 0: 'done', 2: 'done', 6: 'done', 11: 'done', 12: 'dim' } })] },
   ]
 }
 
 function bfsFig(): FigStep[] {
   return [
-    { note: '佇列從根 5 開始；每個狀態記目前節點、累計和、父狀態位置。', views: [tree(T, { cls: { 0: 'hl' } })] },
-    { note: '取出 5，放入左邊 4（和 9）與右邊 8（和 13）；接著按層往下展開。', views: [tree(T, { cls: { 0: 'done', 1: 'hl', 2: 'hl' } })] },
-    { note: '到葉子 2 時累計和為 22，沿父狀態往回找得到 2←11←4←5，再反轉成一條完整路徑。', views: [tree(T, { cls: { 0: 'done', 1: 'done', 3: 'done', 8: 'hl' } })] },
-    { note: '到右側葉子 5 時也得到 22，回溯父狀態組成 [5,8,4,5]；其他葉子不加入。', views: [tree(T, { cls: { 0: 'done', 2: 'done', 6: 'done', 11: 'hl' } })] },
+    { note: '佇列從根 5 開始；每個狀態記目前節點、累計和、父狀態位置。', line: 5, views: [tree(T, { cls: { 0: 'hl' } })] },
+    { note: '取出 5，放入左邊 4（和 9）與右邊 8（和 13）；接著按層往下展開。', line: 18, views: [tree(T, { cls: { 0: 'done', 1: 'hl', 2: 'hl' } })] },
+    { note: '到葉子 2 時累計和為 22，沿父狀態往回找得到 2←11←4←5，再反轉成一條完整路徑。', line: 12, views: [tree(T, { cls: { 0: 'done', 1: 'done', 3: 'done', 8: 'hl' } })] }, // TODO: 可能要拆格
+    { note: '到右側葉子 5 時也得到 22，回溯父狀態組成 [5,8,4,5]；其他葉子不加入。', line: 12, views: [tree(T, { cls: { 0: 'done', 2: 'done', 6: 'done', 11: 'hl' } })] },
   ]
 }
 

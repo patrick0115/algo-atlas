@@ -6,19 +6,19 @@ const A = [2, 2, 3, 2]
 
 function bitFig(): FigStep[] {
   return [
-    { note: '看低位元即可理解例子：2 的二進位是 10，3 是 11；三個 2 在每個位元上的 1 都貢獻 3 的倍數。', views: [kv([[2, '10'], [3, '11']], '二進位')] },
-    { note: '第 0 位只有 3 有 1，總數 1；1 mod 3 = 1，答案第 0 位是 1。', views: [arr(A, { label: '第 0 位', highlight: [2] })] },
-    { note: '第 1 位四個數都是 1，總數 4；4 mod 3 = 1，答案第 1 位也是 1。', views: [arr([1, 4], { label: '各位元的 1 個數' })] },
-    { note: '兩位組回 11₂=3。實作時看完整 32 位，負數也能還原。', views: [arr([3], { label: '答案', done: [0] })] },
+    { note: '看低位元即可理解例子：2 的二進位是 10，3 是 11；三個 2 在每個位元上的 1 都貢獻 3 的倍數。', line: 2, views: [kv([[2, '10'], [3, '11']], '二進位')] },
+    { note: '第 0 位只有 3 有 1，總數 1；1 mod 3 = 1，答案第 0 位是 1。', line: 8, views: [arr(A, { label: '第 0 位', highlight: [2] })] }, // TODO: 可能要拆格
+    { note: '第 1 位四個數都是 1，總數 4；4 mod 3 = 1，答案第 1 位也是 1。', line: 8, views: [arr([1, 4], { label: '各位元的 1 個數' })] }, // TODO: 可能要拆格
+    { note: '兩位組回 11₂=3。實作時看完整 32 位，負數也能還原。', line: 12, views: [arr([3], { label: '答案', done: [0] })] },
   ]
 }
 
 function stateFig(): FigStep[] {
   return [
-    { note: 'ones 記某位目前出現 1 次，twos 記出現 2 次；初始都是 0。讀第一個 2 後 ones=2、twos=0。', views: [kv([['ones', 2], ['twos', 0]], '讀第一個 2')] },
-    { note: '讀第二個 2：該位從「1 次」進到「2 次」，ones=0、twos=2。', views: [kv([['ones', 0], ['twos', 2]], '讀第二個 2')] },
-    { note: '讀 3：第 1 位進到第 3 次而清零；第 0 位首次出現，ones=1、twos=0。', views: [kv([['ones', 1], ['twos', 0]], '讀 3')] },
-    { note: '讀最後一個 2：第 1 位又首次出現，ones=3。最後 ones 就是只出現一次的 3。', views: [kv([['ones', 3], ['twos', 0]], '答案')] },
+    { note: 'ones 記某位目前出現 1 次，twos 記出現 2 次；初始都是 0。讀第一個 2 後 ones=2、twos=0。', line: 5, views: [kv([['ones', 2], ['twos', 0]], '讀第一個 2')] },
+    { note: '讀第二個 2：該位從「1 次」進到「2 次」，ones=0、twos=2。', line: 5, views: [kv([['ones', 0], ['twos', 2]], '讀第二個 2')] },
+    { note: '讀 3：第 1 位進到第 3 次而清零；第 0 位首次出現，ones=1、twos=0。', line: 5, views: [kv([['ones', 1], ['twos', 0]], '讀 3')] },
+    { note: '讀最後一個 2：第 1 位又首次出現，ones=3。最後 ones 就是只出現一次的 3。', line: 5, views: [kv([['ones', 3], ['twos', 0]], '答案')] },
   ]
 }
 

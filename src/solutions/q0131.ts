@@ -10,18 +10,21 @@ const isPal = (s: string) => s === [...s].reverse().join('')
 function btFig(): FigStep[] {
   const nodes: RNode[] = []
   const notes: string[] = []
+  const lines: number[] = []
   const cur: string[] = []
   const go = (start: number, parent: number, label: string) => {
     const id = nodes.length
     const done = start === S.length
     nodes.push({ parent, label, sub: cur.join('|') || '—', kind: done ? 'ok' : undefined })
     notes.push(parent < 0 ? '每一層從目前位置往後切出一段「前綴」:是迴文才能切,切完對剩下的字串做同樣的事。切到字串結尾就是一種切法' : done ? `切到最後了 → 一種切法 [${cur.map((x) => `"${x}"`).join(', ')}]` : `切出 "${label}"(是迴文),剩下 "${S.slice(start)}" 繼續切`)
+    lines.push(parent < 0 ? 19 : done ? 9 : 14)
     if (done) return
     for (let end = start + 1; end <= S.length; end++) {
       const piece = S.slice(start, end)
       if (!isPal(piece)) {
         nodes.push({ parent: id, label: piece, sub: '不是迴文', kind: 'cut' })
         notes.push(`"${piece}" 不是迴文 → 這刀不能切`)
+        lines.push(13)
         continue
       }
       cur.push(piece)
@@ -31,7 +34,7 @@ function btFig(): FigStep[] {
   }
   go(0, -1, '"aab"')
   const pos = recLayout(nodes)
-  return nodes.map((_, k) => ({ note: notes[k], views: [recView(nodes, pos, k, '決策樹(節點是切出來的那段,下方是目前的切法)')] }))
+  return nodes.map((_, k) => ({ note: notes[k], line: lines[k], views: [recView(nodes, pos, k, '決策樹(節點是切出來的那段,下方是目前的切法)')] }))
 }
 
 function dpFig(): FigStep[] {
@@ -45,13 +48,13 @@ function dpFig(): FigStep[] {
     colLabels: [...S].map((c, j) => `${j}:${c}`),
     marks: { hl, done: pal.flatMap((row, i) => row.flatMap((v, j) => (v ? [[i, j] as [number, number]] : []))) },
   })
-  const out: FigStep[] = [{ note: '方法一每切一刀都重新檢查迴文,很多段會被重複檢查。先用 DP 把「s[i..j] 是不是迴文」全部算好:兩端字母相同,而且中間那段也是迴文', views: [view()] }]
+  const out: FigStep[] = [{ note: '方法一每切一刀都重新檢查迴文,很多段會被重複檢查。先用 DP 把「s[i..j] 是不是迴文」全部算好:兩端字母相同,而且中間那段也是迴文', line: 3, views: [view()] }]
   for (let i = n - 1; i >= 0; i--)
     for (let j = i; j < n; j++) {
       pal[i][j] = S[i] === S[j] && (j - i < 2 || pal[i + 1][j - 1])
-      out.push({ note: `s[${i}..${j}] = "${S.slice(i, j + 1)}":${S[i] === S[j] ? `兩端都是 ${S[i]}${j - i < 2 ? ',長度 ≤ 2 → 迴文' : `,中間 s[${i + 1}..${j - 1}] ${pal[i + 1][j - 1] ? '是' : '不是'}迴文`}` : '兩端不同 → 不是'}`, views: [view([[i, j]])] })
+      out.push({ note: `s[${i}..${j}] = "${S.slice(i, j + 1)}":${S[i] === S[j] ? `兩端都是 ${S[i]}${j - i < 2 ? ',長度 ≤ 2 → 迴文' : `,中間 s[${i + 1}..${j - 1}] ${pal[i + 1][j - 1] ? '是' : '不是'}迴文`}` : '兩端不同 → 不是'}`, line: 5, views: [view([[i, j]])] })
     }
-  out.push({ note: '之後回溯時,判斷一段是不是迴文只要查表 O(1)', views: [view()] })
+  out.push({ note: '之後回溯時,判斷一段是不是迴文只要查表 O(1)', line: 13, views: [view()] })
   return out
 }
 

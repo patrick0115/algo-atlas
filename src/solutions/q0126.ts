@@ -4,17 +4,17 @@ import type { Solution } from './types'
 // 126. Word Ladder II
 const WORDS = ['hot', 'dot', 'dog', 'lot', 'log', 'cog']
 const F = [
-  { note: '第 0 層只有 hit；每步必須恰好換一個字母。', views: [arr(['hit'], { label: '第 0 層' })] },
-  { note: '從 hit 只能走到 hot；兩字只有第二個字母不同。', views: [arr(['hit', 'hot'], { label: '第 1 層路徑', done: [0, 1] })] },
-  { note: '從 hot 同時可走到 dot 與 lot，兩條路徑都要留下。', views: [arr(['hit→hot→dot', 'hit→hot→lot'], { label: '第 2 層' })] },
-  { note: '再走到 dog 與 log；同層內不能提早把 cog 排除，兩條路都可抵達終點。', views: [arr(['hit→hot→dot→dog', 'hit→hot→lot→log'], { label: '第 3 層' })] },
-  { note: '第 4 層抵達 cog，收集這一層的全部路徑後停止。', views: [arr(['hit→hot→dot→dog→cog', 'hit→hot→lot→log→cog'], { label: '全部最短路徑', done: [0, 1] })] },
+  { note: '第 0 層只有 hit；每步必須恰好換一個字母。', line: 4, views: [arr(['hit'], { label: '第 0 層' })] },
+  { note: '從 hit 只能走到 hot；兩字只有第二個字母不同。', line: 17, views: [arr(['hit', 'hot'], { label: '第 1 層路徑', done: [0, 1] })] },
+  { note: '從 hot 同時可走到 dot 與 lot，兩條路徑都要留下。', line: 17, views: [arr(['hit→hot→dot', 'hit→hot→lot'], { label: '第 2 層' })] },
+  { note: '再走到 dog 與 log；同層內不能提早把 cog 排除，兩條路都可抵達終點。', line: 17, views: [arr(['hit→hot→dot→dog', 'hit→hot→lot→log'], { label: '第 3 層' })] },
+  { note: '第 4 層抵達 cog，收集這一層的全部路徑後停止。', line: 8, views: [arr(['hit→hot→dot→dog→cog', 'hit→hot→lot→log→cog'], { label: '全部最短路徑', done: [0, 1] })] },
 ]
 const G = [
-  { note: '先做 BFS 距離：hit 的距離 0，hot 的距離 1。', views: [arr([0, 1], { label: 'hit、hot 的距離' })] },
-  { note: 'dot 與 lot 都是距離 2；dog 與 log 都是距離 3。', views: [arr([2, 2, 3, 3], { label: 'dot、lot、dog、log 的距離' })] },
-  { note: 'cog 的距離是 4；只允許 DFS 從距離 d 走到 d+1。', views: [arr([4], { label: 'cog 距離', highlight: [0] })] },
-  { note: '沿遞增距離回溯，得到經 dog 和經 log 的兩條最短路徑。', views: [arr(['hit→hot→dot→dog→cog', 'hit→hot→lot→log→cog'], { label: '結果', done: [0, 1] })] },
+  { note: '先做 BFS 距離：hit 的距離 0，hot 的距離 1。', line: 24, views: [arr([0, 1], { label: 'hit、hot 的距離' })] },
+  { note: 'dot 與 lot 都是距離 2；dog 與 log 都是距離 3。', line: 24, views: [arr([2, 2, 3, 3], { label: 'dot、lot、dog、log 的距離' })] },
+  { note: 'cog 的距離是 4；只允許 DFS 從距離 d 走到 d+1。', line: 36, views: [arr([4], { label: 'cog 距離', highlight: [0] })] },
+  { note: '沿遞增距離回溯，得到經 dog 和經 log 的兩條最短路徑。', line: 32, views: [arr(['hit→hot→dot→dog→cog', 'hit→hot→lot→log→cog'], { label: '結果', done: [0, 1] })] },
 ]
 const CHECK = {
   python: `

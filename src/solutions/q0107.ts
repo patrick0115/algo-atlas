@@ -4,16 +4,16 @@ import type { FigStep, Solution } from './types'
 
 const T = [3, 9, 20, null, null, 15, 7]
 const bfsFig: FigStep[] = [
-  { note: '佇列先放根 3；這一輪只有它，所以第一層是 [3]。', views: [tree(T, { cls: { 0: 'hl' } }), arr([3], { label: '第 0 層' })] },
-  { note: '根的孩子 9、20 進佇列；下一輪正好有兩個節點，第二層是 [9,20]。', views: [tree(T, { cls: { 1: 'hl', 2: 'hl' } }), arr([9, 20], { label: '第 1 層' })] },
-  { note: '20 的孩子 15、7 在下一輪，第三層是 [15,7]。同一層保持由左至右。', views: [tree(T, { cls: { 5: 'hl', 6: 'hl' } }), arr([15, 7], { label: '第 2 層' })] },
-  { note: '收集完後把層的順序倒過來，答案是 [[15,7],[9,20],[3]]。', views: [arr(['15,7', '9,20', '3'], { label: '由下往上', done: [0, 1, 2] })] },
+  { note: '佇列先放根 3；這一輪只有它，所以第一層是 [3]。', line: 5, views: [tree(T, { cls: { 0: 'hl' } }), arr([3], { label: '第 0 層' })] },
+  { note: '根的孩子 9、20 進佇列；下一輪正好有兩個節點，第二層是 [9,20]。', line: 15, views: [tree(T, { cls: { 1: 'hl', 2: 'hl' } }), arr([9, 20], { label: '第 1 層' })] },
+  { note: '20 的孩子 15、7 在下一輪，第三層是 [15,7]。同一層保持由左至右。', line: 15, views: [tree(T, { cls: { 5: 'hl', 6: 'hl' } }), arr([15, 7], { label: '第 2 層' })] },
+  { note: '收集完後把層的順序倒過來，答案是 [[15,7],[9,20],[3]]。', line: 23, views: [arr(['15,7', '9,20', '3'], { label: '由下往上', done: [0, 1, 2] })] },
 ]
 const dfsFig: FigStep[] = [
-  { note: 'DFS 從根 3、深度 0 出發，把 3 放到第 0 層。', views: [tree(T, { cls: { 0: 'hl' } }), arr([3], { label: '深度 0' })] },
-  { note: '先走左孩子 9，深度 1；再回來走右孩子 20，也放入深度 1，所以順序是 [9,20]。', views: [tree(T, { cls: { 1: 'done', 2: 'hl' } }), arr([9, 20], { label: '深度 1' })] },
-  { note: '走到 20 的左右孩子，深度 2 得到 [15,7]。', views: [tree(T, { cls: { 5: 'done', 6: 'hl' } }), arr([15, 7], { label: '深度 2' })] },
-  { note: '最後反轉層清單，最深的 [15,7] 先回傳。', views: [arr(['15,7', '9,20', '3'], { label: '答案', done: [0, 1, 2] })] },
+  { note: 'DFS 從根 3、深度 0 出發，把 3 放到第 0 層。', line: 10, views: [tree(T, { cls: { 0: 'hl' } }), arr([3], { label: '深度 0' })] },
+  { note: '先走左孩子 9，深度 1；再回來走右孩子 20，也放入深度 1，所以順序是 [9,20]。', line: 10, views: [tree(T, { cls: { 1: 'done', 2: 'hl' } }), arr([9, 20], { label: '深度 1' })] },
+  { note: '走到 20 的左右孩子，深度 2 得到 [15,7]。', line: 10, views: [tree(T, { cls: { 5: 'done', 6: 'hl' } }), arr([15, 7], { label: '深度 2' })] },
+  { note: '最後反轉層清單，最深的 [15,7] 先回傳。', line: 15, views: [arr(['15,7', '9,20', '3'], { label: '答案', done: [0, 1, 2] })] },
 ]
 
 export const q0107: Solution = {

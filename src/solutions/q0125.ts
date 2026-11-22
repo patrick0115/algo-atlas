@@ -11,39 +11,39 @@ function cleanFig(): FigStep[] {
   const clean = [...S].filter(isAlnum).map((c) => c.toLowerCase())
   const rev = [...clean].reverse()
   return [
-    { note: '原字串有大小寫、空白(␣)和標點', views: [arr(chars, { label: 's' })] },
-    { note: '第一步:只留下英文字母和數字,全部轉成小寫', views: [arr(chars, { label: 's', dim: [...S].flatMap((c, i) => (isAlnum(c) ? [] : [i])) }), arr(clean, { label: 'clean' })] },
-    { note: '第二步:做一份反轉的副本', views: [arr(clean, { label: 'clean' }), arr(rev, { label: 'clean 反轉' })] },
-    { note: clean.join('') === rev.join('') ? '兩者完全相同 → 是迴文,回傳 true' : '不相同 → 不是迴文', views: [arr(clean, { label: 'clean', done: range(0, clean.length - 1) }), arr(rev, { label: 'clean 反轉', done: range(0, rev.length - 1) })] },
+    { note: '原字串有大小寫、空白(␣)和標點', line: 2, views: [arr(chars, { label: 's' })] },
+    { note: '第一步:只留下英文字母和數字,全部轉成小寫', line: 2, views: [arr(chars, { label: 's', dim: [...S].flatMap((c, i) => (isAlnum(c) ? [] : [i])) }), arr(clean, { label: 'clean' })] },
+    { note: '第二步:做一份反轉的副本', line: 3, views: [arr(clean, { label: 'clean' }), arr(rev, { label: 'clean 反轉' })] },
+    { note: clean.join('') === rev.join('') ? '兩者完全相同 → 是迴文,回傳 true' : '不相同 → 不是迴文', line: 3, views: [arr(clean, { label: 'clean', done: range(0, clean.length - 1) }), arr(rev, { label: 'clean 反轉', done: range(0, rev.length - 1) })] },
   ]
 }
 
 function twoPtrFig(): FigStep[] {
   const chars = [...S].map((c) => (c === ' ' ? '␣' : c))
-  const out: FigStep[] = [{ note: '左右各放一個指針,往中間夾。不用複製字串', views: [arr(chars, { label: 's', pointers: [{ name: 'L', index: 0 }, { name: 'R', index: S.length - 1, color: 'b' }] })] }]
+  const out: FigStep[] = [{ note: '左右各放一個指針,往中間夾。不用複製字串', line: 3, views: [arr(chars, { label: 's', pointers: [{ name: 'L', index: 0 }, { name: 'R', index: S.length - 1, color: 'b' }] })] }]
   let l = 0
   let r = S.length - 1
   const done: number[] = []
   const view = (opt: Parameters<typeof arr>[1] = {}) => arr(chars, { label: 's', done: [...done], pointers: [{ name: 'L', index: l }, { name: 'R', index: r, color: 'b' }], ...opt })
   while (l < r) {
     if (!isAlnum(S[l])) {
-      out.push({ note: `s[L] = "${chars[l]}" 不是字母數字 → L 往右跳過`, views: [view({ dim: [l] })] })
+      out.push({ note: `s[L] = "${chars[l]}" 不是字母數字 → L 往右跳過`, line: 5, views: [view({ dim: [l] })] })
       l++
       continue
     }
     if (!isAlnum(S[r])) {
-      out.push({ note: `s[R] = "${chars[r]}" 不是字母數字 → R 往左跳過`, views: [view({ dim: [r] })] })
+      out.push({ note: `s[R] = "${chars[r]}" 不是字母數字 → R 往左跳過`, line: 6, views: [view({ dim: [r] })] })
       r--
       continue
     }
     const same = S[l].toLowerCase() === S[r].toLowerCase()
-    out.push({ note: `比較 "${S[l]}" 和 "${S[r]}"(忽略大小寫)${same ? ' → 相同,兩邊都往內走' : ' → 不同,回傳 false'}`, views: [view({ compare: [l, r] })] })
+    out.push({ note: `比較 "${S[l]}" 和 "${S[r]}"(忽略大小寫)${same ? ' → 相同,兩邊都往內走' : ' → 不同,回傳 false'}`, line: 8, views: [view({ compare: [l, r] })] })
     if (!same) return out
     done.push(l, r)
     l++
     r--
   }
-  out.push({ note: 'L 和 R 相遇,所有該比的都相同 → 回傳 true', views: [view()] })
+  out.push({ note: 'L 和 R 相遇,所有該比的都相同 → 回傳 true', line: 13, views: [view()] })
   return out
 }
 

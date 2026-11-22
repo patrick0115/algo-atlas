@@ -15,25 +15,25 @@ function dpFig(): FigStep[] {
   const m = S.length
   const n = T.length
   const dp: (number | string)[][] = Array.from({ length: m + 1 }, (_, i) => Array.from({ length: n + 1 }, (_, j) => (j === 0 ? 1 : i === 0 ? 0 : '')))
-  const out: FigStep[] = [{ note: '第 0 行全是 1:要湊出空字串只有一種方式(什麼都不挑)。第 0 列其他是 0:s 是空的,湊不出非空的 t', views: [table(dp)] }]
+  const out: FigStep[] = [{ note: '第 0 行全是 1:要湊出空字串只有一種方式(什麼都不挑)。第 0 列其他是 0:s 是空的,湊不出非空的 t', line: 3, views: [table(dp)] }]
   for (let i = 1; i <= m; i++) {
     for (let j = 1; j <= n; j++) {
       const skip = dp[i - 1][j] as number
       if (S[i - 1] === T[j - 1]) {
         const use = dp[i - 1][j - 1] as number
         dp[i][j] = skip + use
-        if (i >= 4 || i === 1) out.push({ note: `s[${i - 1}] = "${S[i - 1]}" == t[${j - 1}]:可以**不用**它(上面 ${skip} 種),也可以**用它**配 t 的第 ${j} 個字(左上 ${use} 種)→ ${dp[i][j]}`, views: [table(dp, [[i, j]], [[i - 1, j], [i - 1, j - 1]])] })
+        if (i >= 4 || i === 1) out.push({ note: `s[${i - 1}] = "${S[i - 1]}" == t[${j - 1}]:可以**不用**它(上面 ${skip} 種),也可以**用它**配 t 的第 ${j} 個字(左上 ${use} 種)→ ${dp[i][j]}`, line: 5, views: [table(dp, [[i, j]], [[i - 1, j], [i - 1, j - 1]])] })
       } else dp[i][j] = skip
     }
   }
-  out.push({ note: `答案 dp[${m}][${n}] = ${dp[m][n]}`, views: [table(dp, [[m, n]])] })
+  out.push({ note: `答案 dp[${m}][${n}] = ${dp[m][n]}`, line: 6, views: [table(dp, [[m, n]])] })
   return out
 }
 
 function recFig(): FigStep[] {
   return [
-    { note: 'f(i, j) = s[i:] 裡有幾種方式挑出 t[j:]。每看 s 的一個字,就決定「用」或「不用」', views: [arr(S.split(''), { label: 's', highlight: [0] }), arr(T.split(''), { label: 't', highlight: [0] })] },
-    { note: 's[i] == t[j]:用它 → f(i+1, j+1);不用 → f(i+1, j)。兩種加起來。不相等就只能不用', views: [arr(S.split(''), { label: 's', highlight: [0], done: [5, 6] }), arr(['f(1,1)', '+', 'f(1,0)'], { label: '分支' })] },
+    { note: 'f(i, j) = s[i:] 裡有幾種方式挑出 t[j:]。每看 s 的一個字,就決定「用」或「不用」', line: 2, views: [arr(S.split(''), { label: 's', highlight: [0] }), arr(T.split(''), { label: 't', highlight: [0] })] },
+    { note: 's[i] == t[j]:用它 → f(i+1, j+1);不用 → f(i+1, j)。兩種加起來。不相等就只能不用', line: 9, views: [arr(S.split(''), { label: 's', highlight: [0], done: [5, 6] }), arr(['f(1,1)', '+', 'f(1,0)'], { label: '分支' })] },
   ]
 }
 

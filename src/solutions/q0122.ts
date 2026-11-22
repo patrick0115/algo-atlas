@@ -4,12 +4,12 @@ import type { FigStep, Solution } from './types'
 // 122. Best Time to Buy and Sell Stock II
 const P = [7, 1, 5, 3, 6, 4]
 const greedyFig: FigStep[] = [
-  { note: '可以交易多次,但同時最多持有一股。只要隔天漲價,把這一段漲幅收下。', views: [arr(P, { label: '每日股價', mode: 'bars' })] },
-  { note: '1 → 5 賺 4;3 → 6 賺 3,合計 7。連漲數天時逐日加漲幅與一次買低賣高等價。', views: [arr([0, 0, 4, 0, 3, 0], { label: '當天可收的漲幅', done: [2, 4] }), arr([7], { label: '總利潤', done: [0] })] },
+  { note: '可以交易多次,但同時最多持有一股。只要隔天漲價,把這一段漲幅收下。', line: 2, views: [arr(P, { label: '每日股價', mode: 'bars' })] },
+  { note: '1 → 5 賺 4;3 → 6 賺 3,合計 7。連漲數天時逐日加漲幅與一次買低賣高等價。', line: 4, views: [arr([0, 0, 4, 0, 3, 0], { label: '當天可收的漲幅', done: [2, 4] }), arr([7], { label: '總利潤', done: [0] })] },
 ]
 const stateFig: FigStep[] = [
-  { note: '每天收盤只需區分兩種狀態:手上沒股票 cash,或手上有一股 hold。', views: [arr([0, -7], { label: '起始 cash / hold' })] },
-  { note: '賣出:cash = max(舊 cash,舊 hold + 今天價格);買入:hold = max(舊 hold,舊 cash − 今天價格)。', views: [arr([7, 3], { label: '結束 cash / hold', done: [0] })] },
+  { note: '每天收盤只需區分兩種狀態:手上沒股票 cash,或手上有一股 hold。', line: 2, views: [arr([0, -7], { label: '起始 cash / hold' })] },
+  { note: '賣出:cash = max(舊 cash,舊 hold + 今天價格);買入:hold = max(舊 hold,舊 cash − 今天價格)。', line: 5, views: [arr([7, 3], { label: '結束 cash / hold', done: [0] })] }, // TODO: 可能要拆格(cash 第 5 行與 hold 第 6 行併一步)
 ]
 
 export const q0122: Solution = {

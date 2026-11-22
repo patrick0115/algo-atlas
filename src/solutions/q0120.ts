@@ -13,17 +13,17 @@ function bottomFig(): FigStep[] {
     snaps.push(dp.slice(0, r + 1))
   }
   return [
-    { note: '從頂端往下走,每一步只能走到下一列的「正下方」或「右下方」。求路徑總和的最小值', views: T.map((row, i) => arr(row, { label: `第 ${i} 列` })) },
-    { note: '由下往上:最底列的值就是「從這裡出發到底」的最小和。往上一列:`dp[c] = 自己 + min(dp[c], dp[c+1])`', views: [arr(snaps[0], { label: '底列' }), arr(snaps[1], { label: '第 2 列:6+1、5+1、7+3' })] },
-    { note: '再往上:3 + min(7, 6) = 9、4 + min(6, 10) = 10;頂端 2 + min(9, 10) = 11', views: [arr(snaps[2], { label: '第 1 列' }), arr(snaps[3], { label: '頂端', done: [0] })] },
-    { note: '路徑 2 → 3 → 5 → 1,總和 11。由下往上的好處:最後答案就在 dp[0],不用再取最小', views: [arr([11], { label: '答案', done: [0] })] },
+    { note: '從頂端往下走,每一步只能走到下一列的「正下方」或「右下方」。求路徑總和的最小值', line: 2, views: T.map((row, i) => arr(row, { label: `第 ${i} 列` })) },
+    { note: '由下往上:最底列的值就是「從這裡出發到底」的最小和。往上一列:`dp[c] = 自己 + min(dp[c], dp[c+1])`', line: 4, views: [arr(snaps[0], { label: '底列' }), arr(snaps[1], { label: '第 2 列:6+1、5+1、7+3' })] },
+    { note: '再往上:3 + min(7, 6) = 9、4 + min(6, 10) = 10;頂端 2 + min(9, 10) = 11', line: 4, views: [arr(snaps[2], { label: '第 1 列' }), arr(snaps[3], { label: '頂端', done: [0] })] },
+    { note: '路徑 2 → 3 → 5 → 1,總和 11。由下往上的好處:最後答案就在 dp[0],不用再取最小', line: 5, views: [arr([11], { label: '答案', done: [0] })] },
   ]
 }
 
 function topFig(): FigStep[] {
   return [
-    { note: '由上往下也可以:`dp[r][c] = T[r][c] + min(dp[r−1][c−1], dp[r−1][c])`,邊界只有一個來源', views: [arr([2], { label: '第 0 列' }), arr([5, 6], { label: '第 1 列' }), arr([11, 10, 13], { label: '第 2 列' }), arr([15, 11, 18, 16], { label: '第 3 列' })] },
-    { note: '答案是最底列的最小值 11', views: [arr([15, 11, 18, 16], { label: '底列', done: [1] })] },
+    { note: '由上往下也可以:`dp[r][c] = T[r][c] + min(dp[r−1][c−1], dp[r−1][c])`,邊界只有一個來源', line: 6, views: [arr([2], { label: '第 0 列' }), arr([5, 6], { label: '第 1 列' }), arr([11, 10, 13], { label: '第 2 列' }), arr([15, 11, 18, 16], { label: '第 3 列' })] }, // TODO: 可能要拆格(整張二維表一步呈現,與一維 code 的 5/6/7 行不完全對應)
+    { note: '答案是最底列的最小值 11', line: 9, views: [arr([15, 11, 18, 16], { label: '底列', done: [1] })] },
   ]
 }
 

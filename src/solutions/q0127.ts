@@ -33,7 +33,7 @@ function g(cls: Record<string, string>, subs: Record<string, number> = {}): Grap
 
 function bfsFig(): FigStep[] {
   const levels = [['hit'], ['hot'], ['dot', 'lot'], ['dog', 'log'], ['cog']]
-  const out: FigStep[] = [{ note: '把單字當成圖上的點,差一個字母的連邊。問題變成「最少走幾步從 hit 到 cog」→ 無權圖的最短路徑 = **BFS**', views: [g({ hit: 'hl', cog: 'cur' })] }]
+  const out: FigStep[] = [{ note: '把單字當成圖上的點,差一個字母的連邊。問題變成「最少走幾步從 hit 到 cog」→ 無權圖的最短路徑 = **BFS**', line: 4, views: [g({ hit: 'hl', cog: 'cur' })] }]
   const cls: Record<string, string> = {}
   const subs: Record<string, number> = {}
   levels.forEach((lv, d) => {
@@ -43,15 +43,15 @@ function bfsFig(): FigStep[] {
     }
     const c = { ...cls }
     for (const w of lv) c[w] = 'hl'
-    out.push({ note: d === levels.length - 1 ? `第 ${d + 1} 層碰到 cog → 答案 ${d + 1}(數的是單字個數,包含 hit 和 cog)` : `第 ${d + 1} 層:${lv.join('、')}`, views: [g(c, { ...subs })] })
+    out.push({ note: d === levels.length - 1 ? `第 ${d + 1} 層碰到 cog → 答案 ${d + 1}(數的是單字個數,包含 hit 和 cog)` : `第 ${d + 1} 層:${lv.join('、')}`, line: d === 0 ? 4 : d === levels.length - 1 ? 12 : 14, views: [g(c, { ...subs })] })
   })
   return out
 }
 
 function patternFig(): FigStep[] {
   return [
-    { note: '怎麼快速找鄰居?把每個位置換成 *:hot → *ot、h*t、ho*。同一個「萬用字元樣式」底下的單字互為鄰居', views: [kv([['*ot', 'hot, dot, lot'], ['h*t', 'hot'], ['ho*', 'hot'], ['do*', 'dot, dog'], ['*og', 'dog, log, cog']], '樣式 → 單字')] },
-    { note: '或是直接對每個位置試 a..z 的 26 個字母,查是否在單字集合裡:每個單字 26 × L 次查詢', views: [arr(['ait', 'bit', '…', 'hot ✓', '…', 'hiz'], { label: 'hit 的候選', highlight: [3] })] },
+    { note: '怎麼快速找鄰居?把每個位置換成 *:hot → *ot、h*t、ho*。同一個「萬用字元樣式」底下的單字互為鄰居', line: 8, views: [kv([['*ot', 'hot, dot, lot'], ['h*t', 'hot'], ['ho*', 'hot'], ['do*', 'dot, dog'], ['*og', 'dog, log, cog']], '樣式 → 單字')] },
+    { note: '或是直接對每個位置試 a..z 的 26 個字母,查是否在單字集合裡:每個單字 26 × L 次查詢', line: 6, views: [arr(['ait', 'bit', '…', 'hot ✓', '…', 'hiz'], { label: 'hit 的候選', highlight: [3] })] }, // TODO: 可能要拆格(此步講方法一的試 26 字母,方法二 code 無對應行)
   ]
 }
 

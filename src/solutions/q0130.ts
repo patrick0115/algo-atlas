@@ -22,7 +22,7 @@ function borderFig(): FigStep[] {
   const b = B.map((r) => [...r])
   const m = b.length
   const n = b[0].length
-  const out: FigStep[] = [{ note: '被 X 包圍的 O 要翻成 X。反過來想:**不會**被包圍的 O,一定和邊界上的某個 O 相連。所以從邊界的 O 出發,把相連的 O 都標記成「安全」', views: [view(b)] }]
+  const out: FigStep[] = [{ note: '被 X 包圍的 O 要翻成 X。反過來想:**不會**被包圍的 O,一定和邊界上的某個 O 相連。所以從邊界的 O 出發,把相連的 O 都標記成「安全」', line: 8, views: [view(b)] }]
   const mark = (r: number, c: number, path: Cell[]) => {
     if (r < 0 || c < 0 || r >= m || c >= n || b[r][c] !== 'O') return
     b[r][c] = 'T'
@@ -37,21 +37,21 @@ function borderFig(): FigStep[] {
       if ((r === 0 || c === 0 || r === m - 1 || c === n - 1) && b[r][c] === 'O') {
         const path: Cell[] = []
         mark(r, c, path)
-        out.push({ note: `邊界上的 (${r},${c}) 是 O → 它和相連的 ${path.length} 個 O 都碰得到邊界,標成安全`, views: [view(b, path)] })
+        out.push({ note: `邊界上的 (${r},${c}) 是 O → 它和相連的 ${path.length} 個 O 都碰得到邊界,標成安全`, line: c === 0 || c === n - 1 ? 8 : 9, views: [view(b, path)] })
       }
     }
   const flipped: Cell[] = []
   b.forEach((row, i) => row.forEach((v, j) => v === 'O' && flipped.push([i, j])))
-  out.push({ note: `剩下還是 O 的(${flipped.length} 個)都碰不到邊界 → 被包圍了`, views: [view(b, flipped)] })
+  out.push({ note: `剩下還是 O 的(${flipped.length} 個)都碰不到邊界 → 被包圍了`, line: 10, views: [view(b, flipped)] })
   for (const row of b) for (let j = 0; j < row.length; j++) row[j] = row[j] === 'O' ? 'X' : row[j] === 'T' ? 'O' : row[j]
-  out.push({ note: '最後掃一遍:還是 O 的翻成 X,標記成安全的改回 O', views: [view(b, flipped, '結果')] })
+  out.push({ note: '最後掃一遍:還是 O 的翻成 X,標記成安全的改回 O', line: 11, views: [view(b, flipped, '結果')] })
   return out
 }
 
 function ufFig(): FigStep[] {
   return [
-    { note: '並查集的做法:多開一個虛擬節點「邊界」。邊界上的 O 都和「邊界」合併;相鄰的 O 互相合併', views: [view(B)] },
-    { note: '最後,和「邊界」不在同一組的 O 就是被包圍的,翻成 X', views: [view(B, [[1, 1], [1, 2], [2, 2]], '被包圍的 O')] },
+    { note: '並查集的做法:多開一個虛擬節點「邊界」。邊界上的 O 都和「邊界」合併;相鄰的 O 互相合併', line: 15, views: [view(B)] }, // TODO: 可能要拆格(邊界合併第 15 行、右/下合併第 16–17 行併一步)
+    { note: '最後,和「邊界」不在同一組的 O 就是被包圍的,翻成 X', line: 22, views: [view(B, [[1, 1], [1, 2], [2, 2]], '被包圍的 O')] },
   ]
 }
 

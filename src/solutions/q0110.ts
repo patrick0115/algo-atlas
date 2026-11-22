@@ -8,13 +8,13 @@ const T = [1, 2, 2, 3, null, null, 3, 4, null, null, 4]
 function topDownFig(): FigStep[] {
   const root = buildTree(T)
   const h = (n: FNode | null): number => (n ? 1 + Math.max(h(n.left), h(n.right)) : 0)
-  const out: FigStep[] = [{ note: '「平衡」:**每一個**節點的左右子樹高度差都 ≤ 1。由上往下:每個節點都算一次左右高度來檢查', views: [tree(T)] }]
+  const out: FigStep[] = [{ note: '「平衡」:**每一個**節點的左右子樹高度差都 ≤ 1。由上往下:每個節點都算一次左右高度來檢查', line: 3, views: [tree(T)] }]
   const go = (n: FNode | null): boolean => {
     if (!n) return true
     const l = h(n.left)
     const r = h(n.right)
     const ok = Math.abs(l - r) <= 1
-    out.push({ note: `節點 ${n.val}:左高 ${l}、右高 ${r},差 ${Math.abs(l - r)} ${ok ? '≤ 1 ✓,再檢查它的左右子樹' : '> 1 → 不平衡'}`, views: [tree(T, { cls: { [n.i]: ok ? 'hl' : 'visited' } })] })
+    out.push({ note: `節點 ${n.val}:左高 ${l}、右高 ${r},差 ${Math.abs(l - r)} ${ok ? '≤ 1 ✓,再檢查它的左右子樹' : '> 1 → 不平衡'}`, line: 4, views: [tree(T, { cls: { [n.i]: ok ? 'hl' : 'visited' } })] })
     return ok && go(n.left) && go(n.right)
   }
   go(root)
@@ -24,7 +24,7 @@ function topDownFig(): FigStep[] {
 function bottomUpFig(): FigStep[] {
   const root = buildTree(T)
   const ht: Record<number, number | string> = {}
-  const out: FigStep[] = [{ note: '由下往上:dfs 回傳高度,如果發現不平衡就回傳 −1,一路往上傳,不用再算別的', views: [tree(T)] }]
+  const out: FigStep[] = [{ note: '由下往上:dfs 回傳高度,如果發現不平衡就回傳 −1,一路往上傳,不用再算別的', line: 10, views: [tree(T)] }]
   const go = (n: FNode | null): number => {
     if (!n) return 0
     const l = go(n.left)
@@ -33,15 +33,15 @@ function bottomUpFig(): FigStep[] {
     if (r === -1) return -1
     if (Math.abs(l - r) > 1) {
       ht[n.i] = '−1'
-      out.push({ note: `節點 ${n.val}:左高 ${l}、右高 ${r},差 ${Math.abs(l - r)} > 1 → 回傳 −1(不平衡),上面的節點看到 −1 就直接往上傳`, views: [tree(T, { subs: { ...ht }, cls: { [n.i]: 'visited' } })] })
+      out.push({ note: `節點 ${n.val}:左高 ${l}、右高 ${r},差 ${Math.abs(l - r)} > 1 → 回傳 −1(不平衡),上面的節點看到 −1 就直接往上傳`, line: 7, views: [tree(T, { subs: { ...ht }, cls: { [n.i]: 'visited' } })] })
       return -1
     }
     ht[n.i] = 1 + Math.max(l, r)
-    out.push({ note: `節點 ${n.val}:左高 ${l}、右高 ${r},差 ≤ 1 ✓,回傳高度 ${ht[n.i]}`, views: [tree(T, { subs: { ...ht }, cls: { [n.i]: 'hl' } })] })
+    out.push({ note: `節點 ${n.val}:左高 ${l}、右高 ${r},差 ≤ 1 ✓,回傳高度 ${ht[n.i]}`, line: 8, views: [tree(T, { subs: { ...ht }, cls: { [n.i]: 'hl' } })] })
     return ht[n.i] as number
   }
   const r = go(root)
-  out.push({ note: r === -1 ? '根拿到 −1 → 不平衡,回傳 false' : '平衡', views: [tree(T, { subs: ht })] })
+  out.push({ note: r === -1 ? '根拿到 −1 → 不平衡,回傳 false' : '平衡', line: 10, views: [tree(T, { subs: ht })] })
   return out
 }
 

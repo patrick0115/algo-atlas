@@ -8,16 +8,16 @@ const SUM = 22
 
 function dfsFig(): FigStep[] {
   return [
-    { note: `要找一條「從根走到葉子」的路徑,節點值加起來剛好 ${SUM}。往下走的時候,把剩下要湊的數一路減掉`, views: [tree(T, { subs: { 0: `剩 ${SUM}` } })] },
-    { note: '走 5 → 4 → 11:剩 22 − 5 − 4 − 11 = 2。再走到 7 → 剩 −5,是葉子但不是 0 ✗;回頭走 2 → 剩 0,而且 2 是葉子 ✓', views: [tree(T, { cls: { 0: 'path', 1: 'path', 3: 'path', 7: 'dim', 8: 'done' }, subs: { 8: '剩 0' } })] },
-    { note: '找到一條就回傳 true(右邊的子樹不用再看了)', views: [tree(T, { cls: { 0: 'done', 1: 'done', 3: 'done', 8: 'done' } })] },
+    { note: `要找一條「從根走到葉子」的路徑,節點值加起來剛好 ${SUM}。往下走的時候,把剩下要湊的數一路減掉`, line: 3, views: [tree(T, { subs: { 0: `剩 ${SUM}` } })] },
+    { note: '走 5 → 4 → 11:剩 22 − 5 − 4 − 11 = 2。再走到 7 → 剩 −5,是葉子但不是 0 ✗;回頭走 2 → 剩 0,而且 2 是葉子 ✓', line: 4, views: [tree(T, { cls: { 0: 'path', 1: 'path', 3: 'path', 7: 'dim', 8: 'done' }, subs: { 8: '剩 0' } })] }, // TODO: 可能要拆格
+    { note: '找到一條就回傳 true(右邊的子樹不用再看了)', line: 5, views: [tree(T, { cls: { 0: 'done', 1: 'done', 3: 'done', 8: 'done' } })] },
   ]
 }
 
 function bfsFig(): FigStep[] {
   return [
-    { note: '迭代版:佇列 / 堆疊放 (節點, 到這個節點為止的總和)', views: [tree(T, { cls: { 0: 'hl' }, subs: { 0: '5' } })] },
-    { note: '取出時如果是葉子而且總和 = 目標 → true;否則把孩子連同新的總和放進去', views: [tree(T, { cls: { 1: 'hl', 2: 'hl' }, subs: { 1: '9', 2: '13' } })] },
+    { note: '迭代版:佇列 / 堆疊放 (節點, 到這個節點為止的總和)', line: 3, views: [tree(T, { cls: { 0: 'hl' }, subs: { 0: '5' } })] },
+    { note: '取出時如果是葉子而且總和 = 目標 → true;否則把孩子連同新的總和放進去', line: 7, views: [tree(T, { cls: { 1: 'hl', 2: 'hl' }, subs: { 1: '9', 2: '13' } })] }, // TODO: 可能要拆格
   ]
 }
 

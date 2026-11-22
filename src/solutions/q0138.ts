@@ -17,18 +17,18 @@ const subsAll = Object.fromEntries(L.map((_, i) => [i, rnd(i)]))
 function mapFig(): FigStep[] {
   const made: [string, string][] = []
   const out: FigStep[] = [
-    { note: '每個節點除了 next,還有一個 random 指標可以指向任何節點(或 null)。節點下方的 r→x 是它的 random', views: [chain(vals, { label: '原串列', tail: true, subs: subsAll })] },
+    { note: '每個節點除了 next,還有一個 random 指標可以指向任何節點(或 null)。節點下方的 r→x 是它的 random', line: 2, views: [chain(vals, { label: '原串列', tail: true, subs: subsAll })] },
   ]
   L.forEach(([v], i) => {
     made.push([`舊 ${v}(#${i})`, `新 ${v}′`])
-    out.push({ note: `第一輪:替舊節點 ${v} 做一個值相同的新節點,記在 map 裡(舊 → 新)。先不管指標`, views: [chain(vals, { label: '原串列', tail: true, subs: subsAll, cls: { [i]: 'hl' } }), kv(made, 'map(舊節點 → 新節點)', [`舊 ${v}(#${i})`])] })
+    out.push({ note: `第一輪:替舊節點 ${v} 做一個值相同的新節點,記在 map 裡(舊 → 新)。先不管指標`, line: 3, views: [chain(vals, { label: '原串列', tail: true, subs: subsAll, cls: { [i]: 'hl' } }), kv(made, 'map(舊節點 → 新節點)', [`舊 ${v}(#${i})`])] })
   })
   L.forEach(([v, r], i) => {
     const nx = i + 1 < L.length ? `${vals[i + 1]}′` : '∅'
     const rr = r === null ? '∅' : `${vals[r]}′`
-    out.push({ note: `第二輪:新 ${v}′ 的 next = map[舊 ${v}.next] = ${nx};random = map[舊 ${v}.random] = ${rr}`, views: [chain(vals, { label: '原串列', tail: true, subs: subsAll, cls: { [i]: 'hl', ...(r !== null ? { [r]: 'visited' } : {}) } }), kv(made, 'map', [`舊 ${v}(#${i})`])] })
+    out.push({ note: `第二輪:新 ${v}′ 的 next = map[舊 ${v}.next] = ${nx};random = map[舊 ${v}.random] = ${rr}`, line: 5, views: [chain(vals, { label: '原串列', tail: true, subs: subsAll, cls: { [i]: 'hl', ...(r !== null ? { [r]: 'visited' } : {}) } }), kv(made, 'map', [`舊 ${v}(#${i})`])] }) // TODO: 可能要拆格(next=行5、random=行6,新節點的指標圖上看不到)
   })
-  out.push({ note: '新串列和舊的長得一模一樣,但每個節點都是新做的。回傳 map[head]', views: [chain(vals.map((v) => `${v}′`), { label: '複製出來的新串列', tail: true, subs: subsAll })] })
+  out.push({ note: '新串列和舊的長得一模一樣,但每個節點都是新做的。回傳 map[head]', line: 8, views: [chain(vals.map((v) => `${v}′`), { label: '複製出來的新串列', tail: true, subs: subsAll })] })
   return out
 }
 
@@ -36,10 +36,10 @@ function weaveFig(): FigStep[] {
   const woven = vals.flatMap((v) => [String(v), `${v}′`])
   const wsubs = (withCopy: boolean) => Object.fromEntries(L.flatMap((_, i) => [[2 * i, rnd(i)], ...(withCopy ? [[2 * i + 1, L[i][1] === null ? 'r→∅' : `r→${vals[L[i][1]!]}′`]] : [])]))
   return [
-    { note: '不用 map 的做法:把每個新節點直接插在它的舊節點後面,讓「舊 → 新」的對應靠位置就知道', views: [chain(vals, { label: '原串列', tail: true, subs: subsAll })] },
-    { note: '第一輪:每個舊節點後面插一個複製品。現在 舊.next 就是它的新節點', views: [chain(woven, { label: '交錯的串列(′ 是新節點)', tail: true, subs: wsubs(false), cls: Object.fromEntries(L.map((_, i) => [2 * i + 1, 'hl'])) })] },
-    { note: '第二輪:新節點的 random = 舊.random.next(舊 random 指到的那個舊節點,它後面就是對應的新節點)', views: [chain(woven, { label: '交錯的串列', tail: true, subs: wsubs(true), cls: Object.fromEntries(L.map((_, i) => [2 * i + 1, 'hl'])) })] },
-    { note: '第三輪:把交錯的串列拆回兩條:舊的接回舊的、新的接成新的', views: [chain(vals, { label: '還原的原串列', tail: true, subs: subsAll }), chain(vals.map((v) => `${v}′`), { label: '新串列', tail: true, subs: Object.fromEntries(L.map((_, i) => [i, L[i][1] === null ? 'r→∅' : `r→${vals[L[i][1]!]}′`])) })] },
+    { note: '不用 map 的做法:把每個新節點直接插在它的舊節點後面,讓「舊 → 新」的對應靠位置就知道', line: 3, views: [chain(vals, { label: '原串列', tail: true, subs: subsAll })] },
+    { note: '第一輪:每個舊節點後面插一個複製品。現在 舊.next 就是它的新節點', line: 3, views: [chain(woven, { label: '交錯的串列(′ 是新節點)', tail: true, subs: wsubs(false), cls: Object.fromEntries(L.map((_, i) => [2 * i + 1, 'hl'])) })] },
+    { note: '第二輪:新節點的 random = 舊.random.next(舊 random 指到的那個舊節點,它後面就是對應的新節點)', line: 5, views: [chain(woven, { label: '交錯的串列', tail: true, subs: wsubs(true), cls: Object.fromEntries(L.map((_, i) => [2 * i + 1, 'hl'])) })] },
+    { note: '第三輪:把交錯的串列拆回兩條:舊的接回舊的、新的接成新的', line: 9, views: [chain(vals, { label: '還原的原串列', tail: true, subs: subsAll }), chain(vals.map((v) => `${v}′`), { label: '新串列', tail: true, subs: Object.fromEntries(L.map((_, i) => [i, L[i][1] === null ? 'r→∅' : `r→${vals[L[i][1]!]}′`])) })] },
   ]
 }
 

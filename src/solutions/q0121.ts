@@ -6,35 +6,35 @@ import type { FigStep, Solution } from './types'
 const P = [7, 1, 5, 3, 6, 4]
 
 function bruteFig(): FigStep[] {
-  const out: FigStep[] = [{ note: '試每一組「第 i 天買、第 j 天賣」(i < j),利潤 = prices[j] − prices[i]', views: [arr(P, { label: 'prices', mode: 'bars' })] }]
+  const out: FigStep[] = [{ note: '試每一組「第 i 天買、第 j 天賣」(i < j),利潤 = prices[j] − prices[i]', line: 2, views: [arr(P, { label: 'prices', mode: 'bars' })] }]
   let best = 0
   for (let i = 0; i < P.length; i++)
     for (let j = i + 1; j < P.length; j++) {
       const p = P[j] - P[i]
       if (p > best) {
         best = p
-        out.push({ note: `第 ${i} 天買 ${P[i]}、第 ${j} 天賣 ${P[j]},賺 ${p} → 目前最多`, views: [arr(P, { label: 'prices', mode: 'bars', compare: [i, j], range: [i, j] })] })
+        out.push({ note: `第 ${i} 天買 ${P[i]}、第 ${j} 天賣 ${P[j]},賺 ${p} → 目前最多`, line: 5, views: [arr(P, { label: 'prices', mode: 'bars', compare: [i, j], range: [i, j] })] })
       }
     }
-  out.push({ note: `全部 ${(P.length * (P.length - 1)) / 2} 組試完,最多賺 ${best}`, views: [arr(P, { label: 'prices', mode: 'bars' })] })
+  out.push({ note: `全部 ${(P.length * (P.length - 1)) / 2} 組試完,最多賺 ${best}`, line: 6, views: [arr(P, { label: 'prices', mode: 'bars' })] })
   return out
 }
 
 function minFig(): FigStep[] {
   let lo = 0
   let best = 0
-  const out: FigStep[] = [{ note: '從左往右走,記住「到今天為止最便宜的那天」。如果今天賣,最好的買點就是它', views: [arr(P, { label: 'prices', mode: 'bars', highlight: [0], pointers: [{ name: 'min', index: 0 }] })] }]
+  const out: FigStep[] = [{ note: '從左往右走,記住「到今天為止最便宜的那天」。如果今天賣,最好的買點就是它', line: 2, views: [arr(P, { label: 'prices', mode: 'bars', highlight: [0], pointers: [{ name: 'min', index: 0 }] })] }]
   for (let i = 1; i < P.length; i++) {
     if (P[i] < P[lo]) {
       lo = i
-      out.push({ note: `第 ${i} 天 ${P[i]} 比之前最低價還低 → 更新最低價的那天。今天賣不會賺,利潤仍是 ${best}`, views: [arr(P, { label: 'prices', mode: 'bars', highlight: [i], dim: range(0, i - 1), pointers: [{ name: 'min', index: lo }, { name: 'i', index: i, color: 'b' }] })] })
+      out.push({ note: `第 ${i} 天 ${P[i]} 比之前最低價還低 → 更新最低價的那天。今天賣不會賺,利潤仍是 ${best}`, line: 4, views: [arr(P, { label: 'prices', mode: 'bars', highlight: [i], dim: range(0, i - 1), pointers: [{ name: 'min', index: lo }, { name: 'i', index: i, color: 'b' }] })] })
     } else {
       const p = P[i] - P[lo]
       best = Math.max(best, p)
-      out.push({ note: `第 ${i} 天賣:${P[i]} − 最低價 ${P[lo]} = ${p},最多 ${best}`, views: [arr(P, { label: 'prices', mode: 'bars', compare: [lo, i], range: [lo, i], pointers: [{ name: 'min', index: lo }, { name: 'i', index: i, color: 'b' }] })] })
+      out.push({ note: `第 ${i} 天賣:${P[i]} − 最低價 ${P[lo]} = ${p},最多 ${best}`, line: 5, views: [arr(P, { label: 'prices', mode: 'bars', compare: [lo, i], range: [lo, i], pointers: [{ name: 'min', index: lo }, { name: 'i', index: i, color: 'b' }] })] })
     }
   }
-  out.push({ note: `答案 = ${best}。只走了一次`, views: [arr(P, { label: 'prices', mode: 'bars' })] })
+  out.push({ note: `答案 = ${best}。只走了一次`, line: 6, views: [arr(P, { label: 'prices', mode: 'bars' })] })
   return out
 }
 
@@ -46,6 +46,7 @@ function dpFig(): FigStep[] {
   const out: FigStep[] = [
     {
       note: '把每一天的狀態分成兩種:hold = 手上有股票時的最大「現金」(買了要付錢,所以是負的);free = 手上沒股票時的最大現金。第 0 天:買 → −7,不買 → 0',
+      line: 2,
       views: [arr(P, { label: 'prices', highlight: [0] }), arr(hold, { label: 'hold', highlight: [0] }), arr(free, { label: 'free', highlight: [0] })],
     },
   ]
@@ -56,10 +57,11 @@ function dpFig(): FigStep[] {
     free[i] = f
     out.push({
       note: `第 ${i} 天:hold = max(繼續拿著 ${hold[i - 1]}, 今天買 −${P[i]}) = ${h};free = max(繼續空手 ${free[i - 1]}, 今天賣 ${hold[i - 1]} + ${P[i]}) = ${f}`,
+      line: 4,
       views: [arr(P, { label: 'prices', highlight: [i] }), arr(hold, { label: 'hold', highlight: [i], compare: [i - 1] }), arr(free, { label: 'free', highlight: [i], compare: [i - 1] })],
     })
   }
-  out.push({ note: `最後一天空手的最大現金 free = ${free[P.length - 1]} 就是答案。hold 只能從 −價格 來(只能買一次),所以 hold 其實就是「−最低價」`, views: [arr(hold, { label: 'hold' }), arr(free, { label: 'free', done: [P.length - 1] })] })
+  out.push({ note: `最後一天空手的最大現金 free = ${free[P.length - 1]} 就是答案。hold 只能從 −價格 來(只能買一次),所以 hold 其實就是「−最低價」`, line: 6, views: [arr(hold, { label: 'hold' }), arr(free, { label: 'free', done: [P.length - 1] })] })
   return out
 }
 

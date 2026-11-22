@@ -9,8 +9,8 @@ const A = [100, 4, 200, 1, 3, 2, 101]
 function sortFig(): FigStep[] {
   const s = [...A].sort((a, b) => a - b)
   const out: FigStep[] = [
-    { note: '先排序,連續的數就會排在一起', views: [arr(A, { label: 'nums' })] },
-    { note: '排序完成。接著從左到右數「目前這一段連續了幾個」', views: [arr(s, { label: '排序後' })] },
+    { note: '先排序,連續的數就會排在一起', line: 3, views: [arr(A, { label: 'nums' })] },
+    { note: '排序完成。接著從左到右數「目前這一段連續了幾個」', line: 4, views: [arr(s, { label: '排序後' })] },
   ]
   let cur = 1
   let best = 1
@@ -20,25 +20,25 @@ function sortFig(): FigStep[] {
     if (s[i] === s[i - 1] + 1) {
       cur++
       best = Math.max(best, cur)
-      out.push({ note: `${s[i]} = ${s[i - 1]} + 1,接得上 → 目前這段長 ${cur},最長 ${best}`, views: [arr(s, { label: '排序後', range: [start, i], highlight: [i] })] })
+      out.push({ note: `${s[i]} = ${s[i - 1]} + 1,接得上 → 目前這段長 ${cur},最長 ${best}`, line: 7, views: [arr(s, { label: '排序後', range: [start, i], highlight: [i] })] }) // TODO: 可能要拆格(cur 更新第 7 行、best 更新第 8 行併一步)
     } else {
-      out.push({ note: `${s[i]} 和 ${s[i - 1]} 差超過 1,斷掉了 → 從 ${s[i]} 重新開始算,目前長 1,最長仍是 ${best}`, views: [arr(s, { label: '排序後', range: [i, i], highlight: [i] })] })
+      out.push({ note: `${s[i]} 和 ${s[i - 1]} 差超過 1,斷掉了 → 從 ${s[i]} 重新開始算,目前長 1,最長仍是 ${best}`, line: 7, views: [arr(s, { label: '排序後', range: [i, i], highlight: [i] })] })
       cur = 1
       start = i
     }
   }
-  out.push({ note: `答案 = ${best}`, views: [arr(s, { label: '排序後', done: range(0, 3) })] })
+  out.push({ note: `答案 = ${best}`, line: 9, views: [arr(s, { label: '排序後', done: range(0, 3) })] })
   return out
 }
 
 function setFig(): FigStep[] {
   const set = new Set(A)
   const setView = (hl: number[] = []) => kv([...set].sort((a, b) => a - b).map((v) => [v, '✓']), 'set(所有出現過的數)', hl)
-  const out: FigStep[] = [{ note: '把所有數放進 Hash Set,之後問「x 在不在」都是 O(1)', views: [arr(A, { label: 'nums' }), setView()] }]
+  const out: FigStep[] = [{ note: '把所有數放進 Hash Set,之後問「x 在不在」都是 O(1)', line: 2, views: [arr(A, { label: 'nums' }), setView()] }]
   let best = 0
   A.forEach((x, i) => {
     if (set.has(x - 1)) {
-      out.push({ note: `${x}:${x - 1} 也在 set 裡,代表 ${x} 不是一段的開頭 → 跳過(之後從開頭數的時候會數到它)`, views: [arr(A, { label: 'nums', highlight: [i] }), setView([x, x - 1])] })
+      out.push({ note: `${x}:${x - 1} 也在 set 裡,代表 ${x} 不是一段的開頭 → 跳過(之後從開頭數的時候會數到它)`, line: 5, views: [arr(A, { label: 'nums', highlight: [i] }), setView([x, x - 1])] })
       return
     }
     let y = x
@@ -47,17 +47,18 @@ function setFig(): FigStep[] {
     const seq = range(x, y)
     out.push({
       note: `${x}:${x - 1} 不在 set 裡 → ${x} 是開頭!往上數 ${seq.join('、')},長度 ${y - x + 1},最長 ${best}`,
+      line: 7, // TODO: 可能要拆格(往上數第 7 行、更新 best 第 8 行併一步)
       views: [arr(A, { label: 'nums', highlight: [i] }), setView(seq)],
     })
   })
-  out.push({ note: `答案 = ${best}。每個數最多被「往上數」經過一次,所以總共是 O(n)`, views: [setView()] })
+  out.push({ note: `答案 = ${best}。每個數最多被「往上數」經過一次,所以總共是 O(n)`, line: 9, views: [setView()] })
   return out
 }
 
 function mapFig(): FigStep[] {
   const len = new Map<number, number>()
   const view = (hl: number[] = []) => kv([...len].sort((a, b) => a[0] - b[0]), 'len(區間端點 → 那段區間的長度)', hl)
-  const out: FigStep[] = [{ note: '另一種想法:把連續的數看成「區間」。map 只要保證每段區間的**兩個端點**記著正確的長度', views: [arr(A, { label: 'nums' }), view()] }]
+  const out: FigStep[] = [{ note: '另一種想法:把連續的數看成「區間」。map 只要保證每段區間的**兩個端點**記著正確的長度', line: 2, views: [arr(A, { label: 'nums' }), view()] }]
   let best = 0
   A.forEach((x, i) => {
     if (len.has(x)) return
@@ -70,10 +71,11 @@ function mapFig(): FigStep[] {
     best = Math.max(best, total)
     out.push({
       note: `加入 ${x}:左邊相鄰區間長 ${left}、右邊長 ${right} → 合併成長 ${total} 的區間 [${x - left}, ${x + right}],更新兩個端點。最長 ${best}`,
+      line: 7, // TODO: 可能要拆格(第 6–11 行併一步:查左右、合併、更新兩端點、更新 best)
       views: [arr(A, { label: 'nums', highlight: [i], dim: range(0, i - 1) }), view([x - left, x + right])],
     })
   })
-  out.push({ note: `答案 = ${best}`, views: [view()] })
+  out.push({ note: `答案 = ${best}`, line: 12, views: [view()] })
   return out
 }
 

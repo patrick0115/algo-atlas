@@ -25,17 +25,17 @@ function view(upto: number, hl: number[] = []): GraphViewData {
 
 function bfsFig(): FigStep[] {
   return [
-    { note: '每個節點的 next 要指向同一層右邊的節點(最右邊的指向 null)。最直接:BFS 一層一層走,同一層裡把前一個的 next 指向後一個', views: [view(-1, [0])] },
-    { note: '第 2 層:2 → 3', views: [view(1, [1, 2])] },
-    { note: '第 3 層:4 → 5 → 6 → 7。用佇列,空間 O(n)', views: [view(2, [3, 4, 5, 6])] },
+    { note: '每個節點的 next 要指向同一層右邊的節點(最右邊的指向 null)。最直接:BFS 一層一層走,同一層裡把前一個的 next 指向後一個', line: 9, views: [view(-1, [0])] },
+    { note: '第 2 層:2 → 3', line: 13, views: [view(1, [1, 2])] },
+    { note: '第 3 層:4 → 5 → 6 → 7。用佇列,空間 O(n)', line: 13, views: [view(2, [3, 4, 5, 6])] },
   ]
 }
 
 function o1Fig(): FigStep[] {
   return [
-    { note: 'O(1) 空間:用「上一層已經連好的 next」當作走訪下一層的路。站在某層的節點 cur:cur.left.next = cur.right(同一個父親)', views: [view(0, [1, 2])] },
-    { note: '跨父親的那一條:cur.right.next = cur.next.left(5 → 6:5 的父親是 2,2.next 是 3,3 的左孩子是 6)', views: [view(1, [4, 5])] },
-    { note: '沿著 cur = cur.next 把這層走完,下一層就連好了;再從最左邊往下一層', views: [view(2)] },
+    { note: 'O(1) 空間:用「上一層已經連好的 next」當作走訪下一層的路。站在某層的節點 cur:cur.left.next = cur.right(同一個父親)', line: 10, views: [view(0, [1, 2])] },
+    { note: '跨父親的那一條:cur.right.next = cur.next.left(5 → 6:5 的父親是 2,2.next 是 3,3 的左孩子是 6)', line: 11, views: [view(1, [4, 5])] },
+    { note: '沿著 cur = cur.next 把這層走完,下一層就連好了;再從最左邊往下一層', line: 9, views: [view(2)] }, // TODO: 可能要拆格(cur = cur.next 與 lm = lm.left 兩個動作併一步)
   ]
 }
 

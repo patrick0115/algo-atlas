@@ -7,17 +7,17 @@ const R = [1, 3, 4, 5, 2]
 
 function twoPassFig(): FigStep[] {
   return [
-    { note: '規則:每人至少 1 顆;分數比鄰居高的,糖果要比那個鄰居多。兩個方向的限制分開處理', views: [arr(R, { label: 'ratings', mode: 'bars' })] },
-    { note: '① 由左往右:比左邊高 → 左邊 + 1,否則 1。這樣滿足所有「比左鄰高」的限制', views: [arr([1, 2, 3, 4, 1], { label: 'left', mode: 'bars' })] },
-    { note: '② 由右往左:比右邊高 → 右邊 + 1,否則 1。滿足所有「比右鄰高」的限制', views: [arr([1, 1, 1, 2, 1], { label: 'right', mode: 'bars' })] },
-    { note: '每個人取 max(left, right) 就同時滿足兩邊,而且是最少的。總和 1 + 2 + 3 + 4 + 1 = 11', views: [arr([1, 2, 3, 4, 1], { label: 'candy', mode: 'bars', done: [0, 1, 2, 3, 4] }), arr([11], { label: '答案', done: [0] })] },
+    { note: '規則:每人至少 1 顆;分數比鄰居高的,糖果要比那個鄰居多。兩個方向的限制分開處理', line: 2, views: [arr(R, { label: 'ratings', mode: 'bars' })] },
+    { note: '① 由左往右:比左邊高 → 左邊 + 1,否則 1。這樣滿足所有「比左鄰高」的限制', line: 3, views: [arr([1, 2, 3, 4, 1], { label: 'left', mode: 'bars' })] },
+    { note: '② 由右往左:比右邊高 → 右邊 + 1,否則 1。滿足所有「比右鄰高」的限制', line: 4, views: [arr([1, 1, 1, 2, 1], { label: 'right', mode: 'bars' })] },
+    { note: '每個人取 max(left, right) 就同時滿足兩邊,而且是最少的。總和 1 + 2 + 3 + 4 + 1 = 11', line: 5, views: [arr([1, 2, 3, 4, 1], { label: 'candy', mode: 'bars', done: [0, 1, 2, 3, 4] }), arr([11], { label: '答案', done: [0] })] },
   ]
 }
 
 function slopeFig(): FigStep[] {
   return [
-    { note: 'O(1) 空間:把分數看成山坡。上坡長度 up、下坡長度 down;上坡時每人比前一人多 1,下坡時「整段下坡的人都要再多 1」', views: [arr(R, { label: 'ratings', mode: 'bars', highlight: [3] })] },
-    { note: '上坡 1→3→4→5 給 1、2、3、4;下坡 5→2:down = 1,加 1 顆。若下坡長度超過山頂的上坡長度,山頂也要再加 1', views: [arr([1, 2, 3, 4, 1], { label: 'candy', mode: 'bars', done: [0, 1, 2, 3, 4] })] },
+    { note: 'O(1) 空間:把分數看成山坡。上坡長度 up、下坡長度 down;上坡時每人比前一人多 1,下坡時「整段下坡的人都要再多 1」', line: 2, views: [arr(R, { label: 'ratings', mode: 'bars', highlight: [3] })] },
+    { note: '上坡 1→3→4→5 給 1、2、3、4;下坡 5→2:down = 1,加 1 顆。若下坡長度超過山頂的上坡長度,山頂也要再加 1', line: 15, views: [arr([1, 2, 3, 4, 1], { label: 'candy', mode: 'bars', done: [0, 1, 2, 3, 4] })] }, // TODO: 可能要拆格
   ]
 }
 

@@ -14,6 +14,7 @@ function dpFig(): FigStep[] {
     rows.push(row)
     out.push({
       note: i < 2 ? `第 ${i} 列:頭尾都是 1` : `第 ${i} 列:中間每個數 = 上一列「左上 + 右上」,例如 ${rows[i - 1][0]} + ${rows[i - 1][1]} = ${row[1]}`,
+      line: i < 2 ? 4 : 5,
       views: rows.map((r, k) => arr(r, { label: `第 ${k} 列`, highlight: k === i ? r.map((_, j) => j).slice(1, -1) : [], compare: k === i - 1 && i >= 2 ? [0, 1] : [] })),
     })
   }
@@ -22,8 +23,8 @@ function dpFig(): FigStep[] {
 
 function combFig(): FigStep[] {
   return [
-    { note: '第 i 列第 j 個數就是組合數 C(i, j)。同一列可以從左往右遞推:C(i, j) = C(i, j−1) × (i − j + 1) / j', views: [arr([1, 4, 6, 4, 1], { label: '第 4 列' })] },
-    { note: '1 → 1 × 4 / 1 = 4 → 4 × 3 / 2 = 6 → 6 × 2 / 3 = 4 → 4 × 1 / 4 = 1。先乘後除一定整除', views: [arr([1, 4, 6, 4, 1], { label: '第 4 列', done: [0, 1, 2, 3, 4] })] },
+    { note: '第 i 列第 j 個數就是組合數 C(i, j)。同一列可以從左往右遞推:C(i, j) = C(i, j−1) × (i − j + 1) / j', line: 7, views: [arr([1, 4, 6, 4, 1], { label: '第 4 列' })] },
+    { note: '1 → 1 × 4 / 1 = 4 → 4 × 3 / 2 = 6 → 6 × 2 / 3 = 4 → 4 × 1 / 4 = 1。先乘後除一定整除', line: 7, views: [arr([1, 4, 6, 4, 1], { label: '第 4 列', done: [0, 1, 2, 3, 4] })] },
   ]
 }
 

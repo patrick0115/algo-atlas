@@ -4,10 +4,10 @@ import type { Solution } from './types'
 // 123. Best Time to Buy and Sell Stock III
 const P = [3,3,5,0,0,3,1,4]
 const fig = [
-  { note: '正向掃描前幾天，價格 3、3、5 讓第一筆交易最高賺 2；遇到價格 0 時，最低買價改為 0。', views: [arr(P, { label: '正向掃描', highlight: [0,1,2,3] })] },
-  { note: '最多兩筆交易：低價買、高價賣，且賣完第一筆才能開始第二筆。這裡 0→3 利潤 3、1→4 利潤 3。', views: [arr(P, { label: 'prices', highlight: [4,5,6,7], dim: [0,1,2,3] })] },
-  { note: '把分界放在第 5 天；左段最佳利潤 3，右段最佳利潤 3，合計 6。', views: [arr([0,0,2,2,2,3,3,4], { label: 'left[i]：前 i 天最多一筆', highlight: [5] }), arr([4,4,4,4,4,3,3,0], { label: 'right[i]：從 i 天起最多一筆', highlight: [6] })] },
-  { note: '比較其他分界後，兩段利潤的最大總和仍是 6，因此回傳 6。', views: [arr([6], { label: '最大總利潤', done: [0] })] },
+  { note: '正向掃描前幾天，價格 3、3、5 讓第一筆交易最高賺 2；遇到價格 0 時，最低買價改為 0。', line: 5, views: [arr(P, { label: '正向掃描', highlight: [0,1,2,3] })] },
+  { note: '最多兩筆交易：低價買、高價賣，且賣完第一筆才能開始第二筆。這裡 0→3 利潤 3、1→4 利潤 3。', line: 12, views: [arr(P, { label: 'prices', highlight: [4,5,6,7], dim: [0,1,2,3] })] },
+  { note: '把分界放在第 5 天；左段最佳利潤 3，右段最佳利潤 3，合計 6。', line: 13, views: [arr([0,0,2,2,2,3,3,4], { label: 'left[i]：前 i 天最多一筆', highlight: [5] }), arr([4,4,4,4,4,3,3,0], { label: 'right[i]：從 i 天起最多一筆', highlight: [6] })] },
+  { note: '比較其他分界後，兩段利潤的最大總和仍是 6，因此回傳 6。', line: 14, views: [arr([6], { label: '最大總利潤', done: [0] })] },
 ]
 
 export const q0123: Solution = {
@@ -101,7 +101,7 @@ export const q0123: Solution = {
     return ans;
 }`,
     } },
-    { name: '四狀態動態規劃', idea: '每個價位更新第一次買後、第一次賣後、第二次買後、第二次賣後的最佳資產。', steps: ['buy1=buy2=−∞，sell1=sell2=0。一筆交易必須先買後賣，狀態或分界都要遵守時間順序。', '每個價格 p：buy1=max(buy1,−p)、sell1=max(sell1,buy1+p)。每個新價格只在能改善獲利時更新對應的最佳狀態。', 'buy2=max(buy2,sell1−p)、sell2=max(sell2,buy2+p)。最後比較所有合法分界或賣出狀態，得到最多兩筆交易的獲利。'], figure: { title: 'prices = [3,3,5,0,0,3,1,4]', steps: [{ note: '第一天價格 3，買入後淨資產是 −3；兩個賣出狀態暫時都是 0。', views: [arr([-3,0,-3,0], { label: '買一／賣一／買二／賣二', highlight: [0] })] }, { note: '掃到價格 0，第一次買入狀態改善為 0；先前在價格 5 賣出的利潤 2 可用於第二次買入。', views: [arr([0,2,2,2], { label: '價格 0 後的四狀態', highlight: [0,2] })] }, { note: '最後價格 4 使第二次賣出的淨利達 6，因此回傳 sell2=6。', views: [arr([0,4,2,6], { label: '最後四狀態', done: [3] })] }] }, complexity: { time: 'O(n)', space: 'O(1)', why: '每天只更新四個狀態。' }, verdict: '最省空間；需理解買入狀態是扣除成本後的淨資產。', code: {
+    { name: '四狀態動態規劃', idea: '每個價位更新第一次買後、第一次賣後、第二次買後、第二次賣後的最佳資產。', steps: ['buy1=buy2=−∞，sell1=sell2=0。一筆交易必須先買後賣，狀態或分界都要遵守時間順序。', '每個價格 p：buy1=max(buy1,−p)、sell1=max(sell1,buy1+p)。每個新價格只在能改善獲利時更新對應的最佳狀態。', 'buy2=max(buy2,sell1−p)、sell2=max(sell2,buy2+p)。最後比較所有合法分界或賣出狀態，得到最多兩筆交易的獲利。'], figure: { title: 'prices = [3,3,5,0,0,3,1,4]', steps: [{ note: '第一天價格 3，買入後淨資產是 −3；兩個賣出狀態暫時都是 0。', line: 4, views: [arr([-3,0,-3,0], { label: '買一／賣一／買二／賣二', highlight: [0] })] }, { note: '掃到價格 0，第一次買入狀態改善為 0；先前在價格 5 賣出的利潤 2 可用於第二次買入。', line: 6, views: [arr([0,2,2,2], { label: '價格 0 後的四狀態', highlight: [0,2] })] }, { note: '最後價格 4 使第二次賣出的淨利達 6，因此回傳 sell2=6。', line: 7, views: [arr([0,4,2,6], { label: '最後四狀態', done: [3] })] }] }, complexity: { time: 'O(n)', space: 'O(1)', why: '每天只更新四個狀態。' }, verdict: '最省空間；需理解買入狀態是扣除成本後的淨資產。', code: {
       python: `def maxProfit(prices):
     buy1 = buy2 = float('-inf')
     sell1 = sell2 = 0

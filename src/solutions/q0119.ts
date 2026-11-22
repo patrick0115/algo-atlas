@@ -2,16 +2,16 @@ import { arr } from '../engine/helpers'
 import type { FigStep, Solution } from './types'
 
 const dpFig: FigStep[] = [
-  { note: '第 0 列只有 [1]；每一列左右端都為 1。', views: [arr([1], { label: '第 0 列' })] },
-  { note: '加入第 1 列的右端 1，得到 [1,1]。', views: [arr([1, 1], { label: '第 1 列' })] },
-  { note: '第 2 列從右往左更新內部：1+1=2，得到 [1,2,1]。', views: [arr([1, 2, 1], { label: '第 2 列', highlight: [1] })] },
-  { note: '第 3 列得 [1,3,3,1]；第 4 列依序變成 [1,4,6,4,1]。', views: [arr([1, 3, 3, 1], { label: '第 3 列' }), arr([1, 4, 6, 4, 1], { label: '答案', done: [0, 1, 2, 3, 4] })] },
+  { note: '第 0 列只有 [1]；每一列左右端都為 1。', line: 2, views: [arr([1], { label: '第 0 列' })] },
+  { note: '加入第 1 列的右端 1，得到 [1,1]。', line: 4, views: [arr([1, 1], { label: '第 1 列' })] },
+  { note: '第 2 列從右往左更新內部：1+1=2，得到 [1,2,1]。', line: 6, views: [arr([1, 2, 1], { label: '第 2 列', highlight: [1] })] },
+  { note: '第 3 列得 [1,3,3,1]；第 4 列依序變成 [1,4,6,4,1]。', line: 6, views: [arr([1, 3, 3, 1], { label: '第 3 列' }), arr([1, 4, 6, 4, 1], { label: '答案', done: [0, 1, 2, 3, 4] })] },
 ]
 const mathFig: FigStep[] = [
-  { note: '第 4 列的第 k 個值是組合數 C(4,k)；先從 C(4,0)=1 開始。', views: [arr([1], { label: '目前列' })] },
-  { note: '用 C(4,1)=C(4,0)×4/1 得到 4。', views: [arr([1, 4], { label: '目前列', highlight: [1] })] },
-  { note: '接著 C(4,2)=4×3/2=6，從前一項直接推出下一項。', views: [arr([1, 4, 6], { label: '目前列', highlight: [2] })] },
-  { note: '繼續得到 C(4,3)=4、C(4,4)=1，答案為 [1,4,6,4,1]。', views: [arr([1, 4, 6, 4, 1], { label: '答案', done: [0, 1, 2, 3, 4] })] },
+  { note: '第 4 列的第 k 個值是組合數 C(4,k)；先從 C(4,0)=1 開始。', line: 2, views: [arr([1], { label: '目前列' })] },
+  { note: '用 C(4,1)=C(4,0)×4/1 得到 4。', line: 5, views: [arr([1, 4], { label: '目前列', highlight: [1] })] },
+  { note: '接著 C(4,2)=4×3/2=6，從前一項直接推出下一項。', line: 5, views: [arr([1, 4, 6], { label: '目前列', highlight: [2] })] },
+  { note: '繼續得到 C(4,3)=4、C(4,4)=1，答案為 [1,4,6,4,1]。', line: 5, views: [arr([1, 4, 6, 4, 1], { label: '答案', done: [0, 1, 2, 3, 4] })] },
 ]
 
 export const q0119: Solution = {
