@@ -10,28 +10,30 @@ function mergeFig(recursive: boolean): FigStep[] {
   let i = 0
   let j = 0
   const res: number[] = []
-  const draw = (note: string): FigStep => ({
+  const draw = (note: string, line: number): FigStep => ({
     note,
+    line,
     views: [
       chain(A, { label: 'list1', tail: true, cls: { ...Object.fromEntries(A.slice(0, i).map((_, k) => [k, 'dim'])), ...(i < A.length ? { [i]: 'hl' } : {}) } }),
       chain(B, { label: 'list2', tail: true, cls: { ...Object.fromEntries(B.slice(0, j).map((_, k) => [k, 'dim'])), ...(j < B.length ? { [j]: 'hl' } : {}) } }),
       chain(recursive ? res : ['D', ...res], { label: recursive ? '結果(遞迴每一層決定一個)' : '結果(D 是假的頭)', cls: recursive ? {} : { 0: 'dim' } }),
     ],
   })
-  const out: FigStep[] = [draw(recursive ? '遞迴:比較兩條的頭,小的那個當結果的頭,它的 next = 「剩下的部分合併的結果」' : '準備一個假的頭 D 和一個 tail 指標。每次比較兩條的頭,把小的接到 tail 後面')]
+  const out: FigStep[] = [draw(recursive ? '遞迴:比較兩條的頭,小的那個當結果的頭,它的 next = 「剩下的部分合併的結果」' : '準備一個假的頭 D 和一個 tail 指標。每次比較兩條的頭,把小的接到 tail 後面', recursive ? 4 : 2)]
   while (i < A.length && j < B.length) {
     const takeA = A[i] <= B[j]
     const v = takeA ? A[i] : B[j]
     res.push(v)
     if (takeA) i++
     else j++
-    out.push(draw(`${takeA ? `list1 的 ${v} ≤ list2 的 ${B[j]}` : `list2 的 ${v} < list1 的 ${A[i]}`} → 接上 ${v}${takeA && v === B[j] ? '(一樣大時拿 list1 的,保持穩定)' : ''}`))
+    out.push(draw(`${takeA ? `list1 的 ${v} ≤ list2 的 ${B[j]}` : `list2 的 ${v} < list1 的 ${A[i]}`} → 接上 ${v}${takeA && v === B[j] ? '(一樣大時拿 list1 的,保持穩定)' : ''}`, recursive ? (takeA ? 5 : 7) : takeA ? 6 : 9)) // TODO: 可能要拆格(迭代版:tail.next=、list1=list1.next、tail=tail.next 一次演完)
   }
-  const rest = i < A.length ? A.slice(i) : B.slice(j)
+  const restFromA = i < A.length
+  const rest = restFromA ? A.slice(i) : B.slice(j)
   res.push(...rest)
   i = A.length
   j = B.length
-  out.push(draw(`有一條走完了,另一條剩下的 [${rest.join(',')}] 本來就排好了 → 整段直接接上`))
+  out.push(draw(`有一條走完了,另一條剩下的 [${rest.join(',')}] 本來就排好了 → 整段直接接上`, recursive ? (restFromA ? 3 : 2) : 14))
   return out
 }
 

@@ -9,17 +9,17 @@ const VAL = 2
 function keepFig(): FigStep[] {
   const a = [...A]
   let w = 0
-  const out: FigStep[] = [{ note: `要刪掉所有 ${VAL}。w = 下一個「要留的數」放的位置。i 往右掃,不是 ${VAL} 就抄到 w`, views: [arr([...a], { label: 'nums', pointers: [{ name: 'w', index: 0 }] })] }]
+  const out: FigStep[] = [{ note: `要刪掉所有 ${VAL}。w = 下一個「要留的數」放的位置。i 往右掃,不是 ${VAL} 就抄到 w`, line: 2, views: [arr([...a], { label: 'nums', pointers: [{ name: 'w', index: 0 }] })] }]
   for (let i = 0; i < a.length; i++) {
     if (a[i] !== VAL) {
       a[w] = a[i]
-      if (i < 3 || i >= 5) out.push({ note: `nums[${i}] = ${a[w]} 要留 → 寫到 nums[${w}],w 變 ${w + 1}`, views: [arr([...a], { label: 'nums', highlight: [w], compare: [i], done: Array.from({ length: w }, (_, k) => k), pointers: [{ name: 'w', index: w }, { name: 'i', index: i, color: 'b' }] })] })
+      if (i < 3 || i >= 5) out.push({ note: `nums[${i}] = ${a[w]} 要留 → 寫到 nums[${w}],w 變 ${w + 1}`, line: 3, views: [arr([...a], { label: 'nums', highlight: [w], compare: [i], done: Array.from({ length: w }, (_, k) => k), pointers: [{ name: 'w', index: w }, { name: 'i', index: i, color: 'b' }] })] })
       w++
     } else if (i === 2) {
-      out.push({ note: `nums[${i}] = ${VAL} → 跳過,w 不動`, views: [arr([...a], { label: 'nums', dim: [i], done: Array.from({ length: w }, (_, k) => k), pointers: [{ name: 'w', index: w }, { name: 'i', index: i, color: 'b' }] })] })
+      out.push({ note: `nums[${i}] = ${VAL} → 跳過,w 不動`, line: 3, views: [arr([...a], { label: 'nums', dim: [i], done: Array.from({ length: w }, (_, k) => k), pointers: [{ name: 'w', index: w }, { name: 'i', index: i, color: 'b' }] })] })
     }
   }
-  out.push({ note: `回傳 k = ${w}:前 ${w} 個 [${a.slice(0, w)}] 就是留下的`, views: [arr(a, { label: 'nums', done: Array.from({ length: w }, (_, k) => k), dim: Array.from({ length: a.length - w }, (_, k) => w + k) })] })
+  out.push({ note: `回傳 k = ${w}:前 ${w} 個 [${a.slice(0, w)}] 就是留下的`, line: 4, views: [arr(a, { label: 'nums', done: Array.from({ length: w }, (_, k) => k), dim: Array.from({ length: a.length - w }, (_, k) => w + k) })] })
   return out
 }
 
@@ -27,15 +27,15 @@ function swapFig(): FigStep[] {
   const a = [...A]
   let i = 0
   let n = a.length
-  const out: FigStep[] = [{ note: `另一個想法:看到 ${VAL} 就拿**最後一個**數來蓋掉它,陣列長度 n 減 1。要刪的很少時,寫入次數更少(題目不要求保持順序)`, views: [arr([...a], { label: 'nums', pointers: [{ name: 'i', index: 0 }, { name: 'n', index: n - 1, color: 'b' }] })] }]
+  const out: FigStep[] = [{ note: `另一個想法:看到 ${VAL} 就拿**最後一個**數來蓋掉它,陣列長度 n 減 1。要刪的很少時,寫入次數更少(題目不要求保持順序)`, line: 2, views: [arr([...a], { label: 'nums', pointers: [{ name: 'i', index: 0 }, { name: 'n', index: n - 1, color: 'b' }] })] }]
   while (i < n) {
     if (a[i] === VAL) {
       a[i] = a[n - 1]
       n--
-      out.push({ note: `nums[${i}] 是 ${VAL} → 用最後一個 nums[${n}] = ${a[i]} 蓋掉,n 變 ${n}(i 不動,換來的數還沒檢查)`, views: [arr([...a], { label: 'nums', highlight: [i], dim: Array.from({ length: a.length - n }, (_, k) => n + k), pointers: [{ name: 'i', index: i }, { name: 'n', index: Math.max(n - 1, 0), color: 'b' }] })] })
+      out.push({ note: `nums[${i}] 是 ${VAL} → 用最後一個 nums[${n}] = ${a[i]} 蓋掉,n 變 ${n}(i 不動,換來的數還沒檢查)`, line: 4, views: [arr([...a], { label: 'nums', highlight: [i], dim: Array.from({ length: a.length - n }, (_, k) => n + k), pointers: [{ name: 'i', index: i }, { name: 'n', index: Math.max(n - 1, 0), color: 'b' }] })] })
     } else i++
   }
-  out.push({ note: `i 追上 n,回傳 ${n}:前 ${n} 個 [${a.slice(0, n)}] 都不是 ${VAL}(順序變了,但題目允許)`, views: [arr(a, { label: 'nums', done: Array.from({ length: n }, (_, k) => k), dim: Array.from({ length: a.length - n }, (_, k) => n + k) })] })
+  out.push({ note: `i 追上 n,回傳 ${n}:前 ${n} 個 [${a.slice(0, n)}] 都不是 ${VAL}(順序變了,但題目允許)`, line: 7, views: [arr(a, { label: 'nums', done: Array.from({ length: n }, (_, k) => k), dim: Array.from({ length: a.length - n }, (_, k) => n + k) })] })
   return out
 }
 

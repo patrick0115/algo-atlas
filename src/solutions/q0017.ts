@@ -21,17 +21,17 @@ function btFig(): FigStep[] {
   go(0, '', -1, '開始')
   const pos = recLayout(nodes)
   return [
-    { note: '手機鍵盤:每個數字對應幾個字母', views: [kv(Object.entries(MAP), '數字 → 字母', [...D])] },
-    ...nodes.map((_, k) => ({ note: notes[k], views: [recView(nodes, pos, k, '決策樹(節點下方是目前的字串)')] })),
+    { note: '手機鍵盤:每個數字對應幾個字母', line: 3, views: [kv(Object.entries(MAP), '數字 → 字母', [...D])] },
+    ...nodes.map((_, k) => ({ note: notes[k], line: nodes[k].parent < 0 ? 12 : nodes[k].kind === 'ok' ? 7 : 10, views: [recView(nodes, pos, k, '決策樹(節點下方是目前的字串)')] })),
   ]
 }
 
 function bfsFig(): FigStep[] {
   let res = ['']
-  const out: FigStep[] = [{ note: '迭代:從空字串開始,每處理一個數字,就把目前每個字串都接上這個數字的每個字母', views: [arr(['""'], { label: '目前的組合' })] }]
+  const out: FigStep[] = [{ note: '迭代:從空字串開始,每處理一個數字,就把目前每個字串都接上這個數字的每個字母', line: 4, views: [arr(['""'], { label: '目前的組合' })] }]
   for (const d of D) {
     res = res.flatMap((s) => [...MAP[d]].map((c) => s + c))
-    out.push({ note: `處理 ${d}(${MAP[d]}):每個字串分裂成 ${MAP[d].length} 個 → ${res.length} 個`, views: [arr(res, { label: '目前的組合' })] })
+    out.push({ note: `處理 ${d}(${MAP[d]}):每個字串分裂成 ${MAP[d].length} 個 → ${res.length} 個`, line: 5, views: [arr(res, { label: '目前的組合' })] })
   }
   return out
 }

@@ -9,18 +9,20 @@ const N = 2
 function btFig(): FigStep[] {
   const nodes: RNode[] = []
   const notes: string[] = []
+  const lines: number[] = []
   const go = (s: string, open: number, close: number, parent: number, label: string) => {
     const id = nodes.length
     const done = s.length === 2 * N
     nodes.push({ parent, label, sub: s || '""', kind: done ? 'ok' : undefined })
     notes.push(parent < 0 ? `兩條規則就能保證合法:① 左括號用了不到 n = ${N} 個,就可以再放左括號;② 右括號比左括號少,才可以放右括號(不然會出現沒人配對的右括號)` : done ? `長度到 ${2 * N} → 得到 "${s}"` : `放 "${label}" → "${s}"(左 ${open}、右 ${close})${open < N ? '' : ',左括號用完了'}${close < open ? '' : ',右括號不能比左括號多'}`)
+    lines.push(parent < 0 ? 11 : done ? 5 : label === '(' ? 8 : 9)
     if (done) return
     if (open < N) go(s + '(', open + 1, close, id, '(')
     if (close < open) go(s + ')', open, close + 1, id, ')')
   }
   go('', 0, 0, -1, '開始')
   const pos = recLayout(nodes)
-  return nodes.map((_, k) => ({ note: notes[k], views: [recView(nodes, pos, k, '決策樹(節點下方是目前的字串)')] }))
+  return nodes.map((_, k) => ({ note: notes[k], line: lines[k], views: [recView(nodes, pos, k, '決策樹(節點下方是目前的字串)')] }))
 }
 
 function bruteFig(): FigStep[] {
@@ -43,19 +45,19 @@ function bruteFig(): FigStep[] {
     return b === 0
   }
   return [
-    { note: `暴力:每個位置都可能是 ( 或 ),長度 2n = ${2 * N} 共 2^${2 * N} = ${all.length} 種字串`, views: [arr(all, { label: '所有字串' })] },
-    { note: '一個一個檢查是不是合法的括號(餘額從不為負、最後是 0)', views: [arr(all, { label: '所有字串', highlight: all.flatMap((s, i) => (ok(s) ? [i] : [])), dim: all.flatMap((s, i) => (ok(s) ? [] : [i])) })] },
+    { note: `暴力:每個位置都可能是 ( 或 ),長度 2n = ${2 * N} 共 2^${2 * N} = ${all.length} 種字串`, line: 17, views: [arr(all, { label: '所有字串' })] },
+    { note: '一個一個檢查是不是合法的括號(餘額從不為負、最後是 0)', line: 14, views: [arr(all, { label: '所有字串', highlight: all.flatMap((s, i) => (ok(s) ? [i] : [])), dim: all.flatMap((s, i) => (ok(s) ? [] : [i])) })] },
   ]
 }
 
 function dpFig(): FigStep[] {
   const dp: string[][] = [['']]
-  const out: FigStep[] = [{ note: '另一種想法:任何合法字串的第一個字一定是 "(",它配對的 ")" 把字串切成兩段:"(" + A + ")" + B,A 和 B 也都是合法字串。dp[k] = k 對括號的所有答案', views: [arr(['""'], { label: 'dp[0]' })] }]
+  const out: FigStep[] = [{ note: '另一種想法:任何合法字串的第一個字一定是 "(",它配對的 ")" 把字串切成兩段:"(" + A + ")" + B,A 和 B 也都是合法字串。dp[k] = k 對括號的所有答案', line: 2, views: [arr(['""'], { label: 'dp[0]' })] }]
   for (let k = 1; k <= N; k++) {
     const cur: string[] = []
     for (let i = 0; i < k; i++) for (const a of dp[i]) for (const b of dp[k - 1 - i]) cur.push(`(${a})${b}`)
     dp.push(cur)
-    out.push({ note: `dp[${k}]:A 用 i 對、B 用 ${k} − 1 − i 對,i = 0..${k - 1} 全部組合`, views: [arr(cur, { label: `dp[${k}]` })] })
+    out.push({ note: `dp[${k}]:A 用 i 對、B 用 ${k} − 1 − i 對,i = 0..${k - 1} 全部組合`, line: 6, views: [arr(cur, { label: `dp[${k}]` })] })
   }
   return out
 }

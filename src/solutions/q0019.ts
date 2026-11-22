@@ -10,10 +10,10 @@ function twoPassFig(): FigStep[] {
   const len = V.length
   const k = len - N
   return [
-    { note: `第一遍:數長度 = ${len}`, views: [chain(V, { tail: true, subs: Object.fromEntries(V.map((_, i) => [i, `#${i + 1}`])) })] },
-    { note: `倒數第 ${N} 個 = 正數第 ${len} − ${N} + 1 = ${k + 1} 個。要刪它,得先走到它的**前一個**(第 ${k} 個)`, views: [chain(V, { tail: true, cls: { [k]: 'hl', [k - 1]: 'visited' }, subs: { [k - 1]: '前一個', [k]: '要刪的' } })] },
-    { note: `第二遍:走到第 ${k} 個,讓它的 next 跳過要刪的節點`, views: [chain(V, { edges: [...V.slice(1).map((_, i) => [i, i + 1] as [number, number, string?]).filter(([a]) => a !== k - 1 && a !== k), [k - 1, k + 1, 'hl'], [V.length - 1, -1]], cls: { [k]: 'dim' } })] },
-    { note: '完成', views: [chain(V.filter((_, i) => i !== k), { tail: true })] },
+    { note: `第一遍:數長度 = ${len}`, line: 3, views: [chain(V, { tail: true, subs: Object.fromEntries(V.map((_, i) => [i, `#${i + 1}`])) })] },
+    { note: `倒數第 ${N} 個 = 正數第 ${len} − ${N} + 1 = ${k + 1} 個。要刪它,得先走到它的**前一個**(第 ${k} 個)`, line: 6, views: [chain(V, { tail: true, cls: { [k]: 'hl', [k - 1]: 'visited' }, subs: { [k - 1]: '前一個', [k]: '要刪的' } })] },
+    { note: `第二遍:走到第 ${k} 個,讓它的 next 跳過要刪的節點`, line: 7, views: [chain(V, { edges: [...V.slice(1).map((_, i) => [i, i + 1] as [number, number, string?]).filter(([a]) => a !== k - 1 && a !== k), [k - 1, k + 1, 'hl'], [V.length - 1, -1]], cls: { [k]: 'dim' } })] },
+    { note: '完成', line: 8, views: [chain(V.filter((_, i) => i !== k), { tail: true })] },
   ]
 }
 
@@ -22,26 +22,26 @@ function onePassFig(): FigStep[] {
   const n = vals.length
   let fast = 0
   let slow = 0
-  const draw = (note: string, extra: Record<number, string> = {}): FigStep => {
+  const draw = (note: string, line: number, extra: Record<number, string> = {}): FigStep => {
     const subs: Record<number, string> = {}
     subs[slow] = 'slow'
     subs[fast] = subs[fast] ? 'slow,fast' : 'fast'
     if (fast === n) subs[-1] = 'fast'
-    return { note, views: [chain(vals, { tail: true, subs, cls: { 0: 'dim', [slow]: 'visited', ...(fast < n ? { [fast]: 'hl' } : {}), ...extra } })] }
+    return { note, line, views: [chain(vals, { tail: true, subs, cls: { 0: 'dim', [slow]: 'visited', ...(fast < n ? { [fast]: 'hl' } : {}), ...extra } })] }
   }
-  const out: FigStep[] = [draw('前面加一個假的頭 D(dummy),刪第一個節點時才不用特別處理。slow、fast 都從 D 出發')]
+  const out: FigStep[] = [draw('前面加一個假的頭 D(dummy),刪第一個節點時才不用特別處理。slow、fast 都從 D 出發', 2)]
   for (let i = 0; i < N + 1; i++) {
     fast++
-    out.push(draw(`fast 先走 n + 1 = ${N + 1} 步(第 ${i + 1} 步)`))
+    out.push(draw(`fast 先走 n + 1 = ${N + 1} 步(第 ${i + 1} 步)`, 4))
   }
-  out.push(draw(`現在 fast 和 slow 之間隔了 ${N} 個節點。接下來兩個一起走,fast 走到 null 時,slow 正好在要刪的節點的**前一個**`))
+  out.push(draw(`現在 fast 和 slow 之間隔了 ${N} 個節點。接下來兩個一起走,fast 走到 null 時,slow 正好在要刪的節點的**前一個**`, 5))
   while (fast < n) {
     fast++
     slow++
-    out.push(draw(`一起走一步:slow = ${vals[slow]},fast = ${fast < n ? vals[fast] : 'null'}`))
+    out.push(draw(`一起走一步:slow = ${vals[slow]},fast = ${fast < n ? vals[fast] : 'null'}`, 6))
   }
-  out.push(draw(`fast 到 null 了。slow(${vals[slow]})的下一個 ${vals[slow + 1]} 就是倒數第 ${N} 個 → slow.next = slow.next.next`, { [slow + 1]: 'dim' }))
-  out.push({ note: '回傳 dummy.next', views: [chain(V.filter((_, i) => i !== V.length - N), { tail: true })] })
+  out.push(draw(`fast 到 null 了。slow(${vals[slow]})的下一個 ${vals[slow + 1]} 就是倒數第 ${N} 個 → slow.next = slow.next.next`, 9, { [slow + 1]: 'dim' }))
+  out.push({ note: '回傳 dummy.next', line: 10, views: [chain(V.filter((_, i) => i !== V.length - N), { tail: true })] })
   return out
 }
 

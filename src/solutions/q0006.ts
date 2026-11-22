@@ -33,17 +33,17 @@ function simFig(): FigStep[] {
     r += step
   }
   return [
-    { note: `把字一個一個「寫」到 ${R} 列上:往下寫到底,再斜著往上寫到頂,一直重複(像 Z 字形)`, views: [zigView(R + 2, '先往下、再斜上')] },
-    { note: '每個字只要知道「目前在哪一列」:到頂就改往下,到底就改往上。各列用一個字串收集', views: [zigView(S.length, '全部寫完')] },
-    { note: `最後一列一列接起來:${rows.map((x) => `"${x}"`).join(' + ')} = "${rows.join('')}"`, views: [arr(rows, { label: '每一列' })] },
+    { note: `把字一個一個「寫」到 ${R} 列上:往下寫到底,再斜著往上寫到頂,一直重複(像 Z 字形)`, line: 3, views: [zigView(R + 2, '先往下、再斜上')] },
+    { note: '每個字只要知道「目前在哪一列」:到頂就改往下,到底就改往上。各列用一個字串收集', line: 7, views: [zigView(S.length, '全部寫完')] },
+    { note: `最後一列一列接起來:${rows.map((x) => `"${x}"`).join(' + ')} = "${rows.join('')}"`, line: 11, views: [arr(rows, { label: '每一列' })] },
   ]
 }
 
 function formulaFig(): FigStep[] {
   const cycle = 2 * R - 2
   return [
-    { note: `不模擬:一個循環有 ${cycle} 個字(2·numRows − 2)。第 0 列和最後一列,每個循環只有 1 個字:索引 0、${cycle}、${2 * cycle}…`, views: [arr(S.split(''), { label: 's', highlight: [0, cycle, 2 * cycle] })] },
-    { note: `中間的第 r 列每個循環有 2 個字:k·${cycle} + r 和 (k+1)·${cycle} − r。例如第 1 列:1、5、7、11、13`, views: [arr(S.split(''), { label: 's', highlight: [1, cycle - 1, cycle + 1, 2 * cycle - 1, 2 * cycle + 1] })] },
+    { note: `不模擬:一個循環有 ${cycle} 個字(2·numRows − 2)。第 0 列和最後一列,每個循環只有 1 個字:索引 0、${cycle}、${2 * cycle}…`, line: 3, views: [arr(S.split(''), { label: 's', highlight: [0, cycle, 2 * cycle] })] },
+    { note: `中間的第 r 列每個循環有 2 個字:k·${cycle} + r 和 (k+1)·${cycle} − r。例如第 1 列:1、5、7、11、13`, line: 9, views: [arr(S.split(''), { label: 's', highlight: [1, cycle - 1, cycle + 1, 2 * cycle - 1, 2 * cycle + 1] })] },
   ]
 }
 

@@ -6,7 +6,7 @@ import type { FigStep, Solution } from './types'
 const H = [1, 8, 6, 2, 5, 4, 8, 3, 7]
 
 function bruteFig(): FigStep[] {
-  const out: FigStep[] = [{ note: '每兩條線都可以當容器的左右牆:水高 = 較矮的那條,寬 = 兩條的距離', views: [arr(H, { label: 'height', mode: 'bars' })] }]
+  const out: FigStep[] = [{ note: '每兩條線都可以當容器的左右牆:水高 = 較矮的那條,寬 = 兩條的距離', line: 3, views: [arr(H, { label: 'height', mode: 'bars' })] }]
   let best = 0
   let bi = 0
   let bj = 0
@@ -17,11 +17,11 @@ function bruteFig(): FigStep[] {
         best = a
         bi = i
         bj = j
-        out.push({ note: `(${i}, ${j}):min(${H[i]}, ${H[j]}) × ${j - i} = ${a},目前最大`, views: [arr(H, { label: 'height', mode: 'bars', compare: [i, j], range: [i, j] })] })
+        out.push({ note: `(${i}, ${j}):min(${H[i]}, ${H[j]}) × ${j - i} = ${a},目前最大`, line: 6, views: [arr(H, { label: 'height', mode: 'bars', compare: [i, j], range: [i, j] })] })
       }
     }
   }
-  out.push({ note: `全部 ${(H.length * (H.length - 1)) / 2} 對都試完,最大是 (${bi}, ${bj}) 的 ${best}`, views: [arr(H, { label: 'height', mode: 'bars', highlight: [bi, bj], range: [bi, bj] })] })
+  out.push({ note: `全部 ${(H.length * (H.length - 1)) / 2} 對都試完,最大是 (${bi}, ${bj}) 的 ${best}`, line: 7, views: [arr(H, { label: 'height', mode: 'bars', highlight: [bi, bj], range: [bi, bj] })] })
   return out
 }
 
@@ -29,19 +29,20 @@ function twoPtrFig(): FigStep[] {
   let l = 0
   let r = H.length - 1
   let best = 0
-  const out: FigStep[] = [{ note: '從最寬的容器開始:L 在最左、R 在最右', views: [arr(H, { label: 'height', mode: 'bars', pointers: [{ name: 'L', index: l }, { name: 'R', index: r, color: 'b' }] })] }]
+  const out: FigStep[] = [{ note: '從最寬的容器開始:L 在最左、R 在最右', line: 2, views: [arr(H, { label: 'height', mode: 'bars', pointers: [{ name: 'L', index: l }, { name: 'R', index: r, color: 'b' }] })] }]
   while (l < r) {
     const a = Math.min(H[l], H[r]) * (r - l)
     best = Math.max(best, a)
     const moveL = H[l] < H[r]
     out.push({
       note: `面積 = min(${H[l]}, ${H[r]}) × ${r - l} = ${a},最大 ${best}。${moveL ? `左邊 ${H[l]} 比較矮` : `右邊 ${H[r]} 不比左邊高`}:它配任何更近的牆,水高都不會超過它、寬度還變小 → 丟掉它,${moveL ? 'L++' : 'R--'}`,
+      line: 4, // TODO: 可能要拆格
       views: [arr(H, { label: 'height', mode: 'bars', range: [l, r], compare: [l, r], dim: [...range(0, l - 1), ...range(r + 1, H.length - 1)], pointers: [{ name: 'L', index: l }, { name: 'R', index: r, color: 'b' }] })],
     })
     if (moveL) l++
     else r--
   }
-  out.push({ note: `L 和 R 相遇,答案 = ${best}。只看了 n − 1 個容器`, views: [arr(H, { label: 'height', mode: 'bars' })] })
+  out.push({ note: `L 和 R 相遇,答案 = ${best}。只看了 n − 1 個容器`, line: 8, views: [arr(H, { label: 'height', mode: 'bars' })] })
   return out
 }
 

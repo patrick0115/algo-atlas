@@ -15,21 +15,22 @@ function groupFig(): FigStep[] {
     for (let i = from; i < to; i++) c[i] = 'hl'
     return c
   }
-  out.push({ note: `每 ${K} 個一組反轉;最後不足 ${K} 個的(7、8)保持原樣。做法:先往前數 ${K} 個確認這組夠長,再用 [206](#/q/206) 的方法反轉這一段,最後把它接回前後`, views: [chain(cur, { label: '原本', tail: true })] })
+  out.push({ note: `每 ${K} 個一組反轉;最後不足 ${K} 個的(7、8)保持原樣。做法:先往前數 ${K} 個確認這組夠長,再用 [206](#/q/206) 的方法反轉這一段,最後把它接回前後`, line: 2, views: [chain(cur, { label: '原本', tail: true })] })
   for (let s = 0; s + K <= cur.length; s += K) {
-    out.push({ note: `第 ${s / K + 1} 組:從 ${cur[s]} 往後數 ${K} 個都在 → 這組要反轉`, views: [chain(cur, { label: '找到一組', tail: true, cls: cls(s, s + K, s), subs: { [s]: 'groupPrev.next', [s + K - 1]: 'kth' } })] })
+    out.push({ note: `第 ${s / K + 1} 組:從 ${cur[s]} 往後數 ${K} 個都在 → 這組要反轉`, line: 6, views: [chain(cur, { label: '找到一組', tail: true, cls: cls(s, s + K, s), subs: { [s]: 'groupPrev.next', [s + K - 1]: 'kth' } })] })
     const seg = cur.slice(s, s + K).reverse()
     cur.splice(s, K, ...seg)
-    out.push({ note: `反轉後:前一組的尾巴接到 ${cur[s]}(原本的 kth),這組新的尾巴 ${cur[s + K - 1]} 接到下一組的開頭 ${cur[s + K] ?? 'null'}`, views: [chain(cur, { label: '反轉並接回', tail: true, cls: cls(s, s + K, s), subs: { [s + K - 1]: '新的 groupPrev' } })] })
+    out.push({ note: `反轉後:前一組的尾巴接到 ${cur[s]}(原本的 kth),這組新的尾巴 ${cur[s + K - 1]} 接到下一組的開頭 ${cur[s + K] ?? 'null'}`, line: 17, // TODO: 可能要拆格(反轉 10~14 與接回 17/18 一次演完)
+      views: [chain(cur, { label: '反轉並接回', tail: true, cls: cls(s, s + K, s), subs: { [s + K - 1]: '新的 groupPrev' } })] })
   }
-  out.push({ note: `剩下 ${cur.length % K} 個不足一組,不動`, views: [chain(cur, { label: '答案', tail: true, cls: Object.fromEntries(cur.map((_, i) => [i, i < cur.length - (cur.length % K) ? 'done' : 'dim'])) })] })
+  out.push({ note: `剩下 ${cur.length % K} 個不足一組,不動`, line: 7, views: [chain(cur, { label: '答案', tail: true, cls: Object.fromEntries(cur.map((_, i) => [i, i < cur.length - (cur.length % K) ? 'done' : 'dim'])) })] })
   return out
 }
 
 function recFig(): FigStep[] {
   return [
-    { note: '遞迴想法:先檢查前 k 個是否存在;反轉前 k 個;第 k 個之後的部分,交給遞迴處理,回傳的新開頭接在這組的尾巴後面', views: [chain([3, 2, 1, '…'], { label: 'reverseKGroup(1→…)' })] },
-    { note: '遞迴回來:1 的 next = reverseKGroup(4→…) 的結果 = 6→5→4→7→8', views: [chain([3, 2, 1, 6, 5, 4, 7, 8], { label: '組合', tail: true, cls: { 2: 'hl', 3: 'cur' } })] },
+    { note: '遞迴想法:先檢查前 k 個是否存在;反轉前 k 個;第 k 個之後的部分,交給遞迴處理,回傳的新開頭接在這組的尾巴後面', line: 3, views: [chain([3, 2, 1, '…'], { label: 'reverseKGroup(1→…)' })] },
+    { note: '遞迴回來:1 的 next = reverseKGroup(4→…) 的結果 = 6→5→4→7→8', line: 7, views: [chain([3, 2, 1, 6, 5, 4, 7, 8], { label: '組合', tail: true, cls: { 2: 'hl', 3: 'cur' } })] },
   ]
 }
 

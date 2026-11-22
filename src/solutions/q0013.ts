@@ -9,19 +9,19 @@ const VAL: Record<string, number> = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, 
 function scanFig(): FigStep[] {
   const v = S.split('').map((c) => VAL[c])
   let total = 0
-  const out: FigStep[] = [{ note: '每個符號先換成數值。規則:通常大的在左邊、全部相加;但如果某個符號比**右邊那個小**(像 IV、CM),它要用減的', views: [arr(S.split(''), { label: 's' }), arr(v, { label: '數值' })] }]
+  const out: FigStep[] = [{ note: '每個符號先換成數值。規則:通常大的在左邊、全部相加;但如果某個符號比**右邊那個小**(像 IV、CM),它要用減的', line: 2, views: [arr(S.split(''), { label: 's' }), arr(v, { label: '數值' })] }]
   v.forEach((x, i) => {
     const sub = i + 1 < v.length && x < v[i + 1]
     total += sub ? -x : x
-    out.push({ note: `${S[i]} = ${x}${sub ? `,比右邊的 ${S[i + 1]}(${v[i + 1]})小 → 減 ${x}` : ' → 加'}。目前 ${total}`, views: [arr(v, { label: '數值', highlight: [i], compare: i + 1 < v.length ? [i + 1] : [], done: Array.from({ length: i }, (_, k) => k) })] })
+    out.push({ note: `${S[i]} = ${x}${sub ? `,比右邊的 ${S[i + 1]}(${v[i + 1]})小 → 減 ${x}` : ' → 加'}。目前 ${total}`, line: sub ? 6 : 7, views: [arr(v, { label: '數值', highlight: [i], compare: i + 1 < v.length ? [i + 1] : [], done: Array.from({ length: i }, (_, k) => k) })] })
   })
   return out
 }
 
 function pairFig(): FigStep[] {
   return [
-    { note: '另一種:減法組合只有 6 種(IV=4、IX=9、XL=40、XC=90、CD=400、CM=900)。從左往右,先試兩個字的組合,配到就一次吃兩個字', views: [arr(['M', 'CM', 'XC', 'IV'], { label: '切成' }), arr([1000, 900, 90, 4], { label: '數值' })] },
-    { note: '1000 + 900 + 90 + 4 = 1994', views: [arr([1994], { label: '答案', done: [0] })] },
+    { note: '另一種:減法組合只有 6 種(IV=4、IX=9、XL=40、XC=90、CD=400、CM=900)。從左往右,先試兩個字的組合,配到就一次吃兩個字', line: 5, views: [arr(['M', 'CM', 'XC', 'IV'], { label: '切成' }), arr([1000, 900, 90, 4], { label: '數值' })] },
+    { note: '1000 + 900 + 90 + 4 = 1994', line: 11, views: [arr([1994], { label: '答案', done: [0] })] },
   ]
 }
 

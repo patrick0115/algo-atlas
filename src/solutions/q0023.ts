@@ -14,21 +14,21 @@ function heapFig(): FigStep[] {
   const res: number[] = []
   const heapOf = () => L.flatMap((l, i) => (ptr[i] < l.length ? [`${l[ptr[i]]}(第${i}條)`] : [])).sort((a, b) => parseInt(a) - parseInt(b))
   const views = (hl: number) => [...L.map((l, i) => arr(l, { label: `lists[${i}]`, dim: range(0, ptr[i] - 1), highlight: i === hl ? [ptr[i] - 1] : [] })), arr(heapOf(), { label: '最小堆(每條串列目前的開頭)' }), arr([...res], { label: '答案' })]
-  const out: FigStep[] = [{ note: '把每條串列的**開頭**放進最小堆。答案的下一個,一定是這 k 個開頭裡最小的那個', views: views(-1) }]
+  const out: FigStep[] = [{ note: '把每條串列的**開頭**放進最小堆。答案的下一個,一定是這 k 個開頭裡最小的那個', line: 25, views: views(-1) }]
   while (res.length < L.flat().length) {
     let best = -1
     for (let i = 0; i < L.length; i++) if (ptr[i] < L[i].length && (best < 0 || L[i][ptr[i]] < L[best][ptr[best]])) best = i
     res.push(L[best][ptr[best]])
     ptr[best]++
-    if (res.length <= 4 || res.length === L.flat().length) out.push({ note: `彈出最小的 ${res[res.length - 1]}(第 ${best} 條)接到答案後面;${ptr[best] < L[best].length ? `把第 ${best} 條的下一個 ${L[best][ptr[best]]} 放進堆` : `第 ${best} 條用完了`}`, views: views(best) })
+    if (res.length <= 4 || res.length === L.flat().length) out.push({ note: `彈出最小的 ${res[res.length - 1]}(第 ${best} 條)接到答案後面;${ptr[best] < L[best].length ? `把第 ${best} 條的下一個 ${L[best][ptr[best]]} 放進堆` : `第 ${best} 條用完了`}`, line: 29, views: views(best) }) // TODO: 可能要拆格(pop / 接 tail / push 下一個 一次演完)
   }
   return out
 }
 
 function divideFig(): FigStep[] {
   return [
-    { note: '分治:兩兩合併([21. Merge Two Sorted Lists](#/q/21))。第一輪 k 條變 k/2 條', views: [arr(['[1,4,5] + [1,3,4]', '[2,6]'], { label: '第一輪' }), arr(['[1,1,3,4,4,5]', '[2,6]'], { label: '結果' })] },
-    { note: '第二輪再兩兩合併……共 log k 輪,每輪每個節點都被處理一次 → O(N log k)', views: [arr(['[1,1,2,3,4,4,5,6]'], { label: '第二輪', done: [0] })] },
+    { note: '分治:兩兩合併([21. Merge Two Sorted Lists](#/q/21))。第一輪 k 條變 k/2 條', line: 15, views: [arr(['[1,4,5] + [1,3,4]', '[2,6]'], { label: '第一輪' }), arr(['[1,1,3,4,4,5]', '[2,6]'], { label: '結果' })] },
+    { note: '第二輪再兩兩合併……共 log k 輪,每輪每個節點都被處理一次 → O(N log k)', line: 15, views: [arr(['[1,1,2,3,4,4,5,6]'], { label: '第二輪', done: [0] })] },
   ]
 }
 

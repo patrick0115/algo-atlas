@@ -9,7 +9,7 @@ const T = 0
 function fig(): FigStep[] {
   const s = [...A].sort((a, b) => a - b)
   const n = s.length
-  const out: FigStep[] = [{ note: '排序後,用兩層迴圈固定前兩個數 a = s[i]、b = s[j],剩下兩個數用左右雙指標在 j 右邊找(就是 [15. 3Sum](#/q/15) 多一層)', views: [arr(s, { label: '排序後' })] }]
+  const out: FigStep[] = [{ note: '排序後,用兩層迴圈固定前兩個數 a = s[i]、b = s[j],剩下兩個數用左右雙指標在 j 右邊找(就是 [15. 3Sum](#/q/15) 多一層)', line: 2, views: [arr(s, { label: '排序後' })] }]
   const found: number[][] = []
   for (let i = 0; i < n - 3; i++) {
     if (i > 0 && s[i] === s[i - 1]) continue
@@ -21,7 +21,7 @@ function fig(): FigStep[] {
         const sum = s[i] + s[j] + s[l] + s[r]
         if (sum === T) {
           found.push([s[i], s[j], s[l], s[r]])
-          if (found.length <= 3) out.push({ note: `i=${i}、j=${j}:${s[i]} + ${s[j]} + ${s[l]} + ${s[r]} = ${T} ✓ 找到 [${s[i]},${s[j]},${s[l]},${s[r]}]。L、R 各自跳過相同的值,避免重複`, views: [arr(s, { label: '排序後', highlight: [i, j], done: [l, r], pointers: [{ name: 'L', index: l }, { name: 'R', index: r, color: 'b' }] })] })
+          if (found.length <= 3) out.push({ note: `i=${i}、j=${j}:${s[i]} + ${s[j]} + ${s[l]} + ${s[r]} = ${T} ✓ 找到 [${s[i]},${s[j]},${s[l]},${s[r]}]。L、R 各自跳過相同的值,避免重複`, line: 14, views: [arr(s, { label: '排序後', highlight: [i, j], done: [l, r], pointers: [{ name: 'L', index: l }, { name: 'R', index: r, color: 'b' }] })] })
           while (l < r && s[l] === s[l + 1]) l++
           while (l < r && s[r] === s[r - 1]) r--
           l++
@@ -31,14 +31,14 @@ function fig(): FigStep[] {
       }
     }
   }
-  out.push({ note: `全部:${found.map((q) => `[${q}]`).join('、')}。i、j 遇到和前一個一樣的值也要跳過`, views: [arr(s, { label: '排序後', done: s.map((_, k) => k) })] })
+  out.push({ note: `全部:${found.map((q) => `[${q}]`).join('、')}。i、j 遇到和前一個一樣的值也要跳過`, line: 23, views: [arr(s, { label: '排序後', done: s.map((_, k) => k) })] })
   return out
 }
 
 function kFig(): FigStep[] {
   return [
-    { note: '把「固定一個數,剩下的變成 (k−1)Sum」寫成遞迴:kSum(start, k, target)。k == 2 時用雙指標', views: [arr(['4Sum', '→ 3Sum', '→ 2Sum(雙指標)'], { label: '遞迴往下' })] },
-    { note: '每層都在 start 之後挑一個數(跳過重複值),target 減掉它,再往下一層。同一份程式就能解 3Sum、4Sum、5Sum…', views: [arr([-2, -1, 0, 0, 1, 2], { label: '排序後', highlight: [0], range: [1, 5] })] },
+    { note: '把「固定一個數,剩下的變成 (k−1)Sum」寫成遞迴:kSum(start, k, target)。k == 2 時用雙指標', line: 3, views: [arr(['4Sum', '→ 3Sum', '→ 2Sum(雙指標)'], { label: '遞迴往下' })] },
+    { note: '每層都在 start 之後挑一個數(跳過重複值),target 減掉它,再往下一層。同一份程式就能解 3Sum、4Sum、5Sum…', line: 21, views: [arr([-2, -1, 0, 0, 1, 2], { label: '排序後', highlight: [0], range: [1, 5] })] },
   ]
 }
 

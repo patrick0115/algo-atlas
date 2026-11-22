@@ -4,11 +4,11 @@ import type { Solution } from './types'
 // 32. Longest Valid Parentheses
 const S = ')()())'
 const fig = [
-  { note: '先放入邊界索引 −1。掃到索引 0 的右括號時無法配對，改用 0 作新的左邊界。', views: [arr([0], { label: '索引堆疊', highlight: [0] }), arr(S.split(''), { label: 's', highlight: [0] })] },
-  { note: '字串 )()()) 的開頭右括號不能配對；從下一格開始有連續四格 ()()。', views: [arr(S.split(''), { label: 's', dim: [0,5], highlight: [1,2,3,4] })] },
-  { note: '掃到索引 3 時，索引 1、2 已配成 ()，堆疊留下邊界 0，並放入新的開括號索引 3。', views: [arr([0,3], { label: '索引堆疊', highlight: [1] })] },
-  { note: '索引 1 的 ( 與索引 2 的 ) 配成第一段 ()，目前有效長度是 2；索引 3 又把新開括號入堆疊。', views: [arr(S.split(''), { label: '第一段配對', done: [1, 2], highlight: [3] })] },
-  { note: '掃到第 4 格時，右括號配上第 3 格開括號，和前面的 () 連成長度 4。', views: [arr(S.split(''), { label: '長度 4', done: [1,2,3,4], dim: [0,5] })] },
+  { note: '先放入邊界索引 −1。掃到索引 0 的右括號時無法配對，改用 0 作新的左邊界。', line: 2, views: [arr([0], { label: '索引堆疊', highlight: [0] }), arr(S.split(''), { label: 's', highlight: [0] })] }, // TODO: 可能要拆格
+  { note: '字串 )()()) 的開頭右括號不能配對；從下一格開始有連續四格 ()()。', line: 9, views: [arr(S.split(''), { label: 's', dim: [0,5], highlight: [1,2,3,4] })] },
+  { note: '掃到索引 3 時，索引 1、2 已配成 ()，堆疊留下邊界 0，並放入新的開括號索引 3。', line: 5, views: [arr([0,3], { label: '索引堆疊', highlight: [1] })] },
+  { note: '索引 1 的 ( 與索引 2 的 ) 配成第一段 ()，目前有效長度是 2；索引 3 又把新開括號入堆疊。', line: 11, views: [arr(S.split(''), { label: '第一段配對', done: [1, 2], highlight: [3] })] }, // TODO: 可能要拆格
+  { note: '掃到第 4 格時，右括號配上第 3 格開括號，和前面的 () 連成長度 4。', line: 11, views: [arr(S.split(''), { label: '長度 4', done: [1,2,3,4], dim: [0,5] })] },
 ]
 
 export const q0032: Solution = {
@@ -95,7 +95,7 @@ export const q0032: Solution = {
     return best;
 }`,
     } },
-    { name: '動態規劃', idea: 'dp[i] 表示恰好在 i 結尾的有效段長度；尋找能配對當前 ) 的左括號。', steps: ['遇 ( 時 dp[i] = 0。邊界或 dp 初值代表尚未形成有效括號片段。', '遇 ) 時令 j = i - 1 - dp[i-1]。每讀一個括號，就根據它能否配對更新目前片段。', '若 j ≥ 0 且 s[j] 是 (，dp[i] = dp[i-1] + 2 + dp[j-1]。只有連續且完整配對的長度，才可以用來更新最佳答案。'], figure: { title: `s = "${S}"`, steps: [{ note: 'dp[i] 先全部是 0;索引 0 是右括號,前面沒有東西可以配,dp[0] = 0。', views: [arr([0,0,0,0,0,0], { label: 'dp[i]', highlight: [0] })] }, { note: '索引 2 的 ) 與索引 1 的 ( 配對，所以 dp[2]=2。', views: [arr([0,0,2,0,0,0], { label: 'dp[i]', highlight: [2] })] }, { note: 'i=4 時，索引 3、4 先配成 ()，再接上前一段，所以 dp[4]=4。', views: [arr([0,0,2,0,4,0], { label: 'dp[i]', highlight: [4] })] }] }, complexity: { time: 'O(n)', space: 'O(n)', why: '每個位置只計算一次，保存 dp 陣列。' }, verdict: '能練習「以 i 結尾」的 DP 定義；索引邊界較易寫錯。', code: {
+    { name: '動態規劃', idea: 'dp[i] 表示恰好在 i 結尾的有效段長度；尋找能配對當前 ) 的左括號。', steps: ['遇 ( 時 dp[i] = 0。邊界或 dp 初值代表尚未形成有效括號片段。', '遇 ) 時令 j = i - 1 - dp[i-1]。每讀一個括號，就根據它能否配對更新目前片段。', '若 j ≥ 0 且 s[j] 是 (，dp[i] = dp[i-1] + 2 + dp[j-1]。只有連續且完整配對的長度，才可以用來更新最佳答案。'], figure: { title: `s = "${S}"`, steps: [{ note: 'dp[i] 先全部是 0;索引 0 是右括號,前面沒有東西可以配,dp[0] = 0。', line: 2, views: [arr([0,0,0,0,0,0], { label: 'dp[i]', highlight: [0] })] }, { note: '索引 2 的 ) 與索引 1 的 ( 配對，所以 dp[2]=2。', line: 8, views: [arr([0,0,2,0,0,0], { label: 'dp[i]', highlight: [2] })] }, { note: 'i=4 時，索引 3、4 先配成 ()，再接上前一段，所以 dp[4]=4。', line: 8, views: [arr([0,0,2,0,4,0], { label: 'dp[i]', highlight: [4] })] }] }, complexity: { time: 'O(n)', space: 'O(n)', why: '每個位置只計算一次，保存 dp 陣列。' }, verdict: '能練習「以 i 結尾」的 DP 定義；索引邊界較易寫錯。', code: {
       python: `def longestValidParentheses(s):
     dp = [0] * len(s)
     best = 0

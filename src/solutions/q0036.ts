@@ -28,12 +28,12 @@ function board(marks: GridViewData['marks'] = {}, label = 'board(同一宮 = 同
 
 function threePassFig(): FigStep[] {
   return [
-    { note: '數獨要檢查三種「單位」:9 列、9 行、9 宮。每個單位裡 1~9 不能重複(空格不管)', views: [board()] },
-    { note: '先檢查列。第 0 列有 5、3、7,沒有重複 ✓', views: [board({ path: rowCells(0) })] },
-    { note: '第 2 列有 3、9、8、6,沒有重複 ✓。9 列全部檢查完都 OK', views: [board({ path: rowCells(2) })] },
-    { note: '再檢查行。第 0 行有 5、6、3、8、4、7,沒有重複 ✓。9 行全部 OK', views: [board({ path: colCells(0) })] },
-    { note: '最後檢查宮。第 0 宮(左上)有 5、3、6、3、9、8 —— 3 出現兩次 ✗', views: [board({ path: boxCells(0), cmp: [[0, 1], [2, 0]] })] },
-    { note: '回傳 false。注意這個衝突只在「宮」才抓得到:列和行都沒有重複', views: [board({ cmp: [[0, 1], [2, 0]] })] },
+    { note: '數獨要檢查三種「單位」:9 列、9 行、9 宮。每個單位裡 1~9 不能重複(空格不管)', line: 11, views: [board()] },
+    { note: '先檢查列。第 0 列有 5、3、7,沒有重複 ✓', line: 12, views: [board({ path: rowCells(0) })] }, // TODO: 可能要拆格
+    { note: '第 2 列有 3、9、8、6,沒有重複 ✓。9 列全部檢查完都 OK', line: 12, views: [board({ path: rowCells(2) })] },
+    { note: '再檢查行。第 0 行有 5、6、3、8、4、7,沒有重複 ✓。9 行全部 OK', line: 13, views: [board({ path: colCells(0) })] },
+    { note: '最後檢查宮。第 0 宮(左上)有 5、3、6、3、9、8 —— 3 出現兩次 ✗', line: 15, views: [board({ path: boxCells(0), cmp: [[0, 1], [2, 0]] })] },
+    { note: '回傳 false。注意這個衝突只在「宮」才抓得到:列和行都沒有重複', line: 16, views: [board({ cmp: [[0, 1], [2, 0]] })] },
   ]
 }
 
@@ -45,6 +45,7 @@ function onePassFig(mode: 'set' | 'bits'): FigStep[] {
   const out: FigStep[] = [
     {
       note: mode === 'set' ? '準備 9 個列 set、9 個行 set、9 個宮 set。由左到右、由上到下走過每一格,一次檢查三個 set' : '和 set 同一個想法,但每個單位只用一個整數:第 d 個 bit 是 1 代表數字 d 已經出現過',
+      line: mode === 'set' ? 3 : 2,
       views: [board()],
     },
   ]
@@ -72,7 +73,7 @@ function onePassFig(mode: 'set' | 'bits'): FigStep[] {
         ),
       ]
       if (hit) {
-        out.push({ note: `(${r},${c}) = ${v},${mode === 'set' ? `${hit} 的 set 裡已經有 ${v}` : `${hit} 的第 ${v} 個 bit 已經是 1`} → 重複,回傳 false`, views: views([hitKey]) })
+        out.push({ note: `(${r},${c}) = ${v},${mode === 'set' ? `${hit} 的 set 裡已經有 ${v}` : `${hit} 的第 ${v} 個 bit 已經是 1`} → 重複,回傳 false`, line: mode === 'set' ? 9 : 8, views: views([hitKey]) })
         return out
       }
       rows[r].add(v)
@@ -80,6 +81,7 @@ function onePassFig(mode: 'set' | 'bits'): FigStep[] {
       boxes[b].add(v)
       out.push({
         note: `(${r},${c}) = ${v},在第 ${b} 宮(${Math.floor(r / 3)}·3 + ${Math.floor(c / 3)})。三個${mode === 'set' ? ' set 都沒有' : ' bitmask 的第 ' + v + ' 個 bit 都是 0'} → 記下來`,
+        line: mode === 'set' ? 10 : 9, // TODO: 可能要拆格
         views: views([`rows[${r}]`, `cols[${c}]`, `boxes[${b}]`]),
       })
     }

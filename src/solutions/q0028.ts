@@ -4,12 +4,12 @@ import type { FigStep, Solution } from './types'
 // 28. Find the Index of the First Occurrence in a String
 const H = 'aabaabaaf', P = 'aabaaf'
 const scanFig: FigStep[] = [
-  { note: '從文字的每個可能起點開始,逐字和 needle 比較。第一次全部相同的位置就是答案。', views: [arr([...H], { label: 'haystack' }), arr([...P], { label: 'needle' })] },
-  { note: '起點 0 比到第 6 個字元時失敗;再試後續起點,起點 3 可以完整匹配。', views: [arr([...H], { label: 'haystack', done: [3, 4, 5, 6, 7, 8] }), arr([3], { label: '答案', done: [0] })] },
+  { note: '從文字的每個可能起點開始,逐字和 needle 比較。第一次全部相同的位置就是答案。', line: 2, views: [arr([...H], { label: 'haystack' }), arr([...P], { label: 'needle' })] },
+  { note: '起點 0 比到第 6 個字元時失敗;再試後續起點,起點 3 可以完整匹配。', line: 5, views: [arr([...H], { label: 'haystack', done: [3, 4, 5, 6, 7, 8] }), arr([3], { label: '答案', done: [0] })] }, // TODO: 可能要拆格
 ]
 const kmpFig: FigStep[] = [
-  { note: 'KMP 先算每個前綴的「最長相同前後綴」長度。needle = aabaaf 的 lps 為 [0,1,0,1,2,0]。', views: [arr([...P], { label: 'needle' }), arr([0, 1, 0, 1, 2, 0], { label: 'lps' })] },
-  { note: '匹配失敗時不用讓文字指標退回;只依 lps 把模式字串移到可重用的前綴。最後在位置 3 找到。', views: [arr([...H], { label: 'haystack', done: [3, 4, 5, 6, 7, 8] }), arr([3], { label: '答案', done: [0] })] },
+  { note: 'KMP 先算每個前綴的「最長相同前後綴」長度。needle = aabaaf 的 lps 為 [0,1,0,1,2,0]。', line: 2, views: [arr([...P], { label: 'needle' }), arr([0, 1, 0, 1, 2, 0], { label: 'lps' })] },
+  { note: '匹配失敗時不用讓文字指標退回;只依 lps 把模式字串移到可重用的前綴。最後在位置 3 找到。', line: 9, views: [arr([...H], { label: 'haystack', done: [3, 4, 5, 6, 7, 8] }), arr([3], { label: '答案', done: [0] })] }, // TODO: 可能要拆格
 ]
 
 export const q0028: Solution = {

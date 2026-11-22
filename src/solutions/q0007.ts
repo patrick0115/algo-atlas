@@ -6,20 +6,20 @@ import type { FigStep, Solution } from './types'
 function popFig(): FigStep[] {
   let x = 1234
   let res = 0
-  const out: FigStep[] = [{ note: '用 % 10 拿最後一位、用 / 10 把最後一位丟掉。每拿到一位,就 res = res × 10 + 這一位', views: [arr([x, res], { label: '[x, res]' })] }]
+  const out: FigStep[] = [{ note: '用 % 10 拿最後一位、用 / 10 把最後一位丟掉。每拿到一位,就 res = res × 10 + 這一位', line: 3, views: [arr([x, res], { label: '[x, res]' })] }]
   while (x !== 0) {
     const d = x % 10
     x = Math.trunc(x / 10)
     res = res * 10 + d
-    out.push({ note: `拿出 ${d} → x = ${x},res = ${res}`, views: [arr([x, res], { label: '[x, res]', highlight: [1] })] })
+    out.push({ note: `拿出 ${d} → x = ${x},res = ${res}`, line: 9, /* TODO: 可能要拆格(d、x、res 三行動作同一步) */ views: [arr([x, res], { label: '[x, res]', highlight: [1] })] })
   }
   return out
 }
 
 function overflowFig(): FigStep[] {
   return [
-    { note: '32 位元有號整數最大是 2147483647。反轉 1534236469 會得到 9646324351,超過了 → 回傳 0', views: [arr(['2147483647', '9646324351'], { label: '[上限, 反轉後]', compare: [1] })] },
-    { note: '環境只能存 32 位元時,要在「乘 10 之前」先檢查:res > 214748364 → 乘 10 一定爆;res == 214748364 時看最後一位是不是 > 7', views: [arr(['res > MAX / 10', 'res == MAX / 10 且 d > 7'], { label: '會溢位的條件(正數)' })] },
+    { note: '32 位元有號整數最大是 2147483647。反轉 1534236469 會得到 9646324351,超過了 → 回傳 0', line: 3, views: [arr(['2147483647', '9646324351'], { label: '[上限, 反轉後]', compare: [1] })] },
+    { note: '環境只能存 32 位元時,要在「乘 10 之前」先檢查:res > 214748364 → 乘 10 一定爆;res == 214748364 時看最後一位是不是 > 7', line: 3, /* 註:此步講的是方法二的溢位檢查,但圖掛在方法一(字串)底下,行號以方法一 code 為準 */ views: [arr(['res > MAX / 10', 'res == MAX / 10 且 d > 7'], { label: '會溢位的條件(正數)' })] },
   ]
 }
 

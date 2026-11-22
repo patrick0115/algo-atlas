@@ -10,7 +10,7 @@ const SYMS = ['M', 'CM', 'D', 'CD', 'C', 'XC', 'L', 'XL', 'X', 'IX', 'V', 'IV', 
 function greedyFig(): FigStep[] {
   let n = N
   let res = ''
-  const out: FigStep[] = [{ note: '把 6 個減法組合(CM、CD、XC、XL、IX、IV)也當成「符號」,13 個由大到小排好。每次用**能用的最大符號**,用到不能用為止', views: [arr(SYMS, { label: '符號' }), arr(VALS, { label: '數值' })] }]
+  const out: FigStep[] = [{ note: '把 6 個減法組合(CM、CD、XC、XL、IX、IV)也當成「符號」,13 個由大到小排好。每次用**能用的最大符號**,用到不能用為止', line: 2, views: [arr(SYMS, { label: '符號' }), arr(VALS, { label: '數值' })] }]
   VALS.forEach((v, i) => {
     let used = 0
     while (n >= v) {
@@ -18,15 +18,15 @@ function greedyFig(): FigStep[] {
       res += SYMS[i]
       used++
     }
-    if (used) out.push({ note: `用 ${SYMS[i]}(${v})× ${used} → 結果 "${res}",剩 ${n}`, views: [arr(SYMS, { label: '符號', highlight: [i], dim: Array.from({ length: i }, (_, k) => k) }), arr(res.split(''), { label: '目前結果' })] })
+    if (used) out.push({ note: `用 ${SYMS[i]}(${v})× ${used} → 結果 "${res}",剩 ${n}`, line: 7, /* TODO: 可能要拆格 */ views: [arr(SYMS, { label: '符號', highlight: [i], dim: Array.from({ length: i }, (_, k) => k) }), arr(res.split(''), { label: '目前結果' })] })
   })
   return out
 }
 
 function digitFig(): FigStep[] {
   return [
-    { note: '另一種:每一位數字(千、百、十、個)各自查表。例如百位的 0..9 對應 "", C, CC, CCC, CD, D, DC, DCC, DCCC, CM', views: [arr(['1', '9', '9', '4'], { label: '1994 的每一位' })] },
-    { note: '千位 1 → M;百位 9 → CM;十位 9 → XC;個位 4 → IV → 接起來 "MCMXCIV"', views: [arr(['M', 'CM', 'XC', 'IV'], { label: '每位查表', done: [0, 1, 2, 3] })] },
+    { note: '另一種:每一位數字(千、百、十、個)各自查表。例如百位的 0..9 對應 "", C, CC, CCC, CD, D, DC, DCC, DCCC, CM', line: 2, views: [arr(['1', '9', '9', '4'], { label: '1994 的每一位' })] },
+    { note: '千位 1 → M;百位 9 → CM;十位 9 → XC;個位 4 → IV → 接起來 "MCMXCIV"', line: 6, views: [arr(['M', 'CM', 'XC', 'IV'], { label: '每位查表', done: [0, 1, 2, 3] })] },
   ]
 }
 

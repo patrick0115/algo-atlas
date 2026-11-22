@@ -11,9 +11,9 @@ function mergeFig(): FigStep[] {
   const n = merged.length
   const mid = n % 2 ? [n >> 1] : [n / 2 - 1, n / 2]
   return [
-    { note: '最直接:像合併排序那樣把兩個陣列合併成一個排序好的陣列,中位數就是正中間那個(偶數個就是中間兩個的平均)', views: [arr(A, { label: 'A' }), arr(B, { label: 'B' })] },
-    { note: `合併後共 ${n} 個,中位數是第 ${mid.map((i) => i + 1).join('、')} 小的數 = ${mid.map((i) => merged[i]).join('、')}`, views: [arr(merged, { label: '合併', highlight: mid })] },
-    { note: '其實不用真的存下來:用兩個指針往前走到第 (m+n)/2 個就可以停 → O(m + n) 時間、O(1) 空間', views: [arr(merged, { label: '只走到一半', done: range(0, mid[mid.length - 1]), dim: range(mid[mid.length - 1] + 1, n - 1) })] },
+    { note: '最直接:像合併排序那樣把兩個陣列合併成一個排序好的陣列,中位數就是正中間那個(偶數個就是中間兩個的平均)', line: 3, views: [arr(A, { label: 'A' }), arr(B, { label: 'B' })] },
+    { note: `合併後共 ${n} 個,中位數是第 ${mid.map((i) => i + 1).join('、')} 小的數 = ${mid.map((i) => merged[i]).join('、')}`, line: 9, views: [arr(merged, { label: '合併', highlight: mid })] },
+    { note: '其實不用真的存下來:用兩個指針往前走到第 (m+n)/2 個就可以停 → O(m + n) 時間、O(1) 空間', line: 4, views: [arr(merged, { label: '只走到一半', done: range(0, mid[mid.length - 1]), dim: range(mid[mid.length - 1] + 1, n - 1) })] },
   ]
 }
 
@@ -26,6 +26,7 @@ function cutFig(): FigStep[] {
   const out: FigStep[] = [
     {
       note: `換個角度:中位數把所有數切成「左半」和「右半」,左半 ${half} 個、右半 ${m + n - half} 個,而且左半全部 ≤ 右半。如果 A 切在 i(A 的前 i 個在左半),B 就一定切在 j = ${half} − i`,
+      line: 3,
       views: [arr(A, { label: 'A(短的那個)' }), arr(B, { label: 'B' })],
     },
   ]
@@ -39,15 +40,15 @@ function cutFig(): FigStep[] {
     const f = (v: number) => (v === Infinity ? '+∞' : v === -Infinity ? '−∞' : String(v))
     const views = [arr(A, { label: `A:切在 i = ${i}`, highlight: range(0, i - 1), dim: range(i, m - 1) }), arr(B, { label: `B:切在 j = ${j}`, highlight: range(0, j - 1), dim: range(j, n - 1) })]
     if (aL > bR) {
-      out.push({ note: `A 左邊最大 ${f(aL)} > B 右邊最小 ${f(bR)}:A 切太多了 → i 往左(hi = i − 1)`, views })
+      out.push({ note: `A 左邊最大 ${f(aL)} > B 右邊最小 ${f(bR)}:A 切太多了 → i 往左(hi = i − 1)`, line: 9, views })
       hi = i - 1
     } else if (bL > aR) {
-      out.push({ note: `B 左邊最大 ${f(bL)} > A 右邊最小 ${f(aR)}:A 切太少了 → i 往右(lo = i + 1)`, views })
+      out.push({ note: `B 左邊最大 ${f(bL)} > A 右邊最小 ${f(aR)}:A 切太少了 → i 往右(lo = i + 1)`, line: 10, views })
       lo = i + 1
     } else {
       const left = Math.max(aL, bL)
       const right = Math.min(aR, bR)
-      out.push({ note: `${f(aL)} ≤ ${f(bR)} 而且 ${f(bL)} ≤ ${f(aR)}:切對了!總共 ${m + n} 個(${(m + n) % 2 ? '奇數' : '偶數'})→ 中位數 = ${(m + n) % 2 ? `左半最大 = ${left}` : `(${left} + ${right}) / 2 = ${(left + right) / 2}`}`, views })
+      out.push({ note: `${f(aL)} ≤ ${f(bR)} 而且 ${f(bL)} ≤ ${f(aR)}:切對了!總共 ${m + n} 個(${(m + n) % 2 ? '奇數' : '偶數'})→ 中位數 = ${(m + n) % 2 ? `左半最大 = ${left}` : `(${left} + ${right}) / 2 = ${(left + right) / 2}`}`, line: 11, views })
       break
     }
   }

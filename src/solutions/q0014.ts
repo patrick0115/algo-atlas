@@ -7,17 +7,17 @@ const S = ['flower', 'flow', 'flight']
 
 function vertFig(): FigStep[] {
   return [
-    { note: '直式比較:一欄一欄往右看,第 i 欄的字母在所有字串裡都一樣,就屬於公共前綴', views: S.map((w) => arr(w.split(''), { label: w, done: [0, 1] })) },
-    { note: '第 0 欄 f、第 1 欄 l 都相同;第 2 欄 flower 是 o、flight 是 i → 停下', views: S.map((w) => arr(w.split(''), { label: w, done: [0, 1], highlight: [2] })) },
-    { note: '答案 "fl"。任何一個字串用完(長度不夠)也要停', views: [arr(['f', 'l'], { label: '公共前綴', done: [0, 1] })] },
+    { note: '直式比較:一欄一欄往右看,第 i 欄的字母在所有字串裡都一樣,就屬於公共前綴', line: 2, views: S.map((w) => arr(w.split(''), { label: w, done: [0, 1] })) },
+    { note: '第 0 欄 f、第 1 欄 l 都相同;第 2 欄 flower 是 o、flight 是 i → 停下', line: 3, views: S.map((w) => arr(w.split(''), { label: w, done: [0, 1], highlight: [2] })) },
+    { note: '答案 "fl"。任何一個字串用完(長度不夠)也要停', line: 3, views: [arr(['f', 'l'], { label: '公共前綴', done: [0, 1] })] },
   ]
 }
 
 function sortFig(): FigStep[] {
   const s = [...S].sort()
   return [
-    { note: '排序後,所有字串的公共前綴 = **第一個和最後一個**的公共前綴(字典序差最遠的兩個)', views: [arr(s, { label: '排序後' })] },
-    { note: `比較 "${s[0]}" 和 "${s[s.length - 1]}":f、l 一樣,第 3 個 i ≠ o → "fl"`, views: [arr(s[0].split(''), { label: s[0], done: [0, 1], highlight: [2] }), arr(s[s.length - 1].split(''), { label: s[s.length - 1], done: [0, 1], highlight: [2] })] },
+    { note: '排序後,所有字串的公共前綴 = **第一個和最後一個**的公共前綴(字典序差最遠的兩個)', line: 2, views: [arr(s, { label: '排序後' })] },
+    { note: `比較 "${s[0]}" 和 "${s[s.length - 1]}":f、l 一樣,第 3 個 i ≠ o → "fl"`, line: 4, views: [arr(s[0].split(''), { label: s[0], done: [0, 1], highlight: [2] }), arr(s[s.length - 1].split(''), { label: s[s.length - 1], done: [0, 1], highlight: [2] })] },
   ]
 }
 

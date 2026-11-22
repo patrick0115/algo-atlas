@@ -10,8 +10,8 @@ function bruteFig(): FigStep[] {
   const s = [...A].sort((a, b) => a - b)
   const found = new Set<string>()
   const out: FigStep[] = [
-    { note: '暴力:三層迴圈試每一組 (i, j, k)。為了去重,先排序,讓同一組數字永遠以相同順序出現,再丟進 set', views: [arr(A, { label: 'nums' })] },
-    { note: '排序後', views: [arr(s, { label: '排序後' })] },
+    { note: '暴力:三層迴圈試每一組 (i, j, k)。為了去重,先排序,讓同一組數字永遠以相同順序出現,再丟進 set', line: 2, views: [arr(A, { label: 'nums' })] },
+    { note: '排序後', line: 2, views: [arr(s, { label: '排序後' })] },
   ]
   for (let i = 0; i < s.length; i++)
     for (let j = i + 1; j < s.length; j++)
@@ -20,18 +20,18 @@ function bruteFig(): FigStep[] {
         const key = `${s[i]},${s[j]},${s[k]}`
         const dup = found.has(key)
         found.add(key)
-        out.push({ note: `(${i},${j},${k}):${s[i]} + ${s[j]} + ${s[k]} = 0${dup ? ',但這組數字已經在 set 裡了 → 重複,不加' : ' → 加進 set'}`, views: [arr(s, { label: '排序後', highlight: [i, j, k] }), kv([...found].map((x) => [`[${x}]`, '✓']), '答案 set', [`[${key}]`])] })
+        out.push({ note: `(${i},${j},${k}):${s[i]} + ${s[j]} + ${s[k]} = 0${dup ? ',但這組數字已經在 set 裡了 → 重複,不加' : ' → 加進 set'}`, line: 7, views: [arr(s, { label: '排序後', highlight: [i, j, k] }), kv([...found].map((x) => [`[${x}]`, '✓']), '答案 set', [`[${key}]`])] })
       }
   return out
 }
 
 function hashFig(): FigStep[] {
   const s = [...A].sort((a, b) => a - b)
-  const out: FigStep[] = [{ note: '排序後固定第一個數 s[i],剩下就是「在 i 右邊找兩數和為 −s[i]」,用 Hash Set 邊走邊查(就是 [1. Two Sum](#/q/1))', views: [arr(s, { label: '排序後' })] }]
+  const out: FigStep[] = [{ note: '排序後固定第一個數 s[i],剩下就是「在 i 右邊找兩數和為 −s[i]」,用 Hash Set 邊走邊查(就是 [1. Two Sum](#/q/1))', line: 2, views: [arr(s, { label: '排序後' })] }]
   const res: string[] = []
   for (let i = 0; i < s.length && s[i] <= 0; i++) {
     if (i > 0 && s[i] === s[i - 1]) {
-      out.push({ note: `s[${i}] = ${s[i]} 和前一個一樣 → 跳過,不然會找到重複的三元組`, views: [arr(s, { label: '排序後', highlight: [i], dim: range(0, i - 1) })] })
+      out.push({ note: `s[${i}] = ${s[i]} 和前一個一樣 → 跳過,不然會找到重複的三元組`, line: 5, views: [arr(s, { label: '排序後', highlight: [i], dim: range(0, i - 1) })] })
       continue
     }
     const seen = new Set<number>()
@@ -41,14 +41,14 @@ function hashFig(): FigStep[] {
         const key = `[${s[i]},${need},${s[j]}]`
         if (res.at(-1) !== key) {
           res.push(key)
-          out.push({ note: `固定 ${s[i]},走到 s[${j}] = ${s[j]},需要 ${need},seen 裡有 → 找到 ${key}`, views: [arr(s, { label: '排序後', highlight: [i, j], dim: range(0, i - 1) }), kv([...seen].map((v) => [v, '✓']), 'seen', [need])] })
+          out.push({ note: `固定 ${s[i]},走到 s[${j}] = ${s[j]},需要 ${need},seen 裡有 → 找到 ${key}`, line: 10, views: [arr(s, { label: '排序後', highlight: [i, j], dim: range(0, i - 1) }), kv([...seen].map((v) => [v, '✓']), 'seen', [need])] })
         }
         while (j + 1 < s.length && s[j + 1] === s[j]) j++
       }
       seen.add(s[j])
     }
   }
-  out.push({ note: `答案:${res.join('、')}`, views: [arr(s, { label: '排序後' })] })
+  out.push({ note: `答案:${res.join('、')}`, line: 16, views: [arr(s, { label: '排序後' })] })
   return out
 }
 
@@ -57,14 +57,14 @@ function twoPtrFig(): FigStep[] {
   const res: string[] = []
   const view = (i: number, l: number, r: number, opt: Parameters<typeof arr>[1] = {}) =>
     arr(s, { label: '排序後', dim: range(0, i - 1), pointers: [{ name: 'i', index: i, color: 'c' }, { name: 'L', index: l }, { name: 'R', index: r, color: 'b' }], ...opt })
-  const out: FigStep[] = [{ note: '排序後固定 i,在 (i, n) 用左右雙指針找和為 −s[i] 的兩數(就是 167. Two Sum II)', views: [arr(s, { label: '排序後' })] }]
+  const out: FigStep[] = [{ note: '排序後固定 i,在 (i, n) 用左右雙指針找和為 −s[i] 的兩數(就是 167. Two Sum II)', line: 2, views: [arr(s, { label: '排序後' })] }]
   for (let i = 0; i < s.length - 2; i++) {
     if (s[i] > 0) {
-      out.push({ note: `s[${i}] = ${s[i]} > 0,後面的數都 ≥ 它,三個正數加起來不可能是 0 → 提早結束`, views: [arr(s, { label: '排序後', highlight: [i], dim: range(0, i - 1) })] })
+      out.push({ note: `s[${i}] = ${s[i]} > 0,後面的數都 ≥ 它,三個正數加起來不可能是 0 → 提早結束`, line: 4, views: [arr(s, { label: '排序後', highlight: [i], dim: range(0, i - 1) })] })
       break
     }
     if (i > 0 && s[i] === s[i - 1]) {
-      out.push({ note: `s[${i}] = ${s[i]} 和前一個一樣 → 跳過`, views: [arr(s, { label: '排序後', highlight: [i], dim: range(0, i - 1) })] })
+      out.push({ note: `s[${i}] = ${s[i]} 和前一個一樣 → 跳過`, line: 5, views: [arr(s, { label: '排序後', highlight: [i], dim: range(0, i - 1) })] })
       continue
     }
     let l = i + 1
@@ -73,19 +73,19 @@ function twoPtrFig(): FigStep[] {
       const sum = s[i] + s[l] + s[r]
       if (sum === 0) {
         res.push(`[${s[i]},${s[l]},${s[r]}]`)
-        out.push({ note: `${s[i]} + ${s[l]} + ${s[r]} = 0 → 收下。L、R 都往內走,並跳過和剛剛一樣的值`, views: [view(i, l, r, { highlight: [i, l, r] })] })
+        out.push({ note: `${s[i]} + ${s[l]} + ${s[r]} = 0 → 收下。L、R 都往內走,並跳過和剛剛一樣的值`, line: 12, views: [view(i, l, r, { highlight: [i, l, r] })] })
         l++
         r--
         while (l < r && s[l] === s[l - 1]) l++
         while (l < r && s[r] === s[r + 1]) r--
       } else {
-        out.push({ note: `${s[i]} + ${s[l]} + ${s[r]} = ${sum} ${sum < 0 ? '< 0 → 太小,L++' : '> 0 → 太大,R--'}`, views: [view(i, l, r, { compare: [l, r] })] })
+        out.push({ note: `${s[i]} + ${s[l]} + ${s[r]} = ${sum} ${sum < 0 ? '< 0 → 太小,L++' : '> 0 → 太大,R--'}`, line: sum < 0 ? 9 : 10, views: [view(i, l, r, { compare: [l, r] })] })
         if (sum < 0) l++
         else r--
       }
     }
   }
-  out.push({ note: `答案:${res.join('、')}`, views: [arr(s, { label: '排序後' })] })
+  out.push({ note: `答案:${res.join('、')}`, line: 20, views: [arr(s, { label: '排序後' })] })
   return out
 }
 

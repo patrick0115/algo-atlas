@@ -19,7 +19,7 @@ function dpFig(): FigStep[] {
   const match = (i: number, j: number) => P[j - 1] === '.' || P[j - 1] === S[i - 1]
   dp[0][0] = '✓'
   for (let i = 1; i <= m; i++) dp[i][0] = '·'
-  const out: FigStep[] = [{ note: '`x*` 代表「x 出現 0 次或更多次」。dp[0][0] = ✓(兩個都是空的);第 0 行其他是 ·(空的樣式配不到非空字串)', views: [table(dp, [[0, 0]])] }]
+  const out: FigStep[] = [{ note: '`x*` 代表「x 出現 0 次或更多次」。dp[0][0] = ✓(兩個都是空的);第 0 行其他是 ·(空的樣式配不到非空字串)', line: 4, views: [table(dp, [[0, 0]])] }]
   for (let i = 0; i <= m; i++)
     for (let j = 1; j <= n; j++) {
       let ok = false
@@ -41,16 +41,16 @@ function dpFig(): FigStep[] {
         cmp = [[i - 1, j - 1]]
       } else why = i === 0 ? 's 是空的,一般字元配不到' : `"${S[i - 1]}" 和 "${P[j - 1]}" 配不上,或前面沒配好`
       dp[i][j] = ok ? '✓' : '·'
-      if (ok || P[j - 1] === '*') out.push({ note: `dp[${i}][${j}]:${why} → ${dp[i][j]}`, views: [table(dp, [[i, j]], cmp)] })
+      if (ok || P[j - 1] === '*') out.push({ note: `dp[${i}][${j}]:${why} → ${dp[i][j]}`, line: 8, views: [table(dp, [[i, j]], cmp)] })
     }
-  out.push({ note: `dp[${m}][${n}] = ${dp[m][n]}:"c*" 用 0 次、"a*" 用 2 次、最後 b 配 b`, views: [table(dp, [[m, n]])] })
+  out.push({ note: `dp[${m}][${n}] = ${dp[m][n]}:"c*" 用 0 次、"a*" 用 2 次、最後 b 配 b`, line: 9, views: [table(dp, [[m, n]])] })
   return out
 }
 
 function recFig(): FigStep[] {
   return [
-    { note: '遞迴:看 p 的下一個字元後面是不是 *。不是 → 第一個字要配對,然後兩邊都往後一格', views: [arr(S.split(''), { label: 's', highlight: [0] }), arr(P.split(''), { label: 'p', highlight: [0, 1] })] },
-    { note: '是 x* → 兩種選擇:跳過整個 x*(用 0 次),或第一個字配 x 之後 s 往後、p 不動(再用一次)', views: [arr(['f(i, j+2)', 'or', 'match && f(i+1, j)'], { label: 'x* 的兩個分支' })] },
+    { note: '遞迴:看 p 的下一個字元後面是不是 *。不是 → 第一個字要配對,然後兩邊都往後一格', line: 8, views: [arr(S.split(''), { label: 's', highlight: [0] }), arr(P.split(''), { label: 'p', highlight: [0, 1] })] },
+    { note: '是 x* → 兩種選擇:跳過整個 x*(用 0 次),或第一個字配 x 之後 s 往後、p 不動(再用一次)', line: 8, views: [arr(['f(i, j+2)', 'or', 'match && f(i+1, j)'], { label: 'x* 的兩個分支' })] },
   ]
 }
 

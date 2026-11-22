@@ -21,16 +21,16 @@ function twoFig(): FigStep[] {
   const L = lb(T)
   const R = lb(T + 1) - 1
   return [
-    { note: `用同一個工具做兩次:lowerBound(x) = 第一個 ≥ x 的位置([35](#/q/35) 的寫法)。第一次找 x = ${T}`, views: [arr(A, { label: 'nums', pointers: [{ name: `lb(${T})`, index: L }] })] },
-    { note: `第二次找 x = ${T} + 1 = ${T + 1}:第一個 ≥ ${T + 1} 的位置是 ${R + 1},往左一格 ${R} 就是最後一個 ${T}`, views: [arr(A, { label: 'nums', pointers: [{ name: `lb(${T + 1})`, index: R + 1 }] })] },
-    { note: `答案 [${L}, ${R}]。如果 lb(${T}) 超出範圍或那格不是 ${T},代表不存在 → [−1, −1]`, views: [arr(A, { label: 'nums', range: [L, R], done: Array.from({ length: R - L + 1 }, (_, k) => L + k) })] },
+    { note: `用同一個工具做兩次:lowerBound(x) = 第一個 ≥ x 的位置([35](#/q/35) 的寫法)。第一次找 x = ${T}`, line: 11, views: [arr(A, { label: 'nums', pointers: [{ name: `lb(${T})`, index: L }] })] },
+    { note: `第二次找 x = ${T} + 1 = ${T + 1}:第一個 ≥ ${T + 1} 的位置是 ${R + 1},往左一格 ${R} 就是最後一個 ${T}`, line: 13, views: [arr(A, { label: 'nums', pointers: [{ name: `lb(${T + 1})`, index: R + 1 }] })] },
+    { note: `答案 [${L}, ${R}]。如果 lb(${T}) 超出範圍或那格不是 ${T},代表不存在 → [−1, −1]`, line: 13, views: [arr(A, { label: 'nums', range: [L, R], done: Array.from({ length: R - L + 1 }, (_, k) => L + k) })] },
   ]
 }
 
 function linFig(): FigStep[] {
   return [
-    { note: `從左邊找第一個 ${T}、從右邊找第一個 ${T}`, views: [arr(A, { label: 'nums', highlight: [3, 5] })] },
-    { note: '最壞要看完整個陣列(例如全部都是 target),O(n),不符合題目要求', views: [arr(A, { label: 'nums', range: [3, 5] })] },
+    { note: `從左邊找第一個 ${T}、從右邊找第一個 ${T}`, line: 2, views: [arr(A, { label: 'nums', highlight: [3, 5] })] },
+    { note: '最壞要看完整個陣列(例如全部都是 target),O(n),不符合題目要求', line: 2, views: [arr(A, { label: 'nums', range: [3, 5] })] },
   ]
 }
 

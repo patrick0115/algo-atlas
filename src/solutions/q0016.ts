@@ -4,10 +4,10 @@ import type { Solution } from './types'
 // 16. 3Sum Closest
 const A = [-1,2,1,-4]
 const fig = [
-  { note: '先把原陣列 [-1,2,1,-4] 排成 [-4,-1,1,2]，固定一個數後才容易用左右指針調整總和。', views: [arr([-4,-1,1,2], { label: '排序結果', highlight: [0] })] },
-  { note: '先排序成 [-4,-1,1,2]。固定 -4，左右指針從 -1 和 2 出發，和 -3 比目標 1 小，所以左指針右移。', views: [arr([-4,-1,1,2], { label: '排序後', highlight: [0,1,3] })] },
-  { note: '固定 -1，選 1、2，和是 2，與目標 1 只差 1。', views: [arr([-4,-1,1,2], { label: '最佳三數', highlight: [1,2,3], dim: [0] })] },
-  { note: '固定 −1 時，若和大於目標就把右指針左移；此例指針已相遇，最佳和仍是 2。', views: [arr([-4,-1,1,2], { label: '結束這輪', highlight: [1,2,3] })] },
+  { note: '先把原陣列 [-1,2,1,-4] 排成 [-4,-1,1,2]，固定一個數後才容易用左右指針調整總和。', line: 2, views: [arr([-4,-1,1,2], { label: '排序結果', highlight: [0] })] },
+  { note: '先排序成 [-4,-1,1,2]。固定 -4，左右指針從 -1 和 2 出發，和 -3 比目標 1 小，所以左指針右移。', line: 12, views: [arr([-4,-1,1,2], { label: '排序後', highlight: [0,1,3] })] },
+  { note: '固定 -1，選 1、2，和是 2，與目標 1 只差 1。', line: 8, views: [arr([-4,-1,1,2], { label: '最佳三數', highlight: [1,2,3], dim: [0] })] },
+  { note: '固定 −1 時，若和大於目標就把右指針左移；此例指針已相遇，最佳和仍是 2。', line: 15, /* TODO: 可能要拆格 */ views: [arr([-4,-1,1,2], { label: '結束這輪', highlight: [1,2,3] })] },
 ]
 
 export const q0016: Solution = {
@@ -18,7 +18,7 @@ export const q0016: Solution = {
   constraints: ['3 ≤ nums.length ≤ 500；數字與目標可為負。', '距離比較要用絕對值，且剛好等於目標時可立即回傳。'],
   insight: ['直接列出三個索引有 O(n³) 種組合。', '排序後固定第一個數，另外兩個用左右指針：和太小就增加左值，太大就降低右值。', '此法與 [15](#/q/15) 的 [[p:two-pointers]] 相近，但本題記錄最接近的和。'],
   approaches: [
-    { name: '枚舉三數', idea: '試遍所有 i<j<k 的組合，追蹤距離最小的和。', steps: ['令 best 為前三數之和。先建立一個實際三數總和，後面才能比較誰更接近目標。', '三層迴圈枚舉 i<j<k。每次只選三個不同位置，並計算它們與目標的絕對距離。', '若目前和更接近 target，更新 best。更新指標或最佳值時保留更接近目標的總和，最後回傳這個總和。'], figure: { title: 'nums = [-1,2,1,-4], target = 1', steps: [{ note: '開始時用前三數 −1、2、1 的和 2 當最佳答案，與目標只差 1。', views: [arr(A, { label: '初始三數', highlight: [0,1,2] })] }, { note: '接著試 −1、2、−4，總和是 −3，差距 4 較大，因此保留最佳和 2。', views: [arr(A, { label: '比較另一組', highlight: [0,1,3] })] }, { note: '其餘組合都沒有更接近目標 1 的總和，最後回傳原本的最佳和 2。', views: [arr(A, { label: '最佳三數', done: [0,1,2], dim: [3] })] }] }, complexity: { time: 'O(n³)', space: 'O(1)', why: '三層索引迴圈。' }, verdict: '容易驗證正確性，n=500 時太慢。', code: {
+    { name: '枚舉三數', idea: '試遍所有 i<j<k 的組合，追蹤距離最小的和。', steps: ['令 best 為前三數之和。先建立一個實際三數總和，後面才能比較誰更接近目標。', '三層迴圈枚舉 i<j<k。每次只選三個不同位置，並計算它們與目標的絕對距離。', '若目前和更接近 target，更新 best。更新指標或最佳值時保留更接近目標的總和，最後回傳這個總和。'], figure: { title: 'nums = [-1,2,1,-4], target = 1', steps: [{ note: '開始時用前三數 −1、2、1 的和 2 當最佳答案，與目標只差 1。', line: 2, views: [arr(A, { label: '初始三數', highlight: [0,1,2] })] }, { note: '接著試 −1、2、−4，總和是 −3，差距 4 較大，因此保留最佳和 2。', line: 7, views: [arr(A, { label: '比較另一組', highlight: [0,1,3] })] }, { note: '其餘組合都沒有更接近目標 1 的總和，最後回傳原本的最佳和 2。', line: 10, views: [arr(A, { label: '最佳三數', done: [0,1,2], dim: [3] })] }] }, complexity: { time: 'O(n³)', space: 'O(1)', why: '三層索引迴圈。' }, verdict: '容易驗證正確性，n=500 時太慢。', code: {
       python: `def threeSumClosest(nums, target):
     best = sum(nums[:3])
     n = len(nums)

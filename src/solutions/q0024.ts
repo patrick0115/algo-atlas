@@ -7,17 +7,17 @@ const L = [1, 2, 3, 4]
 
 function iterFig(): FigStep[] {
   return [
-    { note: '兩兩一組交換「節點」(不是只換值)。加一個假頭 d,prev 指著「這一組的前一個節點」', views: [chain(['d', ...L], { cls: { 0: 'cur' }, subs: { 0: 'prev', 1: 'a', 2: 'b' } })] },
-    { note: '這一組 a = 1、b = 2:改三條指標 —— prev.next = b、a.next = b.next(3)、b.next = a', views: [chain(['d', 2, 1, 3, 4], { cls: { 1: 'hl', 2: 'hl' } })] },
-    { note: 'prev 移到 a(現在在這組的後面),處理下一組 3、4 → d → 2 → 1 → 4 → 3', views: [chain(['d', 2, 1, 4, 3], { cls: { 2: 'cur', 3: 'hl', 4: 'hl' }, subs: { 2: 'prev' } })] },
-    { note: '剩不到兩個就停。回傳 d.next', views: [chain([2, 1, 4, 3], { tail: true })] },
+    { note: '兩兩一組交換「節點」(不是只換值)。加一個假頭 d,prev 指著「這一組的前一個節點」', line: 2, views: [chain(['d', ...L], { cls: { 0: 'cur' }, subs: { 0: 'prev', 1: 'a', 2: 'b' } })] },
+    { note: '這一組 a = 1、b = 2:改三條指標 —— prev.next = b、a.next = b.next(3)、b.next = a', line: 6, views: [chain(['d', 2, 1, 3, 4], { cls: { 1: 'hl', 2: 'hl' } })] }, // TODO: 可能要拆格(三條指標 6/7/8 一次演完) // TODO: 可能要拆格(三條指標 6/7/8 一次演完)
+    { note: 'prev 移到 a(現在在這組的後面),處理下一組 3、4 → d → 2 → 1 → 4 → 3', line: 9, views: [chain(['d', 2, 1, 4, 3], { cls: { 2: 'cur', 3: 'hl', 4: 'hl' }, subs: { 2: 'prev' } })] },
+    { note: '剩不到兩個就停。回傳 d.next', line: 11, views: [chain([2, 1, 4, 3], { tail: true })] },
   ]
 }
 
 function recFig(): FigStep[] {
   return [
-    { note: '遞迴:swap(head) = 前兩個交換,再接上 swap(第三個以後)', views: [chain(L, { cls: { 0: 'hl', 1: 'hl' } }), chain([4, 3], { label: 'swap([3, 4]) 的結果' })] },
-    { note: 'second = head.next;head.next = swap(second.next);second.next = head;回傳 second', views: [chain([2, 1, 4, 3], { cls: { 0: 'done', 1: 'done' } })] },
+    { note: '遞迴:swap(head) = 前兩個交換,再接上 swap(第三個以後)', line: 3, views: [chain(L, { cls: { 0: 'hl', 1: 'hl' } }), chain([4, 3], { label: 'swap([3, 4]) 的結果' })] },
+    { note: 'second = head.next;head.next = swap(second.next);second.next = head;回傳 second', line: 4, views: [chain([2, 1, 4, 3], { cls: { 0: 'done', 1: 'done' } })] }, // TODO: 可能要拆格(第 3~6 行一次演完) // TODO: 可能要拆格(第 3~6 行一次演完)
   ]
 }
 

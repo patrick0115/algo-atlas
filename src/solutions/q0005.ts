@@ -9,7 +9,7 @@ function centerFig(): FigStep[] {
   const s = S.split('')
   const n = s.length
   let best = [0, 0]
-  const out: FigStep[] = [{ note: '從每個中心往外擴張,看能擴多遠。中心可以是一個字(奇數長度)或兩個字中間(偶數長度)', views: [arr(s, { label: 's' })] }]
+  const out: FigStep[] = [{ note: '從每個中心往外擴張,看能擴多遠。中心可以是一個字(奇數長度)或兩個字中間(偶數長度)', line: 4, views: [arr(s, { label: 's' })] }]
   for (let c = 0; c < 2 * n - 1; c++) {
     let l = Math.floor(c / 2)
     let r = l + (c % 2)
@@ -25,18 +25,19 @@ function centerFig(): FigStep[] {
     if (len <= 0 && c % 2 === 1) continue
     out.push({
       note: `中心${c % 2 === 0 ? ` "${s[c / 2]}"(第 ${c / 2} 個)` : `在第 ${(c - 1) / 2}、${(c + 1) / 2} 個中間`}:擴到 "${S.slice(lo, hi + 1)}",長度 ${len}${better ? ' → 目前最長' : ''}`,
+      line: 8, // TODO: 可能要拆格(擴張 while 與比較更新最長同一步)
       views: [arr(s, { label: 's', highlight: range(lo, hi), done: better ? [] : range(best[0], best[1]).filter((i) => i < lo || i > hi) })],
     })
   }
-  out.push({ note: `最長回文 "${S.slice(best[0], best[1] + 1)}"(這個例子 "aba" 也一樣長,回傳任一個都對)`, views: [arr(s, { label: 's', done: range(best[0], best[1]) })] })
+  out.push({ note: `最長回文 "${S.slice(best[0], best[1] + 1)}"(這個例子 "aba" 也一樣長,回傳任一個都對)`, line: 10, views: [arr(s, { label: 's', done: range(best[0], best[1]) })] })
   return out
 }
 
 function dpFig(): FigStep[] {
   return [
-    { note: 'dp[i][j] = s[i..j] 是不是回文。長度 1 都是;長度 2 看兩個字是否相同', views: [arr(S.split(''), { label: 's' })] },
-    { note: '更長的:s[i] == s[j] 且 dp[i+1][j−1]。例如 "bab"(1..3):兩端都是 b,中間 "a" 是回文 → ✓', views: [arr(S.split(''), { label: 's', highlight: [1, 3], compare: [2] })] },
-    { note: '填表時記下最長的 ✓ → 答案。表的畫法和 [647](#/q/647) 一樣', views: [arr(S.split(''), { label: 's', done: [1, 2, 3] })] },
+    { note: 'dp[i][j] = s[i..j] 是不是回文。長度 1 都是;長度 2 看兩個字是否相同', line: 7, views: [arr(S.split(''), { label: 's' })] },
+    { note: '更長的:s[i] == s[j] 且 dp[i+1][j−1]。例如 "bab"(1..3):兩端都是 b,中間 "a" 是回文 → ✓', line: 7, views: [arr(S.split(''), { label: 's', highlight: [1, 3], compare: [2] })] },
+    { note: '填表時記下最長的 ✓ → 答案。表的畫法和 [647](#/q/647) 一樣', line: 8, views: [arr(S.split(''), { label: 's', done: [1, 2, 3] })] },
   ]
 }
 

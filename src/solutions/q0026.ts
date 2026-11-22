@@ -8,25 +8,25 @@ const A = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4]
 function twoPtrFig(): FigStep[] {
   const a = [...A]
   let w = 1
-  const out: FigStep[] = [{ note: '陣列已排序,重複的一定挨在一起。w = 下一個「新數字」該放的位置;第 0 個一定保留,所以 w 從 1 開始', views: [arr([...a], { label: 'nums', done: [0], pointers: [{ name: 'w', index: 1 }] })] }]
+  const out: FigStep[] = [{ note: '陣列已排序,重複的一定挨在一起。w = 下一個「新數字」該放的位置;第 0 個一定保留,所以 w 從 1 開始', line: 3, views: [arr([...a], { label: 'nums', done: [0], pointers: [{ name: 'w', index: 1 }] })] }]
   for (let i = 1; i < a.length; i++) {
     if (a[i] !== a[w - 1]) {
       a[w] = a[i]
-      out.push({ note: `nums[${i}] = ${a[i]} 和已保留的最後一個 ${a[w - 1]} 不同 → 寫到 nums[${w}],w 變 ${w + 1}`, views: [arr([...a], { label: 'nums', highlight: [w], compare: [i], done: Array.from({ length: w }, (_, k) => k), pointers: [{ name: 'w', index: w }, { name: 'i', index: i, color: 'b' }] })] })
+      out.push({ note: `nums[${i}] = ${a[i]} 和已保留的最後一個 ${a[w - 1]} 不同 → 寫到 nums[${w}],w 變 ${w + 1}`, line: 4, views: [arr([...a], { label: 'nums', highlight: [w], compare: [i], done: Array.from({ length: w }, (_, k) => k), pointers: [{ name: 'w', index: w }, { name: 'i', index: i, color: 'b' }] })] })
       w++
     } else if (i <= 2) {
-      out.push({ note: `nums[${i}] = ${a[i]} 和已保留的最後一個一樣 → 跳過`, views: [arr([...a], { label: 'nums', dim: [i], done: Array.from({ length: w }, (_, k) => k), pointers: [{ name: 'w', index: w }, { name: 'i', index: i, color: 'b' }] })] })
+      out.push({ note: `nums[${i}] = ${a[i]} 和已保留的最後一個一樣 → 跳過`, line: 4, views: [arr([...a], { label: 'nums', dim: [i], done: Array.from({ length: w }, (_, k) => k), pointers: [{ name: 'w', index: w }, { name: 'i', index: i, color: 'b' }] })] })
     }
   }
-  out.push({ note: `回傳 k = ${w},前 ${w} 個就是不重複的 [${a.slice(0, w)}](後面剩什麼不重要)`, views: [arr(a, { label: 'nums', done: Array.from({ length: w }, (_, k) => k), dim: Array.from({ length: a.length - w }, (_, k) => w + k) })] })
+  out.push({ note: `回傳 k = ${w},前 ${w} 個就是不重複的 [${a.slice(0, w)}](後面剩什麼不重要)`, line: 5, views: [arr(a, { label: 'nums', done: Array.from({ length: w }, (_, k) => k), dim: Array.from({ length: a.length - w }, (_, k) => w + k) })] })
   return out
 }
 
 function setFig(): FigStep[] {
   const u = [...new Set(A)]
   return [
-    { note: '不管順序的話,先把不重複的收集起來(因為已排序,也可以直接比前一個)', views: [arr(A, { label: 'nums' }), arr(u, { label: '不重複的值' })] },
-    { note: `再把它們寫回 nums 的前 ${u.length} 格,回傳 ${u.length}。多用了 O(n) 空間,不符合原地的要求`, views: [arr([...u, ...A.slice(u.length)], { label: 'nums', done: u.map((_, i) => i) })] },
+    { note: '不管順序的話,先把不重複的收集起來(因為已排序,也可以直接比前一個)', line: 2, views: [arr(A, { label: 'nums' }), arr(u, { label: '不重複的值' })] },
+    { note: `再把它們寫回 nums 的前 ${u.length} 格,回傳 ${u.length}。多用了 O(n) 空間,不符合原地的要求`, line: 3, views: [arr([...u, ...A.slice(u.length)], { label: 'nums', done: u.map((_, i) => i) })] },
   ]
 }
 

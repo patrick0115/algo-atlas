@@ -13,6 +13,7 @@ function iterFig(recursive: boolean): FigStep[] {
   const out: FigStep[] = [
     {
       note: `串列是**倒著存**的數字:[${A.join(',')}] 代表 ${[...A].reverse().join('')},[${B.join(',')}] 代表 ${[...B].reverse().join('')}。倒著存剛好方便:頭就是個位數,可以像直式加法一樣從個位開始加`,
+      line: 2,
       views: [chain(A, { label: 'l1', tail: true }), chain(B, { label: 'l2', tail: true })],
     },
   ]
@@ -26,6 +27,7 @@ function iterFig(recursive: boolean): FigStep[] {
     res.push(s % 10)
     out.push({
       note,
+      line: recursive ? 4 : 8, // TODO: 可能要拆格(一步含 s 加總、寫入、carry,carry 圖上看不到)
       views: [
         chain(A, { label: 'l1', tail: true, cls: i < A.length ? { [i]: 'hl' } : {} }),
         chain(B, { label: 'l2', tail: true, cls: i < B.length ? { [i]: 'hl' } : {} }),
@@ -33,7 +35,7 @@ function iterFig(recursive: boolean): FigStep[] {
       ],
     })
   }
-  out.push({ note: `兩條都走完、也沒有進位了。答案 [${res.join(',')}] 代表 ${[...res].reverse().join('')} = ${[...A].reverse().join('')} + ${[...B].reverse().join('')}`, views: [chain(res, { label: '答案', tail: true })] })
+  out.push({ note: `兩條都走完、也沒有進位了。答案 [${res.join(',')}] 代表 ${[...res].reverse().join('')} = ${[...A].reverse().join('')} + ${[...B].reverse().join('')}`, line: recursive ? 2 : 12, views: [chain(res, { label: '答案', tail: true })] })
   return out
 }
 
@@ -198,9 +200,9 @@ private ListNode add(ListNode a, ListNode b, int carry) {
       figure: {
         title: `l1 = [${A.join(',')}], l2 = [${B.join(',')}]`,
         steps: [
-          { note: `l1 讀成 ${[...A].reverse().join('')},l2 讀成 ${[...B].reverse().join('')}`, views: [chain(A, { label: 'l1', tail: true }), chain(B, { label: 'l2', tail: true })] },
-          { note: `相加 = ${Number([...A].reverse().join('')) + Number([...B].reverse().join(''))}`, views: [arr([Number([...A].reverse().join('')) + Number([...B].reverse().join(''))], { label: '總和' })] },
-          { note: '從個位開始一位一位拆出來,接成串列', views: [chain([...String(Number([...A].reverse().join('')) + Number([...B].reverse().join('')))].reverse().map(Number), { label: '答案', tail: true })] },
+          { note: `l1 讀成 ${[...A].reverse().join('')},l2 讀成 ${[...B].reverse().join('')}`, line: 4, views: [chain(A, { label: 'l1', tail: true }), chain(B, { label: 'l2', tail: true })] },
+          { note: `相加 = ${Number([...A].reverse().join('')) + Number([...B].reverse().join(''))}`, line: 7, views: [arr([Number([...A].reverse().join('')) + Number([...B].reverse().join(''))], { label: '總和' })] },
+          { note: '從個位開始一位一位拆出來,接成串列', line: 10, views: [chain([...String(Number([...A].reverse().join('')) + Number([...B].reverse().join('')))].reverse().map(Number), { label: '答案', tail: true })] },
         ],
       },
       complexity: { time: 'O(max(m, n)²)', space: 'O(max(m, n))', why: '大整數的乘法和除法不是 O(1);100 位數時感覺不到,但理論上比直式加法慢。' },

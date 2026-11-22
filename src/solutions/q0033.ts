@@ -9,27 +9,27 @@ const T = 6
 function pivotFig(): FigStep[] {
   let lo = 0
   let hi = A.length - 1
-  const out: FigStep[] = [{ note: '第一步:像 153 題一樣,用二分找到最小值的位置(旋轉點),把陣列切成兩段各自有序', views: [arr(A, { label: 'nums', mode: 'bars' })] }]
+  const out: FigStep[] = [{ note: '第一步:像 153 題一樣,用二分找到最小值的位置(旋轉點),把陣列切成兩段各自有序', line: 3, views: [arr(A, { label: 'nums', mode: 'bars' })] }]
   while (lo < hi) {
     const mid = (lo + hi) >> 1
     const right = A[mid] > A[hi]
-    out.push({ note: `nums[mid] = ${A[mid]} ${right ? '>' : '<'} nums[hi] = ${A[hi]} → ${right ? 'lo = mid + 1' : 'hi = mid'}`, views: [arr(A, { label: 'nums', mode: 'bars', range: [lo, hi], compare: [mid, hi] })] })
+    out.push({ note: `nums[mid] = ${A[mid]} ${right ? '>' : '<'} nums[hi] = ${A[hi]} → ${right ? 'lo = mid + 1' : 'hi = mid'}`, line: 6, views: [arr(A, { label: 'nums', mode: 'bars', range: [lo, hi], compare: [mid, hi] })] })
     if (right) lo = mid + 1
     else hi = mid
   }
   const p = lo
   const inRight = T >= A[p] && T <= A[A.length - 1]
   const [a, b] = inRight ? [p, A.length - 1] : [0, p - 1]
-  out.push({ note: `旋轉點在 ${p}(值 ${A[p]})。target = ${T} ${inRight ? `介於 ${A[p]} 和 ${A[A.length - 1]} 之間 → 在右段` : '→ 在左段'} [${a}, ${b}]`, views: [arr(A, { label: 'nums', mode: 'bars', highlight: [p], range: [a, b] })] })
+  out.push({ note: `旋轉點在 ${p}(值 ${A[p]})。target = ${T} ${inRight ? `介於 ${A[p]} 和 ${A[A.length - 1]} 之間 → 在右段` : '→ 在左段'} [${a}, ${b}]`, line: (inRight ? 10 : 11), views: [arr(A, { label: 'nums', mode: 'bars', highlight: [p], range: [a, b] })] })
   lo = a
   hi = b
   while (lo <= hi) {
     const mid = (lo + hi) >> 1
     if (A[mid] === T) {
-      out.push({ note: `第二步:在 [${a}, ${b}] 普通二分,nums[${mid}] = ${A[mid]} = target → 回傳 ${mid}`, views: [arr(A, { label: 'nums', mode: 'bars', highlight: [mid], range: [lo, hi] })] })
+      out.push({ note: `第二步:在 [${a}, ${b}] 普通二分,nums[${mid}] = ${A[mid]} = target → 回傳 ${mid}`, line: 14, views: [arr(A, { label: 'nums', mode: 'bars', highlight: [mid], range: [lo, hi] })] })
       return out
     }
-    out.push({ note: `第二步:nums[${mid}] = ${A[mid]} ${A[mid] < T ? '太小,往右' : '太大,往左'}`, views: [arr(A, { label: 'nums', mode: 'bars', compare: [mid], range: [lo, hi] })] })
+    out.push({ note: `第二步:nums[${mid}] = ${A[mid]} ${A[mid] < T ? '太小,往右' : '太大,往左'}`, line: (A[mid] < T ? 15 : 16), views: [arr(A, { label: 'nums', mode: 'bars', compare: [mid], range: [lo, hi] })] })
     if (A[mid] < T) lo = mid + 1
     else hi = mid - 1
   }
@@ -48,26 +48,26 @@ function oneFig(): FigStep[] {
       pointers: [{ name: 'lo', index: lo }, { name: 'hi', index: hi, color: 'b' }, ...(mid !== undefined ? [{ name: 'mid', index: mid, color: 'c' as const }] : [])],
       ...opt,
     })
-  const out: FigStep[] = [{ note: '一次二分:切成 [lo, mid] 和 [mid, hi] 兩半,**一定有一半是有序的**。先判斷哪半有序,再看 target 在不在那半的範圍裡', views: [view()] }]
+  const out: FigStep[] = [{ note: '一次二分:切成 [lo, mid] 和 [mid, hi] 兩半,**一定有一半是有序的**。先判斷哪半有序,再看 target 在不在那半的範圍裡', line: 2, views: [view()] }]
   while (lo <= hi) {
     const mid = (lo + hi) >> 1
     if (A[mid] === T) {
-      out.push({ note: `nums[mid] = ${A[mid]} = target → 回傳 ${mid}`, views: [view(mid, { highlight: [mid] })] })
+      out.push({ note: `nums[mid] = ${A[mid]} = target → 回傳 ${mid}`, line: 5, views: [view(mid, { highlight: [mid] })] })
       return out
     }
     if (A[lo] <= A[mid]) {
       const inside = A[lo] <= T && T < A[mid]
-      out.push({ note: `nums[lo] = ${A[lo]} ≤ nums[mid] = ${A[mid]} → **左半 [${lo}, ${mid}] 有序**。target ${T} ${inside ? `在 [${A[lo]}, ${A[mid]}) 裡 → 往左,hi = mid − 1` : `不在 [${A[lo]}, ${A[mid]}) 裡 → 往右,lo = mid + 1`}`, views: [view(mid, { compare: range(lo, mid) })] })
+      out.push({ note: `nums[lo] = ${A[lo]} ≤ nums[mid] = ${A[mid]} → **左半 [${lo}, ${mid}] 有序**。target ${T} ${inside ? `在 [${A[lo]}, ${A[mid]}) 裡 → 往左,hi = mid − 1` : `不在 [${A[lo]}, ${A[mid]}) 裡 → 往右,lo = mid + 1`}`, line: (inside ? 7 : 8), views: [view(mid, { compare: range(lo, mid) })] }) // TODO: 可能要拆格
       if (inside) hi = mid - 1
       else lo = mid + 1
     } else {
       const inside = A[mid] < T && T <= A[hi]
-      out.push({ note: `nums[lo] = ${A[lo]} > nums[mid] = ${A[mid]} → 斷崖在左半,所以**右半 [${mid}, ${hi}] 有序**。target ${T} ${inside ? `在 (${A[mid]}, ${A[hi]}] 裡 → 往右,lo = mid + 1` : `不在 (${A[mid]}, ${A[hi]}] 裡 → 往左,hi = mid − 1`}`, views: [view(mid, { compare: range(mid, hi) })] })
+      out.push({ note: `nums[lo] = ${A[lo]} > nums[mid] = ${A[mid]} → 斷崖在左半,所以**右半 [${mid}, ${hi}] 有序**。target ${T} ${inside ? `在 (${A[mid]}, ${A[hi]}] 裡 → 往右,lo = mid + 1` : `不在 (${A[mid]}, ${A[hi]}] 裡 → 往左,hi = mid − 1`}`, line: (inside ? 10 : 11), views: [view(mid, { compare: range(mid, hi) })] }) // TODO: 可能要拆格
       if (inside) lo = mid + 1
       else hi = mid - 1
     }
   }
-  out.push({ note: '區間變空 → −1', views: [arr(A, { label: 'nums', mode: 'bars' })] })
+  out.push({ note: '區間變空 → −1', line: 14, views: [arr(A, { label: 'nums', mode: 'bars' })] })
   return out
 }
 
@@ -92,7 +92,7 @@ export const q0033: Solution = {
       name: '線性掃描',
       idea: '從頭找到尾。',
       steps: ['`nums[i] == target` → 回傳 `i`', '走完 → `-1`'],
-      figure: { title: `nums = [${A.join(',')}], target = ${T}`, steps: [{ note: '一個一個看,沒有用到「兩段有序」', views: [arr(A, { label: 'nums', mode: 'bars' })] }, { note: `看到第 4 格 = ${T} → 回傳 4`, views: [arr(A, { label: 'nums', mode: 'bars', highlight: [4], dim: range(0, 3) })] }] },
+      figure: { title: `nums = [${A.join(',')}], target = ${T}`, steps: [{ note: '一個一個看,沒有用到「兩段有序」', line: 2, views: [arr(A, { label: 'nums', mode: 'bars' })] }, { note: `看到第 4 格 = ${T} → 回傳 4`, line: 2, views: [arr(A, { label: 'nums', mode: 'bars', highlight: [4], dim: range(0, 3) })] }] },
       complexity: { time: 'O(n)', space: 'O(1)', why: '最壞看完整個陣列。' },
       verdict: '不符合題目要求的 O(log n),只當 baseline。',
       code: {

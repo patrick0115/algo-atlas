@@ -8,14 +8,14 @@ const S = 'abcabcbb'
 
 function bruteFig(): FigStep[] {
   const chars = [...S]
-  const out: FigStep[] = [{ note: '暴力:固定起點 i,往右一個一個加,直到遇到重複的字元就停', views: [arr(chars, { label: 's' })] }]
+  const out: FigStep[] = [{ note: '暴力:固定起點 i,往右一個一個加,直到遇到重複的字元就停', line: 3, views: [arr(chars, { label: 's' })] }]
   let best = 0
   for (let i = 0; i < S.length; i++) {
     const seen = new Set<string>()
     let j = i
     while (j < S.length && !seen.has(S[j])) seen.add(S[j++])
     if (j - i > best) best = j - i
-    out.push({ note: `從 ${i} 開始:"${S.slice(i, j)}" 長度 ${j - i}${j < S.length ? `,下一個 ${S[j]} 重複了` : ',走到底'}。最長 ${best}`, views: [arr(chars, { label: 's', range: [i, j - 1], compare: j < S.length ? [j] : [] })] })
+    out.push({ note: `從 ${i} 開始:"${S.slice(i, j)}" 長度 ${j - i}${j < S.length ? `,下一個 ${S[j]} 重複了` : ',走到底'}。最長 ${best}`, line: 7, views: [arr(chars, { label: 's', range: [i, j - 1], compare: j < S.length ? [j] : [] })] })
   }
   return out
 }
@@ -25,15 +25,15 @@ function setFig(): FigStep[] {
   const win = new Set<string>()
   let l = 0
   let best = 0
-  const out: FigStep[] = [{ note: '滑動視窗:視窗 [l, r] 裡沒有重複。右邊每次加一個字元;如果重複了,就從左邊一個一個丟掉,直到不重複', views: [arr(chars, { label: 's' }), kv([], '視窗裡有的字元')] }]
+  const out: FigStep[] = [{ note: '滑動視窗:視窗 [l, r] 裡沒有重複。右邊每次加一個字元;如果重複了,就從左邊一個一個丟掉,直到不重複', line: 3, views: [arr(chars, { label: 's' }), kv([], '視窗裡有的字元')] }]
   for (let r = 0; r < S.length; r++) {
     while (win.has(S[r])) {
-      out.push({ note: `${S[r]} 已經在視窗裡了 → 丟掉左邊的 ${S[l]},l++`, views: [arr(chars, { label: 's', range: [l, r - 1], compare: [r], dim: [l] }), kv([...win].map((c) => [c, '✓']), '視窗裡有的字元', [S[l]])] })
+      out.push({ note: `${S[r]} 已經在視窗裡了 → 丟掉左邊的 ${S[l]},l++`, line: 5, views: [arr(chars, { label: 's', range: [l, r - 1], compare: [r], dim: [l] }), kv([...win].map((c) => [c, '✓']), '視窗裡有的字元', [S[l]])] })
       win.delete(S[l++])
     }
     win.add(S[r])
     best = Math.max(best, r - l + 1)
-    out.push({ note: `加入 ${S[r]}:視窗 "${S.slice(l, r + 1)}",長度 ${r - l + 1},最長 ${best}`, views: [arr(chars, { label: 's', range: [l, r], highlight: [r], pointers: [{ name: 'l', index: l }, { name: 'r', index: r, color: 'b' }] }), kv([...win].map((c) => [c, '✓']), '視窗裡有的字元', [S[r]])] })
+    out.push({ note: `加入 ${S[r]}:視窗 "${S.slice(l, r + 1)}",長度 ${r - l + 1},最長 ${best}`, line: 6, /* TODO: 可能要拆格(win.add 與 best 更新同一步) */ views: [arr(chars, { label: 's', range: [l, r], highlight: [r], pointers: [{ name: 'l', index: l }, { name: 'r', index: r, color: 'b' }] }), kv([...win].map((c) => [c, '✓']), '視窗裡有的字元', [S[r]])] })
   }
   return out
 }
@@ -43,7 +43,7 @@ function jumpFig(): FigStep[] {
   const last = new Map<string, number>()
   let l = 0
   let best = 0
-  const out: FigStep[] = [{ note: '改良:記住每個字元「上一次出現的位置」。遇到重複時,左端直接**跳**到上一次位置的下一格,不用一格一格丟', views: [arr(chars, { label: 's' }), kv([], 'last(字元 → 上次出現的位置)')] }]
+  const out: FigStep[] = [{ note: '改良:記住每個字元「上一次出現的位置」。遇到重複時,左端直接**跳**到上一次位置的下一格,不用一格一格丟', line: 3, views: [arr(chars, { label: 's' }), kv([], 'last(字元 → 上次出現的位置)')] }]
   for (let r = 0; r < S.length; r++) {
     const c = S[r]
     const p = last.get(c)
@@ -56,7 +56,7 @@ function jumpFig(): FigStep[] {
     }
     last.set(c, r)
     best = Math.max(best, r - l + 1)
-    out.push({ note: `${note}視窗 "${S.slice(l, r + 1)}",長度 ${r - l + 1},最長 ${best}`, views: [arr(chars, { label: 's', range: [l, r], highlight: [r], pointers: [{ name: 'l', index: l }, { name: 'r', index: r, color: 'b' }] }), kv([...last], 'last', [c])] })
+    out.push({ note: `${note}視窗 "${S.slice(l, r + 1)}",長度 ${r - l + 1},最長 ${best}`, line: 7, /* TODO: 可能要拆格(l 跳躍、last.set、best 更新同一步) */ views: [arr(chars, { label: 's', range: [l, r], highlight: [r], pointers: [{ name: 'l', index: l }, { name: 'r', index: r, color: 'b' }] }), kv([...last], 'last', [c])] })
   }
   return out
 }

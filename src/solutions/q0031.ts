@@ -4,15 +4,15 @@ import type { Solution } from './types'
 // 31. Next Permutation
 const A = [1, 3, 5, 4, 2]
 const fig = [
-  { note: '從最右邊比較相鄰數字：4 ≥ 2、5 ≥ 4，都還在遞減後綴內，指標繼續往左。', views: [arr(A, { label: '向左找樞紐', highlight: [2, 3, 4], dim: [0, 1] })] },
-  { note: '由右往左，5、4、2 已經遞減；再往左找到 3 < 5，所以 3 是需要變大的位置。', views: [arr(A, { label: 'nums', highlight: [1], dim: [0] })] },
-  { note: '在右側找剛好大於 3 的最小值 4，交換成 [1,4,5,3,2]。', views: [arr([1, 4, 5, 3, 2], { label: '交換', highlight: [1, 3] })] },
-  { note: '交換後只需整理索引 2 到 4：它們是 5、3、2，升序後才是最接近原排列的較大排列。', views: [arr([1, 4, 5, 3, 2], { label: '待整理後綴', highlight: [2, 3, 4] })] },
-  { note: '右側仍遞減，把它反轉為最小排列，得到 [1,4,2,3,5]。', views: [arr([1, 4, 2, 3, 5], { label: '下一個排列', done: [0, 1, 2, 3, 4] })] },
+  { note: '從最右邊比較相鄰數字：4 ≥ 2、5 ≥ 4，都還在遞減後綴內，指標繼續往左。', line: 3, views: [arr(A, { label: '向左找樞紐', highlight: [2, 3, 4], dim: [0, 1] })] },
+  { note: '由右往左，5、4、2 已經遞減；再往左找到 3 < 5，所以 3 是需要變大的位置。', line: 3, views: [arr(A, { label: 'nums', highlight: [1], dim: [0] })] },
+  { note: '在右側找剛好大於 3 的最小值 4，交換成 [1,4,5,3,2]。', line: 9, views: [arr([1, 4, 5, 3, 2], { label: '交換', highlight: [1, 3] })] }, // TODO: 可能要拆格
+  { note: '交換後只需整理索引 2 到 4：它們是 5、3、2，升序後才是最接近原排列的較大排列。', line: 11, views: [arr([1, 4, 5, 3, 2], { label: '待整理後綴', highlight: [2, 3, 4] })] },
+  { note: '右側仍遞減，把它反轉為最小排列，得到 [1,4,2,3,5]。', line: 12, views: [arr([1, 4, 2, 3, 5], { label: '下一個排列', done: [0, 1, 2, 3, 4] })] },
 ]
 const sortFig = [
   ...fig.slice(0, 4),
-  { note: '把後綴 [5,3,2] 排序為 [2,3,5]，整列就變成緊接著的 [1,4,2,3,5]。', views: [arr([1,4,2,3,5], { label: '排序後綴的結果', done: [0,1,2,3,4] })] },
+  { note: '把後綴 [5,3,2] 排序為 [2,3,5]，整列就變成緊接著的 [1,4,2,3,5]。', line: 12, views: [arr([1,4,2,3,5], { label: '排序後綴的結果', done: [0,1,2,3,4] })] },
 ]
 
 export const q0031: Solution = {
