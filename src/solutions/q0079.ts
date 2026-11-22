@@ -16,19 +16,19 @@ function grid(marks: GridViewData['marks'] = {}): GridViewData {
 }
 
 function dfsFig(): FigStep[] {
-  const out: FigStep[] = [{ note: `找 "${W}":從每一格當起點試試看。每走一步,只能往上下左右走到下一個字母,而且**同一格不能用兩次** —— 走過的格子先標記起來,退回來時再取消`, views: [grid()] }]
+  const out: FigStep[] = [{ note: `找 "${W}":從每一格當起點試試看。每走一步,只能往上下左右走到下一個字母,而且**同一格不能用兩次** —— 走過的格子先標記起來,退回來時再取消`, line: 12, views: [grid()] }]
   const path: Cell[] = []
   const used = B.map((r) => r.map(() => false))
   const dfs = (r: number, c: number, k: number): boolean => {
     if (r < 0 || c < 0 || r >= B.length || c >= B[0].length || used[r][c] || B[r][c] !== W[k]) return false
     used[r][c] = true
     path.push([r, c])
-    out.push({ note: `(${r},${c}) = ${B[r][c]},是第 ${k} 個字母 ✓${k === W.length - 1 ? ' → 整個單字都找到了!' : `,接著在四個方向找 "${W[k + 1]}"`}`, views: [grid({ path: [...path], hl: [[r, c]] })] })
+    out.push({ note: `(${r},${c}) = ${B[r][c]},是第 ${k} 個字母 ✓${k === W.length - 1 ? ' → 整個單字都找到了!' : `,接著在四個方向找 "${W[k + 1]}"`}`, line: k === W.length - 1 ? 5 : 7, views: [grid({ path: [...path], hl: [[r, c]] })] })
     if (k === W.length - 1) return true
     for (const [dr, dc] of [[0, 1], [1, 0], [0, -1], [-1, 0]]) if (dfs(r + dr, c + dc, k + 1)) return true
     used[r][c] = false
     path.pop()
-    out.push({ note: `(${r},${c}) 往四個方向都走不下去 → 退回來,取消標記`, views: [grid({ path: [...path], dim: [[r, c]] })] })
+    out.push({ note: `(${r},${c}) 往四個方向都走不下去 → 退回來,取消標記`, line: 9, views: [grid({ path: [...path], dim: [[r, c]] })] })
     return false
   }
   for (let r = 0; r < B.length; r++) for (let c = 0; c < B[0].length; c++) if (dfs(r, c, 0)) return out
@@ -41,8 +41,8 @@ function pruneFig(): FigStep[] {
   const have = new Map<string, number>()
   for (const row of B) for (const ch of row) have.set(ch, (have.get(ch) ?? 0) + 1)
   return [
-    { note: '剪枝一:先數字母。單字需要的某個字母,如果整個盤面都不夠,直接回傳 false,不用搜', views: [kv([...need].map(([k, v]) => [k, `需要 ${v}、盤面有 ${have.get(k) ?? 0}`]), '字母數量')] },
-    { note: '剪枝二:如果單字**開頭**的字母在盤面上比**結尾**的多,就把單字反過來找 —— 起點變少,很多無用的搜尋一開始就被擋掉', views: [grid({ hl: B.flatMap((r, i) => r.flatMap((v, j) => (v === W[0] ? [[i, j] as Cell] : []))), cmp: B.flatMap((r, i) => r.flatMap((v, j) => (v === W[W.length - 1] ? [[i, j] as Cell] : []))) })] },
+    { note: '剪枝一:先數字母。單字需要的某個字母,如果整個盤面都不夠,直接回傳 false,不用搜', line: 6, views: [kv([...need].map(([k, v]) => [k, `需要 ${v}、盤面有 ${have.get(k) ?? 0}`]), '字母數量')] },
+    { note: '剪枝二:如果單字**開頭**的字母在盤面上比**結尾**的多,就把單字反過來找 —— 起點變少,很多無用的搜尋一開始就被擋掉', line: 7, views: [grid({ hl: B.flatMap((r, i) => r.flatMap((v, j) => (v === W[0] ? [[i, j] as Cell] : []))), cmp: B.flatMap((r, i) => r.flatMap((v, j) => (v === W[W.length - 1] ? [[i, j] as Cell] : []))) })] },
   ]
 }
 

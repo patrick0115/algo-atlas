@@ -6,16 +6,16 @@ import type { FigStep, Solution } from './types'
 
 function recFig(): FigStep[] {
   return [
-    { note: '[96](#/q/96) 是「數有幾棵」,這題要「全部建出來」。gen(l, r) = 用 l..r 能建出的所有 BST:選每個 i 當根,左邊是 gen(l, i−1) 的每一棵、右邊是 gen(i+1, r) 的每一棵', views: [arr([1, 2, 3], { label: 'n = 3:根可以是 1、2、3' })] },
-    { note: '根 1:右子樹用 {2, 3} → 有 2 種;根 2:左 {1}、右 {3} → 1 種;根 3:左子樹用 {1, 2} → 2 種', views: [tree([1, null, 2, null, 3]), tree([1, null, 3, 2]), tree([2, 1, 3])] },
-    { note: '共 5 棵。l > r 時回傳 [None](一棵空樹),這樣只有一邊的情況也能正確配對', views: [tree([3, 1, null, null, 2]), tree([3, 2, null, 1])] },
+    { note: '[96](#/q/96) 是「數有幾棵」,這題要「全部建出來」。gen(l, r) = 用 l..r 能建出的所有 BST:選每個 i 當根,左邊是 gen(l, i−1) 的每一棵、右邊是 gen(i+1, r) 的每一棵', line: 5, views: [arr([1, 2, 3], { label: 'n = 3:根可以是 1、2、3' })] },
+    { note: '根 1:右子樹用 {2, 3} → 有 2 種;根 2:左 {1}、右 {3} → 1 種;根 3:左子樹用 {1, 2} → 2 種', line: 5, views: [tree([1, null, 2, null, 3]), tree([1, null, 3, 2]), tree([2, 1, 3])] },
+    { note: '共 5 棵。l > r 時回傳 [None](一棵空樹),這樣只有一邊的情況也能正確配對', line: 3, views: [tree([3, 1, null, null, 2]), tree([3, 2, null, 1])] },
   ]
 }
 
 function memoFig(): FigStep[] {
   return [
-    { note: '同一個範圍 (l, r) 會被重複問很多次,例如 gen(2, 3) 在根 = 1 時用到,n 更大時還會再用到', views: [arr(['gen(1,3)', '→ gen(2,3)', '→ gen(3,3)…'], { label: '重複的子問題' })] },
-    { note: '用 (l, r) 當鍵記憶化。不同的大樹可以**共用**同一棵子樹物件(題目只讀不改)', views: [arr([1, 1, 2, 5, 14, 42], { label: 'n = 0..5 的棵數(卡塔蘭數)' })] },
+    { note: '同一個範圍 (l, r) 會被重複問很多次,例如 gen(2, 3) 在根 = 1 時用到,n 更大時還會再用到', line: 6, views: [arr(['gen(1,3)', '→ gen(2,3)', '→ gen(3,3)…'], { label: '重複的子問題' })] },
+    { note: '用 (l, r) 當鍵記憶化。不同的大樹可以**共用**同一棵子樹物件(題目只讀不改)', line: 9, views: [arr([1, 1, 2, 5, 14, 42], { label: 'n = 0..5 的棵數(卡塔蘭數)' })] },
   ]
 }
 

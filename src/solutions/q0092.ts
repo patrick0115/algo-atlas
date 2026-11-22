@@ -10,17 +10,19 @@ const RIGHT = 4
 
 function insertFig(): FigStep[] {
   return [
-    { note: `只反轉第 ${LEFT} 到第 ${RIGHT} 個。先加假頭,prev 走到第 ${LEFT} 個的前一個(值 1),cur = 第 ${LEFT} 個(值 2)`, views: [chain(['d', ...L], { cls: { 1: 'cur', 2: 'hl' }, subs: { 1: 'prev', 2: 'cur' } })] },
-    { note: '「頭插法」:每次把 cur 後面那個節點(3)拔出來,插到 prev 的後面。1 → 3 → 2 → 4 → 5', views: [chain(['d', 1, 3, 2, 4, 5], { cls: { 1: 'cur', 2: 'hl', 3: 'hl' }, subs: { 1: 'prev', 3: 'cur' } })] },
-    { note: '再把 cur 後面的 4 拔出來插到 prev 後面:1 → 4 → 3 → 2 → 5。總共做 right − left = 2 次', views: [chain(['d', 1, 4, 3, 2, 5], { cls: { 2: 'hl', 3: 'hl', 4: 'hl' } })] },
-    { note: '回傳 d.next → [1, 4, 3, 2, 5]。cur(值 2)一直沒動,它最後變成反轉段的尾巴', views: [chain([1, 4, 3, 2, 5], { tail: true, cls: { 1: 'done', 2: 'done', 3: 'done' } })] },
+    { note: `只反轉第 ${LEFT} 到第 ${RIGHT} 個。先加假頭,prev 走到第 ${LEFT} 個的前一個(值 1),cur = 第 ${LEFT} 個(值 2)`, line: 5, views: [chain(['d', ...L], { cls: { 1: 'cur', 2: 'hl' }, subs: { 1: 'prev', 2: 'cur' } })] },
+    { note: '「頭插法」:每次把 cur 後面那個節點(3)拔出來,插到 prev 的後面。1 → 3 → 2 → 4 → 5', line: 7, // TODO: 可能要拆格(拔出並插入 7~10 一次演完)
+      views: [chain(['d', 1, 3, 2, 4, 5], { cls: { 1: 'cur', 2: 'hl', 3: 'hl' }, subs: { 1: 'prev', 3: 'cur' } })] },
+    { note: '再把 cur 後面的 4 拔出來插到 prev 後面:1 → 4 → 3 → 2 → 5。總共做 right − left = 2 次', line: 7, // TODO: 可能要拆格(拔出並插入 7~10 一次演完)
+      views: [chain(['d', 1, 4, 3, 2, 5], { cls: { 2: 'hl', 3: 'hl', 4: 'hl' } })] },
+    { note: '回傳 d.next → [1, 4, 3, 2, 5]。cur(值 2)一直沒動,它最後變成反轉段的尾巴', line: 12, views: [chain([1, 4, 3, 2, 5], { tail: true, cls: { 1: 'done', 2: 'done', 3: 'done' } })] },
   ]
 }
 
 function arrFig(): FigStep[] {
   return [
-    { note: '簡單的作法:把值抄進陣列,反轉索引 left−1..right−1 這一段', views: [arr(L, { label: '值', range: [LEFT - 1, RIGHT - 1] })] },
-    { note: '再依序寫回節點。O(n) 額外空間,而且是改值不是改節點(有些面試會要求不能改值)', views: [arr([1, 4, 3, 2, 5], { label: '反轉後', highlight: [1, 2, 3] })] },
+    { note: '簡單的作法:把值抄進陣列,反轉索引 left−1..right−1 這一段', line: 4, views: [arr(L, { label: '值', range: [LEFT - 1, RIGHT - 1] })] },
+    { note: '再依序寫回節點。O(n) 額外空間,而且是改值不是改節點(有些面試會要求不能改值)', line: 7, views: [arr([1, 4, 3, 2, 5], { label: '反轉後', highlight: [1, 2, 3] })] },
   ]
 }
 

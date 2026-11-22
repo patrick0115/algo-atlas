@@ -13,16 +13,16 @@ function dpFig(): FigStep[] {
     dp.push(s)
   }
   return [
-    { note: '用 1..n 建 BST:選 r 當根,左子樹一定是 1..r−1(r − 1 個數)、右子樹是 r+1..n(n − r 個數)。棵數只跟「幾個數」有關,跟數值無關', views: [arr([1, 2, 3, 4], { label: '選 2 當根:左 [1]、右 [3, 4]', highlight: [1] })] },
-    { note: 'dp[k] = k 個數能組成幾種 BST = Σ dp[左邊個數] × dp[右邊個數]。dp[0] = dp[1] = 1', views: [arr([1, 1], { label: 'dp[0..1]' })] },
-    { note: `dp[2] = dp[0]·dp[1] + dp[1]·dp[0] = 2;dp[3] = 1·2 + 1·1 + 2·1 = 5;dp[4] = ${dp[4]}`, views: [arr(dp, { label: `dp[0..${N}]`, done: [N] })] },
+    { note: '用 1..n 建 BST:選 r 當根,左子樹一定是 1..r−1(r − 1 個數)、右子樹是 r+1..n(n − r 個數)。棵數只跟「幾個數」有關,跟數值無關', line: 3, views: [arr([1, 2, 3, 4], { label: '選 2 當根:左 [1]、右 [3, 4]', highlight: [1] })] },
+    { note: 'dp[k] = k 個數能組成幾種 BST = Σ dp[左邊個數] × dp[右邊個數]。dp[0] = dp[1] = 1', line: 4, views: [arr([1, 1], { label: 'dp[0..1]' })] },
+    { note: `dp[2] = dp[0]·dp[1] + dp[1]·dp[0] = 2;dp[3] = 1·2 + 1·1 + 2·1 = 5;dp[4] = ${dp[4]}`, line: 4, views: [arr(dp, { label: `dp[0..${N}]`, done: [N] })] },
   ]
 }
 
 function catFig(): FigStep[] {
   return [
-    { note: '這個數列就是卡塔蘭數:Cₙ = C(2n, n) / (n + 1)。也可以用遞推 C₀ = 1、Cₙ₊₁ = Cₙ × 2(2n + 1) / (n + 2)', views: [arr([1, 1, 2, 5, 14, 42], { label: 'C₀..C₅' })] },
-    { note: '一路乘上去,每一步都是整數(先乘再除就不會有小數)。O(n)、O(1) 空間', views: [arr([1, 1, 2, 5, 14], { label: '答案 C₄ = 14', done: [4] })] },
+    { note: '這個數列就是卡塔蘭數:Cₙ = C(2n, n) / (n + 1)。也可以用遞推 C₀ = 1、Cₙ₊₁ = Cₙ × 2(2n + 1) / (n + 2)', line: 3, views: [arr([1, 1, 2, 5, 14, 42], { label: 'C₀..C₅' })] },
+    { note: '一路乘上去,每一步都是整數(先乘再除就不會有小數)。O(n)、O(1) 空間', line: 3, views: [arr([1, 1, 2, 5, 14], { label: '答案 C₄ = 14', done: [4] })] },
   ]
 }
 

@@ -9,17 +9,17 @@ const T = [3, 9, 20, null, null, 15, 7, null, null, 8]
 function dfsFig(): FigStep[] {
   const root = buildTree(T)
   const depth: Record<number, number> = {}
-  const out: FigStep[] = [{ note: '一棵樹的深度 = 1(自己這層)+ 左右子樹裡比較深的那個。空樹深度是 0。從下往上算(後序遍歷)', views: [tree(T)] }]
+  const out: FigStep[] = [{ note: '一棵樹的深度 = 1(自己這層)+ 左右子樹裡比較深的那個。空樹深度是 0。從下往上算(後序遍歷)', line: 3, views: [tree(T)] }]
   const go = (n: FNode | null): number => {
     if (!n) return 0
     const l = go(n.left)
     const r = go(n.right)
     depth[n.i] = 1 + Math.max(l, r)
-    out.push({ note: `節點 ${n.val}:左子樹深 ${l}、右子樹深 ${r} → 1 + max(${l}, ${r}) = ${depth[n.i]}`, views: [tree(T, { cls: { ...Object.fromEntries(Object.keys(depth).map((k) => [k, 'done'])), [n.i]: 'hl' }, subs: { ...depth } })] })
+    out.push({ note: `節點 ${n.val}:左子樹深 ${l}、右子樹深 ${r} → 1 + max(${l}, ${r}) = ${depth[n.i]}`, line: 3, views: [tree(T, { cls: { ...Object.fromEntries(Object.keys(depth).map((k) => [k, 'done'])), [n.i]: 'hl' }, subs: { ...depth } })] })
     return depth[n.i]
   }
   const ans = go(root)
-  out.push({ note: `根的值就是答案:${ans}`, views: [tree(T, { subs: depth, cls: { 0: 'hl' } })] })
+  out.push({ note: `根的值就是答案:${ans}`, line: 3, views: [tree(T, { subs: depth, cls: { 0: 'hl' } })] })
   return out
 }
 
@@ -29,16 +29,16 @@ function stackFig(): FigStep[] {
   const show = (st: [FNode, number][]) => arr(st.map(([n, d]) => `${n.val}:${d}`), { label: '堆疊(節點:深度)' })
   const st: [FNode, number][] = [[root, 1]]
   let best = 0
-  const out: FigStep[] = [{ note: '深度由上往下傳:根是第 1 層,孩子是父節點的深度 + 1。stack = [(3, 1)]、best = 0', views: [tree(T), show(st)] }]
+  const out: FigStep[] = [{ note: '深度由上往下傳:根是第 1 層,孩子是父節點的深度 + 1。stack = [(3, 1)]、best = 0', line: 2, views: [tree(T), show(st)] }]
   while (st.length) {
     const [n, d] = st.pop()!
     best = Math.max(best, d)
     seen[n.i] = `深${d}`
     if (n.left) st.push([n.left, d + 1])
     if (n.right) st.push([n.right, d + 1])
-    out.push({ note: `pop 出 (${n.val}, ${d}):best = ${best};孩子以深度 ${d + 1} push 進去`, views: [tree(T, { cls: { ...Object.fromEntries(Object.keys(seen).map((k) => [k, 'done'])), [n.i]: 'hl' }, subs: { ...seen } }), show(st)] })
+    out.push({ note: `pop 出 (${n.val}, ${d}):best = ${best};孩子以深度 ${d + 1} push 進去`, line: 6, views: [tree(T, { cls: { ...Object.fromEntries(Object.keys(seen).map((k) => [k, 'done'])), [n.i]: 'hl' }, subs: { ...seen } }), show(st)] }) // TODO: 可能要拆格
   }
-  out.push({ note: `堆疊空了,best = ${best} 就是答案`, views: [tree(T, { subs: seen })] })
+  out.push({ note: `堆疊空了,best = ${best} 就是答案`, line: 10, views: [tree(T, { subs: seen })] })
   return out
 }
 
@@ -47,14 +47,14 @@ function bfsFig(): FigStep[] {
   let level = [root]
   let d = 0
   const seen: Record<number, string> = {}
-  const out: FigStep[] = [{ note: '另一種想法:一層一層往下走(BFS),數總共有幾層', views: [tree(T)] }]
+  const out: FigStep[] = [{ note: '另一種想法:一層一層往下走(BFS),數總共有幾層', line: 3, views: [tree(T)] }]
   while (level.length) {
     d++
     level.forEach((n) => (seen[n.i] = `第${d}層`))
-    out.push({ note: `第 ${d} 層有 [${level.map((n) => n.val).join(', ')}],把它們的孩子當成下一層`, views: [tree(T, { cls: Object.fromEntries(level.map((n) => [n.i, 'hl'])), subs: { ...seen } }), arr(level.map((n) => n.val), { label: '目前這一層' })] })
+    out.push({ note: `第 ${d} 層有 [${level.map((n) => n.val).join(', ')}],把它們的孩子當成下一層`, line: 5, views: [tree(T, { cls: Object.fromEntries(level.map((n) => [n.i, 'hl'])), subs: { ...seen } }), arr(level.map((n) => n.val), { label: '目前這一層' })] })
     level = level.flatMap((n) => [n.left, n.right].filter((x): x is FNode => !!x))
   }
-  out.push({ note: `下一層是空的,總共 ${d} 層`, views: [tree(T, { subs: seen })] })
+  out.push({ note: `下一層是空的,總共 ${d} 層`, line: 13, views: [tree(T, { subs: seen })] })
   return out
 }
 

@@ -8,7 +8,7 @@ const H = [2, 1, 5, 6, 2, 3]
 function stackFig(): FigStep[] {
   const st: number[] = []
   let best = 0
-  const out: FigStep[] = [{ note: '對每根柱子想:「以它為高度」的矩形,往左右能延伸到哪?答案是左右兩邊**第一根比它矮的柱子**之間。單調遞增堆疊可以一次找出所有人的左右邊界', views: [arr(H, { label: 'heights', mode: 'bars' }), arr([], { label: '堆疊(索引,高度遞增)' })] }]
+  const out: FigStep[] = [{ note: '對每根柱子想:「以它為高度」的矩形,往左右能延伸到哪?答案是左右兩邊**第一根比它矮的柱子**之間。單調遞增堆疊可以一次找出所有人的左右邊界', line: 2, views: [arr(H, { label: 'heights', mode: 'bars' }), arr([], { label: '堆疊(索引,高度遞增)' })] }]
   const hs = [...H, 0]
   for (let i = 0; i < hs.length; i++) {
     while (st.length && hs[st[st.length - 1]] >= hs[i]) {
@@ -20,20 +20,21 @@ function stackFig(): FigStep[] {
       best = Math.max(best, area)
       out.push({
         note: `${i < H.length ? `第 ${i} 根(高 ${hs[i]})` : '最後補的高度 0'}比堆疊頂端矮 → 彈出 ${top}(高 ${H[top]}):右邊界是 ${i}、左邊界是新的頂端 ${left},寬 ${w},面積 ${H[top]} × ${w} = ${area}${better ? ' → 目前最大' : ''}`,
+        line: 9, // TODO: 可能要拆格
         views: [arr(H, { label: 'heights', mode: 'bars', highlight: range(left + 1, i - 1), compare: [top] }), arr([...st], { label: '堆疊' })],
       })
     }
     st.push(i)
-    if (i < H.length && (i === 0 || i === 2 || i === 3)) out.push({ note: `第 ${i} 根(高 ${H[i]})比頂端高 → 推入,還不知道它的右邊界`, views: [arr(H, { label: 'heights', mode: 'bars', highlight: [i] }), arr([...st], { label: '堆疊' })] })
+    if (i < H.length && (i === 0 || i === 2 || i === 3)) out.push({ note: `第 ${i} 根(高 ${H[i]})比頂端高 → 推入,還不知道它的右邊界`, line: 11, views: [arr(H, { label: 'heights', mode: 'bars', highlight: [i] }), arr([...st], { label: '堆疊' })] })
   }
-  out.push({ note: `最大面積 ${best}(高 5、6 的兩根,以高度 5 延伸寬 2)`, views: [arr(H, { label: 'heights', mode: 'bars', done: [2, 3] }), arr([best], { label: '答案', done: [0] })] })
+  out.push({ note: `最大面積 ${best}(高 5、6 的兩根,以高度 5 延伸寬 2)`, line: 13, views: [arr(H, { label: 'heights', mode: 'bars', done: [2, 3] }), arr([best], { label: '答案', done: [0] })] })
   return out
 }
 
 function bruteFig(): FigStep[] {
   return [
-    { note: '暴力:每根柱子 i 當作矩形的高度,往左、往右走到第一根比它矮的為止', views: [arr(H, { label: 'heights', mode: 'bars', highlight: [2, 3], compare: [2] })] },
-    { note: '高度 5:左邊 1 比較矮、右邊 2 比較矮 → 寬 2,面積 10。每根都這樣走 → O(n²)', views: [arr(H, { label: 'heights', mode: 'bars', done: [2, 3], dim: [1, 4] })] },
+    { note: '暴力:每根柱子 i 當作矩形的高度,往左、往右走到第一根比它矮的為止', line: 7, /* TODO: 可能要拆格 */ views: [arr(H, { label: 'heights', mode: 'bars', highlight: [2, 3], compare: [2] })] },
+    { note: '高度 5:左邊 1 比較矮、右邊 2 比較矮 → 寬 2,面積 10。每根都這樣走 → O(n²)', line: 9, views: [arr(H, { label: 'heights', mode: 'bars', done: [2, 3], dim: [1, 4] })] },
   ]
 }
 

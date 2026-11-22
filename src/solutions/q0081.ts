@@ -10,41 +10,41 @@ const DUP = [1, 0, 1, 1, 1]
 function bsFig(): FigStep[] {
   let lo = 0
   let hi = A.length - 1
-  const out: FigStep[] = [{ note: '旋轉過的排序陣列:從中間切開,至少有一半是排好序的([33](#/q/33) 的想法)。看那一半有沒有包含 target,決定往哪邊找', views: [arr(A, { label: 'nums' })] }]
+  const out: FigStep[] = [{ note: '旋轉過的排序陣列:從中間切開,至少有一半是排好序的([33](#/q/33) 的想法)。看那一半有沒有包含 target,決定往哪邊找', line: 2, views: [arr(A, { label: 'nums' })] }]
   while (lo <= hi) {
     const m = (lo + hi) >> 1
     if (A[m] === T) {
-      out.push({ note: `nums[${m}] = ${T},找到了 → true`, views: [arr(A, { label: 'nums', range: [lo, hi], done: [m] })] })
+      out.push({ note: `nums[${m}] = ${T},找到了 → true`, line: 5, views: [arr(A, { label: 'nums', range: [lo, hi], done: [m] })] })
       break
     }
     let note: string
     if (A[lo] === A[m] && A[m] === A[hi]) {
       note = `nums[lo] = nums[m] = nums[hi] = ${A[m]}:分不出哪半有序,只能兩端各縮一格`
-      out.push({ note, views: [arr(A, { label: 'nums', range: [lo, hi], highlight: [m], dim: [lo, hi] })] })
+      out.push({ note, line: 6, views: [arr(A, { label: 'nums', range: [lo, hi], highlight: [m], dim: [lo, hi] })] })
       lo++
       hi--
     } else if (A[lo] <= A[m]) {
       const inLeft = A[lo] <= T && T < A[m]
       note = `左半 [${lo}..${m}] 有序(${A[lo]} ≤ ${A[m]}),target ${inLeft ? '在' : '不在'}裡面 → ${inLeft ? '往左' : '往右'}`
-      out.push({ note, views: [arr(A, { label: 'nums', range: [lo, hi], highlight: [m] })] })
+      out.push({ note, line: inLeft ? 10 : 11, views: [arr(A, { label: 'nums', range: [lo, hi], highlight: [m] })] })
       if (inLeft) hi = m - 1
       else lo = m + 1
     } else {
       const inRight = A[m] < T && T <= A[hi]
       note = `右半 [${m}..${hi}] 有序(${A[m]} ≤ ${A[hi]}),target ${inRight ? '在' : '不在'}裡面 → ${inRight ? '往右' : '往左'}`
-      out.push({ note, views: [arr(A, { label: 'nums', range: [lo, hi], highlight: [m] })] })
+      out.push({ note, line: inRight ? 13 : 14, views: [arr(A, { label: 'nums', range: [lo, hi], highlight: [m] })] })
       if (inRight) lo = m + 1
       else hi = m - 1
     }
   }
-  out.push({ note: `有重複時的麻煩例子 [${DUP}]:lo、m、hi 都是 1,根本看不出 0 藏在哪一半 → 只能 lo++、hi−−。全部一樣的時候會退化成 O(n)`, views: [arr(DUP, { label: 'nums', highlight: [0, 2, 4] })] })
+  out.push({ note: `有重複時的麻煩例子 [${DUP}]:lo、m、hi 都是 1,根本看不出 0 藏在哪一半 → 只能 lo++、hi−−。全部一樣的時候會退化成 O(n)`, line: 7, views: [arr(DUP, { label: 'nums', highlight: [0, 2, 4] })] })
   return out
 }
 
 function linFig(): FigStep[] {
   return [
-    { note: '直接從頭找到尾:有重複時,二分最壞也是 O(n),線性掃描反而最單純', views: [arr(A, { label: 'nums', dim: [0, 1, 2] })] },
-    { note: '找到 nums[3] = 0 → true', views: [arr(A, { label: 'nums', done: [3] })] },
+    { note: '直接從頭找到尾:有重複時,二分最壞也是 O(n),線性掃描反而最單純', line: 2, views: [arr(A, { label: 'nums', dim: [0, 1, 2] })] },
+    { note: '找到 nums[3] = 0 → true', line: 2, views: [arr(A, { label: 'nums', done: [3] })] },
   ]
 }
 

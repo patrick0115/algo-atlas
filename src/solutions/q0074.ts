@@ -20,25 +20,25 @@ function grid(marks: GridViewData['marks'] = {}, label = 'matrix'): GridViewData
 function stairFig(): FigStep[] {
   let r = 0
   let c = C - 1
-  const out: FigStep[] = [{ note: '從**右上角**出發:它是這一列最大、這一行最小。比 target 大就往左(整行都更大,排除),小就往下(整列都更小,排除)', views: [grid({ hl: [[r, c]] })] }]
+  const out: FigStep[] = [{ note: '從**右上角**出發:它是這一列最大、這一行最小。比 target 大就往左(整行都更大,排除),小就往下(整列都更小,排除)', line: 2, views: [grid({ hl: [[r, c]] })] }]
   const gone: Cell[] = []
   while (r < R && c >= 0) {
     const v = M[r][c]
     if (v === T) {
-      out.push({ note: `matrix[${r}][${c}] = ${v} = target → 找到`, views: [grid({ hl: [[r, c]], dim: gone })] })
+      out.push({ note: `matrix[${r}][${c}] = ${v} = target → 找到`, line: 5, views: [grid({ hl: [[r, c]], dim: gone })] })
       return out
     }
     if (v > T) {
-      out.push({ note: `matrix[${r}][${c}] = ${v} > ${T}:這一行往下只會更大 → 整行排除,往左`, views: [grid({ cmp: [[r, c]], dim: [...gone] })] })
+      out.push({ note: `matrix[${r}][${c}] = ${v} > ${T}:這一行往下只會更大 → 整行排除,往左`, line: 6, views: [grid({ cmp: [[r, c]], dim: [...gone] })] })
       for (let k = 0; k < R; k++) gone.push([k, c])
       c--
     } else {
-      out.push({ note: `matrix[${r}][${c}] = ${v} < ${T}:這一列往左只會更小 → 整列排除,往下`, views: [grid({ cmp: [[r, c]], dim: [...gone] })] })
+      out.push({ note: `matrix[${r}][${c}] = ${v} < ${T}:這一列往左只會更小 → 整列排除,往下`, line: 7, views: [grid({ cmp: [[r, c]], dim: [...gone] })] })
       for (let k = 0; k < C; k++) gone.push([r, k])
       r++
     }
   }
-  out.push({ note: '走出矩陣 → 找不到', views: [grid({ dim: gone })] })
+  out.push({ note: '走出矩陣 → 找不到', line: 9, views: [grid({ dim: gone })] })
   return out
 }
 
@@ -47,20 +47,20 @@ function flatFig(): FigStep[] {
   let hi = R * C - 1
   const cellOf = (k: number): Cell => [Math.floor(k / C), k % C]
   const inRange = () => range(lo, hi).map(cellOf)
-  const out: FigStep[] = [{ note: `每一列接在上一列後面就是一個長度 ${R * C} 的有序陣列。第 k 個 = matrix[k / ${C}][k % ${C}],直接對 k 二分`, views: [grid({ path: inRange() })] }]
+  const out: FigStep[] = [{ note: `每一列接在上一列後面就是一個長度 ${R * C} 的有序陣列。第 k 個 = matrix[k / ${C}][k % ${C}],直接對 k 二分`, line: 3, views: [grid({ path: inRange() })] }]
   while (lo <= hi) {
     const mid = (lo + hi) >> 1
     const [r, c] = cellOf(mid)
     const v = M[r][c]
     if (v === T) {
-      out.push({ note: `mid = ${mid} → (${r}, ${c}) = ${v} = target → 找到`, views: [grid({ path: inRange(), hl: [[r, c]] })] })
+      out.push({ note: `mid = ${mid} → (${r}, ${c}) = ${v} = target → 找到`, line: 7, views: [grid({ path: inRange(), hl: [[r, c]] })] })
       return out
     }
-    out.push({ note: `區間 [${lo}, ${hi}],mid = ${mid} → (${mid} / ${C}, ${mid} % ${C}) = (${r}, ${c}),值 ${v} ${v < T ? `< ${T} → lo = mid + 1` : `> ${T} → hi = mid − 1`}`, views: [grid({ path: inRange(), cmp: [[r, c]] })] })
+    out.push({ note: `區間 [${lo}, ${hi}],mid = ${mid} → (${mid} / ${C}, ${mid} % ${C}) = (${r}, ${c}),值 ${v} ${v < T ? `< ${T} → lo = mid + 1` : `> ${T} → hi = mid − 1`}`, line: v < T ? 8 : 9, views: [grid({ path: inRange(), cmp: [[r, c]] })] })
     if (v < T) lo = mid + 1
     else hi = mid - 1
   }
-  out.push({ note: '區間變空 → 找不到', views: [grid()] })
+  out.push({ note: '區間變空 → 找不到', line: 11, views: [grid()] })
   return out
 }
 
@@ -68,25 +68,25 @@ function twoFig(): FigStep[] {
   // 先找列:最後一個 matrix[r][0] <= target 的列
   let lo = 0
   let hi = R - 1
-  const out: FigStep[] = [{ note: '分兩次二分:先在**第一行**找「target 該在哪一列」,再在那一列裡找', views: [grid({ path: range(0, R - 1).map((r) => [r, 0] as Cell) })] }]
+  const out: FigStep[] = [{ note: '分兩次二分:先在**第一行**找「target 該在哪一列」,再在那一列裡找', line: 2, views: [grid({ path: range(0, R - 1).map((r) => [r, 0] as Cell) })] }]
   while (lo <= hi) {
     const mid = (lo + hi) >> 1
-    out.push({ note: `列的區間 [${lo}, ${hi}],看 matrix[${mid}][0] = ${M[mid][0]} ${M[mid][0] <= T ? `≤ ${T} → 答案在這列或更下面,lo = mid + 1` : `> ${T} → 在更上面,hi = mid − 1`}`, views: [grid({ path: range(lo, hi).map((r) => [r, 0] as Cell), cmp: [[mid, 0]] })] })
+    out.push({ note: `列的區間 [${lo}, ${hi}],看 matrix[${mid}][0] = ${M[mid][0]} ${M[mid][0] <= T ? `≤ ${T} → 答案在這列或更下面,lo = mid + 1` : `> ${T} → 在更上面,hi = mid − 1`}`, line: M[mid][0] <= T ? 5 : 6, views: [grid({ path: range(lo, hi).map((r) => [r, 0] as Cell), cmp: [[mid, 0]] })] })
     if (M[mid][0] <= T) lo = mid + 1
     else hi = mid - 1
   }
   const row = hi
-  out.push({ note: `第一行裡最後一個 ≤ ${T} 的是第 ${row} 列 → target 只可能在這一列`, views: [grid({ path: range(0, C - 1).map((c) => [row, c] as Cell) })] })
+  out.push({ note: `第一行裡最後一個 ≤ ${T} 的是第 ${row} 列 → target 只可能在這一列`, line: 9, views: [grid({ path: range(0, C - 1).map((c) => [row, c] as Cell) })] })
   lo = 0
   hi = C - 1
   while (lo <= hi) {
     const mid = (lo + hi) >> 1
     const v = M[row][mid]
     if (v === T) {
-      out.push({ note: `在第 ${row} 列二分:matrix[${row}][${mid}] = ${v} = target → 找到`, views: [grid({ hl: [[row, mid]] })] })
+      out.push({ note: `在第 ${row} 列二分:matrix[${row}][${mid}] = ${v} = target → 找到`, line: 13, views: [grid({ hl: [[row, mid]] })] })
       return out
     }
-    out.push({ note: `在第 ${row} 列二分:matrix[${row}][${mid}] = ${v} ${v < T ? '太小,往右' : '太大,往左'}`, views: [grid({ path: range(lo, hi).map((c) => [row, c] as Cell), cmp: [[row, mid]] })] })
+    out.push({ note: `在第 ${row} 列二分:matrix[${row}][${mid}] = ${v} ${v < T ? '太小,往右' : '太大,往左'}`, line: v < T ? 14 : 15, views: [grid({ path: range(lo, hi).map((c) => [row, c] as Cell), cmp: [[row, mid]] })] })
     if (v < T) lo = mid + 1
     else hi = mid - 1
   }

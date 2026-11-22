@@ -11,11 +11,11 @@ function bfsFig(): FigStep[] {
   const q: FNode[] = [root]
   const res: number[][] = []
   const done: Record<number, string> = {}
-  const out: FigStep[] = [{ note: '用佇列(先進先出)一層一層走。關鍵:每一層開始前,先記下「佇列裡現在有幾個」—— 剛好就是這一層的節點數', views: [tree(T), arr(q.map((n) => n.val), { label: '佇列' })] }]
+  const out: FigStep[] = [{ note: '用佇列(先進先出)一層一層走。關鍵:每一層開始前,先記下「佇列裡現在有幾個」—— 剛好就是這一層的節點數', line: 3, views: [tree(T), arr(q.map((n) => n.val), { label: '佇列' })] }]
   while (q.length) {
     const size = q.length
     const level: number[] = []
-    out.push({ note: `新的一層開始,佇列裡有 ${size} 個 → 這一層就是它們 [${q.map((n) => n.val).join(', ')}]`, views: [tree(T, { cls: { ...done, ...Object.fromEntries(q.map((n) => [n.i, 'hl'])) } }), arr(q.map((n) => n.val), { label: '佇列', highlight: q.map((_, i) => i) })] })
+    out.push({ note: `新的一層開始,佇列裡有 ${size} 個 → 這一層就是它們 [${q.map((n) => n.val).join(', ')}]`, line: 4, views: [tree(T, { cls: { ...done, ...Object.fromEntries(q.map((n) => [n.i, 'hl'])) } }), arr(q.map((n) => n.val), { label: '佇列', highlight: q.map((_, i) => i) })] })
     for (let k = 0; k < size; k++) {
       const n = q.shift()!
       level.push(n.val)
@@ -24,7 +24,7 @@ function bfsFig(): FigStep[] {
       if (n.right) q.push(n.right)
     }
     res.push(level)
-    out.push({ note: `拿出這 ${size} 個,收進答案 [${level.join(', ')}],它們的孩子排到佇列後面`, views: [tree(T, { cls: { ...done } }), arr(q.map((n) => n.val), { label: '佇列(下一層)' }), arr(res.map((l) => `[${l.join(',')}]`), { label: '答案' })] })
+    out.push({ note: `拿出這 ${size} 個,收進答案 [${level.join(', ')}],它們的孩子排到佇列後面`, line: 5, views: [tree(T, { cls: { ...done } }), arr(q.map((n) => n.val), { label: '佇列(下一層)' }), arr(res.map((l) => `[${l.join(',')}]`), { label: '答案' })] }) // TODO: 可能要拆格
   }
   return out
 }
@@ -32,12 +32,12 @@ function bfsFig(): FigStep[] {
 function dfsFig(): FigStep[] {
   const root = buildTree(T)
   const res: number[][] = []
-  const out: FigStep[] = [{ note: '也可以用 DFS:遞迴時帶著「現在第幾層」,把節點放進 res[depth]。前序(先左後右)保證同一層由左到右', views: [tree(T)] }]
+  const out: FigStep[] = [{ note: '也可以用 DFS:遞迴時帶著「現在第幾層」,把節點放進 res[depth]。前序(先左後右)保證同一層由左到右', line: 10, views: [tree(T)] }]
   const go = (n: FNode | null, d: number) => {
     if (!n) return
     if (res.length === d) res.push([])
     res[d].push(n.val)
-    out.push({ note: `節點 ${n.val} 在第 ${d} 層 → 放進 res[${d}]`, views: [tree(T, { cls: { [n.i]: 'hl' }, subs: { [n.i]: `第${d}層` } }), arr(res.map((l) => `[${l.join(',')}]`), { label: 'res' })] })
+    out.push({ note: `節點 ${n.val} 在第 ${d} 層 → 放進 res[${d}]`, line: 6, views: [tree(T, { cls: { [n.i]: 'hl' }, subs: { [n.i]: `第${d}層` } }), arr(res.map((l) => `[${l.join(',')}]`), { label: 'res' })] })
     go(n.left, d + 1)
     go(n.right, d + 1)
   }

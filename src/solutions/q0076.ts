@@ -14,7 +14,7 @@ function windowFig(): FigStep[] {
   let missing = T.length
   let l = 0
   let best: [number, number] = [0, -1]
-  const out: FigStep[] = [{ note: `need = t 裡每個字還欠幾個;missing = 總共還欠幾個字(${missing})。右指針一直往右擴,直到 missing = 0(視窗已經包含 t 的所有字)`, views: [arr(s, { label: 's' }), kv([...need.entries()], 'need')] }]
+  const out: FigStep[] = [{ note: `need = t 裡每個字還欠幾個;missing = 總共還欠幾個字(${missing})。右指針一直往右擴,直到 missing = 0(視窗已經包含 t 的所有字)`, line: 4, views: [arr(s, { label: 's' }), kv([...need.entries()], 'need')] }]
   for (let r = 0; r < s.length; r++) {
     const c = s[r]
     if (need.has(c)) {
@@ -22,7 +22,7 @@ function windowFig(): FigStep[] {
       need.set(c, need.get(c)! - 1)
     }
     if (missing > 0) continue
-    out.push({ note: `r = ${r}("${c}"):視窗 "${S.slice(l, r + 1)}" 已經包含 A、B、C → 開始從左邊縮`, views: [arr(s, { label: 's', highlight: range(l, r) }), kv([...need.entries()], 'need(負數 = 多出來的)')] })
+    out.push({ note: `r = ${r}("${c}"):視窗 "${S.slice(l, r + 1)}" 已經包含 A、B、C → 開始從左邊縮`, line: 9, views: [arr(s, { label: 's', highlight: range(l, r) }), kv([...need.entries()], 'need(負數 = 多出來的)')] })
     while (true) {
       const lc = s[l]
       if (need.has(lc)) {
@@ -33,19 +33,19 @@ function windowFig(): FigStep[] {
     }
     const better = best[1] < 0 || r - l < best[1] - best[0]
     if (better) best = [l, r]
-    out.push({ note: `左邊縮到不能再縮(再縮就少了 "${s[l]}"):"${S.slice(l, r + 1)}",長度 ${r - l + 1}${better ? ' → 目前最短' : ''}`, views: [arr(s, { label: 's', highlight: range(l, r), done: better ? [] : range(best[0], best[1]) }), kv([...need.entries()], 'need')] })
+    out.push({ note: `左邊縮到不能再縮(再縮就少了 "${s[l]}"):"${S.slice(l, r + 1)}",長度 ${r - l + 1}${better ? ' → 目前最短' : ''}`, line: 11, /* TODO: 可能要拆格(while 縮左邊與更新答案兩段) */ views: [arr(s, { label: 's', highlight: range(l, r), done: better ? [] : range(best[0], best[1]) }), kv([...need.entries()], 'need')] })
     need.set(s[l], need.get(s[l])! + 1)
     missing++
     l++
   }
-  out.push({ note: `最短的視窗是 "${S.slice(best[0], best[1] + 1)}"`, views: [arr(s, { label: 's', done: range(best[0], best[1]) })] })
+  out.push({ note: `最短的視窗是 "${S.slice(best[0], best[1] + 1)}"`, line: 17, views: [arr(s, { label: 's', done: range(best[0], best[1]) })] })
   return out
 }
 
 function bruteFig(): FigStep[] {
   return [
-    { note: '暴力:列出所有子字串(n² 個),每個都檢查有沒有包含 t 的所有字', views: [arr(S.split(''), { label: 's', highlight: [0, 1, 2, 3, 4, 5] })] },
-    { note: '固定左端,往右延伸到第一次「包含」就可以停(再長只會更長)。仍然是 O(n²)', views: [arr(S.split(''), { label: 's', highlight: range(9, 12) })] },
+    { note: '暴力:列出所有子字串(n² 個),每個都檢查有沒有包含 t 的所有字', line: 5, views: [arr(S.split(''), { label: 's', highlight: [0, 1, 2, 3, 4, 5] })] },
+    { note: '固定左端,往右延伸到第一次「包含」就可以停(再長只會更長)。仍然是 O(n²)', line: 9, views: [arr(S.split(''), { label: 's', highlight: range(9, 12) })] },
   ]
 }
 

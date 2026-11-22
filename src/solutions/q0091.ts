@@ -20,8 +20,8 @@ function treeFig(): FigStep[] {
   const pos = recLayout(nodes)
   const ok = nodes.filter((n) => n.kind === 'ok').length
   return [
-    { note: '每一步可以吃 1 個數字(1~9)或 2 個數字(10~26),各自對應一個字母。所有走到底的路就是所有解碼方式', views: [recView(nodes, pos, 0, '決策樹')] },
-    { note: `共 ${ok} 種(走到底的節點)。注意同一個「剩下的字串」會出現好幾次 —— 它的解碼數只和剩下多少有關,可以重複利用`, views: [recView(nodes, pos, nodes.length - 1, '決策樹')] },
+    { note: '每一步可以吃 1 個數字(1~9)或 2 個數字(10~26),各自對應一個字母。所有走到底的路就是所有解碼方式', line: 7, views: [recView(nodes, pos, 0, '決策樹')] },
+    { note: `共 ${ok} 種(走到底的節點)。注意同一個「剩下的字串」會出現好幾次 —— 它的解碼數只和剩下多少有關,可以重複利用`, line: 6, views: [recView(nodes, pos, nodes.length - 1, '決策樹')] },
   ]
 }
 
@@ -29,7 +29,7 @@ function dpFig(): FigStep[] {
   const n = S.length
   const dp: (number | string)[] = Array(n + 1).fill('?')
   dp[0] = 1
-  const out: FigStep[] = [{ note: 'dp[i] = 前 i 個數字有幾種解碼方式,dp[0] = 1(空字串一種)。最後一個字母可能用掉 1 個數字或 2 個數字', views: [arr([...S], { label: 's' }), arr(dp, { label: 'dp' })] }]
+  const out: FigStep[] = [{ note: 'dp[i] = 前 i 個數字有幾種解碼方式,dp[0] = 1(空字串一種)。最後一個字母可能用掉 1 個數字或 2 個數字', line: 3, views: [arr([...S], { label: 's' }), arr(dp, { label: 'dp' })] }]
   for (let i = 1; i <= n; i++) {
     let v = 0
     const parts: string[] = []
@@ -45,9 +45,10 @@ function dpFig(): FigStep[] {
       } else parts.push(`"${S.slice(i - 2, i)}" 不能當一個字母`)
     }
     dp[i] = v
-    out.push({ note: `dp[${i}]:${parts.join(';')} → ${v}`, views: [arr([...S], { label: 's', highlight: [i - 1], compare: i >= 2 ? [i - 2] : [], dim: range(i, n - 1) }), arr(dp, { label: 'dp', highlight: [i] })] })
+    out.push({ note: `dp[${i}]:${parts.join(';')} → ${v}`, line: 5, // TODO: 可能要拆格(單獨 5 與兩位 8 一次演完)
+      views: [arr([...S], { label: 's', highlight: [i - 1], compare: i >= 2 ? [i - 2] : [], dim: range(i, n - 1) }), arr(dp, { label: 'dp', highlight: [i] })] })
   }
-  out.push({ note: `答案 dp[${n}] = ${dp[n]}`, views: [arr(dp, { label: 'dp', done: [n] })] })
+  out.push({ note: `答案 dp[${n}] = ${dp[n]}`, line: 11, views: [arr(dp, { label: 'dp', done: [n] })] })
   return out
 }
 

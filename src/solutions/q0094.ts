@@ -9,25 +9,28 @@ const T = [4, 2, 6, 1, 3, 5, 7]
 function recFig(): FigStep[] {
   // 層序索引:0:4 1:2 2:6 3:1 4:3 5:5 6:7;中序 = 1 2 3 4 5 6 7
   const order = [3, 1, 4, 0, 5, 2, 6]
-  const out: FigStep[] = [{ note: '中序 = 左子樹 → 自己 → 右子樹。對每個節點都照這個順序,遞迴就寫完了。(這棵是 BST,中序剛好是由小到大)', views: [tree(T)] }]
+  const out: FigStep[] = [{ note: '中序 = 左子樹 → 自己 → 右子樹。對每個節點都照這個順序,遞迴就寫完了。(這棵是 BST,中序剛好是由小到大)', line: 5, views: [tree(T)] }]
   order.forEach((idx, k) => {
-    if (k % 2 === 0 || k === 3) out.push({ note: `記下 ${T[idx]}${k === 0 ? '(最左下角的節點,沒有左子樹)' : k === 3 ? '(根:左子樹全部走完了才輪到它)' : ''}`, views: [tree(T, { cls: { ...Object.fromEntries(order.slice(0, k).map((i) => [i, 'done'])), [idx]: 'hl' } }), arr(order.slice(0, k + 1).map((i) => T[i]), { label: '結果' })] })
+    if (k % 2 === 0 || k === 3) out.push({ note: `記下 ${T[idx]}${k === 0 ? '(最左下角的節點,沒有左子樹)' : k === 3 ? '(根:左子樹全部走完了才輪到它)' : ''}`, line: 6, views: [tree(T, { cls: { ...Object.fromEntries(order.slice(0, k).map((i) => [i, 'done'])), [idx]: 'hl' } }), arr(order.slice(0, k + 1).map((i) => T[i]), { label: '結果' })] })
   })
   return out
 }
 
 function stackFig(): FigStep[] {
   return [
-    { note: '迭代版:用堆疊模擬遞迴。一路往左走,把經過的節點 push(它們都還在等左子樹處理完)', views: [tree(T, { cls: { 0: 'cur', 1: 'cur', 3: 'hl' } }), arr([4, 2, 1], { label: '堆疊(右邊是頂)' })] },
-    { note: '走到底(null)就 pop:pop 出來的節點左邊已經處理完 → 記下它,然後轉去它的右子樹,重複「一路往左」', views: [tree(T, { cls: { 3: 'done', 1: 'hl' } }), arr([4, 2], { label: '堆疊' }), arr([1], { label: '結果' })] },
-    { note: '2 記下後轉到右子樹 3:往左走(3 沒有左孩子)→ pop 3 記下;再 pop 4 記下,轉去 6…', views: [tree(T, { cls: { 3: 'done', 1: 'done', 4: 'done', 0: 'hl' } }), arr([1, 2, 3, 4], { label: '結果' })] },
+    { note: '迭代版:用堆疊模擬遞迴。一路往左走,把經過的節點 push(它們都還在等左子樹處理完)', line: 6, views: [tree(T, { cls: { 0: 'cur', 1: 'cur', 3: 'hl' } }), arr([4, 2, 1], { label: '堆疊(右邊是頂)' })] },
+    { note: '走到底(null)就 pop:pop 出來的節點左邊已經處理完 → 記下它,然後轉去它的右子樹,重複「一路往左」', line: 9, // TODO: 可能要拆格(pop 9、記下 10、轉右 11 一次演完)
+      views: [tree(T, { cls: { 3: 'done', 1: 'hl' } }), arr([4, 2], { label: '堆疊' }), arr([1], { label: '結果' })] },
+    { note: '2 記下後轉到右子樹 3:往左走(3 沒有左孩子)→ pop 3 記下;再 pop 4 記下,轉去 6…', line: 10, // TODO: 可能要拆格(多輪 pop / 記下 / 轉右 一次演完)
+      views: [tree(T, { cls: { 3: 'done', 1: 'done', 4: 'done', 0: 'hl' } }), arr([1, 2, 3, 4], { label: '結果' })] },
   ]
 }
 
 function morrisFig(): FigStep[] {
   return [
-    { note: 'Morris:不用堆疊,也不用遞迴。走到有左子樹的節點 cur 時,找它左子樹裡最右邊的節點(中序的前一個),把它的右指標暫時指回 cur,當作「回來的路」', views: [tree(T, { cls: { 0: 'cur', 4: 'hl' }, subs: { 4: '3.right → 4' } })] },
-    { note: '之後沿著這條暫時的線回到 cur 時,就知道左子樹已經走完:把線拆掉、記下 cur、往右走。每條邊最多走兩次,O(n) 時間 O(1) 空間', views: [tree(T, { cls: { 3: 'done', 1: 'done', 4: 'done', 0: 'hl' } })] },
+    { note: 'Morris:不用堆疊,也不用遞迴。走到有左子樹的節點 cur 時,找它左子樹裡最右邊的節點(中序的前一個),把它的右指標暫時指回 cur,當作「回來的路」', line: 13, views: [tree(T, { cls: { 0: 'cur', 4: 'hl' }, subs: { 4: '3.right → 4' } })] },
+    { note: '之後沿著這條暫時的線回到 cur 時,就知道左子樹已經走完:把線拆掉、記下 cur、往右走。每條邊最多走兩次,O(n) 時間 O(1) 空間', line: 16, // TODO: 可能要拆格(拆線 16、記下 17、往右 18 一次演完)
+      views: [tree(T, { cls: { 3: 'done', 1: 'done', 4: 'done', 0: 'hl' } })] },
   ]
 }
 

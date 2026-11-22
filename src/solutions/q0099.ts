@@ -6,19 +6,19 @@ const T = [3, 1, 4, null, null, 2]
 
 function sortFig(): FigStep[] {
   return [
-    { note: 'BST 的中序順序應該由小到大；目前走訪得到 [1,3,2,4]，可看出 3 與 2 放錯位置。', views: [tree(T, { cls: { 0: 'hl', 5: 'hl' } })] },
-    { note: '把走訪的節點依序存起來，再把它們的值排序成 [1,2,3,4]。', views: [tree(T), arr([1, 2, 3, 4], { label: '排序後的中序值' })] },
-    { note: '按中序順序把排序後的值寫回原節點；只改值，不改樹的連結。', views: [tree([2, 1, 4, null, null, 3], { cls: { 0: 'hl', 5: 'hl' } })] },
-    { note: '結果中序為 [1,2,3,4]，恢復 BST。', views: [tree([2, 1, 4, null, null, 3], { cls: { 0: 'done', 1: 'done', 2: 'done', 5: 'done' } })] },
+    { note: 'BST 的中序順序應該由小到大；目前走訪得到 [1,3,2,4]，可看出 3 與 2 放錯位置。', line: 11, views: [tree(T, { cls: { 0: 'hl', 5: 'hl' } })] },
+    { note: '把走訪的節點依序存起來，再把它們的值排序成 [1,2,3,4]。', line: 12, views: [tree(T), arr([1, 2, 3, 4], { label: '排序後的中序值' })] },
+    { note: '按中序順序把排序後的值寫回原節點；只改值，不改樹的連結。', line: 14, views: [tree([2, 1, 4, null, null, 3], { cls: { 0: 'hl', 5: 'hl' } })] },
+    { note: '結果中序為 [1,2,3,4]，恢復 BST。', line: 14, views: [tree([2, 1, 4, null, null, 3], { cls: { 0: 'done', 1: 'done', 2: 'done', 5: 'done' } })] },
   ]
 }
 
 function inversionFig(): FigStep[] {
   return [
-    { note: '中序走訪先到 1，再到 3；目前 1<3，仍符合 BST。', views: [tree(T, { cls: { 1: 'done', 0: 'hl' } })] },
-    { note: '下一個值 2 小於前一個 3，出現逆序。第一次逆序先記前一個節點 3，並記目前節點 2。', views: [tree(T, { cls: { 0: 'hl', 5: 'hl' } })] },
-    { note: '最後走到 4 沒有第二次逆序；要交換的就是記下的 3 與 2。若有第二次逆序，第二個錯誤節點應改記那次的目前節點。', views: [tree(T, { cls: { 0: 'hl', 5: 'hl', 2: 'done' } })] },
-    { note: '交換兩個節點的值，得到 [2,1,4,null,null,3]。', views: [tree([2, 1, 4, null, null, 3], { cls: { 0: 'done', 1: 'done', 2: 'done', 5: 'done' } })] },
+    { note: '中序走訪先到 1，再到 3；目前 1<3，仍符合 BST。', line: 10, views: [tree(T, { cls: { 1: 'done', 0: 'hl' } })] },
+    { note: '下一個值 2 小於前一個 3，出現逆序。第一次逆序先記前一個節點 3，並記目前節點 2。', line: 12, views: [tree(T, { cls: { 0: 'hl', 5: 'hl' } })] }, // TODO: 可能要拆格
+    { note: '最後走到 4 沒有第二次逆序；要交換的就是記下的 3 與 2。若有第二次逆序，第二個錯誤節點應改記那次的目前節點。', line: 20, views: [tree(T, { cls: { 0: 'hl', 5: 'hl', 2: 'done' } })] }, // TODO: 可能要拆格
+    { note: '交換兩個節點的值，得到 [2,1,4,null,null,3]。', line: 20, views: [tree([2, 1, 4, null, null, 3], { cls: { 0: 'done', 1: 'done', 2: 'done', 5: 'done' } })] },
   ]
 }
 

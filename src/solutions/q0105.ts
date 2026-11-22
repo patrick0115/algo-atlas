@@ -13,6 +13,7 @@ function buildFig(withMap: boolean): FigStep[] {
   const out: FigStep[] = [
     {
       note: '前序 = 根、左子樹、右子樹;中序 = 左子樹、根、右子樹。所以**前序的第一個一定是根**;在中序裡找到根,左邊就是左子樹、右邊就是右子樹',
+      line: 2,
       views: [arr(PRE, { label: 'preorder' }), arr(IN, { label: 'inorder' })],
     },
   ]
@@ -26,6 +27,7 @@ function buildFig(withMap: boolean): FigStep[] {
     attach(node)
     out.push({
       note: `前序下一個是 ${v} → 它是這棵子樹的根。${withMap ? '查 map' : '在中序裡找'}:${v} 在中序的第 ${k} 格 → ${k > lo ? `左子樹是中序 [${lo}, ${k - 1}](${k - lo} 個)` : '左邊沒有東西,左子樹是空的'}、${hi > k ? `右子樹是 [${k + 1}, ${hi}](${hi - k} 個)` : '右邊沒有東西,右子樹是空的'}`,
+      line: 6, // TODO: 可能要拆格
       views: [
         arr(PRE, { label: 'preorder', highlight: [p - 1], dim: range(0, p - 2) }),
         arr(IN, { label: 'inorder', range: [lo, hi], highlight: [k], compare: [...range(lo, k - 1)], dim: [...range(0, lo - 1), ...range(hi + 1, IN.length - 1)] }),
@@ -37,7 +39,7 @@ function buildFig(withMap: boolean): FigStep[] {
   }
   go(0, IN.length - 1, (n) => (root = n))
   const r = root
-  out.push({ note: '前序用完,整棵樹建好了', views: [treeOf(r, { label: '結果' })] })
+  out.push({ note: '前序用完,整棵樹建好了', line: 12, views: [treeOf(r, { label: '結果' })] })
   return out
 }
 

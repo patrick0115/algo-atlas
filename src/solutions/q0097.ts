@@ -15,7 +15,7 @@ function dpFig(): FigStep[] {
   const m = S1.length
   const n = S2.length
   const dp: string[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(''))
-  const out: FigStep[] = [{ note: `s3 的第 i+j 個字,一定是 s1 的第 i 個或 s2 的第 j 個(交錯時兩邊各自保持順序)。dp[0][0] = ✓`, views: [table(dp)] }]
+  const out: FigStep[] = [{ note: `s3 的第 i+j 個字,一定是 s1 的第 i 個或 s2 的第 j 個(交錯時兩邊各自保持順序)。dp[0][0] = ✓`, line: 5, views: [table(dp)] }]
   for (let i = 0; i <= m; i++)
     for (let j = 0; j <= n; j++) {
       if (i === 0 && j === 0) {
@@ -26,9 +26,9 @@ function dpFig(): FigStep[] {
       const fromUp = i > 0 && dp[i - 1][j] === '✓' && S1[i - 1] === c
       const fromLeft = j > 0 && dp[i][j - 1] === '✓' && S2[j - 1] === c
       dp[i][j] = fromUp || fromLeft ? '✓' : '·'
-      out.push({ note: `dp[${i}][${j}]:s3 的第 ${i + j} 個字是 "${c}"。${fromUp ? `從上面來(s1 的 "${S1[i - 1]}")✓` : fromLeft ? `從左邊來(s2 的 "${S2[j - 1]}")✓` : '上面或左邊都接不上 ·'}`, views: [table(dp, [[i, j]], [...(i > 0 ? [[i - 1, j] as Cell] : []), ...(j > 0 ? [[i, j - 1] as Cell] : [])])] })
+      out.push({ note: `dp[${i}][${j}]:s3 的第 ${i + j} 個字是 "${c}"。${fromUp ? `從上面來(s1 的 "${S1[i - 1]}")✓` : fromLeft ? `從左邊來(s2 的 "${S2[j - 1]}")✓` : '上面或左邊都接不上 ·'}`, line: fromUp ? 8 : fromLeft ? 9 : 8, views: [table(dp, [[i, j]], [...(i > 0 ? [[i - 1, j] as Cell] : []), ...(j > 0 ? [[i, j - 1] as Cell] : [])])] })
     }
-  out.push({ note: `dp[${m}][${n}] = ${dp[m][n]}`, views: [table(dp, [[m, n]])] })
+  out.push({ note: `dp[${m}][${n}] = ${dp[m][n]}`, line: 11, views: [table(dp, [[m, n]])] })
   return out
 }
 
@@ -53,7 +53,7 @@ export const q0097: Solution = {
       name: '遞迴 + 記憶化',
       idea: '`f(i, j)`:s1[i:] 和 s2[j:] 能不能拼出 s3[i+j:]。下一個字和 s1[i] 一樣就試 `f(i+1, j)`,和 s2[j] 一樣就試 `f(i, j+1)`。',
       steps: ['長度不符 → false', '`i == m and j == n` → true', '`s1[i] == s3[i+j]` 且 `f(i+1, j)` → true', '`s2[j] == s3[i+j]` 且 `f(i, j+1)` → true;記憶化'],
-      figure: { title: `s1 = "${S1}", s2 = "${S2}", s3 = "${S3}"(借用方法二的前綴表,方向和 f(i, j) 相反)`, steps: dpFig().slice(0, 5) },
+      figure: { title: `s1 = "${S1}", s2 = "${S2}", s3 = "${S3}"(借用方法二的前綴表,方向和 f(i, j) 相反)`, steps: dpFig().slice(0, 5) }, // 註:借用方法二的圖,line 是方法二 code 的行號,對不上方法一
       complexity: { time: 'O(m · n)', space: 'O(m · n)', why: '狀態 (i, j) 共 (m+1)(n+1) 種。沒有記憶化會是指數級。' },
       verdict: '最自然的想法:每一步決定「下一個字從哪邊拿」。',
       code: {

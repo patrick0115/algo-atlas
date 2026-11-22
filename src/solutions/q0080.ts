@@ -8,24 +8,24 @@ const A = [0, 0, 1, 1, 1, 1, 2, 3, 3]
 function ptrFig(): FigStep[] {
   const a = [...A]
   let w = 2
-  const out: FigStep[] = [{ note: '每個數最多留 2 個。前 2 個一定留,w 從 2 開始。判斷 nums[i] 能不能留:和 nums[w − 2] 比 —— 如果一樣,代表已經留了兩個同樣的,不能再留', views: [arr([...a], { label: 'nums', done: [0, 1], pointers: [{ name: 'w', index: 2 }] })] }]
+  const out: FigStep[] = [{ note: '每個數最多留 2 個。前 2 個一定留,w 從 2 開始。判斷 nums[i] 能不能留:和 nums[w − 2] 比 —— 如果一樣,代表已經留了兩個同樣的,不能再留', line: 2, views: [arr([...a], { label: 'nums', done: [0, 1], pointers: [{ name: 'w', index: 2 }] })] }]
   for (let i = 2; i < a.length; i++) {
     if (a[i] !== a[w - 2]) {
       a[w] = a[i]
-      out.push({ note: `nums[${i}] = ${a[i]} ≠ nums[w−2] = nums[${w - 2}] = ${a[w - 2]} → 可以留,寫到 nums[${w}]`, views: [arr([...a], { label: 'nums', highlight: [w], compare: [w - 2], done: Array.from({ length: w }, (_, k) => k), pointers: [{ name: 'w', index: w }, { name: 'i', index: i, color: 'b' }] })] })
+      out.push({ note: `nums[${i}] = ${a[i]} ≠ nums[w−2] = nums[${w - 2}] = ${a[w - 2]} → 可以留,寫到 nums[${w}]`, line: 3, views: [arr([...a], { label: 'nums', highlight: [w], compare: [w - 2], done: Array.from({ length: w }, (_, k) => k), pointers: [{ name: 'w', index: w }, { name: 'i', index: i, color: 'b' }] })] })
       w++
     } else {
-      out.push({ note: `nums[${i}] = ${a[i]} 和 nums[${w - 2}] 一樣 → 前面已經有兩個 ${a[i]} 了,跳過`, views: [arr([...a], { label: 'nums', dim: [i], compare: [w - 2], done: Array.from({ length: w }, (_, k) => k), pointers: [{ name: 'w', index: w }, { name: 'i', index: i, color: 'b' }] })] })
+      out.push({ note: `nums[${i}] = ${a[i]} 和 nums[${w - 2}] 一樣 → 前面已經有兩個 ${a[i]} 了,跳過`, line: 3, views: [arr([...a], { label: 'nums', dim: [i], compare: [w - 2], done: Array.from({ length: w }, (_, k) => k), pointers: [{ name: 'w', index: w }, { name: 'i', index: i, color: 'b' }] })] })
     }
   }
-  out.push({ note: `回傳 k = ${w}:[${a.slice(0, w)}]`, views: [arr(a, { label: 'nums', done: Array.from({ length: w }, (_, k) => k), dim: Array.from({ length: a.length - w }, (_, k) => w + k) })] })
+  out.push({ note: `回傳 k = ${w}:[${a.slice(0, w)}]`, line: 4, views: [arr(a, { label: 'nums', done: Array.from({ length: w }, (_, k) => k), dim: Array.from({ length: a.length - w }, (_, k) => w + k) })] })
   return out
 }
 
 function cntFig(): FigStep[] {
   return [
-    { note: '另一種想法:記住「目前這個數已經連續出現幾次」。和前一個一樣就 cnt + 1,不一樣就重設為 1', views: [arr(A, { label: 'nums' }), arr([1, 2, 1, 2, 3, 4, 1, 1, 2], { label: '連續第幾次', dim: [4, 5] })] },
-    { note: 'cnt ≤ 2 的才寫進去 → 留下 [0,0,1,1,2,3,3],共 7 個', views: [arr([0, 0, 1, 1, 2, 3, 3], { label: '結果', done: [0, 1, 2, 3, 4, 5, 6] })] },
+    { note: '另一種想法:記住「目前這個數已經連續出現幾次」。和前一個一樣就 cnt + 1,不一樣就重設為 1', line: 4, views: [arr(A, { label: 'nums' }), arr([1, 2, 1, 2, 3, 4, 1, 1, 2], { label: '連續第幾次', dim: [4, 5] })] },
+    { note: 'cnt ≤ 2 的才寫進去 → 留下 [0,0,1,1,2,3,3],共 7 個', line: 6, views: [arr([0, 0, 1, 1, 2, 3, 3], { label: '結果', done: [0, 1, 2, 3, 4, 5, 6] })] },
   ]
 }
 

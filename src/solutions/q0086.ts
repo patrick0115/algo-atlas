@@ -10,12 +10,12 @@ const X = 3
 function twoListFig(): FigStep[] {
   const small: number[] = []
   const big: number[] = []
-  const out: FigStep[] = [{ note: `準備兩條空串列(各有一個假頭 dummy):small 收 < ${X} 的,big 收 ≥ ${X} 的。原串列從頭走一遍,每個節點接到其中一條的尾巴`, views: [chain(L), chain(['d'], { label: 'small' }), chain(['d'], { label: 'big' })] }]
+  const out: FigStep[] = [{ note: `準備兩條空串列(各有一個假頭 dummy):small 收 < ${X} 的,big 收 ≥ ${X} 的。原串列從頭走一遍,每個節點接到其中一條的尾巴`, line: 2, views: [chain(L), chain(['d'], { label: 'small' }), chain(['d'], { label: 'big' })] }]
   L.forEach((v, i) => {
     ;(v < X ? small : big).push(v)
-    if (i === 0 || i === 1 || i === L.length - 1) out.push({ note: `${v} ${v < X ? '<' : '≥'} ${X} → 接到 ${v < X ? 'small' : 'big'} 尾巴`, views: [chain(L, { cls: { [i]: 'hl', ...Object.fromEntries(Array.from({ length: i }, (_, k) => [k, 'dim'])) } }), chain(['d', ...small], { label: 'small', cls: v < X ? { [small.length]: 'hl' } : {} }), chain(['d', ...big], { label: 'big', cls: v >= X ? { [big.length]: 'hl' } : {} })] })
+    if (i === 0 || i === 1 || i === L.length - 1) out.push({ note: `${v} ${v < X ? '<' : '≥'} ${X} → 接到 ${v < X ? 'small' : 'big'} 尾巴`, line: v < X ? 5 : 6, views: [chain(L, { cls: { [i]: 'hl', ...Object.fromEntries(Array.from({ length: i }, (_, k) => [k, 'dim'])) } }), chain(['d', ...small], { label: 'small', cls: v < X ? { [small.length]: 'hl' } : {} }), chain(['d', ...big], { label: 'big', cls: v >= X ? { [big.length]: 'hl' } : {} })] })
   })
-  out.push({ note: `把 small 的尾巴接到 big 的第一個真節點,big 的尾巴指向 null → [${[...small, ...big]}]。每一邊內部的順序都沒變`, views: [chain([...small, ...big], { tail: true, cls: Object.fromEntries(small.map((_, k) => [k, 'done'])) })] })
+  out.push({ note: `把 small 的尾巴接到 big 的第一個真節點,big 的尾巴指向 null → [${[...small, ...big]}]。每一邊內部的順序都沒變`, line: 9, /* TODO: 可能要拆格 */ views: [chain([...small, ...big], { tail: true, cls: Object.fromEntries(small.map((_, k) => [k, 'done'])) })] })
   return out
 }
 
@@ -23,8 +23,8 @@ function arrFig(): FigStep[] {
   const small = L.filter((v) => v < X)
   const big = L.filter((v) => v >= X)
   return [
-    { note: `把值抄進陣列,先挑出 < ${X} 的,再挑出 ≥ ${X} 的(都照原本順序)`, views: [arr(L, { label: '原本', highlight: L.map((v, i) => (v < X ? i : -1)).filter((i) => i >= 0) }), arr([...small, ...big], { label: '重排後' })] },
-    { note: '再依序寫回串列的節點值', views: [chain([...small, ...big])] },
+    { note: `把值抄進陣列,先挑出 < ${X} 的,再挑出 ≥ ${X} 的(都照原本順序)`, line: 3, /* TODO: 可能要拆格 */ views: [arr(L, { label: '原本', highlight: L.map((v, i) => (v < X ? i : -1)).filter((i) => i >= 0) }), arr([...small, ...big], { label: '重排後' })] },
+    { note: '再依序寫回串列的節點值', line: 6, views: [chain([...small, ...big])] },
   ]
 }
 

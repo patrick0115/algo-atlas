@@ -7,16 +7,16 @@ const T = [1, 2, 2, 3, 4, 4, 3]
 
 function recFig(): FigStep[] {
   return [
-    { note: '對稱 = 左子樹和右子樹互為鏡像。比較兩棵樹是不是鏡像:根的值一樣,而且「左的左」對「右的右」、「左的右」對「右的左」', views: [tree(T, { cls: { 1: 'hl', 2: 'hl' } })] },
-    { note: '外側:3(左的左)和 3(右的右)一樣 ✓', views: [tree(T, { cls: { 3: 'hl', 6: 'hl' } })] },
-    { note: '內側:4(左的右)和 4(右的左)一樣 ✓ → 對稱', views: [tree(T, { cls: { 4: 'hl', 5: 'hl', 3: 'done', 6: 'done', 1: 'done', 2: 'done' } })] },
+    { note: '對稱 = 左子樹和右子樹互為鏡像。比較兩棵樹是不是鏡像:根的值一樣,而且「左的左」對「右的右」、「左的右」對「右的左」', line: 7, views: [tree(T, { cls: { 1: 'hl', 2: 'hl' } })] },
+    { note: '外側:3(左的左)和 3(右的右)一樣 ✓', line: 5, views: [tree(T, { cls: { 3: 'hl', 6: 'hl' } })] },
+    { note: '內側:4(左的右)和 4(右的左)一樣 ✓ → 對稱', line: 5, views: [tree(T, { cls: { 4: 'hl', 5: 'hl', 3: 'done', 6: 'done', 1: 'done', 2: 'done' } })] },
   ]
 }
 
 function queueFig(): FigStep[] {
   return [
-    { note: '迭代版:佇列每次放一對「應該互為鏡像的節點」,一開始是 (左孩子, 右孩子)', views: [tree(T, { cls: { 1: 'hl', 2: 'hl' } })] },
-    { note: '取出 (a, b):都空 → 跳過;一個空或值不同 → false;否則放入 (a.left, b.right)、(a.right, b.left)', views: [tree(T, { cls: { 3: 'cur', 6: 'cur', 4: 'hl', 5: 'hl' } })] },
+    { note: '迭代版:佇列每次放一對「應該互為鏡像的節點」,一開始是 (左孩子, 右孩子)', line: 3, views: [tree(T, { cls: { 1: 'hl', 2: 'hl' } })] },
+    { note: '取出 (a, b):都空 → 跳過;一個空或值不同 → false;否則放入 (a.left, b.right)、(a.right, b.left)', line: 8, views: [tree(T, { cls: { 3: 'cur', 6: 'cur', 4: 'hl', 5: 'hl' } })] }, // TODO: 可能要拆格
   ]
 }
 

@@ -10,19 +10,19 @@ function boundFig(): FigStep[] {
   const root = buildTree(T)
   const subs: Record<number, string> = {}
   const cls: Record<number, string> = {}
-  const out: FigStep[] = [{ note: 'BST 不只是「比爸爸小 / 大」,而是比**整條路上的所有祖先**都對。往下走時帶著「允許的範圍」(下界, 上界):往左走上界變成自己、往右走下界變成自己', views: [tree(T)] }]
+  const out: FigStep[] = [{ note: 'BST 不只是「比爸爸小 / 大」,而是比**整條路上的所有祖先**都對。往下走時帶著「允許的範圍」(下界, 上界):往左走上界變成自己、往右走下界變成自己', line: 7, views: [tree(T)] }]
   const fmt = (x: number) => (x === -Infinity ? '−∞' : x === Infinity ? '∞' : String(x))
   const go = (n: FNode | null, lo: number, hi: number): boolean => {
     if (!n) return true
     const ok = lo < n.val && n.val < hi
     subs[n.i] = `(${fmt(lo)},${fmt(hi)})`
     cls[n.i] = ok ? 'done' : 'visited'
-    out.push({ note: `節點 ${n.val} 必須在 (${fmt(lo)}, ${fmt(hi)}) 之間 → ${ok ? '✓' : `✗ ${n.val} 不在範圍內 → 不是 BST`}`, views: [tree(T, { subs: { ...subs }, cls: { ...cls, [n.i]: ok ? 'hl' : 'visited' } })] })
+    out.push({ note: `節點 ${n.val} 必須在 (${fmt(lo)}, ${fmt(hi)}) 之間 → ${ok ? '✓' : `✗ ${n.val} 不在範圍內 → 不是 BST`}`, line: 4, views: [tree(T, { subs: { ...subs }, cls: { ...cls, [n.i]: ok ? 'hl' : 'visited' } })] })
     if (!ok) return false
     return go(n.left, lo, n.val) && go(n.right, n.val, hi)
   }
   go(root, -Infinity, Infinity)
-  out.push({ note: '6 比它的爸爸 3 大(看起來沒問題),但它在 5 的左子樹裡,必須 < 5 —— 只比較父子會漏掉這種情況', views: [tree(T, { subs, cls })] })
+  out.push({ note: '6 比它的爸爸 3 大(看起來沒問題),但它在 5 的左子樹裡,必須 < 5 —— 只比較父子會漏掉這種情況', line: 4, views: [tree(T, { subs, cls })] })
   return out
 }
 
@@ -37,9 +37,9 @@ function inorderFig(): FigStep[] {
   walk(buildTree(T))
   const bad = order.findIndex((v, i) => i > 0 && v <= order[i - 1])
   return [
-    { note: '另一個角度:BST 的中序遍歷一定是**嚴格遞增**。走一遍中序,檢查每個數都比前一個大', views: [tree(T)] },
-    { note: `中序結果 [${order.join(', ')}]`, views: [arr(order, { label: '中序遍歷' })] },
-    { note: bad >= 0 ? `${order[bad]} ≤ 前一個 ${order[bad - 1]} → 不是遞增 → 不是 BST` : '全部遞增 → 是 BST', views: [arr(order, { label: '中序遍歷', compare: bad >= 0 ? [bad - 1, bad] : [] })] },
+    { note: '另一個角度:BST 的中序遍歷一定是**嚴格遞增**。走一遍中序,檢查每個數都比前一個大', line: 4, views: [tree(T)] },
+    { note: `中序結果 [${order.join(', ')}]`, line: 9, views: [arr(order, { label: '中序遍歷' })] },
+    { note: bad >= 0 ? `${order[bad]} ≤ 前一個 ${order[bad - 1]} → 不是遞增 → 不是 BST` : '全部遞增 → 是 BST', line: 10, views: [arr(order, { label: '中序遍歷', compare: bad >= 0 ? [bad - 1, bad] : [] })] },
   ]
 }
 

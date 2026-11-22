@@ -28,19 +28,19 @@ function btFig(): FigStep[] {
   }
   go(0, -1, '[]')
   const pos = recLayout(nodes)
-  return nodes.map((_, k) => ({ note: notes[k], views: [recView(nodes, pos, k, '決策樹(每個節點都是一個子集)')] }))
+  return nodes.map((_, k) => ({ note: notes[k], line: nodes[k].parent < 0 ? 2 : nodes[k].kind === 'cut' ? 7 : 8, views: [recView(nodes, pos, k, '決策樹(每個節點都是一個子集)')] }))
 }
 
 function countFig(): FigStep[] {
   const cnt = new Map<number, number>()
   for (const x of A) cnt.set(x, (cnt.get(x) ?? 0) + 1)
   let res: number[][] = [[]]
-  const out: FigStep[] = [{ note: '另一種角度:重複的數不是「選或不選」,而是「選 0 個、1 個、2 個…」。先數每個數出現幾次', views: [kv([...cnt], '數 → 次數')] }]
+  const out: FigStep[] = [{ note: '另一種角度:重複的數不是「選或不選」,而是「選 0 個、1 個、2 個…」。先數每個數出現幾次', line: 3, views: [kv([...cnt], '數 → 次數')] }]
   for (const [x, c] of cnt) {
     const next: number[][] = []
     for (const s of res) for (let k = 0; k <= c; k++) next.push([...s, ...Array(k).fill(x)])
     res = next
-    out.push({ note: `處理 ${x}(${c} 個):每個舊的子集分別加上 0 ~ ${c} 個 ${x}`, views: [arr(res.map(fmt), { label: '目前的子集' })] })
+    out.push({ note: `處理 ${x}(${c} 個):每個舊的子集分別加上 0 ~ ${c} 個 ${x}`, line: 7, views: [arr(res.map(fmt), { label: '目前的子集' })] })
   }
   return out
 }

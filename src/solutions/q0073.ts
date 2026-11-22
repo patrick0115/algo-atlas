@@ -22,11 +22,11 @@ function setFig(): FigStep[] {
   const cols = new Set<number>()
   for (let i = 0; i < m.length; i++) for (let j = 0; j < m[0].length; j++) if (m[i][j] === 0) (rows.add(i), cols.add(j))
   const out: FigStep[] = [
-    { note: '陷阱:一邊掃一邊把整列整行改成 0,新出現的 0 會被誤認成「原本的 0」,最後整張表都變 0。所以要**先記下來,再一起改**', views: [grid(m, 'matrix', zeros(m))] },
-    { note: `第一輪:記下哪些列、哪些行有 0`, views: [arr([...rows], { label: '要清空的列' }), arr([...cols], { label: '要清空的行' })] },
+    { note: '陷阱:一邊掃一邊把整列整行改成 0,新出現的 0 會被誤認成「原本的 0」,最後整張表都變 0。所以要**先記下來,再一起改**', line: 3, views: [grid(m, 'matrix', zeros(m))] },
+    { note: `第一輪:記下哪些列、哪些行有 0`, line: 5, views: [arr([...rows], { label: '要清空的列' }), arr([...cols], { label: '要清空的行' })] },
   ]
   for (let i = 0; i < m.length; i++) for (let j = 0; j < m[0].length; j++) if (rows.has(i) || cols.has(j)) m[i][j] = 0
-  out.push({ note: '第二輪:格子所在的列或行在名單裡 → 改成 0', views: [grid(m, '答案', [], zeros(m))] })
+  out.push({ note: '第二輪:格子所在的列或行在名單裡 → 改成 0', line: 7, views: [grid(m, '答案', [], zeros(m))] })
   return out
 }
 
@@ -36,7 +36,7 @@ function markerFig(): FigStep[] {
   const C = m[0].length
   const firstRow = m[0].includes(0)
   const firstCol = m.some((r) => r[0] === 0)
-  const out: FigStep[] = [{ note: `想要 O(1) 空間:把「名單」直接寫在**第 0 列和第 0 行**上。但它們自己原本有沒有 0 要先另外記:第 0 列有 0?${firstRow ? '有' : '沒有'};第 0 行有 0?${firstCol ? '有' : '沒有'}`, views: [grid(m, 'matrix', [...Array(C).keys()].map((j) => [0, j] as Cell).concat([...Array(R).keys()].slice(1).map((i) => [i, 0] as Cell)))] }]
+  const out: FigStep[] = [{ note: `想要 O(1) 空間:把「名單」直接寫在**第 0 列和第 0 行**上。但它們自己原本有沒有 0 要先另外記:第 0 列有 0?${firstRow ? '有' : '沒有'};第 0 行有 0?${firstCol ? '有' : '沒有'}`, line: 3, views: [grid(m, 'matrix', [...Array(C).keys()].map((j) => [0, j] as Cell).concat([...Array(R).keys()].slice(1).map((i) => [i, 0] as Cell)))] }]
   const marks: Cell[] = []
   for (let i = 1; i < R; i++)
     for (let j = 1; j < C; j++)
@@ -45,7 +45,7 @@ function markerFig(): FigStep[] {
         m[0][j] = 0
         marks.push([i, 0], [0, j])
       }
-  out.push({ note: '掃內部:(i, j) 是 0 → 在 m[i][0] 和 m[0][j] 寫 0 當記號', views: [grid(m, '在第 0 列 / 行做記號', marks)] })
+  out.push({ note: '掃內部:(i, j) 是 0 → 在 m[i][0] 和 m[0][j] 寫 0 當記號', line: 5, views: [grid(m, '在第 0 列 / 行做記號', marks)] })
   const filled: Cell[] = []
   for (let i = 1; i < R; i++)
     for (let j = 1; j < C; j++)
@@ -53,10 +53,10 @@ function markerFig(): FigStep[] {
         if (m[i][j] !== 0) filled.push([i, j])
         m[i][j] = 0
       }
-  out.push({ note: '再掃內部:看第 0 列 / 行的記號,把對應的格子清成 0', views: [grid(m, '清內部', filled)] })
+  out.push({ note: '再掃內部:看第 0 列 / 行的記號,把對應的格子清成 0', line: 7, views: [grid(m, '清內部', filled)] })
   if (firstRow) for (let j = 0; j < C; j++) m[0][j] = 0
   if (firstCol) for (let i = 0; i < R; i++) m[i][0] = 0
-  out.push({ note: `最後才處理第 0 列和第 0 行本身(${firstRow || firstCol ? '依照一開始記下的' : '它們原本沒有 0,所以不用整排清掉'})。先處理它們的話,記號會把整張表清光`, views: [grid(m, '答案', [], zeros(m))] })
+  out.push({ note: `最後才處理第 0 列和第 0 行本身(${firstRow || firstCol ? '依照一開始記下的' : '它們原本沒有 0,所以不用整排清掉'})。先處理它們的話,記號會把整張表清光`, line: 8, /* TODO: 可能要拆格(第 0 列、第 0 行兩個 if 在同一步) */ views: [grid(m, '答案', [], zeros(m))] })
   return out
 }
 

@@ -10,31 +10,35 @@ function flagFig(): FigStep[] {
   let lo = 0
   let i = 0
   let hi = a.length - 1
-  const out: FigStep[] = [{ note: '荷蘭國旗演算法:三個指標把陣列分成四區 —— [0, lo) 都是 0、[lo, i) 都是 1、(hi, 末端] 都是 2、[i, hi] 還沒看', views: [arr([...a], { label: 'nums', pointers: [{ name: 'lo', index: lo }, { name: 'i', index: i, color: 'b' }, { name: 'hi', index: hi, color: 'c' }] })] }]
+  const out: FigStep[] = [{ note: '荷蘭國旗演算法:三個指標把陣列分成四區 —— [0, lo) 都是 0、[lo, i) 都是 1、(hi, 末端] 都是 2、[i, hi] 還沒看', line: 2, views: [arr([...a], { label: 'nums', pointers: [{ name: 'lo', index: lo }, { name: 'i', index: i, color: 'b' }, { name: 'hi', index: hi, color: 'c' }] })] }]
   while (i <= hi) {
     let note: string
+    let ln: number
     if (a[i] === 0) {
       ;[a[lo], a[i]] = [a[i], a[lo]]
       note = `nums[i] = 0 → 和 lo 交換,lo、i 都前進`
+      ln = 5
       lo++
       i++
     } else if (a[i] === 2) {
       ;[a[hi], a[i]] = [a[i], a[hi]]
       note = `nums[i] = 2 → 和 hi 交換,hi 後退(i 不動:換過來的還沒看過)`
+      ln = 9
       hi--
     } else {
       note = 'nums[i] = 1 → 留在原地,i 前進'
+      ln = 11
       i++
     }
-    out.push({ note, views: [arr([...a], { label: 'nums', done: Array.from({ length: lo }, (_, k) => k), pointers: [{ name: 'lo', index: Math.min(lo, a.length - 1) }, { name: 'i', index: Math.min(i, a.length - 1), color: 'b' }, { name: 'hi', index: Math.max(hi, 0), color: 'c' }] })] })
+    out.push({ note, line: ln, /* TODO: 可能要拆格(swap 與 lo/i/hi 指標前進同一步) */ views: [arr([...a], { label: 'nums', done: Array.from({ length: lo }, (_, k) => k), pointers: [{ name: 'lo', index: Math.min(lo, a.length - 1) }, { name: 'i', index: Math.min(i, a.length - 1), color: 'b' }, { name: 'hi', index: Math.max(hi, 0), color: 'c' }] })] })
   }
   return out
 }
 
 function cntFig(): FigStep[] {
   return [
-    { note: '兩趟作法:第一趟數 0、1、2 各有幾個', views: [arr(A, { label: 'nums' }), arr([2, 2, 2], { label: '0 / 1 / 2 的個數' })] },
-    { note: '第二趟依序寫回:先寫 2 個 0、再 2 個 1、再 2 個 2', views: [arr([0, 0, 1, 1, 2, 2], { label: '結果', done: [0, 1, 2, 3, 4, 5] })] },
+    { note: '兩趟作法:第一趟數 0、1、2 各有幾個', line: 3, views: [arr(A, { label: 'nums' }), arr([2, 2, 2], { label: '0 / 1 / 2 的個數' })] },
+    { note: '第二趟依序寫回:先寫 2 個 0、再 2 個 1、再 2 個 2', line: 5, views: [arr([0, 0, 1, 1, 2, 2], { label: '結果', done: [0, 1, 2, 3, 4, 5] })] },
   ]
 }
 

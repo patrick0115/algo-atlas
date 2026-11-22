@@ -7,17 +7,17 @@ const L = [1, 1, 2, 3, 3]
 
 function iterFig(): FigStep[] {
   return [
-    { note: '串列已排序 → 一樣的值一定挨在一起。cur 從頭走:如果下一個節點的值和自己一樣,就把它「跳過」(cur.next = cur.next.next)', views: [chain(L, { cls: { 0: 'cur' }, subs: { 0: 'cur' } })] },
-    { note: 'cur = 1,下一個也是 1 → 跳過它。cur 不動(可能還有第三個 1)', views: [chain(L, { cls: { 0: 'cur', 1: 'dim' }, subs: { 0: 'cur' }, edges: [[0, 2], [2, 3], [3, 4]] })] },
-    { note: '下一個是 2,不一樣 → cur 往前走到 2;再到 3;3 的下一個也是 3 → 跳過', views: [chain([1, 2, 3, 3], { cls: { 2: 'cur', 3: 'dim' }, subs: { 2: 'cur' }, edges: [[0, 1], [1, 2]] })] },
-    { note: '結果 1 → 2 → 3', views: [chain([1, 2, 3], { cls: { 0: 'done', 1: 'done', 2: 'done' }, tail: true })] },
+    { note: '串列已排序 → 一樣的值一定挨在一起。cur 從頭走:如果下一個節點的值和自己一樣,就把它「跳過」(cur.next = cur.next.next)', line: 2, views: [chain(L, { cls: { 0: 'cur' }, subs: { 0: 'cur' } })] },
+    { note: 'cur = 1,下一個也是 1 → 跳過它。cur 不動(可能還有第三個 1)', line: 4, views: [chain(L, { cls: { 0: 'cur', 1: 'dim' }, subs: { 0: 'cur' }, edges: [[0, 2], [2, 3], [3, 4]] })] },
+    { note: '下一個是 2,不一樣 → cur 往前走到 2;再到 3;3 的下一個也是 3 → 跳過', line: 5, /* TODO: 可能要拆格 */ views: [chain([1, 2, 3, 3], { cls: { 2: 'cur', 3: 'dim' }, subs: { 2: 'cur' }, edges: [[0, 1], [1, 2]] })] },
+    { note: '結果 1 → 2 → 3', line: 7, views: [chain([1, 2, 3], { cls: { 0: 'done', 1: 'done', 2: 'done' }, tail: true })] },
   ]
 }
 
 function recFig(): FigStep[] {
   return [
-    { note: '遞迴:先把 head.next 之後的部分去重,再看 head 和處理好的下一個是不是一樣', views: [chain(L, { cls: { 0: 'hl' } }), chain([1, 2, 3], { label: 'deleteDuplicates(head.next) 的結果' })] },
-    { note: 'head(1)和下一個(1)一樣 → 回傳下一個(丟掉 head);不一樣就把 head 接在前面', views: [chain([1, 2, 3], { cls: { 0: 'done' } })] },
+    { note: '遞迴:先把 head.next 之後的部分去重,再看 head 和處理好的下一個是不是一樣', line: 3, views: [chain(L, { cls: { 0: 'hl' } }), chain([1, 2, 3], { label: 'deleteDuplicates(head.next) 的結果' })] },
+    { note: 'head(1)和下一個(1)一樣 → 回傳下一個(丟掉 head);不一樣就把 head 接在前面', line: 4, views: [chain([1, 2, 3], { cls: { 0: 'done' } })] },
   ]
 }
 

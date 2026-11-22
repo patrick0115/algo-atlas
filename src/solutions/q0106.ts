@@ -10,17 +10,17 @@ const RES = [3, 9, 20, null, null, 15, 7]
 
 function recFig(): FigStep[] {
   return [
-    { note: '後序的**最後一個**一定是根(左 → 右 → 根)。根是 3', views: [arr(POST, { label: 'postorder', highlight: [4] }), arr(IN, { label: 'inorder' })] },
-    { note: '在中序裡找到 3:左邊 [9] 是左子樹、右邊 [15, 20, 7] 是右子樹。用 Hash 表記每個值在中序的位置,O(1) 找到', views: [arr(IN, { label: 'inorder', highlight: [1], range: [0, 0] }), arr(IN, { label: '右子樹的範圍', range: [2, 4] })] },
-    { note: '從後序的尾巴往前拿根:3 之後是 20(右子樹的根)→ 所以要**先建右子樹、再建左子樹**', views: [arr(POST, { label: 'postorder', done: [4], highlight: [3] })] },
-    { note: '遞迴到底就得到整棵樹', views: [tree(RES)] },
+    { note: '後序的**最後一個**一定是根(左 → 右 → 根)。根是 3', line: 6, views: [arr(POST, { label: 'postorder', highlight: [4] }), arr(IN, { label: 'inorder' })] },
+    { note: '在中序裡找到 3:左邊 [9] 是左子樹、右邊 [15, 20, 7] 是右子樹。用 Hash 表記每個值在中序的位置,O(1) 找到', line: 7, views: [arr(IN, { label: 'inorder', highlight: [1], range: [0, 0] }), arr(IN, { label: '右子樹的範圍', range: [2, 4] })] },
+    { note: '從後序的尾巴往前拿根:3 之後是 20(右子樹的根)→ 所以要**先建右子樹、再建左子樹**', line: 8, views: [arr(POST, { label: 'postorder', done: [4], highlight: [3] })] },
+    { note: '遞迴到底就得到整棵樹', line: 12, views: [tree(RES)] },
   ]
 }
 
 function stackFig(): FigStep[] {
   return [
-    { note: '迭代版:從後序的尾巴往前、中序的尾巴往前。一路往右建(後序倒著看是「根 → 右 → 左」),堆疊記住還沒處理左邊的節點', views: [arr([3, 20, 7], { label: '堆疊(一路往右)' })] },
-    { note: '堆疊頂等於中序目前指的值時,表示右邊走完了 → pop,下一個新節點接在最後 pop 出來那個的左邊', views: [tree(RES, { cls: { 0: 'done', 2: 'done', 6: 'done', 5: 'hl' } })] },
+    { note: '迭代版:從後序的尾巴往前、中序的尾巴往前。一路往右建(後序倒著看是「根 → 右 → 左」),堆疊記住還沒處理左邊的節點', line: 3, views: [arr([3, 20, 7], { label: '堆疊(一路往右)' })] },
+    { note: '堆疊頂等於中序目前指的值時,表示右邊走完了 → pop,下一個新節點接在最後 pop 出來那個的左邊', line: 9, views: [tree(RES, { cls: { 0: 'done', 2: 'done', 6: 'done', 5: 'hl' } })] }, // TODO: 可能要拆格
   ]
 }
 

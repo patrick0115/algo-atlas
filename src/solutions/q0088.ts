@@ -12,26 +12,29 @@ function backFig(): FigStep[] {
   const a = [...N1]
   let i = M - 1
   let j = N - 1
-  const out: FigStep[] = [{ note: 'nums1 後面有 n 個空位。從**後面**往前填:每次把兩邊最大的那個放到 nums1 的最後一個空位。從後面填不會蓋到還沒處理的數', views: [arr(a, { label: 'nums1', pointers: [{ name: 'i', index: i }, { name: 'k', index: M + N - 1, color: 'b' }] }), arr(N2, { label: 'nums2', pointers: [{ name: 'j', index: j, color: 'c' }] })] }]
+  const out: FigStep[] = [{ note: 'nums1 後面有 n 個空位。從**後面**往前填:每次把兩邊最大的那個放到 nums1 的最後一個空位。從後面填不會蓋到還沒處理的數', line: 2, views: [arr(a, { label: 'nums1', pointers: [{ name: 'i', index: i }, { name: 'k', index: M + N - 1, color: 'b' }] }), arr(N2, { label: 'nums2', pointers: [{ name: 'j', index: j, color: 'c' }] })] }]
   for (let k = M + N - 1; j >= 0; k--) {
     let note: string
+    let line: number
     if (i >= 0 && a[i] > N2[j]) {
+      line = 4
       note = `nums1[${i}] = ${a[i]} > nums2[${j}] = ${N2[j]} → 放 ${a[i]} 到位置 ${k}`
       a[k] = a[i--]
     } else {
+      line = 5
       note = `nums2[${j}] = ${N2[j]} ≥ ${i >= 0 ? `nums1[${i}] = ${a[i]}` : '(nums1 已經用完)'} → 放 ${N2[j]} 到位置 ${k}`
       a[k] = N2[j--]
     }
-    out.push({ note, views: [arr([...a], { label: 'nums1', highlight: [k], done: Array.from({ length: M + N - 1 - k }, (_, t) => M + N - 1 - t) }), arr(N2, { label: 'nums2', dim: Array.from({ length: N - 1 - j }, (_, t) => N - 1 - t) })] })
+    out.push({ note, line, views: [arr([...a], { label: 'nums1', highlight: [k], done: Array.from({ length: M + N - 1 - k }, (_, t) => M + N - 1 - t) }), arr(N2, { label: 'nums2', dim: Array.from({ length: N - 1 - j }, (_, t) => N - 1 - t) })] })
   }
-  out.push({ note: 'nums2 用完就結束(nums1 剩下的本來就在正確位置)', views: [arr(a, { label: 'nums1', done: a.map((_, t) => t) })] })
+  out.push({ note: 'nums2 用完就結束(nums1 剩下的本來就在正確位置)', line: 3, views: [arr(a, { label: 'nums1', done: a.map((_, t) => t) })] })
   return out
 }
 
 function sortFig(): FigStep[] {
   return [
-    { note: '偷懶版:把 nums2 抄進 nums1 後面的空位', views: [arr([1, 2, 3, 2, 5, 6], { label: 'nums1', highlight: [3, 4, 5] })] },
-    { note: '整個排序。O((m+n) log(m+n)),沒有用到「兩邊都已排序」', views: [arr([1, 2, 2, 3, 5, 6], { label: '排序後', done: [0, 1, 2, 3, 4, 5] })] },
+    { note: '偷懶版:把 nums2 抄進 nums1 後面的空位', line: 2, views: [arr([1, 2, 3, 2, 5, 6], { label: 'nums1', highlight: [3, 4, 5] })] },
+    { note: '整個排序。O((m+n) log(m+n)),沒有用到「兩邊都已排序」', line: 3, views: [arr([1, 2, 2, 3, 5, 6], { label: '排序後', done: [0, 1, 2, 3, 4, 5] })] },
   ]
 }
 

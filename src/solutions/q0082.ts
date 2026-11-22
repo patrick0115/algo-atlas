@@ -5,19 +5,19 @@ const L = [1, 2, 3, 3, 4, 4, 5]
 
 function scanFig(): FigStep[] {
   return [
-    { note: '加一個 dummy 指向原串列，prev 指向已確認保留區的尾端。排序讓相同值連在一起。', views: [chain(L, { label: '原串列', subs: { 0: 'prev.next' } })] },
-    { note: '1、2 都只出現一次，prev 依序移到 1、2。', views: [chain(L, { cls: { 0: 'done', 1: 'done' }, subs: { 1: 'prev' } })] },
-    { note: '從第一個 3 走到最後一個 3；整段重複，讓 prev.next 指向 4，兩個 3 都被跳過。', views: [chain(L, { cls: { 2: 'dim', 3: 'dim' }, edges: [[0, 1], [1, 4], [4, 5], [5, 6]] })] },
-    { note: '4 也重複，整段跳過。5 只出現一次，結果是 1 → 2 → 5。', views: [chain([1, 2, 5], { cls: { 0: 'done', 1: 'done', 2: 'done' }, tail: true })] },
+    { note: '加一個 dummy 指向原串列，prev 指向已確認保留區的尾端。排序讓相同值連在一起。', line: 3, views: [chain(L, { label: '原串列', subs: { 0: 'prev.next' } })] },
+    { note: '1、2 都只出現一次，prev 依序移到 1、2。', line: 12, views: [chain(L, { cls: { 0: 'done', 1: 'done' }, subs: { 1: 'prev' } })] },
+    { note: '從第一個 3 走到最後一個 3；整段重複，讓 prev.next 指向 4，兩個 3 都被跳過。', line: 10, views: [chain(L, { cls: { 2: 'dim', 3: 'dim' }, edges: [[0, 1], [1, 4], [4, 5], [5, 6]] })] },
+    { note: '4 也重複，整段跳過。5 只出現一次，結果是 1 → 2 → 5。', line: 16, views: [chain([1, 2, 5], { cls: { 0: 'done', 1: 'done', 2: 'done' }, tail: true })] },
   ]
 }
 
 function recursiveFig(): FigStep[] {
   return [
-    { note: '先看開頭 1，下一個是 2，沒有重複；保留 1，遞迴處理後面。', views: [chain(L, { cls: { 0: 'hl' } })] },
-    { note: '2 也沒有重複，保留 2。到了 3，連續兩個都是 3，必須兩個都丟掉。', views: [chain(L, { cls: { 0: 'done', 1: 'done', 2: 'dim', 3: 'dim' } })] },
-    { note: '從第一個不同值 4 重新遞迴；兩個 4 同樣整段丟掉。', views: [chain(L, { cls: { 2: 'dim', 3: 'dim', 4: 'dim', 5: 'dim' } })] },
-    { note: '只剩 5，回傳它；上一層依序接回 2、1，得到 1 → 2 → 5。', views: [chain([1, 2, 5], { cls: { 0: 'done', 1: 'done', 2: 'done' }, tail: true })] },
+    { note: '先看開頭 1，下一個是 2，沒有重複；保留 1，遞迴處理後面。', line: 12, views: [chain(L, { cls: { 0: 'hl' } })] },
+    { note: '2 也沒有重複，保留 2。到了 3，連續兩個都是 3，必須兩個都丟掉。', line: 5, /* TODO: 可能要拆格 */ views: [chain(L, { cls: { 0: 'done', 1: 'done', 2: 'dim', 3: 'dim' } })] },
+    { note: '從第一個不同值 4 重新遞迴；兩個 4 同樣整段丟掉。', line: 10, views: [chain(L, { cls: { 2: 'dim', 3: 'dim', 4: 'dim', 5: 'dim' } })] },
+    { note: '只剩 5，回傳它；上一層依序接回 2、1，得到 1 → 2 → 5。', line: 13, views: [chain([1, 2, 5], { cls: { 0: 'done', 1: 'done', 2: 'done' }, tail: true })] },
   ]
 }
 

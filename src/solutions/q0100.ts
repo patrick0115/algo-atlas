@@ -12,20 +12,20 @@ function recurFig(): FigStep[] {
   const b = buildTree(Q)
   const okP: Record<number, string> = {}
   const okQ: Record<number, string> = {}
-  const out: FigStep[] = [{ note: '兩棵樹一樣 ⇔ 根的值一樣,而且左子樹一樣、右子樹一樣。同時往下走,兩邊一對一比較', views: [tree(P, { label: 'p' }), tree(Q, { label: 'q' })] }]
+  const out: FigStep[] = [{ note: '兩棵樹一樣 ⇔ 根的值一樣,而且左子樹一樣、右子樹一樣。同時往下走,兩邊一對一比較', line: 2, views: [tree(P, { label: 'p' }), tree(Q, { label: 'q' })] }]
   const go = (x: FNode | null, y: FNode | null): boolean => {
     if (!x && !y) return true
     if (!x || !y) {
-      out.push({ note: `一邊有節點(${(x ?? y)!.val})、另一邊是空的 → 不一樣`, views: [tree(P, { label: 'p', cls: { ...okP, ...(x ? { [x.i]: 'hl' } : {}) } }), tree(Q, { label: 'q', cls: { ...okQ, ...(y ? { [y.i]: 'hl' } : {}) } })] })
+      out.push({ note: `一邊有節點(${(x ?? y)!.val})、另一邊是空的 → 不一樣`, line: 3, views: [tree(P, { label: 'p', cls: { ...okP, ...(x ? { [x.i]: 'hl' } : {}) } }), tree(Q, { label: 'q', cls: { ...okQ, ...(y ? { [y.i]: 'hl' } : {}) } })] })
       return false
     }
     if (x.val !== y.val) {
-      out.push({ note: `值不同:${x.val} ≠ ${y.val} → 不一樣`, views: [tree(P, { label: 'p', cls: { ...okP, [x.i]: 'hl' } }), tree(Q, { label: 'q', cls: { ...okQ, [y.i]: 'hl' } })] })
+      out.push({ note: `值不同:${x.val} ≠ ${y.val} → 不一樣`, line: 4, views: [tree(P, { label: 'p', cls: { ...okP, [x.i]: 'hl' } }), tree(Q, { label: 'q', cls: { ...okQ, [y.i]: 'hl' } })] })
       return false
     }
     okP[x.i] = 'done'
     okQ[y.i] = 'done'
-    out.push({ note: `${x.val} = ${y.val} ✓,接著比左子樹、再比右子樹`, views: [tree(P, { label: 'p', cls: { ...okP, [x.i]: 'hl' } }), tree(Q, { label: 'q', cls: { ...okQ, [y.i]: 'hl' } })] })
+    out.push({ note: `${x.val} = ${y.val} ✓,接著比左子樹、再比右子樹`, line: 5, views: [tree(P, { label: 'p', cls: { ...okP, [x.i]: 'hl' } }), tree(Q, { label: 'q', cls: { ...okQ, [y.i]: 'hl' } })] })
     return go(x.left, y.left) && go(x.right, y.right)
   }
   go(a, b)
@@ -36,12 +36,12 @@ function bfsFig(): FigStep[] {
   const a = buildTree(P)
   const b = buildTree(Q)
   const q: [FNode | null, FNode | null][] = [[a, b]]
-  const out: FigStep[] = [{ note: '不用遞迴:佇列裡放「要比較的一對節點」', views: [tree(P, { label: 'p' }), tree(Q, { label: 'q' })] }]
+  const out: FigStep[] = [{ note: '不用遞迴:佇列裡放「要比較的一對節點」', line: 2, views: [tree(P, { label: 'p' }), tree(Q, { label: 'q' })] }]
   while (q.length) {
     const [x, y] = q.shift()!
     if (!x && !y) continue
     const same = !!x && !!y && x.val === y.val
-    out.push({ note: `拿出一對:${x?.val ?? '空'} 和 ${y?.val ?? '空'} → ${same ? '一樣,把它們的(左,左)、(右,右)放進佇列' : '不一樣 → false'}`, views: [tree(P, { label: 'p', cls: x ? { [x.i]: 'hl' } : {} }), tree(Q, { label: 'q', cls: y ? { [y.i]: 'hl' } : {} }), arr(q.map(([u, v]) => `${u?.val ?? '∅'}/${v?.val ?? '∅'}`), { label: '佇列(p/q)' })] })
+    out.push({ note: `拿出一對:${x?.val ?? '空'} 和 ${y?.val ?? '空'} → ${same ? '一樣,把它們的(左,左)、(右,右)放進佇列' : '不一樣 → false'}`, line: (same ? 7 : 6), views: [tree(P, { label: 'p', cls: x ? { [x.i]: 'hl' } : {} }), tree(Q, { label: 'q', cls: y ? { [y.i]: 'hl' } : {} }), arr(q.map(([u, v]) => `${u?.val ?? '∅'}/${v?.val ?? '∅'}`), { label: '佇列(p/q)' })] })
     if (!same) break
     q.push([x!.left, y!.left], [x!.right, y!.right])
   }

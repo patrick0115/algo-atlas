@@ -12,6 +12,7 @@ function pickFig(): FigStep[] {
   // 「選或不選」的決策樹:第 i 層決定 A[i] 要不要放
   const nodes: RNode[] = []
   const notes: string[] = []
+  const lines: number[] = []
   const res: string[] = []
   const go = (i: number, cur: number[], parent: number, how: string) => {
     const id = nodes.length
@@ -19,35 +20,37 @@ function pickFig(): FigStep[] {
     if (i === A.length) {
       res.push(fmt(cur))
       notes.push(`每個數都決定好了 → 得到一個子集 ${fmt(cur)}(第 ${res.length} 個)`)
+      lines.push(5)
       return
     }
     notes.push(parent < 0 ? '每一層決定一個數「要」或「不要」,走到底就是一個子集。3 個數 → 2³ = 8 個子集' : `${how}:目前 ${fmt(cur)},接著決定 ${A[i]}`)
+    lines.push(parent < 0 ? 13 : how.startsWith('要') ? 8 : 11)
     go(i + 1, [...cur, A[i]], id, `要 ${A[i]}`)
     go(i + 1, cur, id, `不要 ${A[i]}`)
   }
   go(0, [], -1, '')
   const pos = recLayout(nodes)
-  return nodes.map((_, k) => ({ note: notes[k], views: [recView(nodes, pos, k)] }))
+  return nodes.map((_, k) => ({ note: notes[k], line: lines[k], views: [recView(nodes, pos, k)] }))
 }
 
 function iterFig(): FigStep[] {
   let res: number[][] = [[]]
-  const out: FigStep[] = [{ note: '一開始只有空集合。之後每來一個數,就把「目前所有子集」各複製一份、加上這個數', views: [arr(res.map(fmt), { label: '目前的子集' })] }]
+  const out: FigStep[] = [{ note: '一開始只有空集合。之後每來一個數,就把「目前所有子集」各複製一份、加上這個數', line: 2, views: [arr(res.map(fmt), { label: '目前的子集' })] }]
   for (const x of A) {
     const add = res.map((s) => [...s, x])
     res = [...res, ...add]
-    out.push({ note: `加入 ${x}:原本的 ${res.length / 2} 個子集都多一份「加上 ${x}」的版本 → 共 ${res.length} 個`, views: [arr(res.map(fmt), { label: '目前的子集', highlight: add.map((_, i) => res.length / 2 + i) })] })
+    out.push({ note: `加入 ${x}:原本的 ${res.length / 2} 個子集都多一份「加上 ${x}」的版本 → 共 ${res.length} 個`, line: 3, views: [arr(res.map(fmt), { label: '目前的子集', highlight: add.map((_, i) => res.length / 2 + i) })] })
   }
   return out
 }
 
 function bitFig(): FigStep[] {
   const n = A.length
-  const out: FigStep[] = [{ note: `n 個數的每個子集,可以對應到一個 n 位元的二進位數:第 i 位是 1 就代表選了 A[i]。所以 0 到 2ⁿ − 1 = ${2 ** n - 1} 剛好列出所有子集`, views: [arr(A, { label: 'nums' })] }]
+  const out: FigStep[] = [{ note: `n 個數的每個子集,可以對應到一個 n 位元的二進位數:第 i 位是 1 就代表選了 A[i]。所以 0 到 2ⁿ − 1 = ${2 ** n - 1} 剛好列出所有子集`, line: 3, views: [arr(A, { label: 'nums' })] }]
   for (let m = 0; m < 1 << n; m++) {
     const s = A.filter((_, i) => m & (1 << i))
     const bits = m.toString(2).padStart(n, '0')
-    out.push({ note: `mask = ${m} = ${bits}(二進位,右邊是第 0 位)→ ${fmt(s)}`, views: [arr([...bits].reverse(), { label: '第 0、1、2 位', highlight: [...bits].reverse().flatMap((b, i) => (b === '1' ? [i] : [])) }), arr(A, { label: 'nums', highlight: A.flatMap((_, i) => (m & (1 << i) ? [i] : [])) })] })
+    out.push({ note: `mask = ${m} = ${bits}(二進位,右邊是第 0 位)→ ${fmt(s)}`, line: 3, views: [arr([...bits].reverse(), { label: '第 0、1、2 位', highlight: [...bits].reverse().flatMap((b, i) => (b === '1' ? [i] : [])) }), arr(A, { label: 'nums', highlight: A.flatMap((_, i) => (m & (1 << i) ? [i] : [])) })] })
   }
   return out
 }

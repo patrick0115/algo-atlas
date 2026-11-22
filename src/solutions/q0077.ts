@@ -11,17 +11,20 @@ const fmt = (s: number[]) => `[${s.join(',')}]`
 function btFig(): FigStep[] {
   const nodes: RNode[] = []
   const notes: string[] = []
+  const lines: number[] = []
   const cur: number[] = []
   const go = (start: number, parent: number, label: string) => {
     const id = nodes.length
     const full = cur.length === K
     nodes.push({ parent, label, sub: fmt(cur), kind: full ? 'ok' : undefined })
     notes.push(parent < 0 ? `從 1..${N} 挑 ${K} 個,不在乎順序 → 只往「比上一個大」的數挑,就不會出現 [2,1] 這種重複` : full ? `湊滿 ${K} 個:${fmt(cur)} 收進答案` : `選了 ${label},目前 ${fmt(cur)},接著只能從 ${start} 以後挑`)
+    lines.push(parent < 0 ? 14 : full ? 5 : 9)
     if (full) return
     for (let i = start; i <= N; i++) {
       if (N - i + 1 < K - cur.length) {
         nodes.push({ parent: id, label: i, sub: '剩下不夠', kind: 'cut' })
         notes.push(`從 ${i} 開始只剩 ${N - i + 1} 個數,還需要 ${K - cur.length} 個 → 不可能湊滿,剪掉`)
+        lines.push(8)
         break
       }
       cur.push(i)
@@ -31,13 +34,13 @@ function btFig(): FigStep[] {
   }
   go(1, -1, '[]')
   const pos = recLayout(nodes)
-  return nodes.map((_, k) => ({ note: notes[k], views: [recView(nodes, pos, k, '決策樹(實心 = 找到答案,淡色 = 剪掉)')] }))
+  return nodes.map((_, k) => ({ note: notes[k], line: lines[k], views: [recView(nodes, pos, k, '決策樹(實心 = 找到答案,淡色 = 剪掉)')] }))
 }
 
 function bitFig(): FigStep[] {
   return [
-    { note: `另一種:每個組合對應一個 ${N} 位的二進位數,第 i 位是 1 代表選了 i + 1。枚舉 0..2^${N} − 1,只留下剛好有 ${K} 個 1 的`, views: [arr(['0011', '0101', '0110', '1001', '1010', '1100'], { label: `有 ${K} 個 1 的遮罩` })] },
-    { note: '0011 → [1,2]、0101 → [1,3]、0110 → [2,3]…共 C(4,2) = 6 個。缺點是要掃全部 2ⁿ 個遮罩', views: [arr(['[1,2]', '[1,3]', '[2,3]', '[1,4]', '[2,4]', '[3,4]'], { label: '答案', done: [0, 1, 2, 3, 4, 5] })] },
+    { note: `另一種:每個組合對應一個 ${N} 位的二進位數,第 i 位是 1 代表選了 i + 1。枚舉 0..2^${N} − 1,只留下剛好有 ${K} 個 1 的`, line: 3, views: [arr(['0011', '0101', '0110', '1001', '1010', '1100'], { label: `有 ${K} 個 1 的遮罩` })] },
+    { note: '0011 → [1,2]、0101 → [1,3]、0110 → [2,3]…共 C(4,2) = 6 個。缺點是要掃全部 2ⁿ 個遮罩', line: 6, views: [arr(['[1,2]', '[1,3]', '[2,3]', '[1,4]', '[2,4]', '[3,4]'], { label: '答案', done: [0, 1, 2, 3, 4, 5] })] },
   ]
 }
 
