@@ -19,16 +19,16 @@ function board(qs: number[], label: string): GridViewData {
 
 function setFig(): FigStep[] {
   return [
-    { note: '和 [51](#/q/51) 一模一樣的回溯,只是不用畫出棋盤,找到一組就計數 +1。逐列放皇后,用三個集合記錄被佔的「行」「↘ 斜線 r − c」「↙ 斜線 r + c」', views: [board([], '空棋盤')] },
-    { note: '第 0 列放第 1 行 → 第 1 列只能放第 3 行 → 第 2 列放第 0 行 → 第 3 列放第 2 行:第一組解', views: [board([1, 3, 0, 2], '解 1')] },
-    { note: '繼續回溯,第 0 列放第 2 行會得到鏡像的第二組解。4 皇后共 2 組', views: [board([2, 0, 3, 1], '解 2'), arr([2], { label: '答案', done: [0] })] },
+    { note: '和 [51](#/q/51) 一模一樣的回溯,只是不用畫出棋盤,找到一組就計數 +1。逐列放皇后,用三個集合記錄被佔的「行」「↘ 斜線 r − c」「↙ 斜線 r + c」', line: 2, views: [board([], '空棋盤')] },
+    { note: '第 0 列放第 1 行 → 第 1 列只能放第 3 行 → 第 2 列放第 0 行 → 第 3 列放第 2 行:第一組解', line: 6, views: [board([1, 3, 0, 2], '解 1')] },
+    { note: '繼續回溯,第 0 列放第 2 行會得到鏡像的第二組解。4 皇后共 2 組', line: 17, views: [board([2, 0, 3, 1], '解 2'), arr([2], { label: '答案', done: [0] })] },
   ]
 }
 
 function bitFig(): FigStep[] {
   return [
-    { note: '位元版:cols、d1、d2 都改成 n 位的整數。往下一列時,↘ 斜線的佔用整體左移一格、↙ 的右移一格', views: [arr(['0010', '0100', '0001'], { label: 'cols / d1 / d2(放了第 0 列第 1 行之後,下一列看到的)' })] },
-    { note: '`avail = ~(cols | d1 | d2) & full` 就是這一列能放的格子;`avail & −avail` 取最低位的 1 逐一嘗試', views: [arr(['1', '0', '0', '0'], { label: '第 1 列 avail(只剩第 3 行)', done: [0] })] },
+    { note: '位元版:cols、d1、d2 都改成 n 位的整數。往下一列時,↘ 斜線的佔用整體左移一格、↙ 的右移一格', line: 9, views: [arr(['0010', '0100', '0001'], { label: 'cols / d1 / d2(放了第 0 列第 1 行之後,下一列看到的)' })] },
+    { note: '`avail = ~(cols | d1 | d2) & full` 就是這一列能放的格子;`avail & −avail` 取最低位的 1 逐一嘗試', line: 5, views: [arr(['1', '0', '0', '0'], { label: '第 1 列 avail(只剩第 3 行)', done: [0] })] },
   ]
 }
 

@@ -6,7 +6,7 @@ import type { FigStep, Solution } from './types'
 const A = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
 
 function bruteFig(): FigStep[] {
-  const out: FigStep[] = [{ note: '暴力:固定起點 i,往右延伸 j,一邊加一邊更新最大值', views: [arr(A, { label: 'nums', mode: 'bars' })] }]
+  const out: FigStep[] = [{ note: '暴力:固定起點 i,往右延伸 j,一邊加一邊更新最大值', line: 2, views: [arr(A, { label: 'nums', mode: 'bars' })] }]
   let best = -Infinity
   for (let i = 0; i < A.length; i++) {
     let s = 0
@@ -14,7 +14,7 @@ function bruteFig(): FigStep[] {
       s += A[j]
       if (s > best) {
         best = s
-        out.push({ note: `[${i}, ${j}] 的和 = ${s},目前最大`, views: [arr(A, { label: 'nums', mode: 'bars', range: [i, j] })] })
+        out.push({ note: `[${i}, ${j}] 的和 = ${s},目前最大`, line: 7, views: [arr(A, { label: 'nums', mode: 'bars', range: [i, j] })] })
       }
     }
   }
@@ -28,7 +28,7 @@ function kadaneFig(): FigStep[] {
   let bs = 0
   let be = 0
   const curs: (number | string)[] = A.map(() => '')
-  const out: FigStep[] = [{ note: 'Kadane:cur = 「以目前這格結尾」的最大子陣列和。走到 x 時只有兩種選擇:接在前面那段後面(cur + x),或從自己重新開始(x)。前面那段是負的就不如丟掉', views: [arr(A, { label: 'nums', mode: 'bars' })] }]
+  const out: FigStep[] = [{ note: 'Kadane:cur = 「以目前這格結尾」的最大子陣列和。走到 x 時只有兩種選擇:接在前面那段後面(cur + x),或從自己重新開始(x)。前面那段是負的就不如丟掉', line: 2, views: [arr(A, { label: 'nums', mode: 'bars' })] }]
   A.forEach((x, i) => {
     const prev = cur
     const restart = cur + x < x
@@ -40,9 +40,9 @@ function kadaneFig(): FigStep[] {
       bs = start
       be = i
     }
-    out.push({ note: `nums[${i}] = ${x}:${restart ? `前面累積的 ${prev} 是負的,接上去只會更小 → 從這格重新開始` : `接在前面那段(${prev})後面`},cur = ${cur}。最大 ${best}`, views: [arr(A, { label: 'nums', mode: 'bars', range: [start, i], highlight: [i] }), arr(curs, { label: 'cur(以這格結尾的最大和)', highlight: [i] })] })
+    out.push({ note: `nums[${i}] = ${x}:${restart ? `前面累積的 ${prev} 是負的,接上去只會更小 → 從這格重新開始` : `接在前面那段(${prev})後面`},cur = ${cur}。最大 ${best}`, line: 4, /* TODO: 可能要拆格 */ views: [arr(A, { label: 'nums', mode: 'bars', range: [start, i], highlight: [i] }), arr(curs, { label: 'cur(以這格結尾的最大和)', highlight: [i] })] })
   })
-  out.push({ note: `答案 ${best},是 [${bs}, ${be}] 這一段`, views: [arr(A, { label: 'nums', mode: 'bars', range: [bs, be] })] })
+  out.push({ note: `答案 ${best},是 [${bs}, ${be}] 這一段`, line: 7, views: [arr(A, { label: 'nums', mode: 'bars', range: [bs, be] })] })
   return out
 }
 
@@ -63,9 +63,9 @@ function dcFig(): FigStep[] {
     if (s > bestR) (bestR = s), (ri = j)
   }
   return [
-    { note: `分治:從中間切開(mid = ${mid})。最大子陣列要嘛完全在左半、要嘛完全在右半、要嘛**跨過中間**`, views: [arr(A, { label: 'nums', mode: 'bars', compare: [mid, mid + 1] })] },
-    { note: `跨過中間的:從 mid 往左延伸取最大(${bestL},到 ${li}),從 mid+1 往右延伸取最大(${bestR},到 ${ri}),相加 = ${bestL + bestR}`, views: [arr(A, { label: 'nums', mode: 'bars', range: [li, ri] })] },
-    { note: '左半、右半各自遞迴求答案,三者取最大。T(n) = 2T(n/2) + O(n) → O(n log n)', views: [arr(A, { label: 'nums', mode: 'bars', dim: range(mid + 1, A.length - 1) }), arr(A, { label: 'nums', mode: 'bars', dim: range(0, mid) })] },
+    { note: `分治:從中間切開(mid = ${mid})。最大子陣列要嘛完全在左半、要嘛完全在右半、要嘛**跨過中間**`, line: 4, views: [arr(A, { label: 'nums', mode: 'bars', compare: [mid, mid + 1] })] },
+    { note: `跨過中間的:從 mid 往左延伸取最大(${bestL},到 ${li}),從 mid+1 往右延伸取最大(${bestR},到 ${ri}),相加 = ${bestL + bestR}`, line: 6, /* TODO: 可能要拆格 */ views: [arr(A, { label: 'nums', mode: 'bars', range: [li, ri] })] },
+    { note: '左半、右半各自遞迴求答案,三者取最大。T(n) = 2T(n/2) + O(n) → O(n log n)', line: 9, views: [arr(A, { label: 'nums', mode: 'bars', dim: range(mid + 1, A.length - 1) }), arr(A, { label: 'nums', mode: 'bars', dim: range(0, mid) })] },
   ]
 }
 

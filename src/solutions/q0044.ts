@@ -4,19 +4,19 @@ import type { FigStep, Solution } from './types'
 
 function dpFig(): FigStep[] {
   return [
-    { note: 's="adceb"、p="*a*b"。dp[i][j] 表示 s 前 i 個字元是否符合 p 前 j 個字元；空字串能被開頭的 * 匹配。', views: [arr(['', '*', 'a', '*', 'b'], { label: '模式前綴', highlight: [0, 1] })] },
-    { note: '第一個 * 可匹配空字串，接著 a 對上 s 的 a，所以 dp[1][2]=真。', views: [kv([['s 前綴', 'a'], ['p 前綴', '*a'], ['匹配', '是']], '狀態')] },
-    { note: '第二個 * 吞掉 d、c、e；每次可「多吞一字」或「停在原地」。', views: [kv([['s 前綴', 'adce'], ['p 前綴', '*a*'], ['匹配', '是']], '狀態')] },
-    { note: '最後 b 對上 b，dp[5][4]=真，整串匹配。', views: [kv([['s', 'adceb'], ['p', '*a*b'], ['結果', 'true']], '完成')] },
+    { note: 's="adceb"、p="*a*b"。dp[i][j] 表示 s 前 i 個字元是否符合 p 前 j 個字元；空字串能被開頭的 * 匹配。', line: 8, views: [arr(['', '*', 'a', '*', 'b'], { label: '模式前綴', highlight: [0, 1] })] },
+    { note: '第一個 * 可匹配空字串，接著 a 對上 s 的 a，所以 dp[1][2]=真。', line: 16, views: [kv([['s 前綴', 'a'], ['p 前綴', '*a'], ['匹配', '是']], '狀態')] },
+    { note: '第二個 * 吞掉 d、c、e；每次可「多吞一字」或「停在原地」。', line: 14, views: [kv([['s 前綴', 'adce'], ['p 前綴', '*a*'], ['匹配', '是']], '狀態')] },
+    { note: '最後 b 對上 b，dp[5][4]=真，整串匹配。', line: 16, views: [kv([['s', 'adceb'], ['p', '*a*b'], ['結果', 'true']], '完成')] },
   ]
 }
 
 function greedyFig(): FigStep[] {
   return [
-    { note: 's="adceb"、p="*a*b"。遇第一個 *，先假設它匹配空字串，記住星號位置與目前字串位置。', views: [arr(['*', 'a', '*', 'b'], { label: 'p', highlight: [0] })] },
-    { note: 'a 對上 a。下一個 * 先匹配空字串，但模式的 b 對不上字串的 d。', views: [kv([['已匹配', 'a'], ['下一個 s', 'd'], ['下一個 p', 'b']], '暫時失配')] },
-    { note: '回到最近的 *，讓它多吞一字；b 仍對不上 c、e，就繼續讓 * 吞。', views: [kv([['* 吞掉', 'dce'], ['尚未匹配', 'b']], '擴大星號')] },
-    { note: '最後 b 對上 b，字串和模式都走完，回傳 true。', views: [kv([['s', 'adceb'], ['p', '*a*b'], ['結果', 'true']], '完成')] },
+    { note: 's="adceb"、p="*a*b"。遇第一個 *，先假設它匹配空字串，記住星號位置與目前字串位置。', line: 11, /* TODO: 可能要拆格(star 與 match 兩行) */ views: [arr(['*', 'a', '*', 'b'], { label: 'p', highlight: [0] })] },
+    { note: 'a 對上 a。下一個 * 先匹配空字串，但模式的 b 對不上字串的 d。', line: 7, /* TODO: 可能要拆格(a 配對、* 吃零、失配多件事) */ views: [kv([['已匹配', 'a'], ['下一個 s', 'd'], ['下一個 p', 'b']], '暫時失配')] },
+    { note: '回到最近的 *，讓它多吞一字；b 仍對不上 c、e，就繼續讓 * 吞。', line: 14, views: [kv([['* 吞掉', 'dce'], ['尚未匹配', 'b']], '擴大星號')] },
+    { note: '最後 b 對上 b，字串和模式都走完，回傳 true。', line: 23, views: [kv([['s', 'adceb'], ['p', '*a*b'], ['結果', 'true']], '完成')] },
   ]
 }
 

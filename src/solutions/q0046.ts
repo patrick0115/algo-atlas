@@ -10,6 +10,7 @@ const fmt = (s: number[]) => `[${s.join(',')}]`
 function usedFig(): FigStep[] {
   const nodes: RNode[] = []
   const notes: string[] = []
+  const lines: number[] = []
   const used = A.map(() => false)
   const cur: number[] = []
   const go = (parent: number, label: string) => {
@@ -17,6 +18,7 @@ function usedFig(): FigStep[] {
     const done = cur.length === A.length
     nodes.push({ parent, label, sub: fmt(cur), kind: done ? 'ok' : undefined })
     notes.push(parent < 0 ? '每一層從「還沒用過的數」裡挑一個放到下一格。第 1 格有 3 種選法、第 2 格 2 種、第 3 格 1 種 → 3! = 6 種排列' : done ? `每一格都放好了 → 得到排列 ${fmt(cur)}` : `放 ${label}:目前 ${fmt(cur)},還沒用過的是 ${A.filter((_, i) => !used[i]).join('、')}`)
+    lines.push(parent < 0 ? 17 : done ? 5 : 11)
     if (done) return
     A.forEach((x, i) => {
       if (used[i]) return
@@ -29,20 +31,20 @@ function usedFig(): FigStep[] {
   }
   go(-1, '開始')
   const pos = recLayout(nodes)
-  return nodes.map((_, k) => ({ note: notes[k], views: [recView(nodes, pos, k, '決策樹(節點下方是目前的排列)')] }))
+  return nodes.map((_, k) => ({ note: notes[k], line: lines[k], views: [recView(nodes, pos, k, '決策樹(節點下方是目前的排列)')] }))
 }
 
 function swapFig(): FigStep[] {
   const a = [...A]
-  const out: FigStep[] = [{ note: '不用 used 陣列:第 i 格要放誰,就把那個數**換**到第 i 格。i 左邊是已經決定好的,右邊是還能選的', views: [arr(a, { label: 'nums' })] }]
+  const out: FigStep[] = [{ note: '不用 used 陣列:第 i 格要放誰,就把那個數**換**到第 i 格。i 左邊是已經決定好的,右邊是還能選的', line: 14, views: [arr(a, { label: 'nums' })] }]
   const go = (i: number) => {
     if (i === a.length) {
-      out.push({ note: `全部決定好 → ${fmt(a)}`, views: [arr(a, { label: 'nums', done: a.map((_, k) => k) })] })
+      out.push({ note: `全部決定好 → ${fmt(a)}`, line: 5, views: [arr(a, { label: 'nums', done: a.map((_, k) => k) })] })
       return
     }
     for (let j = i; j < a.length; j++) {
       ;[a[i], a[j]] = [a[j], a[i]]
-      out.push({ note: `第 ${i} 格放 ${a[i]}(和第 ${j} 格交換)`, views: [arr(a, { label: 'nums', highlight: [i], compare: j !== i ? [j] : [], done: a.map((_, k) => k).filter((k) => k < i) })] })
+      out.push({ note: `第 ${i} 格放 ${a[i]}(和第 ${j} 格交換)`, line: 9, views: [arr(a, { label: 'nums', highlight: [i], compare: j !== i ? [j] : [], done: a.map((_, k) => k).filter((k) => k < i) })] })
       go(i + 1)
       ;[a[i], a[j]] = [a[j], a[i]]
     }
@@ -53,12 +55,12 @@ function swapFig(): FigStep[] {
 
 function insertFig(): FigStep[] {
   let res: number[][] = [[]]
-  const out: FigStep[] = [{ note: '迭代:從空的排列開始,每來一個新的數,就把它插進目前每個排列的**每一個空隙**', views: [arr(['[]'], { label: '目前的排列' })] }]
+  const out: FigStep[] = [{ note: '迭代:從空的排列開始,每來一個新的數,就把它插進目前每個排列的**每一個空隙**', line: 2, views: [arr(['[]'], { label: '目前的排列' })] }]
   for (const x of A) {
     const next: number[][] = []
     for (const p of res) for (let k = 0; k <= p.length; k++) next.push([...p.slice(0, k), x, ...p.slice(k)])
     res = next
-    out.push({ note: `插入 ${x}:每個長度 ${res[0].length - 1} 的排列有 ${res[0].length} 個空隙 → 共 ${res.length} 個排列`, views: [arr(res.map(fmt), { label: '目前的排列' })] })
+    out.push({ note: `插入 ${x}:每個長度 ${res[0].length - 1} 的排列有 ${res[0].length} 個空隙 → 共 ${res.length} 個排列`, line: 7, /* TODO: 可能要拆格(插入 next.push 與 res = next 兩行) */ views: [arr(res.map(fmt), { label: '目前的排列' })] })
   }
   return out
 }

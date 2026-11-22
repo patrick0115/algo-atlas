@@ -11,17 +11,19 @@ function ringFig(): FigStep[] {
   const n = L.length
   const k = K % n
   return [
-    { note: `往右轉 ${K} 格 = 最後 ${k} 個搬到最前面。先走到尾巴、順便數長度 n = ${n},k 先對 n 取餘數(轉 n 圈等於沒轉)`, views: [chain(L, { cls: { [n - 1]: 'cur' }, subs: { [n - 1]: 'tail' } })] },
-    { note: '把尾巴接回頭,變成一個環', views: [loopChain(L, 0, { cls: { [n - 1]: 'cur' } })] },
-    { note: `從頭走 n − k − 1 = ${n - k - 1} 步到新的尾巴(值 ${L[n - k - 1]}),它的下一個(值 ${L[n - k]})就是新的頭;把環在這裡切斷`, views: [loopChain(L, 0, { cls: { [n - k - 1]: 'hl', [n - k]: 'done' }, subs: { [n - k - 1]: '新尾', [n - k]: '新頭' } })] },
-    { note: `結果 [${[...L.slice(n - k), ...L.slice(0, n - k)]}]`, views: [chain([...L.slice(n - k), ...L.slice(0, n - k)], { tail: true })] },
+    { note: `往右轉 ${K} 格 = 最後 ${k} 個搬到最前面。先走到尾巴、順便數長度 n = ${n},k 先對 n 取餘數(轉 n 圈等於沒轉)`, line: 4, views: [chain(L, { cls: { [n - 1]: 'cur' }, subs: { [n - 1]: 'tail' } })] },
+    { note: '把尾巴接回頭,變成一個環', line: 8, views: [loopChain(L, 0, { cls: { [n - 1]: 'cur' } })] },
+    { note: `從頭走 n − k − 1 = ${n - k - 1} 步到新的尾巴(值 ${L[n - k - 1]}),它的下一個(值 ${L[n - k]})就是新的頭;把環在這裡切斷`, line: 10, // TODO: 可能要拆格(走步 10、取新頭 11、切斷 12 一次演完)
+      views: [loopChain(L, 0, { cls: { [n - k - 1]: 'hl', [n - k]: 'done' }, subs: { [n - k - 1]: '新尾', [n - k]: '新頭' } })] },
+    { note: `結果 [${[...L.slice(n - k), ...L.slice(0, n - k)]}]`, line: 13, views: [chain([...L.slice(n - k), ...L.slice(0, n - k)], { tail: true })] },
   ]
 }
 
 function arrFig(): FigStep[] {
   return [
-    { note: '先把節點放進陣列,新頭就是 nodes[n − k]、新尾是 nodes[n − k − 1]', views: [arr(L, { label: '節點陣列', highlight: [2, 3] })] },
-    { note: '改三條指標:舊尾巴接到舊頭、新尾的 next 設成 null、回傳新頭', views: [arr([4, 5, 1, 2, 3], { label: '結果' })] },
+    { note: '先把節點放進陣列,新頭就是 nodes[n − k]、新尾是 nodes[n − k − 1]', line: 3, views: [arr(L, { label: '節點陣列', highlight: [2, 3] })] },
+    { note: '改三條指標:舊尾巴接到舊頭、新尾的 next 設成 null、回傳新頭', line: 7, // TODO: 可能要拆格(三條指標 7/8/9 一次演完)
+      views: [arr([4, 5, 1, 2, 3], { label: '結果' })] },
   ]
 }
 

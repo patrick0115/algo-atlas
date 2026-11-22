@@ -8,7 +8,7 @@ const P = '/home//foo/../bar/./baz/'
 function stackFig(): FigStep[] {
   const parts = P.split('/')
   const st: string[] = []
-  const out: FigStep[] = [{ note: '用 "/" 切開。空字串(連續的 //)和 "." 都代表「原地不動」,跳過;".." 代表回上一層 → pop;其他名字就 push(進入這個資料夾)', views: [arr(parts.map((x) => (x === '' ? '∅' : x)), { label: '切開後(∅ = 空字串)' })] }]
+  const out: FigStep[] = [{ note: '用 "/" 切開。空字串(連續的 //)和 "." 都代表「原地不動」,跳過;".." 代表回上一層 → pop;其他名字就 push(進入這個資料夾)', line: 3, views: [arr(parts.map((x) => (x === '' ? '∅' : x)), { label: '切開後(∅ = 空字串)' })] }]
   parts.forEach((p, i) => {
     let note = ''
     if (p === '' || p === '.') return
@@ -19,16 +19,16 @@ function stackFig(): FigStep[] {
       st.push(p)
       note = `"${p}" → 進入,push`
     }
-    out.push({ note, views: [arr(parts.map((x) => (x === '' ? '∅' : x)), { label: '切開後', highlight: [i], dim: parts.map((x, k) => (x === '' || x === '.' ? k : -1)).filter((k) => k >= 0) }), arr([...st], { label: '堆疊(目前的路徑)' })] })
+    out.push({ note, line: (p === '..' ? 4 : 5), views: [arr(parts.map((x) => (x === '' ? '∅' : x)), { label: '切開後', highlight: [i], dim: parts.map((x, k) => (x === '' || x === '.' ? k : -1)).filter((k) => k >= 0) }), arr([...st], { label: '堆疊(目前的路徑)' })] })
   })
-  out.push({ note: `用 "/" 接起來,前面加 "/" → "/${st.join('/')}"`, views: [arr(st, { label: '答案的每一層', done: st.map((_, i) => i) })] })
+  out.push({ note: `用 "/" 接起來,前面加 "/" → "/${st.join('/')}"`, line: 7, views: [arr(st, { label: '答案的每一層', done: st.map((_, i) => i) })] })
   return out
 }
 
 function scanFig(): FigStep[] {
   return [
-    { note: '不用 split:手動掃字串,跳過連續的 "/",再讀出到下一個 "/" 為止的名字', views: [arr(P.split(''), { label: 'path', range: [1, 4] })] },
-    { note: '讀到的名字照同樣規則處理(. 略過、.. pop、其他 push)。在不方便 split 的語言(像 C)比較自然', views: [arr(['home', 'bar', 'baz'], { label: '堆疊', done: [0, 1, 2] })] },
+    { note: '不用 split:手動掃字串,跳過連續的 "/",再讀出到下一個 "/" 為止的名字', line: 4, views: [arr(P.split(''), { label: 'path', range: [1, 4] })] },
+    { note: '讀到的名字照同樣規則處理(. 略過、.. pop、其他 push)。在不方便 split 的語言(像 C)比較自然', line: 8, views: [arr(['home', 'bar', 'baz'], { label: '堆疊', done: [0, 1, 2] })] }, // TODO: 可能要拆格
   ]
 }
 

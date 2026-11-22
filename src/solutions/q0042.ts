@@ -13,10 +13,10 @@ function prefixFig(): FigStep[] {
   for (let i = n - 2; i >= 0; i--) R[i] = Math.max(R[i + 1], H[i])
   const W = H.map((h, i) => Math.min(L[i], R[i]) - h)
   return [
-    { note: '每一格能裝多少水,只看它**左邊最高**和**右邊最高**:水位 = 兩者中比較矮的那個,水量 = 水位 − 自己的高度', views: [arr(H, { label: 'height', mode: 'bars' })] },
-    { note: 'leftMax[i] = height[0..i] 的最大值(從左往右掃);rightMax[i] = height[i..n−1] 的最大值(從右往左掃)', views: [arr(L, { label: 'leftMax' }), arr(R, { label: 'rightMax' })] },
-    { note: `water[i] = min(leftMax, rightMax) − height。例如第 5 格:min(2, 3) − 0 = 2`, views: [arr(H, { label: 'height', mode: 'bars', highlight: [5] }), arr(W, { label: 'water', highlight: [5] })] },
-    { note: `加總 = ${W.reduce((a, b) => a + b, 0)}`, views: [arr(W, { label: 'water', done: W.flatMap((w, i) => (w > 0 ? [i] : [])) })] },
+    { note: '每一格能裝多少水,只看它**左邊最高**和**右邊最高**:水位 = 兩者中比較矮的那個,水量 = 水位 − 自己的高度', line: 2, views: [arr(H, { label: 'height', mode: 'bars' })] },
+    { note: 'leftMax[i] = height[0..i] 的最大值(從左往右掃);rightMax[i] = height[i..n−1] 的最大值(從右往左掃)', line: 3, /* TODO: 可能要拆格(leftMax 與 rightMax 兩個迴圈在同一步) */ views: [arr(L, { label: 'leftMax' }), arr(R, { label: 'rightMax' })] },
+    { note: `water[i] = min(leftMax, rightMax) − height。例如第 5 格:min(2, 3) − 0 = 2`, line: 6, views: [arr(H, { label: 'height', mode: 'bars', highlight: [5] }), arr(W, { label: 'water', highlight: [5] })] },
+    { note: `加總 = ${W.reduce((a, b) => a + b, 0)}`, line: 7, views: [arr(W, { label: 'water', done: W.flatMap((w, i) => (w > 0 ? [i] : [])) })] },
   ]
 }
 
@@ -26,34 +26,37 @@ function twoFig(): FigStep[] {
   let lm = 0
   let rm = 0
   let total = 0
-  const out: FigStep[] = [{ note: '雙指針:左右各一個,各自記住「自己這邊目前最高」。**比較矮的那邊**可以直接結算:因為另一邊一定有更高的牆擋著,水位只取決於矮的那邊的最高值', views: [arr(H, { label: 'height', mode: 'bars', highlight: [l, r] })] }]
+  const out: FigStep[] = [{ note: '雙指針:左右各一個,各自記住「自己這邊目前最高」。**比較矮的那邊**可以直接結算:因為另一邊一定有更高的牆擋著,水位只取決於矮的那邊的最高值', line: 2, views: [arr(H, { label: 'height', mode: 'bars', highlight: [l, r] })] }]
   while (l < r) {
     let msg: string
     let at: number
+    let ln: number
     if (H[l] < H[r]) {
       lm = Math.max(lm, H[l])
       total += lm - H[l]
       msg = `左邊比較矮:leftMax = ${lm},這格裝 ${lm - H[l]},l 右移`
       at = l
+      ln = 4
       l++
     } else {
       rm = Math.max(rm, H[r])
       total += rm - H[r]
       msg = `右邊不比左邊矮:rightMax = ${rm},這格裝 ${rm - H[r]},r 左移`
       at = r
+      ln = 5
       r--
     }
-    out.push({ note: `${msg}(累計 ${total})`, views: [arr(H, { label: 'height', mode: 'bars', highlight: [at], compare: [l, r].filter((x) => x !== at), dim: range(0, H.length - 1).filter((i) => i < l && i !== at || i > r && i !== at) })] })
+    out.push({ note: `${msg}(累計 ${total})`, line: ln, views: [arr(H, { label: 'height', mode: 'bars', highlight: [at], compare: [l, r].filter((x) => x !== at), dim: range(0, H.length - 1).filter((i) => i < l && i !== at || i > r && i !== at) })] })
   }
-  out.push({ note: `兩個指針相遇,總共 ${total}`, views: [arr([total], { label: '答案', done: [0] })] })
+  out.push({ note: `兩個指針相遇,總共 ${total}`, line: 6, views: [arr([total], { label: '答案', done: [0] })] })
   return out
 }
 
 function stackFig(): FigStep[] {
   return [
-    { note: '單調堆疊:由左往右,堆疊裡放「高度遞減」的索引。遇到比堆疊頂端高的牆,就代表頂端那格形成了一個「凹槽」', views: [arr(H, { label: 'height', mode: 'bars', highlight: [3], compare: [1, 2] })] },
-    { note: '彈出凹槽底部 2(高 0),左牆是新的頂端 1(高 1)、右牆是 3(高 2):水高 min(1, 2) − 0 = 1,寬 3 − 1 − 1 = 1 → 裝 1', views: [arr(H, { label: 'height', mode: 'bars', highlight: [2], compare: [1, 3] })] },
-    { note: '水是**一層一層橫著**算的(和前兩種方法一格一格直著算不同),總和一樣是 6', views: [arr(H, { label: 'height', mode: 'bars', done: [2, 4, 5, 6, 9] })] },
+    { note: '單調堆疊:由左往右,堆疊裡放「高度遞減」的索引。遇到比堆疊頂端高的牆,就代表頂端那格形成了一個「凹槽」', line: 5, views: [arr(H, { label: 'height', mode: 'bars', highlight: [3], compare: [1, 2] })] },
+    { note: '彈出凹槽底部 2(高 0),左牆是新的頂端 1(高 1)、右牆是 3(高 2):水高 min(1, 2) − 0 = 1,寬 3 − 1 − 1 = 1 → 裝 1', line: 9, /* TODO: 可能要拆格(彈出 bottom、取 left、算 total 多行同一步) */ views: [arr(H, { label: 'height', mode: 'bars', highlight: [2], compare: [1, 3] })] },
+    { note: '水是**一層一層橫著**算的(和前兩種方法一格一格直著算不同),總和一樣是 6', line: 13, views: [arr(H, { label: 'height', mode: 'bars', done: [2, 4, 5, 6, 9] })] },
   ]
 }
 

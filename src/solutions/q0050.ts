@@ -7,7 +7,7 @@ function bitFig(): FigStep[] {
   const x = 3
   const n = 13
   const bits = n.toString(2).split('').reverse()
-  const out: FigStep[] = [{ note: `${x}^${n}:把 ${n} 寫成二進位 ${n.toString(2)} = 8 + 4 + 1,所以 ${x}^${n} = ${x}^8 × ${x}^4 × ${x}^1。而 ${x}^1、${x}^2、${x}^4、${x}^8 只要一直平方就能得到`, views: [arr(bits.slice().reverse(), { label: `${n} 的二進位` })] }]
+  const out: FigStep[] = [{ note: `${x}^${n}:把 ${n} 寫成二進位 ${n.toString(2)} = 8 + 4 + 1,所以 ${x}^${n} = ${x}^8 × ${x}^4 × ${x}^1。而 ${x}^1、${x}^2、${x}^4、${x}^8 只要一直平方就能得到`, line: 3, views: [arr(bits.slice().reverse(), { label: `${n} 的二進位` })] }]
   let base = x
   let res = 1
   let k = n
@@ -15,19 +15,19 @@ function bitFig(): FigStep[] {
   while (k > 0) {
     const on = k & 1
     if (on) res *= base
-    out.push({ note: `第 ${bit} 位是 ${on}:目前的 base = ${x}^${1 << bit} = ${base}${on ? `,乘進答案 → ${res}` : ',不乘'};然後 base 平方`, views: [arr(bits.slice().reverse(), { label: `${n} 的二進位`, highlight: [bits.length - 1 - bit] }), arr([base, res], { label: '[base, res]' })] })
+    out.push({ note: `第 ${bit} 位是 ${on}:目前的 base = ${x}^${1 << bit} = ${base}${on ? `,乘進答案 → ${res}` : ',不乘'};然後 base 平方`, line: 5, views: [arr(bits.slice().reverse(), { label: `${n} 的二進位`, highlight: [bits.length - 1 - bit] }), arr([base, res], { label: '[base, res]' })] })
     base *= base
     k >>= 1
     bit++
   }
-  out.push({ note: `答案 ${res}。只做了 log₂(${n}) ≈ 4 輪,而不是乘 ${n} 次`, views: [arr([res], { label: '答案', done: [0] })] })
+  out.push({ note: `答案 ${res}。只做了 log₂(${n}) ≈ 4 輪,而不是乘 ${n} 次`, line: 8, views: [arr([res], { label: '答案', done: [0] })] })
   return out
 }
 
 function recFig(): FigStep[] {
   return [
-    { note: 'x^n = (x^(n/2))²(n 偶數);x^n = (x^(n/2))² × x(n 奇數)。每次 n 減半', views: [arr(['3^13', '3^6', '3^3', '3^1', '3^0'], { label: '遞迴往下' })] },
-    { note: '回來時:3^0 = 1 → 3^1 = 1²×3 = 3 → 3^3 = 3²×3 = 27 → 3^6 = 27² = 729 → 3^13 = 729²×3 = 1594323', views: [arr([1, 3, 27, 729, 1594323], { label: '回傳值', done: [4] })] },
+    { note: 'x^n = (x^(n/2))²(n 偶數);x^n = (x^(n/2))² × x(n 奇數)。每次 n 減半', line: 5, views: [arr(['3^13', '3^6', '3^3', '3^1', '3^0'], { label: '遞迴往下' })] },
+    { note: '回來時:3^0 = 1 → 3^1 = 1²×3 = 3 → 3^3 = 3²×3 = 27 → 3^6 = 27² = 729 → 3^13 = 729²×3 = 1594323', line: 6, views: [arr([1, 3, 27, 729, 1594323], { label: '回傳值', done: [4] })] },
   ]
 }
 

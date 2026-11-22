@@ -21,16 +21,16 @@ function dpFig(): FigStep[] {
     }
   const view = (label: string, cells: (string | number)[][]): GridViewData => ({ kind: 'grid', label, cells, marks: { wall: G.flatMap((row, r) => row.flatMap((v, c) => (v ? [[r, c] as [number, number]] : []))) } })
   return [
-    { note: '和 [62](#/q/62) 一樣只能往右、往下走,但有些格子是障礙物(深色),不能經過。從左上到右下有幾條路?', views: [view('grid(深色 = 障礙)', G.map((row) => row.map(() => '')))] },
-    { note: '`dp[r][c]` = 到 (r, c) 的路徑數 = 上 + 左;障礙物格子 dp = 0(沒有路能經過它)', views: [view('dp', dp)] },
-    { note: `右下角 ${dp[R - 1][C - 1]} 條:繞上面或繞左邊`, views: [arr([dp[R - 1][C - 1]], { label: '答案', done: [0] })] },
+    { note: '和 [62](#/q/62) 一樣只能往右、往下走,但有些格子是障礙物(深色),不能經過。從左上到右下有幾條路?', line: 2, views: [view('grid(深色 = 障礙)', G.map((row) => row.map(() => '')))] },
+    { note: '`dp[r][c]` = 到 (r, c) 的路徑數 = 上 + 左;障礙物格子 dp = 0(沒有路能經過它)', line: 6, views: [view('dp', dp)] },
+    { note: `右下角 ${dp[R - 1][C - 1]} 條:繞上面或繞左邊`, line: 8, views: [arr([dp[R - 1][C - 1]], { label: '答案', done: [0] })] },
   ]
 }
 
 function rollFig(): FigStep[] {
   return [
-    { note: '一維版:`dp[c]` 先保留上一列的值(= 上),再加上 `dp[c−1]`(= 左,已經是這一列的);障礙物直接設成 0', views: [arr([1, 1, 1], { label: '第 0 列' }), arr([1, 0, 1], { label: '第 1 列' }), arr([1, 1, 2], { label: '第 2 列' })] },
-    { note: '空間從 O(mn) 降到 O(n)', views: [arr([2], { label: '答案', done: [0] })] },
+    { note: '一維版:`dp[c]` 先保留上一列的值(= 上),再加上 `dp[c−1]`(= 左,已經是這一列的);障礙物直接設成 0', line: 7, views: [arr([1, 1, 1], { label: '第 0 列' }), arr([1, 0, 1], { label: '第 1 列' }), arr([1, 1, 2], { label: '第 2 列' })] },
+    { note: '空間從 O(mn) 降到 O(n)', line: 9, views: [arr([2], { label: '答案', done: [0] })] },
   ]
 }
 

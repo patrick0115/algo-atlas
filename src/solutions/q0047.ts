@@ -34,13 +34,13 @@ function btFig(): FigStep[] {
   }
   go(-1, '[]')
   const pos = recLayout(nodes)
-  return nodes.map((_, k) => ({ note: notes[k], views: [recView(nodes, pos, k, '決策樹(實心 = 找到答案,淡色 = 剪掉)')] }))
+  return nodes.map((_, k) => ({ note: notes[k], line: nodes[k].parent < 0 ? 2 : nodes[k].kind === 'cut' ? 11 : nodes[k].kind === 'ok' ? 6 : 13, views: [recView(nodes, pos, k, '決策樹(實心 = 找到答案,淡色 = 剪掉)')] }))
 }
 
 function countFig(): FigStep[] {
   return [
-    { note: '另一種:不看「第幾個」,只看「每個值還剩幾個」。每一層從計數表裡挑一個**值**(值本身不重複,自然不會重複)', views: [kv([[1, 2], [2, 1]], '值 → 剩幾個')] },
-    { note: '挑 1(剩 1)→ 挑 1(剩 0)→ 挑 2 → [1,1,2];回頭改挑 2 → [1,2,1];最上層改挑 2 → [2,1,1]', views: [arr(['[1,1,2]', '[1,2,1]', '[2,1,1]'], { label: '答案', done: [0, 1, 2] })] },
+    { note: '另一種:不看「第幾個」,只看「每個值還剩幾個」。每一層從計數表裡挑一個**值**(值本身不重複,自然不會重複)', line: 9, views: [kv([[1, 2], [2, 1]], '值 → 剩幾個')] },
+    { note: '挑 1(剩 1)→ 挑 1(剩 0)→ 挑 2 → [1,1,2];回頭改挑 2 → [1,2,1];最上層改挑 2 → [2,1,1]', line: 12, /* TODO: 可能要拆格 */ views: [arr(['[1,1,2]', '[1,2,1]', '[2,1,1]'], { label: '答案', done: [0, 1, 2] })] },
   ]
 }
 

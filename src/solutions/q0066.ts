@@ -7,24 +7,24 @@ const D = [1, 9, 9]
 
 function carryFig(): FigStep[] {
   const d = [...D]
-  const out: FigStep[] = [{ note: '就像直式加法:從最右邊(個位)開始加 1', views: [arr(d, { label: 'digits' })] }]
+  const out: FigStep[] = [{ note: '就像直式加法:從最右邊(個位)開始加 1', line: 2, views: [arr(d, { label: 'digits' })] }]
   for (let i = d.length - 1; i >= 0; i--) {
     if (d[i] < 9) {
       d[i]++
-      out.push({ note: `第 ${i} 位是 ${d[i] - 1} < 9 → 直接變 ${d[i]},不用再進位,結束`, views: [arr([...d], { label: 'digits', highlight: [i], done: range(i + 1, d.length - 1) })] })
+      out.push({ note: `第 ${i} 位是 ${d[i] - 1} < 9 → 直接變 ${d[i]},不用再進位,結束`, line: 3, views: [arr([...d], { label: 'digits', highlight: [i], done: range(i + 1, d.length - 1) })] })
       return out
     }
     d[i] = 0
-    out.push({ note: `第 ${i} 位是 9 → 變成 0,進位 1 給左邊`, views: [arr([...d], { label: 'digits', highlight: [i] })] })
+    out.push({ note: `第 ${i} 位是 9 → 變成 0,進位 1 給左邊`, line: 4, views: [arr([...d], { label: 'digits', highlight: [i] })] })
   }
-  out.push({ note: '每一位都是 9:答案是 1 後面接一串 0', views: [arr([1, ...d], { label: 'digits', highlight: [0] })] })
+  out.push({ note: '每一位都是 9:答案是 1 後面接一串 0', line: 6, views: [arr([1, ...d], { label: 'digits', highlight: [0] })] })
   return out
 }
 
 function allNineFig(): FigStep[] {
   return [
-    { note: '999 + 1:每一位都會變 0,一路進位到最左邊', views: [arr([9, 9, 9], { label: 'digits' })] },
-    { note: '迴圈跑完還沒 return → 在最前面補一個 1', views: [arr([1, 0, 0, 0], { label: '答案', highlight: [0] })] },
+    { note: '999 + 1:每一位都會變 0,一路進位到最左邊', line: 2, views: [arr([9, 9, 9], { label: 'digits' })] },
+    { note: '迴圈跑完還沒 return → 在最前面補一個 1', line: 8, views: [arr([1, 0, 0, 0], { label: '答案', highlight: [0] })] },
   ]
 }
 

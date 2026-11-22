@@ -6,12 +6,12 @@ import type { FigStep, Solution } from './types'
 const M = [[1, 2, 3], [8, 9, 4], [7, 6, 5]]
 const grid = (cells: number[][], label: string): GridViewData => ({ kind: 'grid', label, cells })
 const boundsFig: FigStep[] = [
-  { note: '從左上角開始,依序填上邊、右邊、下邊、左邊,再把四個邊界往內縮。', views: [grid([[1, 2, 3], [8, 0, 4], [7, 6, 5]], '外圈') ] },
-  { note: '外圈填完後只剩中央,填入 9,得到完整螺旋。', views: [grid(M, 'n = 3 的答案'), arr([9], { label: '最後填入', done: [0] })] },
+  { note: '從左上角開始,依序填上邊、右邊、下邊、左邊,再把四個邊界往內縮。', line: 5, views: [grid([[1, 2, 3], [8, 0, 4], [7, 6, 5]], '外圈') ] }, // TODO: 可能要拆格(上/右/下/左四邊一次演完)
+  { note: '外圈填完後只剩中央,填入 9,得到完整螺旋。', line: 5, views: [grid(M, 'n = 3 的答案'), arr([9], { label: '最後填入', done: [0] })] },
 ]
 const walkFig: FigStep[] = [
-  { note: '另一種做法是像機器人走格子:右、下、左、上循環。下一格出界或已填過時就轉彎。', views: [grid([[1, 2, 3], [0, 0, 4], [0, 0, 5]], '走到 5') ] },
-  { note: '繼續左、上、右直到填滿 n² 格。', views: [grid(M, '完整螺旋')] },
+  { note: '另一種做法是像機器人走格子:右、下、左、上循環。下一格出界或已填過時就轉彎。', line: 8, views: [grid([[1, 2, 3], [0, 0, 4], [0, 0, 5]], '走到 5') ] }, // TODO: 可能要拆格(填入、判斷出界、轉向、前進 一次演完)
+  { note: '繼續左、上、右直到填滿 n² 格。', line: 6, views: [grid(M, '完整螺旋')] },
 ]
 
 export const q0059: Solution = {

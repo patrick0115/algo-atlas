@@ -33,18 +33,18 @@ function justify(words: string[], maxWidth: number): string[] {
 function greedyFig(): FigStep[] {
   const lines = justify(WORDS, W)
   return [
-    { note: `第一步:**貪心分行**。每行盡量多放單字,條件是「單字長度總和 + 單字之間至少一個空白」≤ ${W}`, views: [arr(WORDS, { label: 'words' })] },
-    { note: '第 1 行:This(4)+ is(2)+ an(2)= 8,加 2 個空白 = 10 ≤ 16;再加 example 就變 8 + 7 + 3 = 18 > 16 → 這行放 3 個字', views: [arr(WORDS, { label: 'words', highlight: [0, 1, 2], dim: [3, 4, 5, 6] })] },
-    { note: '第二步:**分配空白**。這行要補到 16,空白總數 = 16 − 8 = 8,有 2 個間隔 → 每個間隔 8 ÷ 2 = 4 個', views: [arr(lines[0].replace(/ /g, '·').split(''), { label: '第 1 行(· = 空白)' })] },
-    { note: '第 2 行:example of text = 13 個字母,空白 3 個,2 個間隔 → 3 ÷ 2 = 1 餘 1:**餘數從左邊開始多分**一個 → 左邊 2 個、右邊 1 個', views: [arr(lines[1].replace(/ /g, '·').split(''), { label: '第 2 行' })] },
-    { note: '最後一行(還有只有一個單字的行):靠左對齊,單字間一個空白,右邊補空白', views: lines.map((l, i) => arr(l.replace(/ /g, '·').split(''), { label: `第 ${i + 1} 行` })) },
+    { note: `第一步:**貪心分行**。每行盡量多放單字,條件是「單字長度總和 + 單字之間至少一個空白」≤ ${W}`, line: 6, views: [arr(WORDS, { label: 'words' })] },
+    { note: '第 1 行:This(4)+ is(2)+ an(2)= 8,加 2 個空白 = 10 ≤ 16;再加 example 就變 8 + 7 + 3 = 18 > 16 → 這行放 3 個字', line: 6, views: [arr(WORDS, { label: 'words', highlight: [0, 1, 2], dim: [3, 4, 5, 6] })] },
+    { note: '第二步:**分配空白**。這行要補到 16,空白總數 = 16 − 8 = 8,有 2 個間隔 → 每個間隔 8 ÷ 2 = 4 個', line: 12, views: [arr(lines[0].replace(/ /g, '·').split(''), { label: '第 1 行(· = 空白)' })] },
+    { note: '第 2 行:example of text = 13 個字母,空白 3 個,2 個間隔 → 3 ÷ 2 = 1 餘 1:**餘數從左邊開始多分**一個 → 左邊 2 個、右邊 1 個', line: 14, views: [arr(lines[1].replace(/ /g, '·').split(''), { label: '第 2 行' })] },
+    { note: '最後一行(還有只有一個單字的行):靠左對齊,單字間一個空白,右邊補空白', line: 8, views: lines.map((l, i) => arr(l.replace(/ /g, '·').split(''), { label: `第 ${i + 1} 行` })) }, // TODO: 可能要拆格
   ]
 }
 
 function rrFig(): FigStep[] {
   return [
-    { note: '分配空白的另一種寫法:先每個間隔放 1 個空白,剩下的空白「一個一個發」,從左邊的間隔開始輪流發(round-robin)', views: [arr(['example', '·', 'of', '·', 'text'], { label: '先各放 1 個,還剩 1 個' })] },
-    { note: '剩下的 1 個發給第 1 個間隔 → "example··of·text"。發完一輪還有剩就再從左邊發一輪,效果和「除法 + 餘數」一樣', views: [arr(['example', '··', 'of', '·', 'text'], { label: '發完', highlight: [1] })] },
+    { note: '分配空白的另一種寫法:先每個間隔放 1 個空白,剩下的空白「一個一個發」,從左邊的間隔開始輪流發(round-robin)', line: 8, views: [arr(['example', '·', 'of', '·', 'text'], { label: '先各放 1 個,還剩 1 個' })] },
+    { note: '剩下的 1 個發給第 1 個間隔 → "example··of·text"。發完一輪還有剩就再從左邊發一輪,效果和「除法 + 餘數」一樣', line: 9, views: [arr(['example', '··', 'of', '·', 'text'], { label: '發完', highlight: [1] })] },
   ]
 }
 

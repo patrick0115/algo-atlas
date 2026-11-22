@@ -11,13 +11,13 @@ function carryFig(): FigStep[] {
   let j = B.length - 1
   let carry = 0
   const res: string[] = []
-  const out: FigStep[] = [{ note: '和直式加法一樣:從最右邊(最低位)開始,每一位相加再加上進位。二進位逢 2 進 1', views: [arr(A.split(''), { label: 'a' }), arr(B.split(''), { label: 'b' })] }]
+  const out: FigStep[] = [{ note: '和直式加法一樣:從最右邊(最低位)開始,每一位相加再加上進位。二進位逢 2 進 1', line: 2, views: [arr(A.split(''), { label: 'a' }), arr(B.split(''), { label: 'b' })] }]
   while (i >= 0 || j >= 0 || carry) {
     const x = i >= 0 ? +A[i] : 0
     const y = j >= 0 ? +B[j] : 0
     const s = x + y + carry
     res.push(String(s % 2))
-    out.push({ note: `${x} + ${y} + 進位 ${carry} = ${s} → 這一位寫 ${s % 2},進位 ${s >> 1}`, views: [arr(A.split(''), { label: 'a', highlight: i >= 0 ? [i] : [] }), arr(B.split(''), { label: 'b', highlight: j >= 0 ? [j] : [] }), arr([...res].reverse(), { label: '結果(由右往左長)', highlight: [0] })] })
+    out.push({ note: `${x} + ${y} + 進位 ${carry} = ${s} → 這一位寫 ${s % 2},進位 ${s >> 1}`, line: 8, views: [arr(A.split(''), { label: 'a', highlight: i >= 0 ? [i] : [] }), arr(B.split(''), { label: 'b', highlight: j >= 0 ? [j] : [] }), arr([...res].reverse(), { label: '結果(由右往左長)', highlight: [0] })] }) // TODO: 可能要拆格
     carry = s >> 1
     i--
     j--
@@ -28,8 +28,8 @@ function carryFig(): FigStep[] {
 function bitFig(): FigStep[] {
   const n = Math.max(A.length, B.length)
   return [
-    { note: '把兩個字串左邊補 0 到一樣長,每一位用「全加器」的規則:和 = x ⊕ y ⊕ c,進位 = 多數決(三個裡至少兩個是 1)', views: [arr(A.padStart(n, '0').split(''), { label: 'a(補 0)' }), arr(B.padStart(n, '0').split(''), { label: 'b(補 0)' })] },
-    { note: '從右到左算完,最後還有進位就在最前面補 1 → "10010"(11 + 7 = 18)', views: [arr('10010'.split(''), { label: '結果', done: [0, 1, 2, 3, 4] })] },
+    { note: '把兩個字串左邊補 0 到一樣長,每一位用「全加器」的規則:和 = x ⊕ y ⊕ c,進位 = 多數決(三個裡至少兩個是 1)', line: 3, views: [arr(A.padStart(n, '0').split(''), { label: 'a(補 0)' }), arr(B.padStart(n, '0').split(''), { label: 'b(補 0)' })] }, // TODO: 可能要拆格
+    { note: '從右到左算完,最後還有進位就在最前面補 1 → "10010"(11 + 7 = 18)', line: 12, views: [arr('10010'.split(''), { label: '結果', done: [0, 1, 2, 3, 4] })] },
   ]
 }
 

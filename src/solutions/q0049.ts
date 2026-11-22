@@ -6,10 +6,11 @@ import { count26, idx, kv } from './fig'
 
 const STRS = ['eat', 'tea', 'tan', 'ate', 'nat', 'bat']
 
-function groupFig(keyOf: (w: string) => string, keyName: string): FigStep[] {
+// L = [初始, 開新桶, 放進桶, 結束] 對應各 approach JS 的行號
+function groupFig(keyOf: (w: string) => string, keyName: string, L: [number, number, number, number]): FigStep[] {
   const groups = new Map<string, string[]>()
   const view = (hl: string[] = []) => kv([...groups].map(([k, ws]) => [k, ws.join(', ')]), `groups(${keyName} → 這組的字串)`, hl)
-  const out: FigStep[] = [{ note: '準備一個 Hash Map:同一組異位詞會算出同一個 key,就丟進同一個桶', views: [arr(STRS, { label: 'strs' }), view()] }]
+  const out: FigStep[] = [{ note: '準備一個 Hash Map:同一組異位詞會算出同一個 key,就丟進同一個桶', line: L[0], views: [arr(STRS, { label: 'strs' }), view()] }]
   STRS.forEach((w, i) => {
     const k = keyOf(w)
     const isNew = !groups.has(k)
@@ -17,20 +18,22 @@ function groupFig(keyOf: (w: string) => string, keyName: string): FigStep[] {
     groups.get(k)!.push(w)
     out.push({
       note: `"${w}" 的 key 是 ${k}${isNew ? ',還沒有這個桶 → 開新的一組' : `,已經有這個桶 → 放進去和 ${groups.get(k)!.slice(0, -1).join('、')} 同一組`}`,
+      line: isNew ? L[1] : L[2],
       views: [arr(STRS, { label: 'strs', highlight: [i], dim: range(0, i - 1) }), view([k])],
     })
   })
-  out.push({ note: `走完了,map 的每個 value 就是一組答案:共 ${groups.size} 組`, views: [view()] })
+  out.push({ note: `走完了,map 的每個 value 就是一組答案:共 ${groups.size} 組`, line: L[3], views: [view()] })
   return out
 }
 
 function countKeyFig(): FigStep[] {
-  const steps = groupFig(countKey, '計數 key')
+  const steps = groupFig(countKey, '計數 key', [2, 7, 8, 9])
   // 在第一個字前面插入一步,示範 26 格計數怎麼變成 key
   const cnt = Array(26).fill(0)
   for (const ch of 'eat') cnt[idx(ch)]++
   steps.splice(1, 0, {
     note: '怎麼算 key:數 "eat" 每個字母出現幾次 → a=1, e=1, t=1。把 26 格的次數串起來就是 key(下圖只寫出非 0 的格子:a1e1t1)',
+    line: 5,
     views: [count26(cnt, '"eat" 的 26 格計數', [idx('a'), idx('e'), idx('t')])],
   })
   return steps
@@ -68,7 +71,7 @@ export const q0049: Solution = {
       name: '排序後的字串當 key',
       idea: '異位詞排序後完全一樣,所以 `sorted(s)` 就是天然的分組 key。',
       steps: ['`groups = {}`(key → 字串清單)', '對每個字串 `s`:`key = 把 s 的字母排序`', '`groups[key].append(s)`', '回傳 `groups` 所有的 value'],
-      figure: { title: 'strs = ["eat","tea","tan","ate","nat","bat"]', steps: groupFig((w) => [...w].sort().join(''), '排序後的字串') },
+      figure: { title: 'strs = ["eat","tea","tan","ate","nat","bat"]', steps: groupFig((w) => [...w].sort().join(''), '排序後的字串', [2, 5, 6, 8]) },
       complexity: { time: 'O(n · k log k)', space: 'O(n · k)', why: 'n 個字串、每個長度最多 k,各排序一次 O(k log k)。map 要存所有字串和 key,總共 O(n·k)。' },
       verdict: '最好寫,面試首選。k 最多 100,log k 很小,實際上和計數法差不多快。',
       code: {

@@ -10,7 +10,7 @@ function posFig(): FigStep[] {
   const m = A.length
   const n = B.length
   const pos = Array(m + n).fill(0)
-  const out: FigStep[] = [{ note: `直式乘法的規律:num1[i] × num2[j] 的結果,會落在答案的第 i + j 和 i + j + 1 位(從左數)。${A} × ${B} 的答案最多 ${m} + ${n} = ${m + n} 位`, views: [arr(A.split(''), { label: 'num1' }), arr(B.split(''), { label: 'num2' }), arr([...pos], { label: 'pos' })] }]
+  const out: FigStep[] = [{ note: `直式乘法的規律:num1[i] × num2[j] 的結果,會落在答案的第 i + j 和 i + j + 1 位(從左數)。${A} × ${B} 的答案最多 ${m} + ${n} = ${m + n} 位`, line: 2, views: [arr(A.split(''), { label: 'num1' }), arr(B.split(''), { label: 'num2' }), arr([...pos], { label: 'pos' })] }]
   for (let i = m - 1; i >= 0; i--)
     for (let j = n - 1; j >= 0; j--) {
       const mul = +A[i] * +B[j]
@@ -19,18 +19,19 @@ function posFig(): FigStep[] {
       pos[i + j] += Math.floor(sum / 10)
       out.push({
         note: `${A[i]} × ${B[j]} = ${mul},加上 pos[${i + j + 1}] 原本的值 → ${sum}:個位 ${sum % 10} 留在 pos[${i + j + 1}],十位 ${Math.floor(sum / 10)} 進到 pos[${i + j}]`,
+        line: 6, // TODO: 可能要拆格(s 加總、pos[i+j+1]、pos[i+j] 同一步)
         views: [arr(A.split(''), { label: 'num1', highlight: [i] }), arr(B.split(''), { label: 'num2', highlight: [j] }), arr([...pos], { label: 'pos', highlight: [i + j + 1], compare: [i + j] })],
       })
     }
   const s = pos.join('').replace(/^0+/, '') || '0'
-  out.push({ note: `去掉開頭的 0 → "${s}"`, views: [arr(pos, { label: 'pos', done: range(pos.length - s.length, pos.length - 1), dim: range(0, pos.length - s.length - 1) })] })
+  out.push({ note: `去掉開頭的 0 → "${s}"`, line: 9, views: [arr(pos, { label: 'pos', done: range(pos.length - s.length, pos.length - 1), dim: range(0, pos.length - s.length - 1) })] })
   return out
 }
 
 function rowFig(): FigStep[] {
   return [
-    { note: '小學的直式乘法:num1 分別乘上 num2 的每一位,每往左一位就多補一個 0', views: [arr(['123 × 5 = 615', '123 × 4 = 492 → 4920'], { label: '部分積' })] },
-    { note: '再把部分積用「字串加法」加起來:615 + 4920 = 5535', views: [arr(['5', '5', '3', '5'], { label: '答案', done: [0, 1, 2, 3] })] },
+    { note: '小學的直式乘法:num1 分別乘上 num2 的每一位,每往左一位就多補一個 0', line: 17, views: [arr(['123 × 5 = 615', '123 × 4 = 492 → 4920'], { label: '部分積' })] },
+    { note: '再把部分積用「字串加法」加起來:615 + 4920 = 5535', line: 22, views: [arr(['5', '5', '3', '5'], { label: '答案', done: [0, 1, 2, 3] })] },
   ]
 }
 

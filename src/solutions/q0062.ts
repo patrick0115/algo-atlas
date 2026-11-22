@@ -13,35 +13,35 @@ function grid(dp: (number | string)[][], hl: Cell[] = [], cmp: Cell[] = []): Gri
 
 function dpFig(): FigStep[] {
   const dp: (number | string)[][] = Array.from({ length: M }, () => Array(N).fill(''))
-  const out: FigStep[] = [{ note: '只能往右或往下走 → 走到 (r, c) 的最後一步,一定是從上面 (r−1, c) 或左邊 (r, c−1) 來的。路線數 = 兩邊的路線數相加', views: [grid(dp)] }]
+  const out: FigStep[] = [{ note: '只能往右或往下走 → 走到 (r, c) 的最後一步,一定是從上面 (r−1, c) 或左邊 (r, c−1) 來的。路線數 = 兩邊的路線數相加', line: 2, views: [grid(dp)] }]
   for (let r = 0; r < M; r++)
     for (let c = 0; c < N; c++) {
       if (r === 0 || c === 0) {
         dp[r][c] = 1
-        if (r === 0 && c === N - 1) out.push({ note: '第一列只有一種走法(一直往右)→ 全部是 1;第一行(一直往下)也一樣,之後填到時都是 1', views: [grid(dp, Array.from({ length: N }, (_, k) => [0, k] as Cell))] })
+        if (r === 0 && c === N - 1) out.push({ note: '第一列只有一種走法(一直往右)→ 全部是 1;第一行(一直往下)也一樣,之後填到時都是 1', line: 2, views: [grid(dp, Array.from({ length: N }, (_, k) => [0, k] as Cell))] })
         continue
       }
       dp[r][c] = (dp[r - 1][c] as number) + (dp[r][c - 1] as number)
-      out.push({ note: `dp[${r}][${c}] = 上面 ${dp[r - 1][c]} + 左邊 ${dp[r][c - 1]} = ${dp[r][c]}`, views: [grid(dp, [[r, c]], [[r - 1, c], [r, c - 1]])] })
+      out.push({ note: `dp[${r}][${c}] = 上面 ${dp[r - 1][c]} + 左邊 ${dp[r][c - 1]} = ${dp[r][c]}`, line: 3, views: [grid(dp, [[r, c]], [[r - 1, c], [r, c - 1]])] })
     }
-  out.push({ note: `右下角 = ${dp[M - 1][N - 1]}`, views: [grid(dp, [[M - 1, N - 1]])] })
+  out.push({ note: `右下角 = ${dp[M - 1][N - 1]}`, line: 4, views: [grid(dp, [[M - 1, N - 1]])] })
   return out
 }
 
 function rowFig(): FigStep[] {
   const row = Array(N).fill(1)
-  const out: FigStep[] = [{ note: '每一格只用到「上面」和「左邊」。用一列陣列就夠:更新前 row[c] 是上一列的值(上面),row[c−1] 已經是這一列的新值(左邊)', views: [arr(row, { label: '第 0 列' })] }]
+  const out: FigStep[] = [{ note: '每一格只用到「上面」和「左邊」。用一列陣列就夠:更新前 row[c] 是上一列的值(上面),row[c−1] 已經是這一列的新值(左邊)', line: 2, views: [arr(row, { label: '第 0 列' })] }]
   for (let r = 1; r < M; r++) {
     for (let c = 1; c < N; c++) row[c] += row[c - 1]
-    out.push({ note: `第 ${r} 列:row[c] += row[c−1](由左到右)`, views: [arr([...row], { label: `第 ${r} 列` })] })
+    out.push({ note: `第 ${r} 列:row[c] += row[c−1](由左到右)`, line: 3, views: [arr([...row], { label: `第 ${r} 列` })] })
   }
   return out
 }
 
 function mathFig(): FigStep[] {
   return [
-    { note: `另一個角度:從左上走到右下,一定剛好往下走 ${M - 1} 步、往右走 ${N - 1} 步,共 ${M + N - 2} 步。不同的路線 = 在這 ${M + N - 2} 步裡挑哪 ${M - 1} 步是「往下」`, views: [arr([...Array(M - 1).fill('↓'), ...Array(N - 1).fill('→')], { label: '一條路線 = 這些箭頭的一種排列' })] },
-    { note: `答案 = C(${M + N - 2}, ${M - 1}) = ${comb(M + N - 2, M - 1)}`, views: [arr(['→', '↓', '→', '→', '↓', '→'], { label: '例如這一種' })] },
+    { note: `另一個角度:從左上走到右下,一定剛好往下走 ${M - 1} 步、往右走 ${N - 1} 步,共 ${M + N - 2} 步。不同的路線 = 在這 ${M + N - 2} 步裡挑哪 ${M - 1} 步是「往下」`, line: 3, views: [arr([...Array(M - 1).fill('↓'), ...Array(N - 1).fill('→')], { label: '一條路線 = 這些箭頭的一種排列' })] },
+    { note: `答案 = C(${M + N - 2}, ${M - 1}) = ${comb(M + N - 2, M - 1)}`, line: 4, views: [arr(['→', '↓', '→', '→', '↓', '→'], { label: '例如這一種' })] },
   ]
 }
 

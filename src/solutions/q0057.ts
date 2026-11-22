@@ -18,13 +18,13 @@ function threeFig(): FigStep[] {
   const lbl = [...IV.map(([a, b]) => `[${a},${b}]`), `新[${NEW}]`]
   const res: number[][] = []
   const cls: Record<number, 'done' | 'hl' | 'cmp' | 'dim'> = { [IV.length]: 'hl' }
-  const out: FigStep[] = [{ note: '原本的區間已經排好、互不重疊。新區間(最下面那列)把它們分成三種:完全在它左邊的、和它重疊的、完全在它右邊的', views: [intervalsView(all, { rowLabels: lbl, cls: { ...cls } })] }]
+  const out: FigStep[] = [{ note: '原本的區間已經排好、互不重疊。新區間(最下面那列)把它們分成三種:完全在它左邊的、和它重疊的、完全在它右邊的', line: 3, views: [intervalsView(all, { rowLabels: lbl, cls: { ...cls } })] }]
   let [s, e] = NEW
   let i = 0
   while (i < IV.length && IV[i][1] < s) {
     res.push(IV[i])
     cls[i] = 'done'
-    out.push({ note: `[${IV[i]}] 的結束 ${IV[i][1]} < 新區間的開始 ${s} → 完全在左邊,原封不動放進答案`, views: [intervalsView(all, { rowLabels: lbl, cls: { ...cls } }), arr(res.map((r) => `[${r}]`), { label: '答案' })] })
+    out.push({ note: `[${IV[i]}] 的結束 ${IV[i][1]} < 新區間的開始 ${s} → 完全在左邊,原封不動放進答案`, line: 4, views: [intervalsView(all, { rowLabels: lbl, cls: { ...cls } }), arr(res.map((r) => `[${r}]`), { label: '答案' })] })
     i++
   }
   while (i < IV.length && IV[i][0] <= e) {
@@ -32,17 +32,17 @@ function threeFig(): FigStep[] {
     s = Math.min(s, IV[i][0])
     e = Math.max(e, IV[i][1])
     cls[i] = 'cmp'
-    out.push({ note: `[${IV[i]}] 和新區間重疊(開始 ${IV[i][0]} ≤ ${prevE}) → 合併,新區間變成 [${s},${e}]`, views: [intervalsView(all, { rowLabels: lbl, cls: { ...cls } }), arr(res.map((r) => `[${r}]`), { label: '答案' })] })
+    out.push({ note: `[${IV[i]}] 和新區間重疊(開始 ${IV[i][0]} ≤ ${prevE}) → 合併,新區間變成 [${s},${e}]`, line: 6, views: [intervalsView(all, { rowLabels: lbl, cls: { ...cls } }), arr(res.map((r) => `[${r}]`), { label: '答案' })] })
     i++
   }
   res.push([s, e])
-  out.push({ note: `重疊的都吃進來了,放入合併後的 [${s},${e}]`, views: [arr(res.map((r) => `[${r}]`), { label: '答案', highlight: [res.length - 1] })] })
+  out.push({ note: `重疊的都吃進來了,放入合併後的 [${s},${e}]`, line: 10, views: [arr(res.map((r) => `[${r}]`), { label: '答案', highlight: [res.length - 1] })] })
   while (i < IV.length) {
     res.push(IV[i])
     cls[i] = 'done'
     i++
   }
-  out.push({ note: '剩下的都在右邊,原封不動接上', views: [intervalsView(res, { label: '結果', cls: Object.fromEntries(res.map((_, k) => [k, 'done'])) })] })
+  out.push({ note: '剩下的都在右邊,原封不動接上', line: 11, views: [intervalsView(res, { label: '結果', cls: Object.fromEntries(res.map((_, k) => [k, 'done'])) })] })
   return out
 }
 
@@ -65,7 +65,7 @@ export const q0057: Solution = {
       name: '加進去再合併(套用 56 題)',
       idea: '把 newInterval 加進陣列,排序,再做一次區間合併。',
       steps: ['`intervals.append(newInterval)`', '依開始排序', '照 56 題合併'],
-      figure: { title: `intervals = ${JSON.stringify(IV)}, newInterval = [${NEW}]`, steps: [threeFig()[0], { note: '全部丟在一起、依開始排序,再照 56 題由左到右合併。結果和下面的方法一樣,但多做了一次排序', views: threeFig().at(-1)!.views }] },
+      figure: { title: `intervals = ${JSON.stringify(IV)}, newInterval = [${NEW}]`, steps: [{ ...threeFig()[0], line: 2 }, { note: '全部丟在一起、依開始排序,再照 56 題由左到右合併。結果和下面的方法一樣,但多做了一次排序', line: 4, views: threeFig().at(-1)!.views }] },
       complexity: { time: 'O(n log n)', space: 'O(n)', why: '排序 O(n log n)。' },
       verdict: '能過,寫法最少。但沒有利用「原本已排序」,多花了一個 log。',
       code: {

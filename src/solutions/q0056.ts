@@ -18,8 +18,8 @@ function sortFig(): FigStep[] {
   const res: number[][] = []
   const cls: Record<number, 'done' | 'hl' | 'cmp'> = {}
   const out: FigStep[] = [
-    { note: '亂序的區間很難判斷誰和誰重疊', views: [intervalsView(IV, { label: '原本的區間' })] },
-    { note: '依**開始時間**排序後,會和「目前合併中的區間」重疊的,一定緊接在它後面', views: [intervalsView(s, { label: '依開始排序' })] },
+    { note: '亂序的區間很難判斷誰和誰重疊', line: 2, views: [intervalsView(IV, { label: '原本的區間' })] },
+    { note: '依**開始時間**排序後,會和「目前合併中的區間」重疊的,一定緊接在它後面', line: 2, views: [intervalsView(s, { label: '依開始排序' })] },
   ]
   s.forEach(([a, b], i) => {
     const last = res[res.length - 1]
@@ -27,14 +27,14 @@ function sortFig(): FigStep[] {
       const old = [...last]
       last[1] = Math.max(last[1], b)
       cls[i] = 'cmp'
-      out.push({ note: `[${a},${b}] 的開始 ${a} ≤ 目前區間 [${old}] 的結束 ${old[1]} → 重疊,合併成 [${last}]`, views: [intervalsView(s, { cls: { ...cls, [i]: 'hl' } }), arr(res.map((r) => `[${r}]`), { label: '合併結果', highlight: [res.length - 1] })] })
+      out.push({ note: `[${a},${b}] 的開始 ${a} ≤ 目前區間 [${old}] 的結束 ${old[1]} → 重疊,合併成 [${last}]`, line: 5, views: [intervalsView(s, { cls: { ...cls, [i]: 'hl' } }), arr(res.map((r) => `[${r}]`), { label: '合併結果', highlight: [res.length - 1] })] })
     } else {
       res.push([a, b])
       cls[i] = 'done'
-      out.push({ note: last ? `[${a},${b}] 的開始 ${a} > 目前區間的結束 ${last[1]} → 不重疊,開一個新的區間` : `第一個區間 [${a},${b}] 直接放進結果`, views: [intervalsView(s, { cls: { ...cls, [i]: 'hl' } }), arr(res.map((r) => `[${r}]`), { label: '合併結果', highlight: [res.length - 1] })] })
+      out.push({ note: last ? `[${a},${b}] 的開始 ${a} > 目前區間的結束 ${last[1]} → 不重疊,開一個新的區間` : `第一個區間 [${a},${b}] 直接放進結果`, line: 6, views: [intervalsView(s, { cls: { ...cls, [i]: 'hl' } }), arr(res.map((r) => `[${r}]`), { label: '合併結果', highlight: [res.length - 1] })] })
     }
   })
-  out.push({ note: `合併完成:${res.map((r) => `[${r}]`).join('、')}`, views: [intervalsView(res, { label: '結果', cls: Object.fromEntries(res.map((_, i) => [i, 'done'])) })] })
+  out.push({ note: `合併完成:${res.map((r) => `[${r}]`).join('、')}`, line: 8, views: [intervalsView(res, { label: '結果', cls: Object.fromEntries(res.map((_, i) => [i, 'done'])) })] })
   return out
 }
 
@@ -43,10 +43,11 @@ function sweepFig(): FigStep[] {
   for (const [a, b] of IV) ev.push([a, 1], [b, -1])
   ev.sort((x, y) => x[0] - y[0] || y[1] - x[1])
   let cur = 0
-  const out: FigStep[] = [{ note: '掃描線:把每個區間拆成「開始 +1」和「結束 −1」兩個事件,依位置排序(同一個位置先處理開始,端點相接才會合在一起)。目前的計數 > 0 就代表在某個區間裡面', views: [arr(ev.map(([x, d]) => `${x}${d > 0 ? '開' : '關'}`), { label: '事件' })] }]
+  const out: FigStep[] = [{ note: '掃描線:把每個區間拆成「開始 +1」和「結束 −1」兩個事件,依位置排序(同一個位置先處理開始,端點相接才會合在一起)。目前的計數 > 0 就代表在某個區間裡面', line: 3, views: [arr(ev.map(([x, d]) => `${x}${d > 0 ? '開' : '關'}`), { label: '事件' })] }]
   let start = 0
   const res: string[] = []
   ev.forEach(([x, d], i) => {
+    const line = d > 0 ? (cur === 0 ? 9 : 10) : 11
     if (cur === 0 && d > 0) start = x
     cur += d
     let note = `${x} ${d > 0 ? '開始' : '結束'} → 計數 ${cur}`
@@ -54,7 +55,7 @@ function sweepFig(): FigStep[] {
       res.push(`[${start},${x}]`)
       note += `,計數回到 0 → 一個合併後的區間 [${start},${x}] 結束`
     }
-    out.push({ note, views: [arr(ev.map(([p, q]) => `${p}${q > 0 ? '開' : '關'}`), { label: '事件', highlight: [i] }), arr(res, { label: '合併結果' })] })
+    out.push({ note, line, views: [arr(ev.map(([p, q]) => `${p}${q > 0 ? '開' : '關'}`), { label: '事件', highlight: [i] }), arr(res, { label: '合併結果' })] })
   })
   return out
 }

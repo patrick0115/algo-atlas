@@ -17,7 +17,7 @@ function board(qs: number[], label: string, hl: Cell[] = []): GridViewData {
 }
 
 function btFig(): FigStep[] {
-  const out: FigStep[] = [{ note: '一列放一個皇后(每列一定剛好一個)。逐列決定放在哪一行;放之前檢查同一行、兩條斜線有沒有被佔', views: [board([], '空棋盤')] }]
+  const out: FigStep[] = [{ note: '一列放一個皇后(每列一定剛好一個)。逐列決定放在哪一行;放之前檢查同一行、兩條斜線有沒有被佔', line: 2, views: [board([], '空棋盤')] }]
   const qs: number[] = []
   const cols = new Set<number>()
   const d1 = new Set<number>()
@@ -27,7 +27,7 @@ function btFig(): FigStep[] {
     if (found >= 1) return
     if (r === N) {
       found++
-      out.push({ note: `四列都放好了 → 找到一組解`, views: [board([...qs], '解')] })
+      out.push({ note: `四列都放好了 → 找到一組解`, line: 6, views: [board([...qs], '解')] })
       return
     }
     for (let c = 0; c < N; c++) {
@@ -36,14 +36,14 @@ function btFig(): FigStep[] {
       cols.add(c)
       d1.add(r - c)
       d2.add(r + c)
-      out.push({ note: `第 ${r} 列放在第 ${c} 行(斜線格 = 被攻擊,不能再放)`, views: [board([...qs], `第 ${r} 列`, [[r, c]])] })
+      out.push({ note: `第 ${r} 列放在第 ${c} 行(斜線格 = 被攻擊,不能再放)`, line: 9, views: [board([...qs], `第 ${r} 列`, [[r, c]])] })
       go(r + 1)
       if (found >= 1) return
       qs.pop()
       cols.delete(c)
       d1.delete(r - c)
       d2.delete(r + c)
-      out.push({ note: `第 ${r} 列放第 ${c} 行,後面怎麼放都走不下去 → 回溯:拿掉它,改試下一行`, views: [board([...qs], '回溯')] })
+      out.push({ note: `第 ${r} 列放第 ${c} 行,後面怎麼放都走不下去 → 回溯:拿掉它,改試下一行`, line: 9, views: [board([...qs], '回溯')] })
     }
   }
   go(0)
@@ -53,8 +53,8 @@ function btFig(): FigStep[] {
 function diagFig(): FigStep[] {
   const g = (f: (r: number, c: number) => number, label: string, hl: Cell[]): GridViewData => ({ kind: 'grid', label, cells: Array.from({ length: N }, (_, r) => Array.from({ length: N }, (_, c) => f(r, c))), marks: { hl } })
   return [
-    { note: '同一條「↘」斜線上的格子,r − c 都一樣;同一條「↙」斜線上的格子,r + c 都一樣。所以用三個集合(行、r − c、r + c)就能 O(1) 判斷', views: [g((r, c) => r - c, 'r − c(↘ 斜線編號)', [[0, 1], [1, 2], [2, 3]])] },
-    { note: '↙ 斜線用 r + c', views: [g((r, c) => r + c, 'r + c(↙ 斜線編號)', [[0, 3], [1, 2], [2, 1], [3, 0]])] },
+    { note: '同一條「↘」斜線上的格子,r − c 都一樣;同一條「↙」斜線上的格子,r + c 都一樣。所以用三個集合(行、r − c、r + c)就能 O(1) 判斷', line: 3, views: [g((r, c) => r - c, 'r − c(↘ 斜線編號)', [[0, 1], [1, 2], [2, 3]])] },
+    { note: '↙ 斜線用 r + c', line: 7, views: [g((r, c) => r + c, 'r + c(↙ 斜線編號)', [[0, 3], [1, 2], [2, 1], [3, 0]])] },
   ]
 }
 

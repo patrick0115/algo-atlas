@@ -23,21 +23,21 @@ function dpFig(): FigStep[] {
   const dp: (number | string)[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(''))
   for (let i = 0; i <= m; i++) dp[i][0] = i
   for (let j = 0; j <= n; j++) dp[0][j] = j
-  const out: FigStep[] = [{ note: '第 0 行:把前 i 個字變成空字串 → 刪 i 次;第 0 列:空字串變成前 j 個字 → 插入 j 次', views: [table(dp)] }]
+  const out: FigStep[] = [{ note: '第 0 行:把前 i 個字變成空字串 → 刪 i 次;第 0 列:空字串變成前 j 個字 → 插入 j 次', line: 3, views: [table(dp)] }]
   for (let i = 1; i <= m; i++)
     for (let j = 1; j <= n; j++) {
       if (W1[i - 1] === W2[j - 1]) {
         dp[i][j] = dp[i - 1][j - 1]
-        out.push({ note: `"${W1[i - 1]}" == "${W2[j - 1]}":最後一個字一樣,不用動 → 等於左上 ${dp[i][j]}`, views: [table(dp, [[i, j]], [[i - 1, j - 1]])] })
+        out.push({ note: `"${W1[i - 1]}" == "${W2[j - 1]}":最後一個字一樣,不用動 → 等於左上 ${dp[i][j]}`, line: 6, views: [table(dp, [[i, j]], [[i - 1, j - 1]])] })
       } else {
         const rep = dp[i - 1][j - 1] as number
         const del = dp[i - 1][j] as number
         const ins = dp[i][j - 1] as number
         dp[i][j] = 1 + Math.min(rep, del, ins)
-        out.push({ note: `"${W1[i - 1]}" ≠ "${W2[j - 1]}":取代(左上 ${rep})、刪除 "${W1[i - 1]}"(上 ${del})、插入 "${W2[j - 1]}"(左 ${ins}),挑最小 + 1 = ${dp[i][j]}`, views: [table(dp, [[i, j]], [[i - 1, j - 1], [i - 1, j], [i, j - 1]])] })
+        out.push({ note: `"${W1[i - 1]}" ≠ "${W2[j - 1]}":取代(左上 ${rep})、刪除 "${W1[i - 1]}"(上 ${del})、插入 "${W2[j - 1]}"(左 ${ins}),挑最小 + 1 = ${dp[i][j]}`, line: 6, views: [table(dp, [[i, j]], [[i - 1, j - 1], [i - 1, j], [i, j - 1]])] })
       }
     }
-  out.push({ note: `右下角 dp[${m}][${n}] = ${dp[m][n]}:horse → rorse(取代)→ rose(刪除)→ ros(刪除)`, views: [table(dp, [[m, n]])] })
+  out.push({ note: `右下角 dp[${m}][${n}] = ${dp[m][n]}:horse → rorse(取代)→ rose(刪除)→ ros(刪除)`, line: 7, views: [table(dp, [[m, n]])] })
   return out
 }
 

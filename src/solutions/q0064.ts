@@ -23,16 +23,16 @@ function dpFig(): FigStep[] {
     }
   const view = (label: string, cells: number[][], path: [number, number][] = []): GridViewData => ({ kind: 'grid', label, cells, marks: { done: path } })
   return [
-    { note: '從左上走到右下,只能往右或往下,路上的數字加總要最小', views: [view('grid', G)] },
-    { note: '`dp[r][c]` = 走到 (r, c) 的最小總和。只能從上面或左邊來:`dp[r][c] = grid[r][c] + min(上, 左)`;第一列、第一欄只有一個方向', views: [view('dp', dp)] },
-    { note: `最佳路徑 1 → 3 → 1 → 1 → 1,總和 ${dp[R - 1][C - 1]}`, views: [view('最佳路徑', G, [[0, 0], [0, 1], [0, 2], [1, 2], [2, 2]]), arr([dp[R - 1][C - 1]], { label: '答案', done: [0] })] },
+    { note: '從左上走到右下,只能往右或往下,路上的數字加總要最小', line: 2, views: [view('grid', G)] },
+    { note: '`dp[r][c]` = 走到 (r, c) 的最小總和。只能從上面或左邊來:`dp[r][c] = grid[r][c] + min(上, 左)`;第一列、第一欄只有一個方向', line: 6, views: [view('dp', dp)] },
+    { note: `最佳路徑 1 → 3 → 1 → 1 → 1,總和 ${dp[R - 1][C - 1]}`, line: 8, views: [view('最佳路徑', G, [[0, 0], [0, 1], [0, 2], [1, 2], [2, 2]]), arr([dp[R - 1][C - 1]], { label: '答案', done: [0] })] },
   ]
 }
 
 function rollFig(): FigStep[] {
   return [
-    { note: '一列一列算時,只需要上一列 → 一維陣列 `dp[c]`:更新前的 dp[c] 是「上面」,dp[c−1] 是「左邊」(已經更新過)', views: [arr([1, 4, 5], { label: '第 0 列後' })] },
-    { note: '第 1 列:[2, 7, 6];第 2 列:[6, 8, 7]。答案 7', views: [arr([6, 8, 7], { label: '第 2 列後', done: [2] })] },
+    { note: '一列一列算時,只需要上一列 → 一維陣列 `dp[c]`:更新前的 dp[c] 是「上面」,dp[c−1] 是「左邊」(已經更新過)', line: 4, views: [arr([1, 4, 5], { label: '第 0 列後' })] },
+    { note: '第 1 列:[2, 7, 6];第 2 列:[6, 8, 7]。答案 7', line: 5, views: [arr([6, 8, 7], { label: '第 2 列後', done: [2] })] },
   ]
 }
 

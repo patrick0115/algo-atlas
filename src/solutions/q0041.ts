@@ -7,25 +7,25 @@ const A = [3, 4, -1, 1]
 
 function setFig(): FigStep[] {
   return [
-    { note: '答案一定在 1..n+1 之間(n 個數最多佔滿 1..n)。先把所有數放進集合', views: [arr(A, { label: 'nums' }), arr([...new Set(A)], { label: '集合' })] },
-    { note: '從 1 開始問:1 在 ✓、2 不在 → 答案 2', views: [arr([1, 2, 3, 4, 5], { label: '1..n+1', done: [0], highlight: [1] })] },
+    { note: '答案一定在 1..n+1 之間(n 個數最多佔滿 1..n)。先把所有數放進集合', line: 2, views: [arr(A, { label: 'nums' }), arr([...new Set(A)], { label: '集合' })] },
+    { note: '從 1 開始問:1 在 ✓、2 不在 → 答案 2', line: 4, views: [arr([1, 2, 3, 4, 5], { label: '1..n+1', done: [0], highlight: [1] })] },
   ]
 }
 
 function swapFig(): FigStep[] {
   const a = [...A]
   const n = a.length
-  const out: FigStep[] = [{ note: '目標:把每個 1..n 的數 v 放到「它的家」索引 v−1。就像把號碼牌放回對應的座位。不在 1..n 的數(負數、太大)不管它', views: [arr(a, { label: 'nums(索引 0..3 = 1..4 的家)' })] }]
+  const out: FigStep[] = [{ note: '目標:把每個 1..n 的數 v 放到「它的家」索引 v−1。就像把號碼牌放回對應的座位。不在 1..n 的數(負數、太大)不管它', line: 3, views: [arr(a, { label: 'nums(索引 0..3 = 1..4 的家)' })] }]
   for (let i = 0; i < n; i++) {
     while (a[i] >= 1 && a[i] <= n && a[a[i] - 1] !== a[i]) {
       const v = a[i]
       const j = v - 1
       ;[a[i], a[j]] = [a[j], a[i]]
-      out.push({ note: `nums[${i}] = ${v},它的家是索引 ${j} → 交換。換回來的 ${a[i]} 還要繼續看`, views: [arr([...a], { label: 'nums', highlight: [i, j] })] })
+      out.push({ note: `nums[${i}] = ${v},它的家是索引 ${j} → 交換。換回來的 ${a[i]} 還要繼續看`, line: 6, views: [arr([...a], { label: 'nums', highlight: [i, j] })] })
     }
   }
   const miss = a.findIndex((v, i) => v !== i + 1)
-  out.push({ note: `全部歸位後從左掃:索引 ${miss} 放的不是 ${miss + 1} → 答案 ${miss + 1}`, views: [arr(a, { label: 'nums', done: a.map((v, i) => (v === i + 1 ? i : -1)).filter((i) => i >= 0), highlight: [miss] })] })
+  out.push({ note: `全部歸位後從左掃:索引 ${miss} 放的不是 ${miss + 1} → 答案 ${miss + 1}`, line: 8, views: [arr(a, { label: 'nums', done: a.map((v, i) => (v === i + 1 ? i : -1)).filter((i) => i >= 0), highlight: [miss] })] })
   return out
 }
 

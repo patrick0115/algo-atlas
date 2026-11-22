@@ -8,14 +8,14 @@ const B = [2, 3, 1, 1, 4]
 
 function farFig(nums: number[]): FigStep[] {
   let far = 0
-  const out: FigStep[] = [{ note: '從左往右走,維護「目前最遠能到的格子 far」。走到某一格時,如果它比 far 還遠,代表根本到不了這裡', views: [arr(nums, { label: 'nums', range: [0, 0] })] }]
+  const out: FigStep[] = [{ note: '從左往右走,維護「目前最遠能到的格子 far」。走到某一格時,如果它比 far 還遠,代表根本到不了這裡', line: 2, views: [arr(nums, { label: 'nums', range: [0, 0] })] }]
   for (let i = 0; i < nums.length; i++) {
     if (i > far) {
-      out.push({ note: `第 ${i} 格比最遠能到的 ${far} 還遠 → 到不了 → false`, views: [arr(nums, { label: 'nums', range: [0, far], compare: [i] })] })
+      out.push({ note: `第 ${i} 格比最遠能到的 ${far} 還遠 → 到不了 → false`, line: 4, views: [arr(nums, { label: 'nums', range: [0, far], compare: [i] })] })
       return out
     }
     far = Math.max(far, i + nums[i])
-    out.push({ note: `第 ${i} 格到得了。從這裡最遠能跳到 ${i} + ${nums[i]} = ${i + nums[i]},目前最遠 far = ${far}${far >= nums.length - 1 ? ' ≥ 最後一格 → true' : ''}`, views: [arr(nums, { label: 'nums', range: [0, Math.min(far, nums.length - 1)], highlight: [i] })] })
+    out.push({ note: `第 ${i} 格到得了。從這裡最遠能跳到 ${i} + ${nums[i]} = ${i + nums[i]},目前最遠 far = ${far}${far >= nums.length - 1 ? ' ≥ 最後一格 → true' : ''}`, line: far >= nums.length - 1 ? 6 : 5, views: [arr(nums, { label: 'nums', range: [0, Math.min(far, nums.length - 1)], highlight: [i] })] })
     if (far >= nums.length - 1) return out
   }
   return out
@@ -23,25 +23,25 @@ function farFig(nums: number[]): FigStep[] {
 
 function goalFig(nums: number[]): FigStep[] {
   let goal = nums.length - 1
-  const out: FigStep[] = [{ note: '反過來想:目標一開始是最後一格。從右往左看,如果第 i 格跳得到目標,那「能到第 i 格」就等於「能到終點」→ 目標往左移到 i', views: [arr(nums, { label: 'nums', highlight: [goal] })] }]
+  const out: FigStep[] = [{ note: '反過來想:目標一開始是最後一格。從右往左看,如果第 i 格跳得到目標,那「能到第 i 格」就等於「能到終點」→ 目標往左移到 i', line: 2, views: [arr(nums, { label: 'nums', highlight: [goal] })] }]
   for (let i = nums.length - 2; i >= 0; i--) {
     const can = i + nums[i] >= goal
-    out.push({ note: `第 ${i} 格最遠到 ${i + nums[i]}${can ? ` ≥ 目標 ${goal} → 目標移到 ${i}` : ` < 目標 ${goal},不行`}`, views: [arr(nums, { label: 'nums', highlight: [can ? i : goal], compare: can ? [] : [i], done: range(goal, nums.length - 1) })] })
+    out.push({ note: `第 ${i} 格最遠到 ${i + nums[i]}${can ? ` ≥ 目標 ${goal} → 目標移到 ${i}` : ` < 目標 ${goal},不行`}`, line: 3, views: [arr(nums, { label: 'nums', highlight: [can ? i : goal], compare: can ? [] : [i], done: range(goal, nums.length - 1) })] })
     if (can) goal = i
   }
-  out.push({ note: goal === 0 ? '目標移到了起點 → true' : `目標停在 ${goal},起點跳不到 → false`, views: [arr(nums, { label: 'nums', highlight: [goal] })] })
+  out.push({ note: goal === 0 ? '目標移到了起點 → true' : `目標停在 ${goal},起點跳不到 → false`, line: 4, views: [arr(nums, { label: 'nums', highlight: [goal] })] })
   return out
 }
 
 function dpFig(nums: number[]): FigStep[] {
   const ok = nums.map(() => false)
   ok[0] = true
-  const out: FigStep[] = [{ note: 'DP:can[i] = 第 i 格到不到得了。can[0] = true;能到的格子 i,把它能跳到的 i+1 … i+nums[i] 都標成 true', views: [arr(nums, { label: 'nums' }), arr(ok.map((v) => (v ? '✓' : '·')), { label: 'can' })] }]
+  const out: FigStep[] = [{ note: 'DP:can[i] = 第 i 格到不到得了。can[0] = true;能到的格子 i,把它能跳到的 i+1 … i+nums[i] 都標成 true', line: 3, views: [arr(nums, { label: 'nums' }), arr(ok.map((v) => (v ? '✓' : '·')), { label: 'can' })] }]
   for (let i = 0; i < nums.length; i++) {
     if (!ok[i]) continue
     const reach = range(i + 1, Math.min(nums.length - 1, i + nums[i]))
     reach.forEach((j) => (ok[j] = true))
-    out.push({ note: `第 ${i} 格到得了,標記 ${reach.join('、') || '(沒有新的)'}`, views: [arr(nums, { label: 'nums', highlight: [i], compare: reach }), arr(ok.map((v) => (v ? '✓' : '·')), { label: 'can', highlight: reach })] })
+    out.push({ note: `第 ${i} 格到得了,標記 ${reach.join('、') || '(沒有新的)'}`, line: 6, views: [arr(nums, { label: 'nums', highlight: [i], compare: reach }), arr(ok.map((v) => (v ? '✓' : '·')), { label: 'can', highlight: reach })] })
   }
   return out
 }

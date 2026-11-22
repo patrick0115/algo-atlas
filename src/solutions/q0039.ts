@@ -11,17 +11,20 @@ const fmt = (s: number[]) => `[${s.join(',')}]`
 function btFig(): FigStep[] {
   const nodes: RNode[] = []
   const notes: string[] = []
+  const lines: number[] = []
   const cur: number[] = []
   const go = (start: number, left: number, parent: number, label: string) => {
     const id = nodes.length
     const ok = left === 0
     nodes.push({ parent, label, sub: fmt(cur), kind: ok ? 'ok' : undefined })
     notes.push(parent < 0 ? `每一層挑一個數加進來。為了不產生 [2,3] 和 [3,2] 這種重複,規定「只能挑和上一個一樣、或比它後面的數」(start 不往回)。同一個數可以重複挑,所以遞迴時 start 不 +1` : ok ? `加上 ${label} 剛好湊到 ${T} → 收下 ${fmt(cur)}` : `加上 ${label},還差 ${left}`)
+    lines.push(parent < 0 ? 15 : ok ? 6 : 11)
     if (ok) return
     for (let i = start; i < C.length; i++) {
       if (C[i] > left) {
         nodes.push({ parent: id, label: C[i], sub: '超過', kind: 'cut' })
         notes.push(`${C[i]} 比還差的 ${left} 大 → 剪掉。陣列排好序,後面的數更大,也不用試了`)
+        lines.push(9)
         break
       }
       cur.push(C[i])
@@ -31,7 +34,7 @@ function btFig(): FigStep[] {
   }
   go(0, T, -1, '開始')
   const pos = recLayout(nodes)
-  return nodes.map((_, k) => ({ note: notes[k], views: [recView(nodes, pos, k, '決策樹(節點下方是目前選的數)')] }))
+  return nodes.map((_, k) => ({ note: notes[k], line: lines[k], views: [recView(nodes, pos, k, '決策樹(節點下方是目前選的數)')] }))
 }
 
 function dpFig(): FigStep[] {
@@ -44,12 +47,12 @@ function dpFig(): FigStep[] {
     colLabels: ['金額', '組合'],
     marks: { hl: hl >= 0 ? [[hl, 1]] : [] },
   })
-  const out: FigStep[] = [{ note: '像完全背包:一次處理一種數,讓每個金額的組合加上「用這種數」的版本。一種數處理完才換下一種,所以組合裡的數會照順序出現,不會重複', views: [view(0)] }]
+  const out: FigStep[] = [{ note: '像完全背包:一次處理一種數,讓每個金額的組合加上「用這種數」的版本。一種數處理完才換下一種,所以組合裡的數會照順序出現,不會重複', line: 3, views: [view(0)] }]
   for (const c of C) {
     for (let a = c; a <= T; a++) for (const comb of dp[a - c]) dp[a].push([...comb, c])
-    out.push({ note: `處理 ${c}:對每個金額 a ≥ ${c},把 dp[a − ${c}] 的每個組合都加上 ${c},放進 dp[a]`, views: [view(T)] })
+    out.push({ note: `處理 ${c}:對每個金額 a ≥ ${c},把 dp[a − ${c}] 的每個組合都加上 ${c},放進 dp[a]`, line: 5, views: [view(T)] })
   }
-  out.push({ note: `dp[${T}] 就是答案:${dp[T].map(fmt).join('、')}`, views: [view(T)] })
+  out.push({ note: `dp[${T}] 就是答案:${dp[T].map(fmt).join('、')}`, line: 6, views: [view(T)] })
   return out
 }
 

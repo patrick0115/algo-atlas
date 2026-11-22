@@ -9,11 +9,11 @@ function dpFig(): FigStep[] {
   const n = A.length
   const dp: (number | string)[] = Array(n).fill('∞')
   dp[0] = 0
-  const out: FigStep[] = [{ note: 'dp[i] = 跳到第 i 格最少要幾步。dp[0] = 0。從每一格 i 往後能跳到的每一格 j,都可以用 dp[i] + 1 更新', views: [arr(A, { label: 'nums(每格最多能跳幾步)' }), arr(dp, { label: 'dp' })] }]
+  const out: FigStep[] = [{ note: 'dp[i] = 跳到第 i 格最少要幾步。dp[0] = 0。從每一格 i 往後能跳到的每一格 j,都可以用 dp[i] + 1 更新', line: 3, views: [arr(A, { label: 'nums(每格最多能跳幾步)' }), arr(dp, { label: 'dp' })] }]
   for (let i = 0; i < n; i++) {
     const reach = range(i + 1, Math.min(n - 1, i + A[i]))
     for (const j of reach) dp[j] = Math.min(dp[j] === '∞' ? Infinity : (dp[j] as number), (dp[i] as number) + 1)
-    out.push({ note: `從第 ${i} 格(${dp[i]} 步)最多跳 ${A[i]} 格,能到 ${reach.length ? reach.join('、') : '(沒有新的格子)'} → 這些格子最多 ${(dp[i] as number) + 1} 步`, views: [arr(A, { label: 'nums', highlight: [i], compare: reach }), arr(dp, { label: 'dp', highlight: reach })] })
+    out.push({ note: `從第 ${i} 格(${dp[i]} 步)最多跳 ${A[i]} 格,能到 ${reach.length ? reach.join('、') : '(沒有新的格子)'} → 這些格子最多 ${(dp[i] as number) + 1} 步`, line: 5, views: [arr(A, { label: 'nums', highlight: [i], compare: reach }), arr(dp, { label: 'dp', highlight: reach })] })
   }
   return out
 }
@@ -23,17 +23,17 @@ function bfsFig(): FigStep[] {
   let jumps = 0
   let end = 0
   let far = 0
-  const out: FigStep[] = [{ note: '像 BFS 分層:跳 0 步能到的是 [0, 0];跳 1 步能到的是一段連續的格子;跳 2 步又是下一段……只要記「這一層的右邊界 end」和「下一層最遠能到 far」', views: [arr(A, { label: 'nums', range: [0, 0] })] }]
+  const out: FigStep[] = [{ note: '像 BFS 分層:跳 0 步能到的是 [0, 0];跳 1 步能到的是一段連續的格子;跳 2 步又是下一段……只要記「這一層的右邊界 end」和「下一層最遠能到 far」', line: 2, views: [arr(A, { label: 'nums', range: [0, 0] })] }]
   for (let i = 0; i < n - 1; i++) {
     far = Math.max(far, i + A[i])
     if (i === end) {
       jumps++
-      out.push({ note: `走到這一層的盡頭(第 ${i} 格):這一層的格子最遠能跳到 ${far} → 必須再跳一次,第 ${jumps} 步能到 [${end + 1}, ${Math.min(far, n - 1)}]`, views: [arr(A, { label: 'nums', range: [end + 1, Math.min(far, n - 1)], highlight: [i] })] })
+      out.push({ note: `走到這一層的盡頭(第 ${i} 格):這一層的格子最遠能跳到 ${far} → 必須再跳一次,第 ${jumps} 步能到 [${end + 1}, ${Math.min(far, n - 1)}]`, line: 6, views: [arr(A, { label: 'nums', range: [end + 1, Math.min(far, n - 1)], highlight: [i] })] })
       end = far
       if (end >= n - 1) break
-    } else out.push({ note: `第 ${i} 格:最遠可以到 ${i} + ${A[i]} = ${i + A[i]},目前下一層最遠 ${far}`, views: [arr(A, { label: 'nums', highlight: [i], range: [i, Math.min(far, n - 1)] })] })
+    } else out.push({ note: `第 ${i} 格:最遠可以到 ${i} + ${A[i]} = ${i + A[i]},目前下一層最遠 ${far}`, line: 4, views: [arr(A, { label: 'nums', highlight: [i], range: [i, Math.min(far, n - 1)] })] })
   }
-  out.push({ note: `最後一格在第 ${jumps} 層的範圍裡 → 最少 ${jumps} 步`, views: [arr(A, { label: 'nums', done: [n - 1] })] })
+  out.push({ note: `最後一格在第 ${jumps} 層的範圍裡 → 最少 ${jumps} 步`, line: 10, views: [arr(A, { label: 'nums', done: [n - 1] })] })
   return out
 }
 

@@ -11,22 +11,26 @@ const fmt = (s: number[]) => `[${s.join(',')}]`
 function btFig(): FigStep[] {
   const nodes: RNode[] = []
   const notes: string[] = []
+  const lines: number[] = []
   const cur: number[] = []
   const go = (start: number, left: number, parent: number, label: string) => {
     const id = nodes.length
     const ok = left === 0
     nodes.push({ parent, label, sub: fmt(cur), kind: ok ? 'ok' : undefined })
     notes.push(parent < 0 ? `排序後 [${S.join(',')}]。每個數只能用一次 → 遞迴傳 i + 1;有重複的數 → 同一層跳過和前一個相同的值(和 90 題一樣)` : ok ? `剛好湊到 ${T} → 收下 ${fmt(cur)}` : `選 ${label},還差 ${left}`)
+    lines.push(parent < 0 ? 16 : ok ? 6 : 12)
     if (ok) return
     for (let i = start; i < S.length; i++) {
       if (i > start && S[i] === S[i - 1]) {
         nodes.push({ parent: id, label: S[i], sub: '同層重複', kind: 'cut' })
         notes.push(`同一層已經試過 ${S[i]} → 跳過`)
+        lines.push(10)
         continue
       }
       if (S[i] > left) {
         nodes.push({ parent: id, label: S[i], sub: '超過', kind: 'cut' })
         notes.push(`${S[i]} > 還差的 ${left},後面更大 → 這一層結束`)
+        lines.push(9)
         break
       }
       cur.push(S[i])
@@ -36,15 +40,15 @@ function btFig(): FigStep[] {
   }
   go(0, T, -1, '開始')
   const pos = recLayout(nodes)
-  return nodes.map((_, k) => ({ note: notes[k], views: [recView(nodes, pos, k, '決策樹(節點下方是目前選的數)')] }))
+  return nodes.map((_, k) => ({ note: notes[k], line: lines[k], views: [recView(nodes, pos, k, '決策樹(節點下方是目前選的數)')] }))
 }
 
 function countFig(): FigStep[] {
   const cnt = new Map<number, number>()
   for (const x of S) cnt.set(x, (cnt.get(x) ?? 0) + 1)
   return [
-    { note: '另一種寫法:先把相同的數合併成 (值, 次數)。每一層處理一種值,決定用 0 ~ 次數 個', views: [kv([...cnt], '值 → 次數')] },
-    { note: '例如 1 出現 2 次:這一層分成「用 0 個 1」「用 1 個 1」「用 2 個 1」三條路,天生不會產生重複的組合', views: [kv([...cnt], '值 → 次數', [1])] },
+    { note: '另一種寫法:先把相同的數合併成 (值, 次數)。每一層處理一種值,決定用 0 ~ 次數 個', line: 3, views: [kv([...cnt], '值 → 次數')] },
+    { note: '例如 1 出現 2 次:這一層分成「用 0 個 1」「用 1 個 1」「用 2 個 1」三條路,天生不會產生重複的組合', line: 15, views: [kv([...cnt], '值 → 次數', [1])] },
   ]
 }
 

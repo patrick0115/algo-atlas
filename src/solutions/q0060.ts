@@ -14,10 +14,11 @@ export const q0060: Solution = {
       idea: '從最小排列開始，做 k−1 次下一排列。',
       steps: ['初始為 123…n', '由右找第一個仍能增加的位置', '交換右邊剛好較大的數，反轉後綴', '重複 k−1 次'],
       figure: { title: 'n=3, k=3', steps: [
-        { note: '字典序第一個是 123。', views: [arr([1, 2, 3], { done: [0, 1, 2] })] },
-        { note: '下一個排列是 132：交換尾端 2、3。', views: [arr([1, 3, 2], { highlight: [1, 2] })] },
-        { note: '再找下一個：從右找到可增加的 1。', views: [arr([1, 3, 2], { highlight: [0] })] },
-        { note: '用 2 換掉 1，後綴排成最小的 13，得到第 3 個 213。', views: [arr([2, 1, 3], { done: [0, 1, 2] })] },
+        { note: '字典序第一個是 123。', line: 2, views: [arr([1, 2, 3], { done: [0, 1, 2] })] },
+        { note: '下一個排列是 132：交換尾端 2、3。', line: 8, views: [arr([1, 3, 2], { highlight: [1, 2] })] },
+        { note: '再找下一個：從右找到可增加的 1。', line: 5, views: [arr([1, 3, 2], { highlight: [0] })] },
+        { note: '用 2 換掉 1，後綴排成最小的 13，得到第 3 個 213。', line: 8, // TODO: 可能要拆格(交換 8 與反轉後綴 9 一次演完)
+          views: [arr([2, 1, 3], { done: [0, 1, 2] })] },
       ] },
       complexity: { time: 'O(kn)', space: 'O(n)', why: '每次下一排列掃描與反轉最多 n 個元素。' },
       verdict: '可用來理解字典序，但 k 大時做了許多不必要的排列。',
@@ -100,10 +101,11 @@ export const q0060: Solution = {
       idea: '每一位用目前剩餘數字的排列數量決定要取哪個數字。',
       steps: ['把 k 改為 `k−1`', '若還剩 m 位，每個開頭佔 `(m−1)!` 個排列', '用整除得到選第幾個可用數字，再用餘數處理後面'],
       figure: { title: 'n=4, k=9', steps: [
-        { note: '改成零起點 k=8。每個首位佔 3!=6 個；8÷6=1，選可用數字中的第 1 號 2。', views: [arr([1, 2, 3, 4], { label: '可用', highlight: [1] }), arr([8], { label: 'k' })] },
-        { note: '餘數 2。剩餘 [1,3,4]，每個次位佔 2!=2 個；2÷2=1，選 3。', views: [arr([1, 3, 4], { label: '可用', highlight: [1] }), arr([2, 3], { label: '已選' })] },
-        { note: '餘數 0。剩餘 [1,4]，每組佔 1 個；選第 0 號 1。', views: [arr([1, 4], { label: '可用', highlight: [0] }), arr([2, 3, 1], { label: '已選' })] },
-        { note: '最後只剩 4，結果為 2314。', views: [arr([2, 3, 1, 4], { label: '答案', done: [0, 1, 2, 3] })] },
+        { note: '改成零起點 k=8。每個首位佔 3!=6 個；8÷6=1，選可用數字中的第 1 號 2。', line: 8, // TODO: 可能要拆格(k-- 與 pos 計算一次演完)
+          views: [arr([1, 2, 3, 4], { label: '可用', highlight: [1] }), arr([8], { label: 'k' })] },
+        { note: '餘數 2。剩餘 [1,3,4]，每個次位佔 2!=2 個；2÷2=1，選 3。', line: 8, views: [arr([1, 3, 4], { label: '可用', highlight: [1] }), arr([2, 3], { label: '已選' })] },
+        { note: '餘數 0。剩餘 [1,4]，每組佔 1 個；選第 0 號 1。', line: 8, views: [arr([1, 4], { label: '可用', highlight: [0] }), arr([2, 3, 1], { label: '已選' })] },
+        { note: '最後只剩 4，結果為 2314。', line: 12, views: [arr([2, 3, 1, 4], { label: '答案', done: [0, 1, 2, 3] })] },
       ] },
       complexity: { time: 'O(n²)', space: 'O(n)', why: '每次從剩餘陣列移除一個數，最多搬移 n 個元素。' },
       verdict: '推薦；無需列出前 k−1 個排列。',

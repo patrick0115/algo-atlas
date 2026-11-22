@@ -8,22 +8,22 @@ const X = 8
 function bsFig(): FigStep[] {
   let lo = 0
   let hi = X
-  const out: FigStep[] = [{ note: `要找最大的 m 使 m² ≤ ${X}(平方根無條件捨去)。m² 隨 m 遞增 → 在 [0, ${X}] 二分搜尋「最後一個 m² ≤ x」`, views: [arr([lo, hi], { label: '範圍 [lo, hi]' })] }]
+  const out: FigStep[] = [{ note: `要找最大的 m 使 m² ≤ ${X}(平方根無條件捨去)。m² 隨 m 遞增 → 在 [0, ${X}] 二分搜尋「最後一個 m² ≤ x」`, line: 2, views: [arr([lo, hi], { label: '範圍 [lo, hi]' })] }]
   while (lo < hi) {
     const m = (lo + hi + 1) >> 1
     const ok = m * m <= X
-    out.push({ note: `m = ${m}:${m}² = ${m * m} ${ok ? `≤ ${X} → 答案至少 ${m},lo = ${m}` : `> ${X} → hi = ${m - 1}`}`, views: [arr([lo, m, hi], { label: 'lo / m / hi', highlight: [1] })] })
+    out.push({ note: `m = ${m}:${m}² = ${m * m} ${ok ? `≤ ${X} → 答案至少 ${m},lo = ${m}` : `> ${X} → hi = ${m - 1}`}`, line: (ok ? 5 : 6), views: [arr([lo, m, hi], { label: 'lo / m / hi', highlight: [1] })] })
     if (ok) lo = m
     else hi = m - 1
   }
-  out.push({ note: `答案 ${lo}(√8 ≈ 2.83,捨去小數)`, views: [arr([lo], { label: '答案', done: [0] })] })
+  out.push({ note: `答案 ${lo}(√8 ≈ 2.83,捨去小數)`, line: 8, views: [arr([lo], { label: '答案', done: [0] })] })
   return out
 }
 
 function newtonFig(): FigStep[] {
   return [
-    { note: '牛頓法:從 r = x 開始,反覆 r = (r + x / r) / 2(整數除法),r 會從上方快速逼近 √x', views: [arr([8, 4, 3, 2], { label: 'r 的變化' })] },
-    { note: '8 → (8 + 1)/2 = 4 → (4 + 2)/2 = 3 → (3 + 2)/2 = 2,這時 2² ≤ 8 → 停。答案 2', views: [arr([8, 4, 3, 2], { label: 'r 的變化', done: [3] })] },
+    { note: '牛頓法:從 r = x 開始,反覆 r = (r + x / r) / 2(整數除法),r 會從上方快速逼近 √x', line: 2, views: [arr([8, 4, 3, 2], { label: 'r 的變化' })] },
+    { note: '8 → (8 + 1)/2 = 4 → (4 + 2)/2 = 3 → (3 + 2)/2 = 2,這時 2² ≤ 8 → 停。答案 2', line: 3, views: [arr([8, 4, 3, 2], { label: 'r 的變化', done: [3] })] },
   ]
 }
 

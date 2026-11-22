@@ -12,17 +12,17 @@ function backFig(): FigStep[] {
   const end = i
   while (i >= 0 && S[i] !== ' ') i--
   return [
-    { note: '從字串**尾巴**往回走。最後一個單字在最後面,不用看前面的字', views: [arr(a, { label: 's(␣ = 空白)' })] },
-    { note: `先跳過尾巴的空白,停在 ${end}(最後一個單字的最後一個字)`, views: [arr(a, { label: 's', dim: Array.from({ length: S.length - 1 - end }, (_, k) => end + 1 + k), pointers: [{ name: 'end', index: end }] })] },
-    { note: `再往回數到遇到空白為止:"${S.slice(i + 1, end + 1)}",長度 ${end - i}`, views: [arr(a, { label: 's', highlight: Array.from({ length: end - i }, (_, k) => i + 1 + k) })] },
+    { note: '從字串**尾巴**往回走。最後一個單字在最後面,不用看前面的字', line: 2, views: [arr(a, { label: 's(␣ = 空白)' })] },
+    { note: `先跳過尾巴的空白,停在 ${end}(最後一個單字的最後一個字)`, line: 3, views: [arr(a, { label: 's', dim: Array.from({ length: S.length - 1 - end }, (_, k) => end + 1 + k), pointers: [{ name: 'end', index: end }] })] },
+    { note: `再往回數到遇到空白為止:"${S.slice(i + 1, end + 1)}",長度 ${end - i}`, line: 4, views: [arr(a, { label: 's', highlight: Array.from({ length: end - i }, (_, k) => i + 1 + k) })] },
   ]
 }
 
 function splitFig(): FigStep[] {
   const w = S.split(' ').filter(Boolean)
   return [
-    { note: '用內建的 split 依空白切開(連續空白當成一個),得到所有單字', views: [arr(w, { label: '單字' })] },
-    { note: `取最後一個 "${w[w.length - 1]}",長度 ${w[w.length - 1].length}。簡單,但會建立整個單字陣列,O(n) 空間`, views: [arr(w, { label: '單字', highlight: [w.length - 1] })] },
+    { note: '用內建的 split 依空白切開(連續空白當成一個),得到所有單字', line: 2, views: [arr(w, { label: '單字' })] },
+    { note: `取最後一個 "${w[w.length - 1]}",長度 ${w[w.length - 1].length}。簡單,但會建立整個單字陣列,O(n) 空間`, line: 3, views: [arr(w, { label: '單字', highlight: [w.length - 1] })] },
   ]
 }
 

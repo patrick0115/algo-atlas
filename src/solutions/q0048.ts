@@ -16,21 +16,21 @@ function grid(m: number[][], label: string, hl: Cell[] = [], cmp: Cell[] = []): 
 function flipFig(): FigStep[] {
   const m = M.map((r) => [...r])
   const n = m.length
-  const out: FigStep[] = [{ note: '順時針轉 90°:原本的第 0 列 [1,2,3] 要變成最右邊那一行。直接搬很亂 → 拆成兩個簡單動作', views: [grid(m, 'matrix')] }]
+  const out: FigStep[] = [{ note: '順時針轉 90°:原本的第 0 列 [1,2,3] 要變成最右邊那一行。直接搬很亂 → 拆成兩個簡單動作', line: 2, views: [grid(m, 'matrix')] }]
   for (let i = 0; i < n; i++)
     for (let j = i + 1; j < n; j++) {
       ;[m[i][j], m[j][i]] = [m[j][i], m[i][j]]
-      out.push({ note: `① 轉置(沿左上→右下的對角線翻):交換 (${i},${j}) 和 (${j},${i})`, views: [grid(m, '轉置中', [[i, j], [j, i]], Array.from({ length: n }, (_, k) => [k, k] as Cell))] })
+      out.push({ note: `① 轉置(沿左上→右下的對角線翻):交換 (${i},${j}) 和 (${j},${i})`, line: 4, views: [grid(m, '轉置中', [[i, j], [j, i]], Array.from({ length: n }, (_, k) => [k, k] as Cell))] })
     }
   for (const row of m) row.reverse()
-  out.push({ note: '② 每一列左右翻轉 → 完成順時針 90°。第 0 列 [1,2,3] 現在在最右邊一行', views: [grid(m, '答案', m.map((_, r) => [r, n - 1] as Cell))] })
+  out.push({ note: '② 每一列左右翻轉 → 完成順時針 90°。第 0 列 [1,2,3] 現在在最右邊一行', line: 5, views: [grid(m, '答案', m.map((_, r) => [r, n - 1] as Cell))] })
   return out
 }
 
 function ringFig(): FigStep[] {
   const m = M.map((r) => [...r])
   const n = m.length
-  const out: FigStep[] = [{ note: '另一種想法:四個角落的格子會「轉一圈」互換位置。(i,j) → (j, n−1−i) → (n−1−i, n−1−j) → (n−1−j, i) → 回到 (i,j)', views: [grid(m, 'matrix')] }]
+  const out: FigStep[] = [{ note: '另一種想法:四個角落的格子會「轉一圈」互換位置。(i,j) → (j, n−1−i) → (n−1−i, n−1−j) → (n−1−j, i) → 回到 (i,j)', line: 2, views: [grid(m, 'matrix')] }]
   for (let i = 0; i < Math.floor(n / 2); i++)
     for (let j = i; j < n - 1 - i; j++) {
       const cells: Cell[] = [[i, j], [j, n - 1 - i], [n - 1 - i, n - 1 - j], [n - 1 - j, i]]
@@ -39,9 +39,9 @@ function ringFig(): FigStep[] {
       m[n - 1 - j][i] = m[n - 1 - i][n - 1 - j]
       m[n - 1 - i][n - 1 - j] = m[j][n - 1 - i]
       m[j][n - 1 - i] = tmp
-      out.push({ note: j === i ? '這四格一起轉:左上的值去右上、右上去右下、右下去左下、左下回左上' : '這四格一起轉:上邊的值去右邊、右邊去下邊、下邊去左邊、左邊回上邊', views: [grid(m, `第 ${i} 圈`, cells)] })
+      out.push({ note: j === i ? '這四格一起轉:左上的值去右上、右上去右下、右下去左下、左下回左上' : '這四格一起轉:上邊的值去右邊、右邊去下邊、下邊去左邊、左邊回上邊', line: 6, /* TODO: 可能要拆格 */ views: [grid(m, `第 ${i} 圈`, cells)] })
     }
-  out.push({ note: '外圈轉完,中間的 5 不用動', views: [grid(m, '答案', [], [[1, 1]])] })
+  out.push({ note: '外圈轉完,中間的 5 不用動', line: 3, views: [grid(m, '答案', [], [[1, 1]])] })
   return out
 }
 

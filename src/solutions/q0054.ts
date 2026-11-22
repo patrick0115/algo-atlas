@@ -21,43 +21,43 @@ function boundFig(): FigStep[] {
   let right = M[0].length - 1
   const res: number[] = []
   const done: Cell[] = []
-  const out: FigStep[] = [{ note: '用四條邊界 top、bottom、left、right 圍住「還沒走過」的區域。每走完一條邊,就把那條邊界往內縮', views: [grid([], [], `top=${top} bottom=${bottom} left=${left} right=${right}`), arr(res, { label: '答案' })] }]
-  const push = (cells: Cell[], what: string) => {
+  const out: FigStep[] = [{ note: '用四條邊界 top、bottom、left、right 圍住「還沒走過」的區域。每走完一條邊,就把那條邊界往內縮', line: 3, views: [grid([], [], `top=${top} bottom=${bottom} left=${left} right=${right}`), arr(res, { label: '答案' })] }]
+  const push = (cells: Cell[], what: string, line: number) => {
     if (!cells.length) return
     for (const [i, j] of cells) res.push(M[i][j])
-    out.push({ note: what, views: [grid([...done], cells, `top=${top} bottom=${bottom} left=${left} right=${right}`), arr([...res], { label: '答案' })] })
+    out.push({ note: what, line, views: [grid([...done], cells, `top=${top} bottom=${bottom} left=${left} right=${right}`), arr([...res], { label: '答案' })] })
     done.push(...cells)
   }
   while (top <= bottom && left <= right) {
     let c: Cell[] = []
     for (let j = left; j <= right; j++) c.push([top, j])
     top++
-    push(c, `往右走完第 ${top - 1} 列 → top 下移`)
+    push(c, `往右走完第 ${top - 1} 列 → top 下移`, 5)
     c = []
     for (let i = top; i <= bottom; i++) c.push([i, right])
     right--
-    push(c, `往下走完第 ${right + 1} 行 → right 左移`)
+    push(c, `往下走完第 ${right + 1} 行 → right 左移`, 7)
     if (top <= bottom) {
       c = []
       for (let j = right; j >= left; j--) c.push([bottom, j])
       bottom--
-      push(c, `往左走完第 ${bottom + 1} 列 → bottom 上移`)
+      push(c, `往左走完第 ${bottom + 1} 列 → bottom 上移`, 9)
     }
     if (left <= right) {
       c = []
       for (let i = bottom; i >= top; i--) c.push([i, left])
       left++
-      push(c, `往上走完第 ${left - 1} 行 → left 右移`)
+      push(c, `往上走完第 ${left - 1} 行 → left 右移`, 10)
     }
   }
-  out.push({ note: '邊界交錯(top > bottom 或 left > right)→ 全部走完', views: [grid(done, [], '完成'), arr(res, { label: '答案', done: res.map((_, i) => i) })] })
+  out.push({ note: '邊界交錯(top > bottom 或 left > right)→ 全部走完', line: 12, views: [grid(done, [], '完成'), arr(res, { label: '答案', done: res.map((_, i) => i) })] })
   return out
 }
 
 function dirFig(): FigStep[] {
   return [
-    { note: '另一種想法:像機器人一樣照「右、下、左、上」的順序走,撞到邊界或走過的格子就右轉', views: [arr(['→ (0,1)', '↓ (1,0)', '← (0,−1)', '↑ (−1,0)'], { label: '方向陣列' })] },
-    { note: '走到 4 撞牆 → 轉向下;走到 12 撞牆 → 轉向左;走到 5 的上面是走過的 1 → 轉向右', views: [grid([[0, 0], [0, 1], [0, 2], [0, 3], [1, 3], [2, 3], [2, 2], [2, 1], [2, 0], [1, 0]], [[1, 1], [1, 2]], '最後走 6、7')] },
+    { note: '另一種想法:像機器人一樣照「右、下、左、上」的順序走,撞到邊界或走過的格子就右轉', line: 3, views: [arr(['→ (0,1)', '↓ (1,0)', '← (0,−1)', '↑ (−1,0)'], { label: '方向陣列' })] },
+    { note: '走到 4 撞牆 → 轉向下;走到 12 撞牆 → 轉向左;走到 5 的上面是走過的 1 → 轉向右', line: 12, /* TODO: 可能要拆格 */ views: [grid([[0, 0], [0, 1], [0, 2], [0, 3], [1, 3], [2, 3], [2, 2], [2, 1], [2, 0], [1, 0]], [[1, 1], [1, 2]], '最後走 6、7')] },
   ]
 }
 
