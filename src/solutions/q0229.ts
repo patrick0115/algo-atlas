@@ -4,10 +4,10 @@ import type { Solution } from './types'
 // 229. Majority Element II
 const A = [3,2,3]
 const fig = [
-  { note: '開始沒有候選人。讀到第一個 3，讓它成為候選一，票數是 1。', views: [arr(A, { label: '掃到索引 0', highlight: [0] }), arr(['3:1'], { label: '候選與票數' })] },
-  { note: '門檻是出現次數 > ⌊n/3⌋。不可能有三個不同數都超過門檻，所以最多只有兩位候選者。', views: [arr([3,2,3], { label: 'nums', highlight: [0,2] })] },
-  { note: '讀到 2 時，把它放到第二個空位；再讀到 3，第一個候選人的票數增為 2。', views: [arr(A, { label: '掃到索引 2', highlight: [2] }), arr(['3:2','2:1'], { label: '候選與票數' })] },
-  { note: '投票法遇到三個不同值時各消掉一次；最後只留下可能的兩個候選值，還要再掃一遍核對次數。', views: [arr([3,2,3], { label: '候選 3 出現兩次', done: [0,2], dim: [1] })] },
+  { note: '開始沒有候選人。讀到第一個 3，讓它成為候選一，票數是 1。', line: 9, views: [arr(A, { label: '掃到索引 0', highlight: [0] }), arr(['3:1'], { label: '候選與票數' })] },
+  { note: '門檻是出現次數 > ⌊n/3⌋。不可能有三個不同數都超過門檻，所以最多只有兩位候選者。', line: 2, views: [arr([3,2,3], { label: 'nums', highlight: [0,2] })] },
+  { note: '讀到 2 時，把它放到第二個空位；再讀到 3，第一個候選人的票數增為 2。', line: 5, views: [arr(A, { label: '掃到索引 2', highlight: [2] }), arr(['3:2','2:1'], { label: '候選與票數' })] }, // TODO: 可能要拆格(放 2 進第二空位與 3 加票同步顯示)
+  { note: '投票法遇到三個不同值時各消掉一次；最後只留下可能的兩個候選值，還要再掃一遍核對次數。', line: 22, views: [arr([3,2,3], { label: '候選 3 出現兩次', done: [0,2], dim: [1] })] },
 ]
 const WRAP = {
   python: `\ndef majorityCheck(nums):
@@ -44,7 +44,7 @@ export const q0229: Solution = {
   constraints: ['1 ≤ nums.length ≤ 5×10⁴。', '進階要求線性時間與常數額外空間。'],
   insight: ['用 hash 表計次最直接。', '超過 n/3 的不同值最多兩個；因此可以維持兩個候選人。', '每遇到與兩候選人都不同的新值，三者各消掉一次，不會把真正超過 n/3 的元素完全消光；最後仍須驗證。'],
   approaches: [
-    { name: 'Hash 表計次', idea: '記下每個數字出現多少次，再篩選超過門檻者。', steps: ['掃一次陣列建立 count。先建立計數或候選狀態，不能在還沒看完陣列時直接判定答案。', '走訪 count 的每個 (值, 次數)。', '次數 > floor(n/3) 才加入答案。'], figure: { title: 'nums = [3,2,3]', steps: [{ note: '讀到第一個 3 時，計數表是 {3:1}；還不能確定它最後是否超過門檻。', views: [arr(A, { label: '掃到索引 0', highlight: [0] })] }, { note: '掃完後計數表是 {3:2,2:1}，因為最後一個 3 讓其次數增為 2。', views: [arr(A, { label: '掃描完成', done: [0,1,2] })] }, { note: 'n=3 的門檻是 1，只有 3 的次數嚴格大於 1，因此回傳 [3]。', views: [arr([3], { label: '答案', done: [0] })] }] }, complexity: { time: 'O(n)', space: 'O(n)', why: '最多記 n 種不同值。' }, verdict: '最易實作；需要額外記憶體。', code: {
+    { name: 'Hash 表計次', idea: '記下每個數字出現多少次，再篩選超過門檻者。', steps: ['掃一次陣列建立 count。先建立計數或候選狀態，不能在還沒看完陣列時直接判定答案。', '走訪 count 的每個 (值, 次數)。', '次數 > floor(n/3) 才加入答案。'], figure: { title: 'nums = [3,2,3]', steps: [{ note: '讀到第一個 3 時，計數表是 {3:1}；還不能確定它最後是否超過門檻。', line: 4, views: [arr(A, { label: '掃到索引 0', highlight: [0] })] }, { note: '掃完後計數表是 {3:2,2:1}，因為最後一個 3 讓其次數增為 2。', line: 4, views: [arr(A, { label: '掃描完成', done: [0,1,2] })] }, { note: 'n=3 的門檻是 1，只有 3 的次數嚴格大於 1，因此回傳 [3]。', line: 5, views: [arr([3], { label: '答案', done: [0] })] }] }, complexity: { time: 'O(n)', space: 'O(n)', why: '最多記 n 種不同值。' }, verdict: '最易實作；需要額外記憶體。', code: {
       python: `def majorityElement(nums):
     count = {}
     for x in nums:  # 掃描數字並更新出現次數或候選票數。

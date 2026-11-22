@@ -27,14 +27,14 @@ function kahnFig(): FigStep[] {
   indeg.forEach((d, i) => d === 0 && q.push(i))
   const cls = (): Record<number, string> => ({ ...Object.fromEntries(order.map((x) => [x, 'done'])), ...Object.fromEntries(q.map((x) => [x, 'queued'])) })
   const subs = () => Object.fromEntries(indeg.map((d, i) => [i, `入度 ${d}`]))
-  const out: FigStep[] = [{ note: '和 207 一樣的 Kahn 演算法:**從佇列拿出來的順序**就是一個合法的修課順序(每門課被拿出來時,它的先修課都已經在前面了)', views: [graphView(N, EDGES, { directed: true, pos: POS, cls: cls(), subs: subs() }), arr(q, { label: '佇列' }), arr(order, { label: '修課順序' })] }]
+  const out: FigStep[] = [{ note: '和 207 一樣的 Kahn 演算法:**從佇列拿出來的順序**就是一個合法的修課順序(每門課被拿出來時,它的先修課都已經在前面了)', line: 9, views: [graphView(N, EDGES, { directed: true, pos: POS, cls: cls(), subs: subs() }), arr(q, { label: '佇列' }), arr(order, { label: '修課順序' })] }]
   while (q.length) {
     const u = q.shift()!
     order.push(u)
     for (const v of adj[u]) if (--indeg[v] === 0) q.push(v)
-    out.push({ note: `修 ${u},放到順序的最後;它指向的課入度 −1`, views: [graphView(N, EDGES, { directed: true, pos: POS, cls: { ...cls(), [u]: 'hl' }, subs: subs() }), arr(q, { label: '佇列' }), arr(order, { label: '修課順序' })] })
+    out.push({ note: `修 ${u},放到順序的最後;它指向的課入度 −1`, line: 10, views: [graphView(N, EDGES, { directed: true, pos: POS, cls: { ...cls(), [u]: 'hl' }, subs: subs() }), arr(q, { label: '佇列' }), arr(order, { label: '修課順序' })] })
   }
-  out.push({ note: order.length === N ? `順序 [${order.join(', ')}]` : '修不完(有環)→ 回傳空陣列', views: [arr(order, { label: '答案', done: order.map((_, i) => i) })] })
+  out.push({ note: order.length === N ? `順序 [${order.join(', ')}]` : '修不完(有環)→ 回傳空陣列', line: 11, views: [arr(order, { label: '答案', done: order.map((_, i) => i) })] })
   return out
 }
 
@@ -43,16 +43,16 @@ function dfsFig(): FigStep[] {
   for (const [u, v] of EDGES) adj[u].push(v)
   const state = Array(N).fill(0)
   const post: number[] = []
-  const out: FigStep[] = [{ note: 'DFS 版:一門課「完成」(它後面能到的課都處理完)時把它記下來 —— 這叫後序。後序是「越後面的課越早完成」,**反過來**就是修課順序', views: [graphView(N, EDGES, { directed: true, pos: POS })] }]
+  const out: FigStep[] = [{ note: 'DFS 版:一門課「完成」(它後面能到的課都處理完)時把它記下來 —— 這叫後序。後序是「越後面的課越早完成」,**反過來**就是修課順序', line: 4, views: [graphView(N, EDGES, { directed: true, pos: POS })] }]
   const dfs = (u: number) => {
     state[u] = 1
     for (const v of adj[u]) if (state[v] === 0) dfs(v)
     state[u] = 2
     post.push(u)
-    out.push({ note: `${u} 後面的課都處理完了 → 記進後序`, views: [graphView(N, EDGES, { directed: true, pos: POS, cls: Object.fromEntries(post.map((x) => [x, 'done'])) }), arr(post, { label: '後序(完成的先後)' })] })
+    out.push({ note: `${u} 後面的課都處理完了 → 記進後序`, line: 12, views: [graphView(N, EDGES, { directed: true, pos: POS, cls: Object.fromEntries(post.map((x) => [x, 'done'])) }), arr(post, { label: '後序(完成的先後)' })] })
   }
   for (let i = 0; i < N; i++) if (!state[i]) dfs(i)
-  out.push({ note: `後序反過來 → [${[...post].reverse().join(', ')}]`, views: [arr([...post].reverse(), { label: '修課順序', done: post.map((_, i) => i) })] })
+  out.push({ note: `後序反過來 → [${[...post].reverse().join(', ')}]`, line: 16, views: [arr([...post].reverse(), { label: '修課順序', done: post.map((_, i) => i) })] })
   return out
 }
 

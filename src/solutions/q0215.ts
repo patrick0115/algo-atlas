@@ -10,8 +10,8 @@ const K = 2
 function sortFig(): FigStep[] {
   const s = [...A].sort((a, b) => b - a)
   return [
-    { note: '最直接:由大到小排序,第 k 個就是答案', views: [arr(A, { label: 'nums' })] },
-    { note: `排序後第 ${K} 個是 ${s[K - 1]}`, views: [arr(s, { label: '由大到小', highlight: [K - 1] })] },
+    { note: '最直接:由大到小排序,第 k 個就是答案', line: 2, views: [arr(A, { label: 'nums' })] },
+    { note: `排序後第 ${K} 個是 ${s[K - 1]}`, line: 2, views: [arr(s, { label: '由大到小', highlight: [K - 1] })] },
   ]
 }
 
@@ -22,22 +22,22 @@ function heapView(h: number[]): GraphViewData {
 
 function heapFig(): FigStep[] {
   const h: number[] = []
-  const out: FigStep[] = [{ note: `只保留最大的 ${K} 個,放在最小堆裡;堆頂就是第 ${K} 大(同 703 題)`, views: [heapView([])] }]
+  const out: FigStep[] = [{ note: `只保留最大的 ${K} 個,放在最小堆裡;堆頂就是第 ${K} 大(同 703 題)`, line: 2, views: [heapView([])] }]
   A.forEach((x, i) => {
     h.push(x)
     h.sort((a, b) => a - b)
     const over = h.length > K
     if (over) h.shift()
-    out.push({ note: `放入 ${x}${over ? `,超過 ${K} 個 → 踢掉最小的` : ''}`, views: [arr(A, { label: 'nums', highlight: [i], dim: range(0, i - 1) }), heapView([...h])] })
+    out.push({ note: `放入 ${x}${over ? `,超過 ${K} 個 → 踢掉最小的` : ''}`, line: 4, /* TODO: 可能要拆格 */ views: [arr(A, { label: 'nums', highlight: [i], dim: range(0, i - 1) }), heapView([...h])] })
   })
-  out.push({ note: `走完了,堆頂 ${h[0]} 就是答案`, views: [heapView([...h])] })
+  out.push({ note: `走完了,堆頂 ${h[0]} 就是答案`, line: 20, views: [heapView([...h])] })
   return out
 }
 
 function quickFig(): FigStep[] {
   const a = [...A]
   const target = a.length - K // 由小到大排好後,答案在這個位置
-  const out: FigStep[] = [{ note: `第 ${K} 大 = 由小到大排好後的第 ${target} 格。不用整個排好:partition 一次,基準就會落在「它排好後該在的位置」。剛好是 ${target} 就完成,否則只處理有答案的那一半`, views: [arr(a, { label: 'nums', highlight: [target] })] }]
+  const out: FigStep[] = [{ note: `第 ${K} 大 = 由小到大排好後的第 ${target} 格。不用整個排好:partition 一次,基準就會落在「它排好後該在的位置」。剛好是 ${target} 就完成,否則只處理有答案的那一半`, line: 2, views: [arr(a, { label: 'nums', highlight: [target] })] }]
   let lo = 0
   let hi = a.length - 1
   while (lo <= hi) {
@@ -45,7 +45,7 @@ function quickFig(): FigStep[] {
     let w = lo
     for (let i = lo; i < hi; i++) if (a[i] < pv) { [a[w], a[i]] = [a[i], a[w]]; w++ }
     ;[a[w], a[hi]] = [a[hi], a[w]]
-    out.push({ note: `在 [${lo}, ${hi}] 以 ${pv} 當基準:比它小的放左邊,它落在位置 ${w}。${w === target ? `剛好是 ${target} → 答案 ${a[w]}` : w < target ? `${w} < ${target} → 答案在右半` : `${w} > ${target} → 答案在左半`}`, views: [arr(a, { label: 'nums', range: [lo, hi], highlight: [w], compare: w === target ? [] : [target] })] })
+    out.push({ note: `在 [${lo}, ${hi}] 以 ${pv} 當基準:比它小的放左邊,它落在位置 ${w}。${w === target ? `剛好是 ${target} → 答案 ${a[w]}` : w < target ? `${w} < ${target} → 答案在右半` : `${w} > ${target} → 答案在左半`}`, line: w === target ? 8 : w < target ? 7 : 11, views: [arr(a, { label: 'nums', range: [lo, hi], highlight: [w], compare: w === target ? [] : [target] })] })
     if (w === target) break
     if (w < target) lo = w + 1
     else hi = w - 1

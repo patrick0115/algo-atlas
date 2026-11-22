@@ -5,17 +5,18 @@ import type { FigStep, Solution } from './types'
 
 const A = [2, 7, 9, 3, 1, 5]
 
+// line 以「由前往後填表」(方法二)的 code 為準;方法三(兩個變數)共用此圖,行號只有 return 之外對不上
 function dpFig(): FigStep[] {
   const n = A.length
   const dp: (number | string)[] = Array(n).fill('?')
   const take: boolean[] = Array(n).fill(false)
-  const out: FigStep[] = [{ note: 'dp[i] = 只看前 i+1 間房子(0..i)最多能偷多少。到第 i 間只有兩種選擇:不偷它(拿 dp[i−1]),或偷它(nums[i] + dp[i−2],因為隔壁 i−1 不能偷)', views: [arr(A, { label: 'nums(每間房子的錢)' }), arr(dp, { label: 'dp' })] }]
+  const out: FigStep[] = [{ note: 'dp[i] = 只看前 i+1 間房子(0..i)最多能偷多少。到第 i 間只有兩種選擇:不偷它(拿 dp[i−1]),或偷它(nums[i] + dp[i−2],因為隔壁 i−1 不能偷)', line: 4, views: [arr(A, { label: 'nums(每間房子的錢)' }), arr(dp, { label: 'dp' })] }]
   for (let i = 0; i < n; i++) {
     const skip = i >= 1 ? (dp[i - 1] as number) : 0
     const rob = A[i] + (i >= 2 ? (dp[i - 2] as number) : 0)
     dp[i] = Math.max(skip, rob)
     take[i] = rob >= skip
-    out.push({ note: `第 ${i} 間:不偷 → ${skip};偷 → ${A[i]} + ${i >= 2 ? dp[i - 2] : 0} = ${rob} → dp[${i}] = ${dp[i]}${take[i] ? '(偷比較好)' : '(不偷比較好)'}`, views: [arr(A, { label: 'nums', highlight: [i], compare: i >= 2 ? [i - 2] : [] }), arr(dp, { label: 'dp', highlight: [i], done: range(0, i - 1) })] })
+    out.push({ note: `第 ${i} 間:不偷 → ${skip};偷 → ${A[i]} + ${i >= 2 ? dp[i - 2] : 0} = ${rob} → dp[${i}] = ${dp[i]}${take[i] ? '(偷比較好)' : '(不偷比較好)'}`, line: 5, views: [arr(A, { label: 'nums', highlight: [i], compare: i >= 2 ? [i - 2] : [] }), arr(dp, { label: 'dp', highlight: [i], done: range(0, i - 1) })] })
   }
   const picked: number[] = []
   for (let i = n - 1; i >= 0; ) {
@@ -24,14 +25,14 @@ function dpFig(): FigStep[] {
       i -= 2
     } else i--
   }
-  out.push({ note: `答案 dp[${n - 1}] = ${dp[n - 1]}。從後往回看哪些是「偷」:第 ${picked.reverse().join('、')} 間`, views: [arr(A, { label: 'nums', done: picked })] })
+  out.push({ note: `答案 dp[${n - 1}] = ${dp[n - 1]}。從後往回看哪些是「偷」:第 ${picked.reverse().join('、')} 間`, line: 6, views: [arr(A, { label: 'nums', done: picked })] })
   return out
 }
 
 function memoFig(): FigStep[] {
   return [
-    { note: 'f(i) = 從第 i 間往後最多能偷多少 = max(偷 i:nums[i] + f(i+2), 不偷 i:f(i+1))。沒有記憶化的話,f(i+2) 會在兩條分支裡都被算到', views: [arr(A, { label: 'nums' })] },
-    { note: '加上 memo 之後每個 f(i) 只算一次,O(n)', views: [arr(A.map((_, i) => `f(${i})`), { label: '只有這 n 個子問題' })] },
+    { note: 'f(i) = 從第 i 間往後最多能偷多少 = max(偷 i:nums[i] + f(i+2), 不偷 i:f(i+1))。沒有記憶化的話,f(i+2) 會在兩條分支裡都被算到', line: 2, views: [arr(A, { label: 'nums' })] },
+    { note: '加上 memo 之後每個 f(i) 只算一次,O(n)', line: 5, views: [arr(A.map((_, i) => `f(${i})`), { label: '只有這 n 個子問題' })] },
   ]
 }
 

@@ -10,27 +10,27 @@ function bfsFig(): FigStep[] {
   let level = [buildTree(T)!]
   const res: number[] = []
   const seen: Record<number, string> = {}
-  const out: FigStep[] = [{ note: '站在樹的右邊看,每一層只看得到**最右邊**那個節點。所以就是層序遍歷,每層取最後一個', views: [tree(T)] }]
+  const out: FigStep[] = [{ note: '站在樹的右邊看,每一層只看得到**最右邊**那個節點。所以就是層序遍歷,每層取最後一個', line: 3, views: [tree(T)] }]
   while (level.length) {
     const last = level[level.length - 1]
     res.push(last.val)
     level.forEach((n) => (seen[n.i] = 'dim'))
     seen[last.i] = 'done'
-    out.push({ note: `這一層是 [${level.map((n) => n.val).join(', ')}],最右邊的是 ${last.val} → 收進答案 [${res.join(', ')}]`, views: [tree(T, { cls: { ...seen, [last.i]: 'hl' } }), arr(res, { label: '答案' })] })
+    out.push({ note: `這一層是 [${level.map((n) => n.val).join(', ')}],最右邊的是 ${last.val} → 收進答案 [${res.join(', ')}]`, line: 5, views: [tree(T, { cls: { ...seen, [last.i]: 'hl' } }), arr(res, { label: '答案' })] })
     level = level.flatMap((n) => [n.left, n.right].filter((x): x is FNode => !!x))
   }
-  out.push({ note: '注意 7:它在左子樹,但那一層右邊沒有別的節點擋住,所以看得到', views: [tree(T, { cls: seen })] })
+  out.push({ note: '注意 7:它在左子樹,但那一層右邊沒有別的節點擋住,所以看得到', line: 11, views: [tree(T, { cls: seen })] })
   return out
 }
 
 function dfsFig(): FigStep[] {
   const res: number[] = []
-  const out: FigStep[] = [{ note: 'DFS 的做法:**先走右邊**。每一層第一次到達的節點,就是從右邊看到的那個', views: [tree(T)] }]
+  const out: FigStep[] = [{ note: 'DFS 的做法:**先走右邊**。每一層第一次到達的節點,就是從右邊看到的那個', line: 2, views: [tree(T)] }]
   const go = (n: FNode | null, d: number) => {
     if (!n) return
     const first = res.length === d
     if (first) res.push(n.val)
-    out.push({ note: `節點 ${n.val} 在第 ${d} 層。${first ? `這一層第一次到 → 收進答案 [${res.join(', ')}]` : `第 ${d} 層已經有人了(${res[d]}),被擋住`}`, views: [tree(T, { cls: { [n.i]: first ? 'hl' : 'dim' } }), arr(res, { label: '答案' })] })
+    out.push({ note: `節點 ${n.val} 在第 ${d} 層。${first ? `這一層第一次到 → 收進答案 [${res.join(', ')}]` : `第 ${d} 層已經有人了(${res[d]}),被擋住`}`, line: 5, views: [tree(T, { cls: { [n.i]: first ? 'hl' : 'dim' } }), arr(res, { label: '答案' })] })
     go(n.right, d + 1)
     go(n.left, d + 1)
   }

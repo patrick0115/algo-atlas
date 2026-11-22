@@ -7,12 +7,13 @@ import { kv } from './fig'
 const A = [3, 1, 4, 2, 5, 4]
 
 function bruteFig(): FigStep[] {
-  const out: FigStep[] = [{ note: '兩層迴圈:固定 i,讓 j 從 i+1 往後,把每一對都比一次', views: [arr(A, { label: 'nums' })] }]
+  const out: FigStep[] = [{ note: '兩層迴圈:固定 i,讓 j 從 i+1 往後,把每一對都比一次', line: 3, views: [arr(A, { label: 'nums' })] }]
   for (let i = 0; i < A.length; i++) {
     for (let j = i + 1; j < A.length; j++) {
       const same = A[i] === A[j]
       out.push({
         note: `比 nums[${i}]=${A[i]} 和 nums[${j}]=${A[j]}${same ? ' → 一樣!回傳 true' : ',不一樣'}`,
+        line: 5,
         views: [arr(A, { label: 'nums', compare: [i, j], highlight: same ? [i, j] : [], pointers: [{ name: 'i', index: i }, { name: 'j', index: j, color: 'b' }] })],
       })
       if (same) return out
@@ -24,13 +25,14 @@ function bruteFig(): FigStep[] {
 function sortFig(): FigStep[] {
   const s = [...A].sort((a, b) => a - b)
   const out: FigStep[] = [
-    { note: '先排序。排完之後,相同的數一定會黏在一起', views: [arr(A, { label: 'nums' })] },
-    { note: '排序完成', views: [arr(s, { label: '排序後' })] },
+    { note: '先排序。排完之後,相同的數一定會黏在一起', line: 2, views: [arr(A, { label: 'nums' })] },
+    { note: '排序完成', line: 2, views: [arr(s, { label: '排序後' })] },
   ]
   for (let i = 1; i < s.length; i++) {
     const same = s[i] === s[i - 1]
     out.push({
       note: `只要看相鄰的:s[${i - 1}]=${s[i - 1]} 和 s[${i}]=${s[i]}${same ? ' → 一樣,回傳 true' : ',不一樣'}`,
+      line: 4,
       views: [arr(s, { label: '排序後', compare: [i - 1, i], highlight: same ? [i - 1, i] : [], done: range(0, i - 2) })],
     })
     if (same) break
@@ -40,15 +42,15 @@ function sortFig(): FigStep[] {
 
 function setFig(): FigStep[] {
   const seen: number[] = []
-  const out: FigStep[] = [{ note: '準備一個空的 Set,記住「看過的數」', views: [arr(A, { label: 'nums' }), kv([], 'seen')] }]
+  const out: FigStep[] = [{ note: '準備一個空的 Set,記住「看過的數」', line: 2, views: [arr(A, { label: 'nums' }), kv([], 'seen')] }]
   for (let i = 0; i < A.length; i++) {
     const x = A[i]
     if (seen.includes(x)) {
-      out.push({ note: `${x} 已經在 seen 裡 → 出現第二次,回傳 true`, views: [arr(A, { label: 'nums', highlight: [i], dim: range(0, i - 1) }), kv(seen.map((v) => [v, '✓']), 'seen', [x])] })
+      out.push({ note: `${x} 已經在 seen 裡 → 出現第二次,回傳 true`, line: 4, views: [arr(A, { label: 'nums', highlight: [i], dim: range(0, i - 1) }), kv(seen.map((v) => [v, '✓']), 'seen', [x])] })
       return out
     }
     seen.push(x)
-    out.push({ note: `${x} 不在 seen 裡,加進去`, views: [arr(A, { label: 'nums', highlight: [i], dim: range(0, i - 1) }), kv(seen.map((v) => [v, '✓']), 'seen', [x])] })
+    out.push({ note: `${x} 不在 seen 裡,加進去`, line: 5, views: [arr(A, { label: 'nums', highlight: [i], dim: range(0, i - 1) }), kv(seen.map((v) => [v, '✓']), 'seen', [x])] })
   }
   return out
 }

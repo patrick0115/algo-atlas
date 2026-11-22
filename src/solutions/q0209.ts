@@ -10,16 +10,16 @@ function winFig(): FigStep[] {
   let l = 0
   let s = 0
   let best = Infinity
-  const out: FigStep[] = [{ note: `全是正數 → 視窗越長和越大。右端 r 一直往右擴;只要和 ≥ ${T},就記下長度,再把左端 l 往右縮,看能不能更短`, views: [arr(A, { label: 'nums' })] }]
+  const out: FigStep[] = [{ note: `全是正數 → 視窗越長和越大。右端 r 一直往右擴;只要和 ≥ ${T},就記下長度,再把左端 l 往右縮,看能不能更短`, line: 2, views: [arr(A, { label: 'nums' })] }]
   for (let r = 0; r < A.length; r++) {
     s += A[r]
     while (s >= T) {
       best = Math.min(best, r - l + 1)
-      out.push({ note: `[${l}, ${r}] 的和 ${s} ≥ ${T} → 長度 ${r - l + 1},最短 ${best};縮左端,去掉 ${A[l]}`, views: [arr(A, { label: 'nums', range: [l, r], dim: [l], pointers: [{ name: 'l', index: l }, { name: 'r', index: r, color: 'b' }] })] })
+      out.push({ note: `[${l}, ${r}] 的和 ${s} ≥ ${T} → 長度 ${r - l + 1},最短 ${best};縮左端,去掉 ${A[l]}`, line: 6, views: [arr(A, { label: 'nums', range: [l, r], dim: [l], pointers: [{ name: 'l', index: l }, { name: 'r', index: r, color: 'b' }] })] })
       s -= A[l++]
     }
   }
-  out.push({ note: `答案 ${best}([4, 3])`, views: [arr(A, { label: 'nums', done: [4, 5] })] })
+  out.push({ note: `答案 ${best}([4, 3])`, line: 10, views: [arr(A, { label: 'nums', done: [4, 5] })] })
   return out
 }
 
@@ -27,8 +27,8 @@ function bsFig(): FigStep[] {
   const pre = [0]
   for (const x of A) pre.push(pre[pre.length - 1] + x)
   return [
-    { note: '前綴和是遞增的(全是正數)。對每個起點 i,要找最小的 j 使 pre[j] − pre[i] ≥ target → 在 pre 上二分找 pre[i] + target', views: [arr(pre, { label: 'pre' })] },
-    { note: `i = 4:要找 pre[j] ≥ pre[4] + 7 = ${pre[4] + 7} → j = 6,長度 2。每個起點 O(log n),總共 O(n log n)`, views: [arr(pre, { label: 'pre', highlight: [4], done: [6] })] },
+    { note: '前綴和是遞增的(全是正數)。對每個起點 i,要找最小的 j 使 pre[j] − pre[i] ≥ target → 在 pre 上二分找 pre[i] + target', line: 3, views: [arr(pre, { label: 'pre' })] },
+    { note: `i = 4:要找 pre[j] ≥ pre[4] + 7 = ${pre[4] + 7} → j = 6,長度 2。每個起點 O(log n),總共 O(n log n)`, line: 13, views: [arr(pre, { label: 'pre', highlight: [4], done: [6] })] },
   ]
 }
 

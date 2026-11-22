@@ -11,18 +11,18 @@ const idxOf = (v: number) => T.indexOf(v)
 
 function bstFig(): FigStep[] {
   let n: FNode | null = buildTree(T)
-  const out: FigStep[] = [{ note: `找 ${P} 和 ${Q} 的「最近共同祖先」:同時是兩者祖先、而且最深的那個節點(節點自己也算自己的祖先)。BST 的性質讓我們只要從根往下走一條路`, views: [tree(T, { cls: { [idxOf(P)]: 'visited', [idxOf(Q)]: 'visited' } })] }]
+  const out: FigStep[] = [{ note: `找 ${P} 和 ${Q} 的「最近共同祖先」:同時是兩者祖先、而且最深的那個節點(節點自己也算自己的祖先)。BST 的性質讓我們只要從根往下走一條路`, line: 2, views: [tree(T, { cls: { [idxOf(P)]: 'visited', [idxOf(Q)]: 'visited' } })] }]
   const path: Record<number, string> = {}
   while (n) {
     path[n.i] = 'done'
     if (P < n.val && Q < n.val) {
-      out.push({ note: `${P}、${Q} 都比 ${n.val} 小 → 兩個都在左子樹,共同祖先也在左邊,往左走`, views: [tree(T, { cls: { ...path, [idxOf(P)]: 'visited', [idxOf(Q)]: 'visited', [n.i]: 'hl' } })] })
+      out.push({ note: `${P}、${Q} 都比 ${n.val} 小 → 兩個都在左子樹,共同祖先也在左邊,往左走`, line: 4, views: [tree(T, { cls: { ...path, [idxOf(P)]: 'visited', [idxOf(Q)]: 'visited', [n.i]: 'hl' } })] })
       n = n.left
     } else if (P > n.val && Q > n.val) {
-      out.push({ note: `${P}、${Q} 都比 ${n.val} 大 → 往右走`, views: [tree(T, { cls: { ...path, [idxOf(P)]: 'visited', [idxOf(Q)]: 'visited', [n.i]: 'hl' } })] })
+      out.push({ note: `${P}、${Q} 都比 ${n.val} 大 → 往右走`, line: 5, views: [tree(T, { cls: { ...path, [idxOf(P)]: 'visited', [idxOf(Q)]: 'visited', [n.i]: 'hl' } })] })
       n = n.right
     } else {
-      out.push({ note: `${P} 和 ${Q} 分在 ${n.val} 的兩邊(或其中一個就是 ${n.val})→ 從這裡開始分岔,${n.val} 就是最近共同祖先`, views: [tree(T, { cls: { ...path, [idxOf(P)]: 'visited', [idxOf(Q)]: 'visited', [n.i]: 'hl' } })] })
+      out.push({ note: `${P} 和 ${Q} 分在 ${n.val} 的兩邊(或其中一個就是 ${n.val})→ 從這裡開始分岔,${n.val} 就是最近共同祖先`, line: 6, views: [tree(T, { cls: { ...path, [idxOf(P)]: 'visited', [idxOf(Q)]: 'visited', [n.i]: 'hl' } })] })
       break
     }
   }
@@ -32,19 +32,19 @@ function bstFig(): FigStep[] {
 function generalFig(): FigStep[] {
   const root = buildTree(T)
   const ret: Record<number, string> = {}
-  const out: FigStep[] = [{ note: '不用 BST 性質的通用做法(236 題):後序遍歷,每個節點回報「我的子樹裡有沒有找到 p 或 q」', views: [tree(T)] }]
+  const out: FigStep[] = [{ note: '不用 BST 性質的通用做法(236 題):後序遍歷,每個節點回報「我的子樹裡有沒有找到 p 或 q」', line: 3, views: [tree(T)] }]
   const go = (n: FNode | null): FNode | null => {
     if (!n) return null
     if (n.val === P || n.val === Q) {
       ret[n.i] = '找到'
-      out.push({ note: `節點 ${n.val} 就是要找的其中一個 → 回報自己`, views: [tree(T, { subs: { ...ret }, cls: { [n.i]: 'hl' } })] })
+      out.push({ note: `節點 ${n.val} 就是要找的其中一個 → 回報自己`, line: 2, views: [tree(T, { subs: { ...ret }, cls: { [n.i]: 'hl' } })] })
       return n
     }
     const l = go(n.left)
     const r = go(n.right)
     const res = l && r ? n : (l ?? r)
     ret[n.i] = res ? `回報 ${res.val}` : '沒有'
-    out.push({ note: l && r ? `節點 ${n.val}:左右兩邊都找到了 → 它就是最近共同祖先` : `節點 ${n.val}:${res ? `只有一邊找到 ${res.val},往上傳` : '兩邊都沒找到,回報空'}`, views: [tree(T, { subs: { ...ret }, cls: { [n.i]: l && r ? 'done' : 'hl' } })] })
+    out.push({ note: l && r ? `節點 ${n.val}:左右兩邊都找到了 → 它就是最近共同祖先` : `節點 ${n.val}:${res ? `只有一邊找到 ${res.val},往上傳` : '兩邊都沒找到,回報空'}`, line: l && r ? 5 : 6, views: [tree(T, { subs: { ...ret }, cls: { [n.i]: l && r ? 'done' : 'hl' } })] })
     return res
   }
   go(root)

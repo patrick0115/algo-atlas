@@ -30,16 +30,16 @@ function dpFig(): FigStep[] {
   for (let r = at[0] - best + 1; r <= at[0]; r++) for (let c = at[1] - best + 1; c <= at[1]; c++) sq.push([r, c])
   const view = (label: string, cells: (string | number)[][], done: [number, number][] = []): GridViewData => ({ kind: 'grid', label, cells, marks: { done } })
   return [
-    { note: '在 0/1 矩陣中找出全部是 1 的最大正方形', views: [view('matrix', M)] },
-    { note: '`dp[r][c]` = 以 (r, c) 為**右下角**的最大正方形邊長。要擴大成 k × k,上、左、左上三個方向都要至少有 k − 1 → `dp = min(上, 左, 左上) + 1`', views: [view('dp', dp)] },
-    { note: `最大邊長 ${best} → 面積 ${best * best}`, views: [view('最大正方形', M, sq), arr([best * best], { label: '答案(面積)', done: [0] })] },
+    { note: '在 0/1 矩陣中找出全部是 1 的最大正方形', line: 2, views: [view('matrix', M)] },
+    { note: '`dp[r][c]` = 以 (r, c) 為**右下角**的最大正方形邊長。要擴大成 k × k,上、左、左上三個方向都要至少有 k − 1 → `dp = min(上, 左, 左上) + 1`', line: 7, views: [view('dp', dp)] },
+    { note: `最大邊長 ${best} → 面積 ${best * best}`, line: 10, views: [view('最大正方形', M, sq), arr([best * best], { label: '答案(面積)', done: [0] })] },
   ]
 }
 
 function bruteFig(): FigStep[] {
   return [
-    { note: '暴力:以每個 1 為左上角,邊長 k 一路往外擴,每次只檢查新增的那一行和一列', views: [arr(['k = 1', 'k = 2:檢查新的一列 + 一行', '…遇到 0 就停'], { label: '擴張' })] },
-    { note: '最壞 O((mn) · min(m, n)²),在全是 1 的大矩陣會很慢', views: [arr([4], { label: '答案', done: [0] })] },
+    { note: '暴力:以每個 1 為左上角,邊長 k 一路往外擴,每次只檢查新增的那一行和一列', line: 4, views: [arr(['k = 1', 'k = 2:檢查新的一列 + 一行', '…遇到 0 就停'], { label: '擴張' })] },
+    { note: '最壞 O((mn) · min(m, n)²),在全是 1 的大矩陣會很慢', line: 17, views: [arr([4], { label: '答案', done: [0] })] },
   ]
 }
 

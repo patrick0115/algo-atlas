@@ -12,26 +12,26 @@ const BAD_T = 'baba'
 function twoMapFig(): FigStep[] {
   const st = new Map<string, string>()
   const ts = new Map<string, string>()
-  const out: FigStep[] = [{ note: '同構 = 能找到一套「一對一」的換字規則。要檢查兩個方向:s 的同一個字永遠換成同一個 t 字,t 的同一個字也只能來自同一個 s 字', views: [arr(S.split(''), { label: 's' }), arr(T.split(''), { label: 't' })] }]
+  const out: FigStep[] = [{ note: '同構 = 能找到一套「一對一」的換字規則。要檢查兩個方向:s 的同一個字永遠換成同一個 t 字,t 的同一個字也只能來自同一個 s 字', line: 2, views: [arr(S.split(''), { label: 's' }), arr(T.split(''), { label: 't' })] }]
   for (let i = 0; i < S.length; i++) {
     const a = S[i]
     const b = T[i]
     const isNew = !st.has(a)
     st.set(a, b)
     ts.set(b, a)
-    out.push({ note: isNew ? `${a} 第一次出現 → 記下 ${a}→${b},也記 ${b}→${a}` : `${a} 之前對應 ${st.get(a)},這次也是 ${b} ✓`, views: [arr(S.split(''), { label: 's', highlight: [i] }), arr(T.split(''), { label: 't', highlight: [i] }), kv([...st.entries()], 's → t', [a]), kv([...ts.entries()], 't → s', [b])] })
+    out.push({ note: isNew ? `${a} 第一次出現 → 記下 ${a}→${b},也記 ${b}→${a}` : `${a} 之前對應 ${st.get(a)},這次也是 ${b} ✓`, line: isNew ? 6 : 5, views: [arr(S.split(''), { label: 's', highlight: [i] }), arr(T.split(''), { label: 't', highlight: [i] }), kv([...st.entries()], 's → t', [a]), kv([...ts.entries()], 't → s', [b])] })
   }
-  out.push({ note: `"${S}" 和 "${T}" 同構 → true`, views: [kv([...st.entries()], 's → t')] })
-  out.push({ note: `反例 s = "${BAD_S}"、t = "${BAD_T}":b→b、a→a、d→b … 但 t → s 那張表裡 b 已經對應 b,現在又要對應 d → 兩個字換成同一個字,不合法 → false。只檢查一個方向會漏掉這種情況`, views: [arr(BAD_S.split(''), { label: 's', highlight: [2], compare: [0] }), arr(BAD_T.split(''), { label: 't', highlight: [2], compare: [0] }), kv([['b', 'b'], ['a', 'a']], 't → s', ['b'])] })
+  out.push({ note: `"${S}" 和 "${T}" 同構 → true`, line: 9, views: [kv([...st.entries()], 's → t')] })
+  out.push({ note: `反例 s = "${BAD_S}"、t = "${BAD_T}":b→b、a→a、d→b … 但 t → s 那張表裡 b 已經對應 b,現在又要對應 d → 兩個字換成同一個字,不合法 → false。只檢查一個方向會漏掉這種情況`, line: 5, views: [arr(BAD_S.split(''), { label: 's', highlight: [2], compare: [0] }), arr(BAD_T.split(''), { label: 't', highlight: [2], compare: [0] }), kv([['b', 'b'], ['a', 'a']], 't → s', ['b'])] })
   return out
 }
 
 function firstSeenFig(): FigStep[] {
   const enc = (w: string) => w.split('').map((c) => w.indexOf(c))
   return [
-    { note: '換個角度:把每個字換成「它第一次出現的位置」。同構的兩個字串,換完會長得一模一樣', views: [arr(S.split(''), { label: 's' }), arr(enc(S), { label: 's 每個字第一次出現在哪' })] },
-    { note: `t 也一樣換:[${enc(T)}],和 s 的 [${enc(S)}] 相同 → true`, views: [arr(T.split(''), { label: 't' }), arr(enc(T), { label: 't 每個字第一次出現在哪', done: enc(T).map((_, i) => i) })] },
-    { note: `反例:"${BAD_S}" → [${enc(BAD_S)}],"${BAD_T}" → [${enc(BAD_T)}],在索引 2 不一樣 → false`, views: [arr(enc(BAD_S), { label: BAD_S, highlight: [2] }), arr(enc(BAD_T), { label: BAD_T, highlight: [2] })] },
+    { note: '換個角度:把每個字換成「它第一次出現的位置」。同構的兩個字串,換完會長得一模一樣', line: 2, views: [arr(S.split(''), { label: 's' }), arr(enc(S), { label: 's 每個字第一次出現在哪' })] },
+    { note: `t 也一樣換:[${enc(T)}],和 s 的 [${enc(S)}] 相同 → true`, line: 8, views: [arr(T.split(''), { label: 't' }), arr(enc(T), { label: 't 每個字第一次出現在哪', done: enc(T).map((_, i) => i) })] },
+    { note: `反例:"${BAD_S}" → [${enc(BAD_S)}],"${BAD_T}" → [${enc(BAD_T)}],在索引 2 不一樣 → false`, line: 4, views: [arr(enc(BAD_S), { label: BAD_S, highlight: [2] }), arr(enc(BAD_T), { label: BAD_T, highlight: [2] })] },
   ]
 }
 

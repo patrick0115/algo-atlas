@@ -18,8 +18,8 @@ function sortFig(): FigStep[] {
   walk(buildTree(T))
   const s = [...vals].sort((a, b) => a - b)
   return [
-    { note: '最直接:把所有值收集起來、排序,取第 k 個。沒有用到 BST 的性質', views: [tree(T), arr(vals, { label: '收集到的值(前序)' })] },
-    { note: `排序後第 ${K} 小的是 ${s[K - 1]}`, views: [arr(s, { label: '排序後', highlight: [K - 1] })] },
+    { note: '最直接:把所有值收集起來、排序,取第 k 個。沒有用到 BST 的性質', line: 2, views: [tree(T), arr(vals, { label: '收集到的值(前序)' })] },
+    { note: `排序後第 ${K} 小的是 ${s[K - 1]}`, line: 10, views: [arr(s, { label: '排序後', highlight: [K - 1] })] },
   ]
 }
 
@@ -27,7 +27,7 @@ function inorderFig(): FigStep[] {
   const root = buildTree(T)
   const order: number[] = []
   const cls: Record<number, string> = {}
-  const out: FigStep[] = [{ note: 'BST:左子樹 < 根 < 右子樹。所以**中序遍歷(左 → 根 → 右)會由小到大**走過所有值。走到第 k 個就停', views: [tree(T)] }]
+  const out: FigStep[] = [{ note: 'BST:左子樹 < 根 < 右子樹。所以**中序遍歷(左 → 根 → 右)會由小到大**走過所有值。走到第 k 個就停', line: 2, views: [tree(T)] }]
   const st: FNode[] = []
   let cur = root
   let cnt = 0
@@ -40,7 +40,7 @@ function inorderFig(): FigStep[] {
     cnt++
     order.push(n.val)
     cls[n.i] = 'done'
-    out.push({ note: `中序第 ${cnt} 個:${n.val}${cnt === K ? ` → 這就是第 ${K} 小,停!` : ''}`, views: [tree(T, { cls: { ...cls, [n.i]: 'hl' } }), arr(order, { label: '中序走過的順序(由小到大)', highlight: [cnt - 1] }), arr(st.map((x) => x.val), { label: '堆疊(還沒處理的祖先)' })] })
+    out.push({ note: `中序第 ${cnt} 個:${n.val}${cnt === K ? ` → 這就是第 ${K} 小,停!` : ''}`, line: cnt === K ? 10 : 9, views: [tree(T, { cls: { ...cls, [n.i]: 'hl' } }), arr(order, { label: '中序走過的順序(由小到大)', highlight: [cnt - 1] }), arr(st.map((x) => x.val), { label: '堆疊(還沒處理的祖先)' })] }) // TODO: 可能要拆格(一路往左 push 與 pop 合在同一步)。line 以方法二(迭代)為準;方法三(遞迴)共用此圖,行號對不上
     if (cnt === K) return out
     cur = n.right
   }

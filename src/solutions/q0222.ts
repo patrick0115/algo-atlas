@@ -5,19 +5,19 @@ const T = [1, 2, 3, 4, 5, 6]
 
 function dfsFig(): FigStep[] {
   return [
-    { note: '從根 1 出發，數自己 1 個，再分別數左、右子樹。', views: [tree(T, { cls: { 0: 'hl' } })] },
-    { note: '左子樹有 2、4、5，共 3 個；每個節點都只看一次。', views: [tree(T, { cls: { 1: 'done', 3: 'done', 4: 'done' } })] },
-    { note: '右子樹有 3、6，共 2 個；不存在的右孩子回傳 0。', views: [tree(T, { cls: { 2: 'done', 5: 'done' } })] },
-    { note: '加總根 1 + 左 3 + 右 2 = 6。', views: [tree(T, { cls: { 0: 'done', 1: 'done', 2: 'done', 3: 'done', 4: 'done', 5: 'done' } })] },
+    { note: '從根 1 出發，數自己 1 個，再分別數左、右子樹。', line: 5, views: [tree(T, { cls: { 0: 'hl' } })] },
+    { note: '左子樹有 2、4、5，共 3 個；每個節點都只看一次。', line: 5, views: [tree(T, { cls: { 1: 'done', 3: 'done', 4: 'done' } })] },
+    { note: '右子樹有 3、6，共 2 個；不存在的右孩子回傳 0。', line: 6, views: [tree(T, { cls: { 2: 'done', 5: 'done' } })] },
+    { note: '加總根 1 + 左 3 + 右 2 = 6。', line: 7, views: [tree(T, { cls: { 0: 'done', 1: 'done', 2: 'done', 3: 'done', 4: 'done', 5: 'done' } })] },
   ]
 }
 
 function completeFig(): FigStep[] {
   return [
-    { note: '完全二元樹最後一層從左往右填。根的左子樹最左深度為 2（2→4），右子樹為 2（3→6）。', views: [tree(T, { cls: { 1: 'hl', 3: 'hl', 2: 'hl', 5: 'hl' } })] },
-    { note: '兩邊高度相同，表示左子樹是滿的：左子樹 3 個節點（2、4、5）加上根，共 2²=4 個。只需遞迴數右子樹。', views: [tree(T, { cls: { 0: 'done', 1: 'done', 3: 'done', 4: 'done' } })] },
-    { note: '到節點 3：左高度 1（6），右高度 0；右子樹是滿的，加上 3 共 2⁰=1，再遞迴左邊 6。', views: [tree(T, { cls: { 2: 'hl', 5: 'hl' } })] },
-    { note: '節點 6 貢獻 1；總數 4+1+1=6，無需逐一遍歷整棵樹。', views: [tree(T, { cls: { 0: 'done', 1: 'done', 2: 'done', 3: 'done', 4: 'done', 5: 'done' } })] },
+    { note: '完全二元樹最後一層從左往右填。根的左子樹最左深度為 2（2→4），右子樹為 2（3→6）。', line: 13, views: [tree(T, { cls: { 1: 'hl', 3: 'hl', 2: 'hl', 5: 'hl' } })] },
+    { note: '兩邊高度相同，表示左子樹是滿的：左子樹 3 個節點（2、4、5）加上根，共 2²=4 個。只需遞迴數右子樹。', line: 16, views: [tree(T, { cls: { 0: 'done', 1: 'done', 3: 'done', 4: 'done' } })] },
+    { note: '到節點 3：左高度 1（6），右高度 0；右子樹是滿的，加上 3 共 2⁰=1，再遞迴左邊 6。', line: 18, views: [tree(T, { cls: { 2: 'hl', 5: 'hl' } })] },
+    { note: '節點 6 貢獻 1；總數 4+1+1=6，無需逐一遍歷整棵樹。', line: 16, views: [tree(T, { cls: { 0: 'done', 1: 'done', 2: 'done', 3: 'done', 4: 'done', 5: 'done' } })] },
   ]
 }
 

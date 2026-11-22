@@ -49,21 +49,21 @@ function build(): TN {
 function dfsFig(pattern: string): FigStep[] {
   const root = build()
   const cls: Record<string, string> = {}
-  const out: FigStep[] = [{ note: `search("${pattern}"):一般字母就沿著那個字母往下走;遇到 "." 時,它可以是任何字母 → **每個孩子都試一次**(DFS)`, views: [view(root)] }]
+  const out: FigStep[] = [{ note: `search("${pattern}"):一般字母就沿著那個字母往下走;遇到 "." 時,它可以是任何字母 → **每個孩子都試一次**(DFS)`, line: 22, views: [view(root)] }]
   const go = (n: TN, i: number): boolean => {
     if (i === pattern.length) {
-      out.push({ note: `走完 "${pattern}" 了,這個節點${n.end ? '是單字結尾 → 找到!' : '不是單字結尾 → 這條路不行'}`, views: [view(root, { ...cls, [n.id]: n.end ? 'hl' : 'visited' })] })
+      out.push({ note: `走完 "${pattern}" 了,這個節點${n.end ? '是單字結尾 → 找到!' : '不是單字結尾 → 這條路不行'}`, line: 17, views: [view(root, { ...cls, [n.id]: n.end ? 'hl' : 'visited' })] })
       return n.end
     }
     const c = pattern[i]
     const tries = c === '.' ? [...n.kids.values()] : n.kids.has(c) ? [n.kids.get(c)!] : []
     if (!tries.length) {
-      out.push({ note: `第 ${i} 個字元 "${c}":${c === '.' ? '沒有任何孩子' : `沒有 "${c}" 這個孩子`} → 這條路不行,退回去`, views: [view(root, { ...cls, [n.id]: 'visited' })] })
+      out.push({ note: `第 ${i} 個字元 "${c}":${c === '.' ? '沒有任何孩子' : `沒有 "${c}" 這個孩子`} → 這條路不行,退回去`, line: c === '.' ? 19 : 20, views: [view(root, { ...cls, [n.id]: 'visited' })] })
       return false
     }
     for (const k of tries) {
       cls[k.id] = 'hl'
-      out.push({ note: `第 ${i} 個字元 "${c}"${c === '.' ? `:試試 "${k.ch}"` : ':往下走'}`, views: [view(root, { ...cls })] })
+      out.push({ note: `第 ${i} 個字元 "${c}"${c === '.' ? `:試試 "${k.ch}"` : ':往下走'}`, line: c === '.' ? 19 : 20, views: [view(root, { ...cls })] })
       if (go(k, i + 1)) return true
       cls[k.id] = 'dim'
     }
@@ -76,10 +76,10 @@ function dfsFig(pattern: string): FigStep[] {
 function listFig(): FigStep[] {
   const p = '.ad'
   return [
-    { note: '最簡單:把所有單字存在清單裡。search 時一個一個比:長度要一樣,每一格要嘛相同、要嘛是 "."', views: [arr(WORDS, { label: 'words' })] },
+    { note: '最簡單:把所有單字存在清單裡。search 時一個一個比:長度要一樣,每一格要嘛相同、要嘛是 "."', line: 3, views: [arr(WORDS, { label: 'words' })] },
     ...WORDS.map((w, i) => {
       const ok = w.length === p.length && [...p].every((c, j) => c === '.' || c === w[j])
-      return { note: `search("${p}") 和 "${w}" 比:${ok ? '每一格都對得上 → true' : '對不上'}`, views: [arr(WORDS, { label: 'words', compare: [i], highlight: ok ? [i] : [] })] }
+      return { note: `search("${p}") 和 "${w}" 比:${ok ? '每一格都對得上 → true' : '對不上'}`, line: 9, views: [arr(WORDS, { label: 'words', compare: [i], highlight: ok ? [i] : [] })] }
     }),
   ]
 }

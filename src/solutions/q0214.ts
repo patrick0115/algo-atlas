@@ -3,19 +3,19 @@ import type { FigStep, Solution } from './types'
 
 function bruteFig(): FigStep[] {
   return [
-    { note: '只能在最前面加字元，所以先找 s 最長的「回文前綴」。', views: [arr([...'abcd'], { label: 's' })] },
-    { note: '檢查 abcd：從兩端比較，a 與 d 不同，因此整段不是回文。', views: [arr([...'abcd'], { label: '長度 4', compare: [0, 3] })] },
-    { note: '再檢查 abc、ab，也不是回文；只剩第一個 a 是回文前綴。', views: [arr([...'abcd'], { label: '最長回文前綴', done: [0], dim: [1, 2, 3] })] },
-    { note: '未涵蓋的尾段是 bcd，反過來是 dcb，放到前面得到 dcbabcd。', views: [arr([...'dcbabcd'], { label: '答案', done: [0, 1, 2] })] },
+    { note: '只能在最前面加字元，所以先找 s 最長的「回文前綴」。', line: 2, views: [arr([...'abcd'], { label: 's' })] },
+    { note: '檢查 abcd：從兩端比較，a 與 d 不同，因此整段不是回文。', line: 5, views: [arr([...'abcd'], { label: '長度 4', compare: [0, 3] })] },
+    { note: '再檢查 abc、ab，也不是回文；只剩第一個 a 是回文前綴。', line: 9, views: [arr([...'abcd'], { label: '最長回文前綴', done: [0], dim: [1, 2, 3] })] },
+    { note: '未涵蓋的尾段是 bcd，反過來是 dcb，放到前面得到 dcbabcd。', line: 11, views: [arr([...'dcbabcd'], { label: '答案', done: [0, 1, 2] })] },
   ]
 }
 
 function kmpFig(): FigStep[] {
   return [
-    { note: '把 s、分隔符、反轉後的 s 接起來：abcd#dcba。', views: [arr([...'abcd#dcba'], { label: '合併字串' })] },
-    { note: '計算 KMP 前綴長度。讀完 abcd 時，最長相同前後綴仍是 0。', views: [arr([0, 0, 0, 0], { label: '目前前綴長度' })] },
-    { note: '讀到最後的 a 時，長度變成 1；這就是 s 的最長回文前綴長度。', views: [arr([...'abcd#dcba'], { label: '最後匹配', done: [0, 8] }), arr([1], { label: '回文前綴長度' })] },
-    { note: '把剩下的 bcd 反轉為 dcb 並接到前面，答案是 dcbabcd。', views: [arr([...'dcbabcd'], { label: '答案', done: [0, 1, 2] })] },
+    { note: '把 s、分隔符、反轉後的 s 接起來：abcd#dcba。', line: 3, views: [arr([...'abcd#dcba'], { label: '合併字串' })] },
+    { note: '計算 KMP 前綴長度。讀完 abcd 時，最長相同前後綴仍是 0。', line: 13, views: [arr([0, 0, 0, 0], { label: '目前前綴長度' })] },
+    { note: '讀到最後的 a 時，長度變成 1；這就是 s 的最長回文前綴長度。', line: 11, views: [arr([...'abcd#dcba'], { label: '最後匹配', done: [0, 8] }), arr([1], { label: '回文前綴長度' })] },
+    { note: '把剩下的 bcd 反轉為 dcb 並接到前面，答案是 dcbabcd。', line: 16, views: [arr([...'dcbabcd'], { label: '答案', done: [0, 1, 2] })] },
   ]
 }
 

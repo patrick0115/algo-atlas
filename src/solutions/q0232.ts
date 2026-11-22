@@ -3,19 +3,19 @@ import type { FigStep, Solution } from './types'
 
 function costlyFig(): FigStep[] {
   return [
-    { note: '主堆疊頂端（右邊）必須是最早入隊的 1，才能直接 pop、peek。push 1 後主堆疊是 [1]。', views: [arr([1], { label: '主堆疊：右邊是頂端' })] },
-    { note: '要 push 2，先把主堆疊的 1 搬到暫存堆疊。', views: [arr([], { label: '主堆疊' }), arr([1], { label: '暫存堆疊' })] },
-    { note: '主堆疊放 2，再把暫存的 1 搬回，主堆疊變 [2,1]，頂端仍是 1。', views: [arr([2, 1], { label: '主堆疊', highlight: [1] })] },
-    { note: 'push 3 後變 [3,2,1]；pop 直接取出頂端 1，peek 接著看到 2。', views: [arr([3, 2], { label: 'pop 之後', highlight: [1] })] },
+    { note: '主堆疊頂端（右邊）必須是最早入隊的 1，才能直接 pop、peek。push 1 後主堆疊是 [1]。', line: 11, views: [arr([1], { label: '主堆疊：右邊是頂端' })] },
+    { note: '要 push 2，先把主堆疊的 1 搬到暫存堆疊。', line: 9, views: [arr([], { label: '主堆疊' }), arr([1], { label: '暫存堆疊' })] },
+    { note: '主堆疊放 2，再把暫存的 1 搬回，主堆疊變 [2,1]，頂端仍是 1。', line: 13, views: [arr([2, 1], { label: '主堆疊', highlight: [1] })] }, // TODO: 可能要拆格(放 2 進主堆疊 line 11 與搬回 line 13 同步顯示)
+    { note: 'push 3 後變 [3,2,1]；pop 直接取出頂端 1，peek 接著看到 2。', line: 18, views: [arr([3, 2], { label: 'pop 之後', highlight: [1] })] }, // TODO: 可能要拆格(push 3 的搬動、pop、peek 合在同一步)
   ]
 }
 
 function lazyFig(): FigStep[] {
   return [
-    { note: 'push 1、2、3 時只放入 in 堆疊，內容 [1,2,3]，頂端是 3。', views: [arr([1, 2, 3], { label: 'in：右邊是頂端' }), arr([], { label: 'out' })] },
-    { note: '第一次 peek 或 pop 發現 out 為空，就把 in 全部逐個搬到 out，順序反轉成 [3,2,1]。', views: [arr([], { label: 'in' }), arr([3, 2, 1], { label: 'out：右邊是頂端', highlight: [2] })] },
-    { note: 'pop 從 out 取出 1；即使之後 push 4，也先留在 in，不要插到 out 的 2、3 前面。', views: [arr([4], { label: 'in' }), arr([3, 2], { label: 'out', highlight: [1] })] },
-    { note: '等 out 被拿空才再次搬 in。每個元素最多進出兩個堆疊各一次。', views: [arr([4], { label: '下一批待搬' }), arr([], { label: 'out 已空' })] },
+    { note: 'push 1、2、3 時只放入 in 堆疊，內容 [1,2,3]，頂端是 3。', line: 16, views: [arr([1, 2, 3], { label: 'in：右邊是頂端' }), arr([], { label: 'out' })] },
+    { note: '第一次 peek 或 pop 發現 out 為空，就把 in 全部逐個搬到 out，順序反轉成 [3,2,1]。', line: 10, views: [arr([], { label: 'in' }), arr([3, 2, 1], { label: 'out：右邊是頂端', highlight: [2] })] },
+    { note: 'pop 從 out 取出 1；即使之後 push 4，也先留在 in，不要插到 out 的 2、3 前面。', line: 21, views: [arr([4], { label: 'in' }), arr([3, 2], { label: 'out', highlight: [1] })] }, // TODO: 可能要拆格(pop 與 push 4 合在同一步)
+    { note: '等 out 被拿空才再次搬 in。每個元素最多進出兩個堆疊各一次。', line: 8, views: [arr([4], { label: '下一批待搬' }), arr([], { label: 'out 已空' })] },
   ]
 }
 

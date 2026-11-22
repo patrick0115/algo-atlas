@@ -8,17 +8,17 @@ const L = [1, 2, 3, 2, 1]
 
 function revFig(): FigStep[] {
   return [
-    { note: '回文 = 前半和「反過來的後半」一樣。串列不能從後面走,所以:① 快慢指標找中點', views: [chain(L, { cls: { 2: 'cur' }, subs: { 2: 'slow(中點)' } })] },
-    { note: '② 把從中點開始的後半段原地反轉:3 → 2 → 1 變成 1 → 2 → 3', views: [chain([1, 2], { label: '前半' }), chain([1, 2, 3], { label: '後半(反轉後)' })] },
-    { note: '③ 兩條同時往前比:1 = 1、2 = 2,最後中點 3 和自己比,一定相同 → 是回文', views: [chain([1, 2], { label: '前半', cls: { 0: 'done', 1: 'done' } }), chain([1, 2, 3], { label: '後半', cls: { 0: 'done', 1: 'done' } })] },
-    { note: '(好習慣:比完再把後半反轉回來,恢復原本的串列)', views: [chain(L, { tail: true })] },
+    { note: '回文 = 前半和「反過來的後半」一樣。串列不能從後面走,所以:① 快慢指標找中點', line: 3, views: [chain(L, { cls: { 2: 'cur' }, subs: { 2: 'slow(中點)' } })] },
+    { note: '② 把從中點開始的後半段原地反轉:3 → 2 → 1 變成 1 → 2 → 3', line: 7, views: [chain([1, 2], { label: '前半' }), chain([1, 2, 3], { label: '後半(反轉後)' })] },
+    { note: '③ 兩條同時往前比:1 = 1、2 = 2,最後中點 3 和自己比,一定相同 → 是回文', line: 8, views: [chain([1, 2], { label: '前半', cls: { 0: 'done', 1: 'done' } }), chain([1, 2, 3], { label: '後半', cls: { 0: 'done', 1: 'done' } })] },
+    { note: '(好習慣:比完再把後半反轉回來,恢復原本的串列)', line: 9, views: [chain(L, { tail: true })] }, // 程式碼沒有「還原後半」那行,暫標 return true
   ]
 }
 
 function arrFig(): FigStep[] {
   return [
-    { note: '簡單版:把值抄進陣列,再用左右雙指標檢查是不是回文', views: [arr(L, { label: '值', pointers: [{ name: 'l', index: 0 }, { name: 'r', index: 4, color: 'b' }] })] },
-    { note: '1 = 1、2 = 2、到中間 → true。O(n) 空間', views: [arr(L, { label: '值', done: [0, 1, 3, 4] })] },
+    { note: '簡單版:把值抄進陣列,再用左右雙指標檢查是不是回文', line: 3, views: [arr(L, { label: '值', pointers: [{ name: 'l', index: 0 }, { name: 'r', index: 4, color: 'b' }] })] },
+    { note: '1 = 1、2 = 2、到中間 → true。O(n) 空間', line: 4, views: [arr(L, { label: '值', done: [0, 1, 3, 4] })] },
   ]
 }
 

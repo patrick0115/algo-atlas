@@ -21,17 +21,17 @@ function twoFig(): FigStep[] {
   const L = line(A.slice(0, n - 1))
   const R = line(A.slice(1))
   return [
-    { note: '房子圍成一圈:第一間和最後一間變成「鄰居」,不能同時偷。其他地方和 198 一模一樣', views: [arr(A, { label: 'nums(頭尾相鄰)', compare: [0, n - 1] })] },
-    { note: `情況一:不偷最後一間 → 只看 [0, ${n - 2}],這就是一般的 198 題。最多 ${L.best}`, views: [arr(A, { label: 'nums', range: [0, n - 2], dim: [n - 1] }), arr(L.dp, { label: 'dp(情況一)', done: [L.dp.length - 1] })] },
-    { note: `情況二:不偷第一間 → 只看 [1, ${n - 1}]。最多 ${R.best}`, views: [arr(A, { label: 'nums', range: [1, n - 1], dim: [0] }), arr(R.dp, { label: 'dp(情況二)', done: [R.dp.length - 1] })] },
-    { note: `頭和尾一定至少有一間不偷,所以答案一定落在這兩種情況之一:max(${L.best}, ${R.best}) = ${Math.max(L.best, R.best)}`, views: [arr([L.best, R.best], { label: '兩種情況', highlight: [L.best >= R.best ? 0 : 1] })] },
+    { note: '房子圍成一圈:第一間和最後一間變成「鄰居」,不能同時偷。其他地方和 198 一模一樣', line: 7, views: [arr(A, { label: 'nums(頭尾相鄰)', compare: [0, n - 1] })] },
+    { note: `情況一:不偷最後一間 → 只看 [0, ${n - 2}],這就是一般的 198 題。最多 ${L.best}`, line: 9, views: [arr(A, { label: 'nums', range: [0, n - 2], dim: [n - 1] }), arr(L.dp, { label: 'dp(情況一)', done: [L.dp.length - 1] })] },
+    { note: `情況二:不偷第一間 → 只看 [1, ${n - 1}]。最多 ${R.best}`, line: 9, views: [arr(A, { label: 'nums', range: [1, n - 1], dim: [0] }), arr(R.dp, { label: 'dp(情況二)', done: [R.dp.length - 1] })] },
+    { note: `頭和尾一定至少有一間不偷,所以答案一定落在這兩種情況之一:max(${L.best}, ${R.best}) = ${Math.max(L.best, R.best)}`, line: 9, views: [arr([L.best, R.best], { label: '兩種情況', highlight: [L.best >= R.best ? 0 : 1] })] },
   ]
 }
 
 function stateFig(): FigStep[] {
   return [
-    { note: '另一種寫法:同一次掃描裡,同時跑兩組 DP —— 一組「可用第一間、不碰最後一間」、一組「不碰第一間」。最後一間只能接在「不碰第一間」那組後面', views: [arr(A, { label: 'nums', highlight: [0] })] },
-    { note: '兩組各自滾動 (prev2, prev1);走到最後一間時,「不碰最後一間」那組不能偷它。結果和方法一相同', views: [arr(A, { label: 'nums', range: [0, A.length - 1], compare: [A.length - 1] }), arr(range(1, A.length - 1).map((i) => A[i]), { label: '中間的房子兩組都能自由選' })] },
+    { note: '另一種寫法:同一次掃描裡,同時跑兩組 DP —— 一組「可用第一間、不碰最後一間」、一組「不碰第一間」。最後一間只能接在「不碰第一間」那組後面', line: 4, views: [arr(A, { label: 'nums', highlight: [0] })] },
+    { note: '兩組各自滾動 (prev2, prev1);走到最後一間時,「不碰最後一間」那組不能偷它。結果和方法一相同', line: 6, views: [arr(A, { label: 'nums', range: [0, A.length - 1], compare: [A.length - 1] }), arr(range(1, A.length - 1).map((i) => A[i]), { label: '中間的房子兩組都能自由選' })] },
   ]
 }
 

@@ -8,29 +8,29 @@ const T = [4, 2, 7, 1, 3, 6, 9]
 
 function recurFig(): FigStep[] {
   const root = buildTree(T)
-  const out: FigStep[] = [{ note: '翻轉 = 照鏡子:每個節點的左右孩子對調。對每個節點都做一次「交換左右」就好', views: [treeOf(root, { label: '原本的樹' })] }]
+  const out: FigStep[] = [{ note: '翻轉 = 照鏡子:每個節點的左右孩子對調。對每個節點都做一次「交換左右」就好', line: 3, views: [treeOf(root, { label: '原本的樹' })] }]
   const go = (n: FNode | null) => {
     if (!n) return
     ;[n.left, n.right] = [n.right, n.left]
-    out.push({ note: `節點 ${n.val}:交換它的左右孩子${n.left || n.right ? `(現在左邊是 ${n.left?.val ?? '空'}、右邊是 ${n.right?.val ?? '空'})` : '(都是空的,換了也一樣)'},再往下遞迴`, views: [treeOf(root, { cls: { [n.i]: 'hl' } })] })
+    out.push({ note: `節點 ${n.val}:交換它的左右孩子${n.left || n.right ? `(現在左邊是 ${n.left?.val ?? '空'}、右邊是 ${n.right?.val ?? '空'})` : '(都是空的,換了也一樣)'},再往下遞迴`, line: 3, views: [treeOf(root, { cls: { [n.i]: 'hl' } })] })
     go(n.left)
     go(n.right)
   }
   go(root)
-  out.push({ note: '每個節點都換過了,整棵樹左右翻轉完成', views: [treeOf(root, { label: '翻轉後' })] })
+  out.push({ note: '每個節點都換過了,整棵樹左右翻轉完成', line: 6, views: [treeOf(root, { label: '翻轉後' })] })
   return out
 }
 
 function bfsFig(): FigStep[] {
   const root = buildTree(T)
   const q: FNode[] = [root!]
-  const out: FigStep[] = [{ note: '不用遞迴:用佇列一層一層走(BFS)。從佇列拿出一個節點,交換它的左右,再把它的孩子放進佇列', views: [treeOf(root), arr(q.map((n) => n.val), { label: '佇列' })] }]
+  const out: FigStep[] = [{ note: '不用遞迴:用佇列一層一層走(BFS)。從佇列拿出一個節點,交換它的左右,再把它的孩子放進佇列', line: 3, views: [treeOf(root), arr(q.map((n) => n.val), { label: '佇列' })] }]
   while (q.length) {
     const n = q.shift()!
     ;[n.left, n.right] = [n.right, n.left]
     if (n.left) q.push(n.left)
     if (n.right) q.push(n.right)
-    out.push({ note: `拿出 ${n.val},交換左右,孩子放進佇列`, views: [treeOf(root, { cls: { [n.i]: 'hl' } }), arr(q.map((x) => x.val), { label: '佇列' })] })
+    out.push({ note: `拿出 ${n.val},交換左右,孩子放進佇列`, line: 6, views: [treeOf(root, { cls: { [n.i]: 'hl' } }), arr(q.map((x) => x.val), { label: '佇列' })] }) // TODO: 可能要拆格
   }
   return out
 }
@@ -38,13 +38,13 @@ function bfsFig(): FigStep[] {
 function stackFig(): FigStep[] {
   const root = buildTree(T)
   const st: FNode[] = [root!]
-  const out: FigStep[] = [{ note: '把佇列換成堆疊:每次 pop 最後放進去的節點,交換它的左右,再把孩子(先左後右)push 進去', views: [treeOf(root), arr(st.map((n) => n.val), { label: '堆疊(右邊是頂端)' })] }]
+  const out: FigStep[] = [{ note: '把佇列換成堆疊:每次 pop 最後放進去的節點,交換它的左右,再把孩子(先左後右)push 進去', line: 2, views: [treeOf(root), arr(st.map((n) => n.val), { label: '堆疊(右邊是頂端)' })] }]
   while (st.length) {
     const n = st.pop()!
     ;[n.left, n.right] = [n.right, n.left]
     if (n.left) st.push(n.left)
     if (n.right) st.push(n.right)
-    out.push({ note: `pop 出 ${n.val},交換左右,孩子 push 進堆疊`, views: [treeOf(root, { cls: { [n.i]: 'hl' } }), arr(st.map((x) => x.val), { label: '堆疊(右邊是頂端)' })] })
+    out.push({ note: `pop 出 ${n.val},交換左右,孩子 push 進堆疊`, line: 5, views: [treeOf(root, { cls: { [n.i]: 'hl' } }), arr(st.map((x) => x.val), { label: '堆疊(右邊是頂端)' })] }) // TODO: 可能要拆格
   }
   return out
 }

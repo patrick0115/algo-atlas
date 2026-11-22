@@ -31,7 +31,7 @@ function view(island: number[][], hl: Cell[] = [], label = 'grid(1 = 陸地,格�
 function floodFig(bfs: boolean): FigStep[] {
   const island = G.map((r) => r.map(() => 0))
   let cnt = 0
-  const out: FigStep[] = [{ note: '一格一格掃。遇到一塊**還沒被淹掉**的陸地 → 發現一座新島,島數 +1,然後把這座島相連的所有陸地都「淹掉」(標記成這座島),之後就不會重複數到', views: [view(island)] }]
+  const out: FigStep[] = [{ note: '一格一格掃。遇到一塊**還沒被淹掉**的陸地 → 發現一座新島,島數 +1,然後把這座島相連的所有陸地都「淹掉」(標記成這座島),之後就不會重複數到', line: bfs ? 3 : 8, views: [view(island)] }]
   for (let r = 0; r < R; r++)
     for (let c = 0; c < C; c++) {
       if (G[r][c] !== '1' || island[r][c]) continue
@@ -51,9 +51,9 @@ function floodFig(bfs: boolean): FigStep[] {
           }
         }
       }
-      out.push({ note: `(${r},${c}) 是新的陸地 → 第 ${cnt} 座島。用${bfs ? ' BFS(佇列,一圈一圈往外)' : ' DFS(一路走到底)'} 把相連的 ${order.length} 格都標成 ${cnt}`, views: [view(island, order)] })
+      out.push({ note: `(${r},${c}) 是新的陸地 → 第 ${cnt} 座島。用${bfs ? ' BFS(佇列,一圈一圈往外)' : ' DFS(一路走到底)'} 把相連的 ${order.length} 格都標成 ${cnt}`, line: bfs ? 10 : 13, views: [view(island, order)] }) // TODO: 可能要拆格(count++ 與整座島的淹沒合併成一步)
     }
-  out.push({ note: `掃完了,共 ${cnt} 座島`, views: [view(island)] })
+  out.push({ note: `掃完了,共 ${cnt} 座島`, line: bfs ? 19 : 15, views: [view(island)] })
   return out
 }
 
@@ -62,7 +62,7 @@ function ufFig(): FigStep[] {
   const parent = Array.from({ length: R * C }, (_, i) => i)
   const find = (x: number): number => (parent[x] === x ? x : (parent[x] = find(parent[x])))
   let cnt = G.flat().filter((v) => v === '1').length
-  const out: FigStep[] = [{ note: `並查集:一開始每塊陸地自己就是一座島(共 ${cnt} 座)。掃到相鄰的兩塊陸地就把它們合併,每成功合併一次,島數 −1`, views: [view(G.map((r) => r.map(() => 0)), [], 'grid'), arr([cnt], { label: '目前島數' })] }]
+  const out: FigStep[] = [{ note: `並查集:一開始每塊陸地自己就是一座島(共 ${cnt} 座)。掃到相鄰的兩塊陸地就把它們合併,每成功合併一次,島數 −1`, line: 12, views: [view(G.map((r) => r.map(() => 0)), [], 'grid'), arr([cnt], { label: '目前島數' })] }]
   for (let r = 0; r < R; r++)
     for (let c = 0; c < C; c++) {
       if (G[r][c] !== '1') continue
@@ -75,11 +75,11 @@ function ufFig(): FigStep[] {
         if (a !== b) {
           parent[a] = b
           cnt--
-          out.push({ note: `(${r},${c}) 和 (${nr},${nc}) 相鄰而且還不在同一組 → 合併,島數 ${cnt}`, views: [view(G.map((row) => row.map(() => 0)), [[r, c], [nr, nc]], 'grid'), arr([cnt], { label: '目前島數' })] })
+          out.push({ note: `(${r},${c}) 和 (${nr},${nc}) 相鄰而且還不在同一組 → 合併,島數 ${cnt}`, line: 20, views: [view(G.map((row) => row.map(() => 0)), [[r, c], [nr, nc]], 'grid'), arr([cnt], { label: '目前島數' })] })
         }
       }
     }
-  out.push({ note: `答案 ${cnt}`, views: [arr([cnt], { label: '島數', done: [0] })] })
+  out.push({ note: `答案 ${cnt}`, line: 25, views: [arr([cnt], { label: '島數', done: [0] })] })
   return out
 }
 

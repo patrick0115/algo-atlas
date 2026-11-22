@@ -5,17 +5,17 @@ import type { FigStep, Solution } from './types'
 
 function oneQFig(): FigStep[] {
   return [
-    { note: '佇列是「先進先出」,堆疊要「後進先出」。只用一個佇列的訣竅:每次 push 新元素後,把它**前面的元素全部轉到後面**,新元素就跑到最前面了', views: [arr([2, 1], { label: '佇列(左邊是隊首)' })] },
-    { note: 'push 3:先放到隊尾 → [2, 1, 3]', views: [arr([2, 1, 3], { label: '佇列', highlight: [2] })] },
-    { note: '再把前面 2 個依序「出隊、再入隊」:2 → 尾、1 → 尾 → [3, 2, 1]。現在隊首就是最後 push 的 3', views: [arr([3, 2, 1], { label: '佇列', highlight: [0] })] },
-    { note: 'pop / top 直接看隊首:pop → 3,剩 [2, 1];top → 2……push 是 O(n),pop、top 是 O(1)', views: [arr([2, 1], { label: '佇列(pop 3 之後)', highlight: [0] })] },
+    { note: '佇列是「先進先出」,堆疊要「後進先出」。只用一個佇列的訣竅:每次 push 新元素後,把它**前面的元素全部轉到後面**,新元素就跑到最前面了', line: 7, views: [arr([2, 1], { label: '佇列(左邊是隊首)' })] },
+    { note: 'push 3:先放到隊尾 → [2, 1, 3]', line: 7, views: [arr([2, 1, 3], { label: '佇列', highlight: [2] })] },
+    { note: '再把前面 2 個依序「出隊、再入隊」:2 → 尾、1 → 尾 → [3, 2, 1]。現在隊首就是最後 push 的 3', line: 8, views: [arr([3, 2, 1], { label: '佇列', highlight: [0] })] },
+    { note: 'pop / top 直接看隊首:pop → 3,剩 [2, 1];top → 2……push 是 O(n),pop、top 是 O(1)', line: 12, views: [arr([2, 1], { label: '佇列(pop 3 之後)', highlight: [0] })] },
   ]
 }
 
 function twoQFig(): FigStep[] {
   return [
-    { note: '兩個佇列的版本:push 時直接放進 q1 的尾巴(O(1))', views: [arr([1, 2, 3], { label: 'q1' }), arr([], { label: 'q2' })] },
-    { note: 'pop 時把 q1 前面 n−1 個搬到 q2,q1 只剩最後放進去的那個 → 取出它,再把 q1、q2 互換。pop 是 O(n)', views: [arr([3], { label: 'q1', highlight: [0] }), arr([1, 2], { label: 'q2' })] },
+    { note: '兩個佇列的版本:push 時直接放進 q1 的尾巴(O(1))', line: 8, views: [arr([1, 2, 3], { label: 'q1' }), arr([], { label: 'q2' })] },
+    { note: 'pop 時把 q1 前面 n−1 個搬到 q2,q1 只剩最後放進去的那個 → 取出它,再把 q1、q2 互換。pop 是 O(n)', line: 12, views: [arr([3], { label: 'q1', highlight: [0] }), arr([1, 2], { label: 'q2' })] }, // TODO: 可能要拆格
   ]
 }
 

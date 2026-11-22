@@ -28,7 +28,7 @@ function kahnFig(edges: number[][]): FigStep[] {
   const cls: Record<number, string> = {}
   const q: number[] = []
   indeg.forEach((d, i) => d === 0 && q.push(i))
-  const out: FigStep[] = [{ note: '每門課是一個節點,「先修 b 才能修 a」是一條 b → a 的箭頭。入度 = 還有幾門先修課沒修完。入度 0 的課現在就能修,放進佇列', views: [graphView(N, edges, { directed: true, pos: POS, subs: subs(), cls: Object.fromEntries(q.map((x) => [x, 'queued'])) }), arr(q, { label: '佇列(可以修的課)' })] }]
+  const out: FigStep[] = [{ note: '每門課是一個節點,「先修 b 才能修 a」是一條 b → a 的箭頭。入度 = 還有幾門先修課沒修完。入度 0 的課現在就能修,放進佇列', line: 9, views: [graphView(N, edges, { directed: true, pos: POS, subs: subs(), cls: Object.fromEntries(q.map((x) => [x, 'queued'])) }), arr(q, { label: '佇列(可以修的課)' })] }]
   let done = 0
   while (q.length) {
     const u = q.shift()!
@@ -36,9 +36,9 @@ function kahnFig(edges: number[][]): FigStep[] {
     cls[u] = 'done'
     const freed: number[] = []
     for (const v of adj[u]) if (--indeg[v] === 0) (q.push(v), freed.push(v))
-    out.push({ note: `修課程 ${u}(已修 ${done} 門)。它指向的課入度 −1${freed.length ? `,${freed.join('、')} 的入度變成 0 → 可以修了,放進佇列` : ''}`, views: [graphView(N, edges, { directed: true, pos: POS, subs: subs(), cls: { ...cls, [u]: 'hl', ...Object.fromEntries(q.map((x) => [x, 'queued'])) } }), arr(q, { label: '佇列' })] })
+    out.push({ note: `修課程 ${u}(已修 ${done} 門)。它指向的課入度 −1${freed.length ? `,${freed.join('、')} 的入度變成 0 → 可以修了,放進佇列` : ''}`, line: 10, views: [graphView(N, edges, { directed: true, pos: POS, subs: subs(), cls: { ...cls, [u]: 'hl', ...Object.fromEntries(q.map((x) => [x, 'queued'])) } }), arr(q, { label: '佇列' })] })
   }
-  out.push({ note: done === N ? `${N} 門課全部修完 → 沒有循環,可以修完 → true` : `只修了 ${done} 門,剩下的課互相卡住(有循環)→ false`, views: [graphView(N, edges, { directed: true, pos: POS, cls })] })
+  out.push({ note: done === N ? `${N} 門課全部修完 → 沒有循環,可以修完 → true` : `只修了 ${done} 門,剩下的課互相卡住(有循環)→ false`, line: 11, views: [graphView(N, edges, { directed: true, pos: POS, cls })] })
   return out
 }
 
@@ -47,20 +47,20 @@ function dfsFig(): FigStep[] {
   for (const [u, v] of EDGES) adj[u].push(v)
   const state = Array(N).fill(0) // 0 沒走過、1 走訪中(在目前的路徑上)、2 走完了
   const cls = () => Object.fromEntries(state.map((s, i) => [i, s === 1 ? 'hl' : s === 2 ? 'done' : '']))
-  const out: FigStep[] = [{ note: '另一種判斷循環的方法:DFS 時給節點三種狀態 —— 沒走過(外框)、走訪中(實心,正在目前這條路上)、走完(變淡,完全走完、確定沒問題)。走到一個「走訪中」的節點 = 繞回自己的路上 = 有循環', views: [graphView(N, EDGES, { directed: true, pos: POS })] }]
+  const out: FigStep[] = [{ note: '另一種判斷循環的方法:DFS 時給節點三種狀態 —— 沒走過(外框)、走訪中(實心,正在目前這條路上)、走完(變淡,完全走完、確定沒問題)。走到一個「走訪中」的節點 = 繞回自己的路上 = 有循環', line: 4, views: [graphView(N, EDGES, { directed: true, pos: POS })] }]
   const dfs = (u: number): boolean => {
     state[u] = 1
-    out.push({ note: `進入 ${u},標成「走訪中」`, views: [graphView(N, EDGES, { directed: true, pos: POS, cls: cls() })] })
+    out.push({ note: `進入 ${u},標成「走訪中」`, line: 6, views: [graphView(N, EDGES, { directed: true, pos: POS, cls: cls() })] })
     for (const v of adj[u]) {
       if (state[v] === 1) return false
       if (state[v] === 0 && !dfs(v)) return false
     }
     state[u] = 2
-    out.push({ note: `${u} 能到的課都檢查完了,沒有繞回來 → 標成「走完」`, views: [graphView(N, EDGES, { directed: true, pos: POS, cls: cls() })] })
+    out.push({ note: `${u} 能到的課都檢查完了,沒有繞回來 → 標成「走完」`, line: 11, views: [graphView(N, EDGES, { directed: true, pos: POS, cls: cls() })] })
     return true
   }
   for (let i = 0; i < N; i++) if (state[i] === 0) dfs(i)
-  out.push({ note: '所有節點都走完,沒遇到「走訪中」的節點 → 沒有循環 → true', views: [graphView(N, EDGES, { directed: true, pos: POS, cls: cls() })] })
+  out.push({ note: '所有節點都走完,沒遇到「走訪中」的節點 → 沒有循環 → true', line: 15, views: [graphView(N, EDGES, { directed: true, pos: POS, cls: cls() })] })
   return out
 }
 

@@ -10,28 +10,28 @@ const sq = (n: number) => [...String(n)].map((d) => `${d}²`).join(' + ')
 function setFig(start: number): FigStep[] {
   const seen: number[] = []
   let n = start
-  const out: FigStep[] = [{ note: `從 ${start} 開始,一直做「每一位平方相加」。用一個 set 記下出現過的數:看到 1 就是快樂數;看到重複的數就代表繞進圈圈出不來`, views: [arr([n], { label: '目前的數' }), kv([], 'seen')] }]
+  const out: FigStep[] = [{ note: `從 ${start} 開始,一直做「每一位平方相加」。用一個 set 記下出現過的數:看到 1 就是快樂數;看到重複的數就代表繞進圈圈出不來`, line: 7, views: [arr([n], { label: '目前的數' }), kv([], 'seen')] }]
   while (n !== 1 && !seen.includes(n)) {
     seen.push(n)
     const m = next(n)
-    out.push({ note: `${n} → ${sq(n)} = ${m}`, views: [arr(seen.concat(m), { label: '目前的路徑', highlight: [seen.length] }), kv(seen.map((v) => [v, '✓']), 'seen', [n])] })
+    out.push({ note: `${n} → ${sq(n)} = ${m}`, line: 10, views: [arr(seen.concat(m), { label: '目前的路徑', highlight: [seen.length] }), kv(seen.map((v) => [v, '✓']), 'seen', [n])] })
     n = m
   }
-  out.push({ note: n === 1 ? '走到 1 了 → 是快樂數' : `${n} 之前出現過 → 進入循環,永遠到不了 1 → 不是快樂數`, views: [arr(seen.concat(n), { label: '完整路徑', highlight: [seen.length], compare: n === 1 ? [] : [seen.indexOf(n)] })] })
+  out.push({ note: n === 1 ? '走到 1 了 → 是快樂數' : `${n} 之前出現過 → 進入循環,永遠到不了 1 → 不是快樂數`, line: 12, views: [arr(seen.concat(n), { label: '完整路徑', highlight: [seen.length], compare: n === 1 ? [] : [seen.indexOf(n)] })] })
   return out
 }
 
 function floydFig(start: number): FigStep[] {
   let slow = start
   let fast = next(start)
-  const out: FigStep[] = [{ note: '不用 set:把這串數字想成一條鏈結串列,用「快慢指針」。慢的一次走一步、快的一次走兩步。有環的話快的一定會追上慢的', views: [arr([slow, fast], { label: 'slow、fast' })] }]
+  const out: FigStep[] = [{ note: '不用 set:把這串數字想成一條鏈結串列,用「快慢指針」。慢的一次走一步、快的一次走兩步。有環的話快的一定會追上慢的', line: 7, views: [arr([slow, fast], { label: 'slow、fast' })] }]
   let guard = 0
   while (fast !== 1 && slow !== fast && guard++ < 30) {
     slow = next(slow)
     fast = next(next(fast))
-    out.push({ note: `slow 走一步 → ${slow};fast 走兩步 → ${fast}`, views: [arr([slow, fast], { label: 'slow、fast', highlight: slow === fast ? [0, 1] : [] })] })
+    out.push({ note: `slow 走一步 → ${slow};fast 走兩步 → ${fast}`, line: 9, views: [arr([slow, fast], { label: 'slow、fast', highlight: slow === fast ? [0, 1] : [] })] })
   }
-  out.push({ note: fast === 1 ? 'fast 先走到 1 → 快樂數' : `slow 和 fast 在 ${slow} 相遇,而且不是 1 → 有環,不是快樂數`, views: [arr([slow, fast], { label: 'slow、fast', done: [0, 1] })] })
+  out.push({ note: fast === 1 ? 'fast 先走到 1 → 快樂數' : `slow 和 fast 在 ${slow} 相遇,而且不是 1 → 有環,不是快樂數`, line: 12, views: [arr([slow, fast], { label: 'slow、fast', done: [0, 1] })] })
   return out
 }
 
@@ -202,7 +202,7 @@ private int nxt(int x) {
       name: '數學:不快樂的數一定會經過 4',
       idea: '可以證明(或寫程式驗證):所有不快樂的數,最後都會掉進同一個循環 `4 → 16 → 37 → 58 → 89 → 145 → 42 → 20 → 4`。所以一直轉換,碰到 1 或 4 就停。',
       steps: ['`while n != 1 and n != 4`:`n = 平方和(n)`', '回傳 `n == 1`'],
-      figure: { title: 'n = 2', steps: setFig(2).slice(-1).concat([{ note: '循環裡有 4。所以只要碰到 4,就能確定不是快樂數', views: [arr([4, 16, 37, 58, 89, 145, 42, 20], { label: '唯一的不快樂循環', highlight: [0] })] }]) },
+      figure: { title: 'n = 2', steps: setFig(2).slice(-1).map((s) => ({ ...s, line: 3 })).concat([{ note: '循環裡有 4。所以只要碰到 4,就能確定不是快樂數', line: 2, views: [arr([4, 16, 37, 58, 89, 145, 42, 20], { label: '唯一的不快樂循環', highlight: [0] })] }]) },
       complexity: { time: 'O(log n)', space: 'O(1)', why: '步數同前兩種,只用一個變數。' },
       verdict: '最短,但依賴一個「要另外知道」的數學事實。面試時可以當作補充,主要還是講前兩種。',
       code: {

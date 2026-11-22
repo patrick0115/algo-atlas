@@ -9,21 +9,21 @@ const K = 2
 
 function lastFig(): FigStep[] {
   const last = new Map<number, number>()
-  const out: FigStep[] = [{ note: `要找「一樣的兩個數,位置差 ≤ ${K}」。用 Hash 表記每個值**最後一次**出現的位置:新的位置和它比,距離最近`, views: [arr(A, { label: 'nums' }), kv([], '值 → 最後出現的位置')] }]
+  const out: FigStep[] = [{ note: `要找「一樣的兩個數,位置差 ≤ ${K}」。用 Hash 表記每個值**最後一次**出現的位置:新的位置和它比,距離最近`, line: 2, views: [arr(A, { label: 'nums' }), kv([], '值 → 最後出現的位置')] }]
   A.forEach((x, i) => {
     const p = last.get(x)
     const note = p === undefined ? `${x} 第一次出現,記下位置 ${i}` : `${x} 上次在 ${p},距離 ${i - p} ${i - p <= K ? `≤ ${K} → true` : `> ${K},更新成 ${i}`}`
     last.set(x, i)
-    out.push({ note, views: [arr(A, { label: 'nums', highlight: [i], compare: p === undefined ? [] : [p] }), kv([...last.entries()], '值 → 最後出現的位置', [x])] })
+    out.push({ note, line: p !== undefined && i - p <= K ? 4 : 5, views: [arr(A, { label: 'nums', highlight: [i], compare: p === undefined ? [] : [p] }), kv([...last.entries()], '值 → 最後出現的位置', [x])] })
   })
-  out.push({ note: `每一對相同的數距離都是 3 > ${K} → false`, views: [arr(A, { label: 'nums' })] })
+  out.push({ note: `每一對相同的數距離都是 3 > ${K} → false`, line: 7, views: [arr(A, { label: 'nums' })] })
   return out
 }
 
 function winFig(): FigStep[] {
   return [
-    { note: `另一種:維護一個「最近 ${K} 個數」的集合(滑動視窗)。新的數 x 進來前,先看集合裡有沒有 x`, views: [arr(A, { label: 'nums', range: [1, 2], highlight: [3] }), arr([2, 3], { label: `視窗(最多 ${K} 個)` })] },
-    { note: `1 不在 {2, 3} 裡 → 加進去,同時把最左邊的 2 移出(保持最多 ${K} 個)。集合大小固定是 k,空間 O(k)`, views: [arr(A, { label: 'nums', range: [2, 3] }), arr([3, 1], { label: '視窗' })] },
+    { note: `另一種:維護一個「最近 ${K} 個數」的集合(滑動視窗)。新的數 x 進來前,先看集合裡有沒有 x`, line: 4, views: [arr(A, { label: 'nums', range: [1, 2], highlight: [3] }), arr([2, 3], { label: `視窗(最多 ${K} 個)` })] },
+    { note: `1 不在 {2, 3} 裡 → 加進去,同時把最左邊的 2 移出(保持最多 ${K} 個)。集合大小固定是 k,空間 O(k)`, line: 5, views: [arr(A, { label: 'nums', range: [2, 3] }), arr([3, 1], { label: '視窗' })] }, // TODO: 可能要拆格
   ]
 }
 

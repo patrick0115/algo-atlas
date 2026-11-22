@@ -35,18 +35,18 @@ function trieFig(): FigStep[] {
   const oath: Cell[] = [[0, 0], [0, 1], [1, 1], [2, 1]]
   const eat: Cell[] = [[1, 3], [1, 2], [1, 1]]
   return [
-    { note: '把所有單字放進一棵 Trie(字首樹)。共同的前綴只存一次', views: [trieView()] },
-    { note: '從每一格出發做 DFS,但**同時**在 Trie 上往下走:格子的字母不是 Trie 目前節點的孩子 → 立刻停(沒有任何單字以這個前綴開頭)', views: [grid([[0, 0]], [], '從 (0,0) "o" 出發'), trieView(['o'])] },
-    { note: 'o → a → t → h:每一步都在 Trie 上找得到,走到 "oath" 的結尾 → 找到一個單字', views: [grid(oath, [], '路徑 o-a-t-h'), trieView(['o', 'oa', 'oat', 'oath'])] },
-    { note: '從 (1,3) "e" 出發:e → a → t,找到 "eat"。"pea" 的 p 不在棋盤上、"rain" 的 r 旁邊(e、k、v)沒有 a,走不下去', views: [grid(eat, oath, '路徑 e-a-t'), trieView(['e', 'ea', 'eat'])] },
-    { note: '一次 DFS 同時比對所有單字,而不是每個單字各搜一次。找到的單字把結尾標記清掉,避免重複加入', views: [grid([], [...oath, ...eat], '答案:["oath", "eat"]')] },
+    { note: '把所有單字放進一棵 Trie(字首樹)。共同的前綴只存一次', line: 3, views: [trieView()] },
+    { note: '從每一格出發做 DFS,但**同時**在 Trie 上往下走:格子的字母不是 Trie 目前節點的孩子 → 立刻停(沒有任何單字以這個前綴開頭)', line: 10, views: [grid([[0, 0]], [], '從 (0,0) "o" 出發'), trieView(['o'])] },
+    { note: 'o → a → t → h:每一步都在 Trie 上找得到,走到 "oath" 的結尾 → 找到一個單字', line: 12, views: [grid(oath, [], '路徑 o-a-t-h'), trieView(['o', 'oa', 'oat', 'oath'])] },
+    { note: '從 (1,3) "e" 出發:e → a → t,找到 "eat"。"pea" 的 p 不在棋盤上、"rain" 的 r 旁邊(e、k、v)沒有 a,走不下去', line: 12, views: [grid(eat, oath, '路徑 e-a-t'), trieView(['e', 'ea', 'eat'])] },
+    { note: '一次 DFS 同時比對所有單字,而不是每個單字各搜一次。找到的單字把結尾標記清掉,避免重複加入', line: 21, views: [grid([], [...oath, ...eat], '答案:["oath", "eat"]')] },
   ]
 }
 
 function eachFig(): FigStep[] {
   return [
-    { note: '直接重複 [79. Word Search](#/q/79):每個單字都對整個棋盤做一次 DFS', views: [grid([[0, 0], [0, 1], [1, 1], [2, 1]], [], 'oath')] },
-    { note: '單字有 3·10⁴ 個時,很多共同前綴(例如 "oat"、"oath"、"oats")會被重複搜好幾次 → 太慢', views: [grid([[1, 3], [1, 2], [1, 1]], [], 'eat')] },
+    { note: '直接重複 [79. Word Search](#/q/79):每個單字都對整個棋盤做一次 DFS', line: 13, views: [grid([[0, 0], [0, 1], [1, 1], [2, 1]], [], 'oath')] },
+    { note: '單字有 3·10⁴ 個時,很多共同前綴(例如 "oat"、"oath"、"oats")會被重複搜好幾次 → 太慢', line: 13, views: [grid([[1, 3], [1, 2], [1, 1]], [], 'eat')] },
   ]
 }
 

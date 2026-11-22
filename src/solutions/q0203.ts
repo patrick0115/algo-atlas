@@ -8,17 +8,17 @@ const V = 6
 
 function dummyFig(): FigStep[] {
   return [
-    { note: `要刪掉所有值為 ${V} 的節點,而開頭的 ${V} 也要刪。在最前面加一個假頭 d,這樣「刪開頭」和「刪中間」就是同一件事`, views: [chain(['d', ...L], { cls: { 0: 'dim' } })] },
-    { note: `prev 從假頭開始:看 prev.next,值是 ${V} 就跳過(prev.next = prev.next.next),否則 prev 往前走`, views: [chain(['d', ...L], { cls: { 0: 'cur', 1: 'hl' }, subs: { 0: 'prev' } })] },
-    { note: '開頭的 6 被跳過,接著 1、2 保留;中間的 6 跳過;3 保留;最後的 6 跳過', views: [chain(['d', 1, 2, 3], { cls: { 0: 'dim', 1: 'done', 2: 'done', 3: 'done' }, tail: true })] },
-    { note: '回傳 d.next → 1 → 2 → 3', views: [chain([1, 2, 3], { tail: true })] },
+    { note: `要刪掉所有值為 ${V} 的節點,而開頭的 ${V} 也要刪。在最前面加一個假頭 d,這樣「刪開頭」和「刪中間」就是同一件事`, line: 2, views: [chain(['d', ...L], { cls: { 0: 'dim' } })] },
+    { note: `prev 從假頭開始:看 prev.next,值是 ${V} 就跳過(prev.next = prev.next.next),否則 prev 往前走`, line: 5, views: [chain(['d', ...L], { cls: { 0: 'cur', 1: 'hl' }, subs: { 0: 'prev' } })] },
+    { note: '開頭的 6 被跳過,接著 1、2 保留;中間的 6 跳過;3 保留;最後的 6 跳過', line: 5, views: [chain(['d', 1, 2, 3], { cls: { 0: 'dim', 1: 'done', 2: 'done', 3: 'done' }, tail: true })] },
+    { note: '回傳 d.next → 1 → 2 → 3', line: 8, views: [chain([1, 2, 3], { tail: true })] },
   ]
 }
 
 function recFig(): FigStep[] {
   return [
-    { note: '遞迴:先處理 head.next 之後的部分,再決定 head 要不要留', views: [chain(L, { cls: { 0: 'hl' } }), chain([1, 2, 3], { label: 'removeElements(head.next) 的結果' })] },
-    { note: `head 的值是 ${V} → 不要它,直接回傳處理好的後半段;否則把它接在前面`, views: [chain([1, 2, 3], { cls: { 0: 'done', 1: 'done', 2: 'done' } })] },
+    { note: '遞迴:先處理 head.next 之後的部分,再決定 head 要不要留', line: 3, views: [chain(L, { cls: { 0: 'hl' } }), chain([1, 2, 3], { label: 'removeElements(head.next) 的結果' })] },
+    { note: `head 的值是 ${V} → 不要它,直接回傳處理好的後半段;否則把它接在前面`, line: 4, views: [chain([1, 2, 3], { cls: { 0: 'done', 1: 'done', 2: 'done' } })] },
   ]
 }
 

@@ -35,9 +35,9 @@ function trieView(root: TN, hl: Set<string> = new Set(), label = 'Trie(從根往
   return { kind: 'graph', label, nodes, edges }
 }
 
-function trieFig(): FigStep[] {
+function trieFig(L: { init: number; insert: number; search: number; starts: number }): FigStep[] {
   const root: TN = { id: 'root', ch: '·', end: false, kids: new Map() }
-  const out: FigStep[] = [{ note: 'Trie(字典樹):每個節點代表一個字母,從根往下走一條路就拼出一個前綴。共用前綴的單字共用同一段路', views: [trieView(root)] }]
+  const out: FigStep[] = [{ note: 'Trie(字典樹):每個節點代表一個字母,從根往下走一條路就拼出一個前綴。共用前綴的單字共用同一段路', line: L.init, views: [trieView(root)] }]
   for (const w of WORDS) {
     let n = root
     const path = new Set<string>()
@@ -51,7 +51,7 @@ function trieFig(): FigStep[] {
       path.add(n.id)
     }
     n.end = true
-    out.push({ note: `insert("${w}"):沿著字母往下走,沒有的節點就建一個${created.length ? `(新建 ${created.join('、')})` : '(全部都已經存在)'},最後一個節點標記「單字結尾」`, views: [trieView(root, path)] })
+    out.push({ note: `insert("${w}"):沿著字母往下走,沒有的節點就建一個${created.length ? `(新建 ${created.join('、')})` : '(全部都已經存在)'},最後一個節點標記「單字結尾」`, line: L.insert, /* TODO: 可能要拆格 */ views: [trieView(root, path)] })
   }
   const query = (w: string, prefix: boolean): FigStep => {
     let n: TN | undefined = root
@@ -63,7 +63,7 @@ function trieFig(): FigStep[] {
     }
     const ok = !!n && (prefix || n.end)
     const why = !n ? `走到一半就沒有路了` : prefix ? '路都走得通' : n.end ? '走得通,而且最後一個節點是單字結尾' : '走得通,但最後一個節點**不是**單字結尾'
-    return { note: `${prefix ? 'startsWith' : 'search'}("${w}"):${why} → ${ok}`, views: [trieView(root, path)] }
+    return { note: `${prefix ? 'startsWith' : 'search'}("${w}"):${why} → ${ok}`, line: prefix ? L.starts : L.search, views: [trieView(root, path)] }
   }
   out.push(query('app', false), query('ap', false), query('ap', true), query('bad', true))
   return out
@@ -71,12 +71,12 @@ function trieFig(): FigStep[] {
 
 function setFig(): FigStep[] {
   const set: string[] = []
-  const out: FigStep[] = [{ note: '最簡單:用一個 set 存所有單字。search 是 O(1);但 startsWith 要把每個單字都檢查一次「是不是以 prefix 開頭」', views: [kv([], 'words')] }]
+  const out: FigStep[] = [{ note: '最簡單:用一個 set 存所有單字。search 是 O(1);但 startsWith 要把每個單字都檢查一次「是不是以 prefix 開頭」', line: 3, views: [kv([], 'words')] }]
   for (const w of WORDS) {
     set.push(w)
-    out.push({ note: `insert("${w}")`, views: [kv(set.map((x) => [x, '✓']), 'words', [w])] })
+    out.push({ note: `insert("${w}")`, line: 6, views: [kv(set.map((x) => [x, '✓']), 'words', [w])] })
   }
-  out.push({ note: 'startsWith("ap"):逐一檢查 → app ✓ → true(最壞要看完所有單字)', views: [arr(set, { label: 'words', compare: [0] })] })
+  out.push({ note: 'startsWith("ap"):逐一檢查 → app ✓ → true(最壞要看完所有單字)', line: 12, views: [arr(set, { label: 'words', compare: [0] })] })
   return out
 }
 
@@ -200,7 +200,7 @@ public:
       name: 'Trie:每個節點 26 個孩子的陣列',
       idea: '節點 = `children[26]` + `isEnd`。insert 沿著字母往下走,沒有的節點就建;search / startsWith 沿著走,走不下去就 false。',
       steps: ['`insert`:`node = root`;每個字母 `c`:`children[c]` 沒有就建,`node = children[c]`;最後 `node.isEnd = true`', '`find(s)`:沿著走,走不下去回傳 null', '`search(w)`:`find(w)` 不是 null 且 `isEnd`', '`startsWith(p)`:`find(p)` 不是 null'],
-      figure: { title: `insert ${WORDS.map((w) => `"${w}"`).join('、')},再查詢`, steps: trieFig() },
+      figure: { title: `insert ${WORDS.map((w) => `"${w}"`).join('、')},再查詢`, steps: trieFig({ init: 3, insert: 10, search: 27, starts: 31 }) },
       complexity: { time: '每個操作 O(L)', space: 'O(總字母數 × 26)', why: '只和查詢的字串長度有關,和存了幾個單字無關。每個節點開 26 格,比較耗記憶體。' },
       verdict: '標準解,[[p:trie]]的模板。字母種類固定又少(小寫 26 個)時用陣列最快。211、212、648 都在這個結構上加一點東西。',
       code: {
@@ -381,7 +381,7 @@ public:
       name: 'Trie:孩子用 Hash Map',
       idea: '同樣的結構,只是每個節點的孩子用 map(字母 → 節點)存,只存實際用到的字母。',
       steps: ['節點 = `children: map` + `isEnd`', '其他操作和陣列版相同,`children[c]` 改成查 map'],
-      figure: { title: `insert ${WORDS.map((w) => `"${w}"`).join('、')},再查詢`, steps: trieFig() },
+      figure: { title: `insert ${WORDS.map((w) => `"${w}"`).join('、')},再查詢`, steps: trieFig({ init: 3, insert: 9, search: 26, starts: 30 }) },
       complexity: { time: '每個操作 O(L)', space: 'O(總字母數)', why: '只為實際出現的字母開空間;但 map 的常數比陣列大。' },
       verdict: '字母種類很多(大小寫、Unicode)或很稀疏時比較省記憶體。Python 常用巢狀 dict 寫得很短。',
       code: {
