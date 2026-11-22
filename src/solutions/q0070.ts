@@ -20,9 +20,9 @@ function recFig(): FigStep[] {
   const cnt = new Map<string, number>()
   nodes.forEach((n) => cnt.set(String(n.label), (cnt.get(String(n.label)) ?? 0) + 1))
   return [
-    { note: `f(n) = 爬到第 n 階的方法數。最後一步要嘛跨 1 階(從 n−1 上來)、要嘛跨 2 階(從 n−2 上來),所以 f(n) = f(n−1) + f(n−2),f(0) = f(1) = 1`, views: [recView(nodes, pos, 0, '遞迴樹')] },
-    { note: `直接遞迴的樹長這樣:f(3) 被算了 ${cnt.get('f(3)')} 次、f(2) ${cnt.get('f(2)')} 次……n 每大 1,樹大約變成 1.6 倍 → O(2ⁿ)`, views: [recView(nodes, pos, nodes.length - 1, '遞迴樹(重複的子問題很多)')] },
-    { note: '加上記憶化:每個 f(i) 第一次算完就存起來,之後直接拿。只剩 n 個不同的子問題 → O(n)', views: [arr(range(0, N).map((i) => `f(${i})`), { label: '只需要算這幾個' })] },
+    { note: `f(n) = 爬到第 n 階的方法數。最後一步要嘛跨 1 階(從 n−1 上來)、要嘛跨 2 階(從 n−2 上來),所以 f(n) = f(n−1) + f(n−2),f(0) = f(1) = 1`, line: 6, views: [recView(nodes, pos, 0, '遞迴樹')] },
+    { note: `直接遞迴的樹長這樣:f(3) 被算了 ${cnt.get('f(3)')} 次、f(2) ${cnt.get('f(2)')} 次……n 每大 1,樹大約變成 1.6 倍 → O(2ⁿ)`, line: 6, views: [recView(nodes, pos, nodes.length - 1, '遞迴樹(重複的子問題很多)')] },
+    { note: '加上記憶化:每個 f(i) 第一次算完就存起來,之後直接拿。只剩 n 個不同的子問題 → O(n)', line: 5, views: [arr(range(0, N).map((i) => `f(${i})`), { label: '只需要算這幾個' })] },
   ]
 }
 
@@ -30,12 +30,12 @@ function dpFig(): FigStep[] {
   const dp: (number | string)[] = Array(N + 1).fill('?')
   dp[0] = 1
   dp[1] = 1
-  const out: FigStep[] = [{ note: 'dp[i] = 爬到第 i 階的方法數。dp[0] = 1(站在地上,什麼都不做也算一種)、dp[1] = 1', views: [arr(dp, { label: 'dp' })] }]
+  const out: FigStep[] = [{ note: 'dp[i] = 爬到第 i 階的方法數。dp[0] = 1(站在地上,什麼都不做也算一種)、dp[1] = 1', line: 2, views: [arr(dp, { label: 'dp' })] }]
   for (let i = 2; i <= N; i++) {
     dp[i] = (dp[i - 1] as number) + (dp[i - 2] as number)
-    out.push({ note: `dp[${i}] = dp[${i - 1}] + dp[${i - 2}] = ${dp[i - 1]} + ${dp[i - 2]} = ${dp[i]}(最後一步跨 1 階的 + 最後一步跨 2 階的)`, views: [arr(dp, { label: 'dp', highlight: [i], compare: [i - 1, i - 2] })] })
+    out.push({ note: `dp[${i}] = dp[${i - 1}] + dp[${i - 2}] = ${dp[i - 1]} + ${dp[i - 2]} = ${dp[i]}(最後一步跨 1 階的 + 最後一步跨 2 階的)`, line: 3, views: [arr(dp, { label: 'dp', highlight: [i], compare: [i - 1, i - 2] })] })
   }
-  out.push({ note: `答案 dp[${N}] = ${dp[N]}。這就是費氏數列`, views: [arr(dp, { label: 'dp', done: [N] })] })
+  out.push({ note: `答案 dp[${N}] = ${dp[N]}。這就是費氏數列`, line: 4, views: [arr(dp, { label: 'dp', done: [N] })] })
   return out
 }
 

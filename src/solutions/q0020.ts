@@ -7,17 +7,17 @@ const S = '{[()()]}('
 
 function replaceFig(): FigStep[] {
   let s = S
-  const out: FigStep[] = [{ note: '合法的括號字串裡,一定有一對「緊鄰」的 ()、[] 或 {}。把它刪掉,剩下的還是合法的', views: [arr([...s], { label: 's' })] }]
+  const out: FigStep[] = [{ note: '合法的括號字串裡,一定有一對「緊鄰」的 ()、[] 或 {}。把它刪掉,剩下的還是合法的', line: 3, views: [arr([...s], { label: 's' })] }]
   for (let round = 1; ; round++) {
     const next = s.replace(/\(\)|\[\]|\{\}/g, '')
     if (next === s) break
     const hits: number[] = []
     for (const m of s.matchAll(/\(\)|\[\]|\{\}/g)) hits.push(m.index!, m.index! + 1)
-    out.push({ note: `第 ${round} 輪:找到緊鄰的配對(標示處),全部刪掉`, views: [arr([...s], { label: 's', highlight: hits })] })
+    out.push({ note: `第 ${round} 輪:找到緊鄰的配對(標示處),全部刪掉`, line: 5, views: [arr([...s], { label: 's', highlight: hits })] })
     s = next
-    out.push({ note: `刪完剩下 "${s}"`, views: [arr(s ? [...s] : ['(空)'], { label: 's' })] })
+    out.push({ note: `刪完剩下 "${s}"`, line: 3, views: [arr(s ? [...s] : ['(空)'], { label: 's' })] })
   }
-  out.push({ note: s ? `再也找不到緊鄰的配對,但還剩 "${s}" → 不合法` : '刪到變成空字串 → 合法', views: [arr(s ? [...s] : ['(空)'], { label: 's', highlight: s ? range(0, s.length - 1) : [] })] })
+  out.push({ note: s ? `再也找不到緊鄰的配對,但還剩 "${s}" → 不合法` : '刪到變成空字串 → 合法', line: 7, views: [arr(s ? [...s] : ['(空)'], { label: 's', highlight: s ? range(0, s.length - 1) : [] })] })
   return out
 }
 
@@ -26,23 +26,23 @@ function stackFig(): FigStep[] {
   const st: string[] = []
   const chars = [...S]
   const view = (i: number, opt: Parameters<typeof arr>[1] = {}) => [arr(chars, { label: 's', highlight: [i], dim: range(0, i - 1), ...opt }), arr(st, { label: '堆疊(右邊是頂端)', highlight: st.length ? [st.length - 1] : [] })]
-  const out: FigStep[] = [{ note: '左括號放進堆疊;右括號要和堆疊**頂端**(最近一個還沒配對的左括號)配對', views: [arr(chars, { label: 's' }), arr([], { label: '堆疊' })] }]
+  const out: FigStep[] = [{ note: '左括號放進堆疊;右括號要和堆疊**頂端**(最近一個還沒配對的左括號)配對', line: 3, views: [arr(chars, { label: 's' }), arr([], { label: '堆疊' })] }]
   for (let i = 0; i < chars.length; i++) {
     const c = chars[i]
     if (!pair[c]) {
       st.push(c)
-      out.push({ note: `${c} 是左括號 → push`, views: view(i) })
+      out.push({ note: `${c} 是左括號 → push`, line: 5, views: view(i) })
       continue
     }
     const top = st.at(-1)
     if (top !== pair[c]) {
-      out.push({ note: `${c} 是右括號,但頂端是 ${top ?? '(空)'},配不起來 → false`, views: view(i) })
+      out.push({ note: `${c} 是右括號,但頂端是 ${top ?? '(空)'},配不起來 → false`, line: 6, views: view(i) })
       return out
     }
     st.pop()
-    out.push({ note: `${c} 和頂端的 ${top} 配對成功 → pop`, views: view(i) })
+    out.push({ note: `${c} 和頂端的 ${top} 配對成功 → pop`, line: 7, views: view(i) })
   }
-  out.push({ note: st.length ? `字串走完了,堆疊裡還剩 ${st.join('')} 沒有被配對 → false` : '字串走完、堆疊是空的 → true', views: [arr(chars, { label: 's', dim: range(0, chars.length - 1) }), arr(st, { label: '堆疊', highlight: range(0, st.length - 1) })] })
+  out.push({ note: st.length ? `字串走完了,堆疊裡還剩 ${st.join('')} 沒有被配對 → false` : '字串走完、堆疊是空的 → true', line: 9, views: [arr(chars, { label: 's', dim: range(0, chars.length - 1) }), arr(st, { label: '堆疊', highlight: range(0, st.length - 1) })] })
   return out
 }
 

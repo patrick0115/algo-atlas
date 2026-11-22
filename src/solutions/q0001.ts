@@ -8,12 +8,13 @@ const A = [3, 8, 11, 2, 7, 15]
 const T = 9
 
 function bruteFig(): FigStep[] {
-  const out: FigStep[] = [{ note: `找兩個位置加起來等於 ${T}。暴力法:每一對都試`, views: [arr(A, { label: 'nums' })] }]
+  const out: FigStep[] = [{ note: `找兩個位置加起來等於 ${T}。暴力法:每一對都試`, line: 3, views: [arr(A, { label: 'nums' })] }]
   for (let i = 0; i < A.length; i++) {
     for (let j = i + 1; j < A.length; j++) {
       const hit = A[i] + A[j] === T
       out.push({
         note: `nums[${i}] + nums[${j}] = ${A[i]} + ${A[j]} = ${A[i] + A[j]}${hit ? ` = ${T} → 回傳 [${i}, ${j}]` : ''}`,
+        line: 5,
         views: [arr(A, { label: 'nums', compare: [i, j], highlight: hit ? [i, j] : [], pointers: [{ name: 'i', index: i }, { name: 'j', index: j, color: 'b' }] })],
       })
       if (hit) return out
@@ -31,18 +32,19 @@ function twoPtrFig(): FigStep[] {
     arr(ids, { label: '原本的索引(一起帶著走)', dim: [...range(0, l - 1), ...range(r + 1, vals.length - 1)] }),
   ]
   const out: FigStep[] = [
-    { note: '把「值」和「原索引」綁在一起排序 —— 答案要回傳原本的位置,排序後索引會亂掉', views: [arr(A, { label: 'nums' })] },
+    { note: '把「值」和「原索引」綁在一起排序 —— 答案要回傳原本的位置,排序後索引會亂掉', line: 2, views: [arr(A, { label: 'nums' })] },
   ]
   let l = 0
   let r = vals.length - 1
   while (l < r) {
     const sum = vals[l] + vals[r]
     if (sum === T) {
-      out.push({ note: `${vals[l]} + ${vals[r]} = ${T},找到!回傳原索引 [${pairs[l][1]}, ${pairs[r][1]}]`, views: views(l, r, true) })
+      out.push({ note: `${vals[l]} + ${vals[r]} = ${T},找到!回傳原索引 [${pairs[l][1]}, ${pairs[r][1]}]`, line: 6, views: views(l, r, true) })
       break
     }
     out.push({
       note: sum < T ? `${vals[l]} + ${vals[r]} = ${sum} < ${T},太小 → 左邊換大一點的,L 往右` : `${vals[l]} + ${vals[r]} = ${sum} > ${T},太大 → 右邊換小一點的,R 往左`,
+      line: 5,
       views: views(l, r),
     })
     if (sum < T) l++
@@ -53,12 +55,13 @@ function twoPtrFig(): FigStep[] {
 
 function hashFig(): FigStep[] {
   const seen = new Map<number, number>()
-  const out: FigStep[] = [{ note: '準備一個 Hash Map:key 是看過的值,value 是它的索引', views: [arr(A, { label: 'nums' }), kv([], 'seen(值 → 索引)')] }]
+  const out: FigStep[] = [{ note: '準備一個 Hash Map:key 是看過的值,value 是它的索引', line: 2, views: [arr(A, { label: 'nums' }), kv([], 'seen(值 → 索引)')] }]
   for (let i = 0; i < A.length; i++) {
     const need = T - A[i]
     if (seen.has(need)) {
       out.push({
         note: `nums[${i}] = ${A[i]},需要 ${T} − ${A[i]} = ${need}。${need} 在 seen 裡(索引 ${seen.get(need)})→ 回傳 [${seen.get(need)}, ${i}]`,
+        line: 5,
         views: [arr(A, { label: 'nums', highlight: [i, seen.get(need)!], dim: range(0, i - 1).filter((k) => k !== seen.get(need)) }), kv(seen, 'seen(值 → 索引)', [need])],
       })
       return out
@@ -66,6 +69,7 @@ function hashFig(): FigStep[] {
     seen.set(A[i], i)
     out.push({
       note: `nums[${i}] = ${A[i]},需要 ${need},seen 裡沒有 → 把 ${A[i]} 記下來(先查再存,才不會自己配自己)`,
+      line: 6,
       views: [arr(A, { label: 'nums', highlight: [i], dim: range(0, i - 1) }), kv(seen, 'seen(值 → 索引)', [A[i]])],
     })
   }
