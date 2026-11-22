@@ -7,16 +7,16 @@ const S = 'AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT'
 
 function setFig(): FigStep[] {
   return [
-    { note: '用長度 10 的視窗滑過整條 DNA,每個位置切出一段 10 個字母,放進「看過的」集合', views: [arr(S.split(''), { label: 's', range: [0, 9] })] },
-    { note: '如果切出來的那段已經在「看過的」集合裡,就放進「答案」集合(用集合避免同一段被加好幾次)', views: [arr(S.split(''), { label: 's', range: [10, 19], highlight: [10] }), arr(['AAAAACCCCC'], { label: '答案', done: [0] })] },
-    { note: '掃完得到 AAAAACCCCC、CCCCCAAAAA 兩段', views: [arr(['AAAAACCCCC', 'CCCCCAAAAA'], { label: '答案', done: [0, 1] })] },
+    { note: '用長度 10 的視窗滑過整條 DNA,每個位置切出一段 10 個字母,放進「看過的」集合', line: 2, views: [arr(S.split(''), { label: 's', range: [0, 9] })] },
+    { note: '如果切出來的那段已經在「看過的」集合裡,就放進「答案」集合(用集合避免同一段被加好幾次)', line: 6, views: [arr(S.split(''), { label: 's', range: [10, 19], highlight: [10] }), arr(['AAAAACCCCC'], { label: '答案', done: [0] })] },
+    { note: '掃完得到 AAAAACCCCC、CCCCCAAAAA 兩段', line: 9, views: [arr(['AAAAACCCCC', 'CCCCCAAAAA'], { label: '答案', done: [0, 1] })] },
   ]
 }
 
 function bitFig(): FigStep[] {
   return [
-    { note: 'DNA 只有 4 種字母,每個用 2 個位元表示:A = 00、C = 01、G = 10、T = 11。10 個字母剛好是 20 位元的整數', views: [arr(['A=00', 'C=01', 'G=10', 'T=11'], { label: '編碼' })] },
-    { note: '視窗往右滑:`code = ((code << 2) | 新字母) & (2²⁰ − 1)`,左邊最舊的字母自動被遮罩去掉。比較整數比比較字串快,也不用一直切新字串', views: [arr(['0000000000', '0101010101'], { label: 'AAAAACCCCC 的位元(每 2 位一個字母)' })] },
+    { note: 'DNA 只有 4 種字母,每個用 2 個位元表示:A = 00、C = 01、G = 10、T = 11。10 個字母剛好是 20 位元的整數', line: 2, views: [arr(['A=00', 'C=01', 'G=10', 'T=11'], { label: '編碼' })] },
+    { note: '視窗往右滑:`code = ((code << 2) | 新字母) & (2²⁰ − 1)`,左邊最舊的字母自動被遮罩去掉。比較整數比比較字串快,也不用一直切新字串', line: 6, views: [arr(['0000000000', '0101010101'], { label: 'AAAAACCCCC 的位元(每 2 位一個字母)' })] },
   ]
 }
 

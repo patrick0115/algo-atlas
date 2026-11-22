@@ -4,12 +4,12 @@ import type { FigStep, Solution } from './types'
 // 147. Insertion Sort List
 const A = [4, 2, 1, 3]
 const insertFig: FigStep[] = [
-  { note: '維持一段已排序的串列。先有 [4],讀到 2 時找到第一個比 2 大的位置,把節點插在 4 前。', views: [arr([4], { label: '已排序' }), arr([2, 4], { label: '插入 2 後' })] },
-  { note: '再把 1 插到最前、3 插在 2 與 4 中間,完成 [1,2,3,4]。', views: [arr([1, 2, 4], { label: '插入 1 後' }), arr([1, 2, 3, 4], { label: '插入 3 後', done: [0, 1, 2, 3] })] },
+  { note: '維持一段已排序的串列。先有 [4],讀到 2 時找到第一個比 2 大的位置,把節點插在 4 前。', line: 3, views: [arr([4], { label: '已排序' }), arr([2, 4], { label: '插入 2 後' })] },
+  { note: '再把 1 插到最前、3 插在 2 與 4 中間,完成 [1,2,3,4]。', line: 11, views: [arr([1, 2, 4], { label: '插入 1 後' }), arr([1, 2, 3, 4], { label: '插入 3 後', done: [0, 1, 2, 3] })] },
 ]
 const arrayFig: FigStep[] = [
-  { note: '若只要求結果,也能先收集所有節點的值,用語言的排序函式排序後再寫回節點。', views: [arr(A, { label: '原串列的值' }), arr([1, 2, 3, 4], { label: '排序後的值' })] },
-  { note: '這種方法改寫每個節點的值;若題目要求保留節點值不動,應改用節點插入法。', views: [arr([1, 2, 3, 4], { label: '回傳串列', done: [0, 1, 2, 3] })] },
+  { note: '若只要求結果,也能先收集所有節點的值,用語言的排序函式排序後再寫回節點。', line: 4, views: [arr(A, { label: '原串列的值' }), arr([1, 2, 3, 4], { label: '排序後的值' })] },
+  { note: '這種方法改寫每個節點的值;若題目要求保留節點值不動,應改用節點插入法。', line: 6, views: [arr([1, 2, 3, 4], { label: '回傳串列', done: [0, 1, 2, 3] })] },
 ]
 
 export const q0147: Solution = {

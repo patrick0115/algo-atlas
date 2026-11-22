@@ -26,17 +26,17 @@ function yView(cls: Record<string, string> = {}, subs: Record<string, string> = 
 
 function twoPtrFig(): FigStep[] {
   return [
-    { note: `A 長 ${LA.length}、B 長 ${LB.length}。兩條在值 8 那個**節點**交會(注意是同一個節點,不是值一樣而已)`, views: [yView({ c0: 'hl' })] },
-    { note: 'pa 從 A 出發、pb 從 B 出發,每次各走一步;走到尾巴(null)就**跳到另一條的開頭**繼續走', views: [yView({ a0: 'cur', b0: 'cur' }, { a0: 'pa', b0: 'pb' })] },
-    { note: `為什麼會相遇?pa 走過 A 獨有(${SA})+ 共用(${LA.length - SA})+ B 獨有(${SB}),pb 走過 B 獨有 + 共用 + A 獨有,兩人走的總長一樣,所以會在交會點同時抵達`, views: [yView({ c0: 'done' }, { c0: 'pa = pb' })] },
-    { note: '如果沒有交會,兩人會在同一時間一起走到 null(都走了 m + n 步)→ 回傳 null', views: [arr(['pa: A → B → null', 'pb: B → A → null'], { label: '沒交會時' })] },
+    { note: `A 長 ${LA.length}、B 長 ${LB.length}。兩條在值 8 那個**節點**交會(注意是同一個節點,不是值一樣而已)`, line: 2, views: [yView({ c0: 'hl' })] },
+    { note: 'pa 從 A 出發、pb 從 B 出發,每次各走一步;走到尾巴(null)就**跳到另一條的開頭**繼續走', line: 4, views: [yView({ a0: 'cur', b0: 'cur' }, { a0: 'pa', b0: 'pb' })] },
+    { note: `為什麼會相遇?pa 走過 A 獨有(${SA})+ 共用(${LA.length - SA})+ B 獨有(${SB}),pb 走過 B 獨有 + 共用 + A 獨有,兩人走的總長一樣,所以會在交會點同時抵達`, line: 7, views: [yView({ c0: 'done' }, { c0: 'pa = pb' })] },
+    { note: '如果沒有交會,兩人會在同一時間一起走到 null(都走了 m + n 步)→ 回傳 null', line: 7, views: [arr(['pa: A → B → null', 'pb: B → A → null'], { label: '沒交會時' })] },
   ]
 }
 
 function setFig(): FigStep[] {
   return [
-    { note: '直觀作法:先走過 A,把每個**節點**(不是值)放進集合', views: [yView({ a0: 'visited', a1: 'visited', c0: 'visited', c1: 'visited', c2: 'visited' })] },
-    { note: '再走 B,第一個已經在集合裡的節點就是交會點 → 值 8 的節點。O(m + n) 時間,O(m) 空間', views: [yView({ b0: 'dim', b1: 'dim', b2: 'dim', c0: 'hl' })] },
+    { note: '直觀作法:先走過 A,把每個**節點**(不是值)放進集合', line: 3, views: [yView({ a0: 'visited', a1: 'visited', c0: 'visited', c1: 'visited', c2: 'visited' })] },
+    { note: '再走 B,第一個已經在集合裡的節點就是交會點 → 值 8 的節點。O(m + n) 時間,O(m) 空間', line: 4, views: [yView({ b0: 'dim', b1: 'dim', b2: 'dim', c0: 'hl' })] },
   ]
 }
 

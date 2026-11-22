@@ -7,16 +7,16 @@ const L = [4, 2, 1, 3]
 
 function topFig(): FigStep[] {
   return [
-    { note: '合併排序:① 快慢指標找中點,把串列切成兩半', views: [chain([4, 2], { label: '左半' }), chain([1, 3], { label: '右半' })] },
-    { note: '② 兩半各自遞迴排序(一路切到只剩一個節點,一個節點本身就是排好的)', views: [chain([2, 4], { label: '左半排好' }), chain([1, 3], { label: '右半排好' })] },
-    { note: '③ 合併兩條排好的串列([21](#/q/21)):每次接上比較小的頭', views: [chain([1, 2, 3, 4], { tail: true, cls: { 0: 'done', 1: 'done', 2: 'done', 3: 'done' } })] },
+    { note: '合併排序:① 快慢指標找中點,把串列切成兩半', line: 3, views: [chain([4, 2], { label: '左半' }), chain([1, 3], { label: '右半' })] },
+    { note: '② 兩半各自遞迴排序(一路切到只剩一個節點,一個節點本身就是排好的)', line: 10, views: [chain([2, 4], { label: '左半排好' }), chain([1, 3], { label: '右半排好' })] },
+    { note: '③ 合併兩條排好的串列([21](#/q/21)):每次接上比較小的頭', line: 14, views: [chain([1, 2, 3, 4], { tail: true, cls: { 0: 'done', 1: 'done', 2: 'done', 3: 'done' } })] },
   ]
 }
 
 function bottomFig(): FigStep[] {
   return [
-    { note: '由下往上:不用遞迴。第一輪把相鄰的「長度 1」兩兩合併', views: [chain([2, 4, 1, 3], { cls: { 0: 'hl', 1: 'hl', 2: 'cur', 3: 'cur' } })] },
-    { note: '第二輪合併相鄰的「長度 2」,第三輪「長度 4」…… 長度每輪加倍,直到 ≥ n。每輪都是從頭切出兩段、合併、接到結果尾巴', views: [chain([1, 2, 3, 4], { cls: { 0: 'done', 1: 'done', 2: 'done', 3: 'done' } })] },
+    { note: '由下往上:不用遞迴。第一輪把相鄰的「長度 1」兩兩合併', line: 27, views: [chain([2, 4, 1, 3], { cls: { 0: 'hl', 1: 'hl', 2: 'cur', 3: 'cur' } })] },
+    { note: '第二輪合併相鄰的「長度 2」,第三輪「長度 4」…… 長度每輪加倍,直到 ≥ n。每輪都是從頭切出兩段、合併、接到結果尾巴', line: 32, views: [chain([1, 2, 3, 4], { cls: { 0: 'done', 1: 'done', 2: 'done', 3: 'done' } })] },  // TODO: 可能要拆格
   ]
 }
 

@@ -13,7 +13,7 @@ function dpFig(): FigStep[] {
   const MN: (number | string)[] = A.map(() => '')
   MX[0] = mx
   MN[0] = mn
-  const out: FigStep[] = [{ note: '和最大子陣列和(53)不同,乘法有「負負得正」:一個很小的負數,乘上下一個負數可能變成最大。所以同時記住「以這格結尾的最大積」和「最小積」', views: [arr(A, { label: 'nums', highlight: [0] }), arr(MX, { label: 'max(以這格結尾)', highlight: [0] }), arr(MN, { label: 'min(以這格結尾)', highlight: [0] })] }]
+  const out: FigStep[] = [{ note: '和最大子陣列和(53)不同,乘法有「負負得正」:一個很小的負數,乘上下一個負數可能變成最大。所以同時記住「以這格結尾的最大積」和「最小積」', line: 2, views: [arr(A, { label: 'nums', highlight: [0] }), arr(MX, { label: 'max(以這格結尾)', highlight: [0] }), arr(MN, { label: 'min(以這格結尾)', highlight: [0] })] }]
   for (let i = 1; i < A.length; i++) {
     const x = A[i]
     const cands = [x, mx * x, mn * x]
@@ -22,9 +22,9 @@ function dpFig(): FigStep[] {
     MX[i] = mx
     MN[i] = mn
     best = Math.max(best, mx)
-    out.push({ note: `nums[${i}] = ${x}:三個候選 = 自己 ${x}、前一格的 max × ${x} = ${cands[1]}、前一格的 min × ${x} = ${cands[2]} → 新的 max ${mx}、min ${mn}。最大 ${best}${x < 0 ? '(遇到負數,max 和 min 互換角色)' : ''}`, views: [arr(A, { label: 'nums', highlight: [i] }), arr(MX, { label: 'max', highlight: [i] }), arr(MN, { label: 'min', highlight: [i] })] })
+    out.push({ note: `nums[${i}] = ${x}:三個候選 = 自己 ${x}、前一格的 max × ${x} = ${cands[1]}、前一格的 min × ${x} = ${cands[2]} → 新的 max ${mx}、min ${mn}。最大 ${best}${x < 0 ? '(遇到負數,max 和 min 互換角色)' : ''}`, line: 5, views: [arr(A, { label: 'nums', highlight: [i] }), arr(MX, { label: 'max', highlight: [i] }), arr(MN, { label: 'min', highlight: [i] })] }) // TODO: 可能要拆格
   }
-  out.push({ note: `答案 = 所有 max 裡最大的 ${best}`, views: [arr(MX, { label: 'max', done: [MX.indexOf(best)] })] })
+  out.push({ note: `答案 = 所有 max 裡最大的 ${best}`, line: 9, views: [arr(MX, { label: 'max', done: [MX.indexOf(best)] })] })
   return out
 }
 
@@ -40,22 +40,22 @@ function prefixFig(): FigStep[] {
     suf.unshift(s)
   }
   return [
-    { note: '另一個觀察:沒有 0 的時候,負數個數是偶數 → 整段乘起來最大;是奇數 → 答案一定是「去掉最左邊那個負數(和它左邊)」或「去掉最右邊那個負數(和它右邊)」。也就是某個前綴積或後綴積', views: [arr(A, { label: 'nums' })] },
-    { note: '所以從左邊累乘一次、從右邊累乘一次,所有出現過的值取最大。遇到 0 就重新從 1 開始乘(0 把陣列切成獨立的段)', views: [arr(pre, { label: '前綴積(從左乘)' }), arr(suf, { label: '後綴積(從右乘)' })] },
-    { note: `答案 = max(所有前綴積, 所有後綴積) = ${Math.max(...pre, ...suf)}`, views: [arr(pre, { label: '前綴積', highlight: [pre.indexOf(Math.max(...pre))] }), arr(suf, { label: '後綴積', highlight: [suf.indexOf(Math.max(...suf))] })] },
+    { note: '另一個觀察:沒有 0 的時候,負數個數是偶數 → 整段乘起來最大;是奇數 → 答案一定是「去掉最左邊那個負數(和它左邊)」或「去掉最右邊那個負數(和它右邊)」。也就是某個前綴積或後綴積', line: 3, views: [arr(A, { label: 'nums' })] },
+    { note: '所以從左邊累乘一次、從右邊累乘一次,所有出現過的值取最大。遇到 0 就重新從 1 開始乘(0 把陣列切成獨立的段)', line: 5, views: [arr(pre, { label: '前綴積(從左乘)' }), arr(suf, { label: '後綴積(從右乘)' })] }, // TODO: 可能要拆格
+    { note: `答案 = max(所有前綴積, 所有後綴積) = ${Math.max(...pre, ...suf)}`, line: 7, views: [arr(pre, { label: '前綴積', highlight: [pre.indexOf(Math.max(...pre))] }), arr(suf, { label: '後綴積', highlight: [suf.indexOf(Math.max(...suf))] })] },
   ]
 }
 
 function bruteFig(): FigStep[] {
   let best = -Infinity
-  const out: FigStep[] = [{ note: '暴力:每個起點往右延伸,邊乘邊更新最大值', views: [arr(A, { label: 'nums' })] }]
+  const out: FigStep[] = [{ note: '暴力:每個起點往右延伸,邊乘邊更新最大值', line: 2, views: [arr(A, { label: 'nums' })] }]
   for (let i = 0; i < A.length; i++) {
     let p = 1
     for (let j = i; j < A.length; j++) {
       p *= A[j]
       if (p > best) {
         best = p
-        out.push({ note: `[${i}, ${j}] 的乘積 = ${p},目前最大`, views: [arr(A, { label: 'nums', range: [i, j] })] })
+        out.push({ note: `[${i}, ${j}] 的乘積 = ${p},目前最大`, line: 7, views: [arr(A, { label: 'nums', range: [i, j] })] })
       }
     }
   }

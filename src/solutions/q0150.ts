@@ -9,11 +9,11 @@ const calc = (a: number, b: number, op: string) => (op === '+' ? a + b : op === 
 
 function stackFig(): FigStep[] {
   const st: number[] = []
-  const out: FigStep[] = [{ note: '逆波蘭表示法:運算子寫在兩個運算元**後面**。由左到右讀,數字就先放進堆疊等著', views: [arr(TOK, { label: 'tokens' }), arr([], { label: '堆疊(右邊是頂端)' })] }]
+  const out: FigStep[] = [{ note: '逆波蘭表示法:運算子寫在兩個運算元**後面**。由左到右讀,數字就先放進堆疊等著', line: 2, views: [arr(TOK, { label: 'tokens' }), arr([], { label: '堆疊(右邊是頂端)' })] }]
   TOK.forEach((t, i) => {
     if (!OPS.has(t)) {
       st.push(Number(t))
-      out.push({ note: `${t} 是數字 → push`, views: [arr(TOK, { label: 'tokens', highlight: [i], dim: range(0, i - 1) }), arr(st, { label: '堆疊', highlight: [st.length - 1] })] })
+      out.push({ note: `${t} 是數字 → push`, line: 11, views: [arr(TOK, { label: 'tokens', highlight: [i], dim: range(0, i - 1) }), arr(st, { label: '堆疊', highlight: [st.length - 1] })] })
       return
     }
     const b = st.pop()!
@@ -22,33 +22,34 @@ function stackFig(): FigStep[] {
     st.push(r)
     out.push({
       note: `${t} 是運算子 → 彈出兩個:先彈出的 ${b} 是**右**運算元、後彈出的 ${a} 是**左**運算元,${a} ${t} ${b} = ${r}${t === '/' ? '(往 0 截斷)' : ''},結果 push 回去`,
+      line: ({ '+': 6, '-': 7, '*': 8, '/': 9 } as Record<string, number>)[t], // TODO: 可能要拆格(pop 兩個 / 計算 / push 目前併成一步)
       views: [arr(TOK, { label: 'tokens', highlight: [i], dim: range(0, i - 1) }), arr(st, { label: '堆疊', highlight: [st.length - 1] })],
     })
   })
-  out.push({ note: `讀完了,堆疊裡剩下的唯一一個數 ${st[0]} 就是答案`, views: [arr(st, { label: '堆疊', done: [0] })] })
+  out.push({ note: `讀完了,堆疊裡剩下的唯一一個數 ${st[0]} 就是答案`, line: 14, views: [arr(st, { label: '堆疊', done: [0] })] })
   return out
 }
 
 function recurFig(): FigStep[] {
   // 從最後一個 token 往前遞迴:最後一個一定是整個式子的運算子
-  const out: FigStep[] = [{ note: '換個角度:最後一個 token 一定是「最外層」的運算子。它的右運算元是它前面那一整段子式,左運算元再往前', views: [arr(TOK, { label: 'tokens', highlight: [TOK.length - 1] })] }]
+  const out: FigStep[] = [{ note: '換個角度:最後一個 token 一定是「最外層」的運算子。它的右運算元是它前面那一整段子式,左運算元再往前', line: 2, views: [arr(TOK, { label: 'tokens', highlight: [TOK.length - 1] })] }]
   let pos = TOK.length - 1
   const go = (depth: number): number => {
     const i = pos--
     const t = TOK[i]
     if (!OPS.has(t)) {
-      out.push({ note: `${'　'.repeat(depth)}tokens[${i}] = ${t} 是數字,直接回傳`, views: [arr(TOK, { label: 'tokens', highlight: [i], dim: range(i + 1, TOK.length - 1) })] })
+      out.push({ note: `${'　'.repeat(depth)}tokens[${i}] = ${t} 是數字,直接回傳`, line: 5, views: [arr(TOK, { label: 'tokens', highlight: [i], dim: range(i + 1, TOK.length - 1) })] })
       return Number(t)
     }
-    out.push({ note: `${'　'.repeat(depth)}tokens[${i}] = ${t} 是運算子 → 先遞迴算它的**右**運算元,再算左運算元`, views: [arr(TOK, { label: 'tokens', highlight: [i], dim: range(i + 1, TOK.length - 1) })] })
+    out.push({ note: `${'　'.repeat(depth)}tokens[${i}] = ${t} 是運算子 → 先遞迴算它的**右**運算元,再算左運算元`, line: 6, views: [arr(TOK, { label: 'tokens', highlight: [i], dim: range(i + 1, TOK.length - 1) })] })
     const b = go(depth + 1)
     const a = go(depth + 1)
     const r = calc(a, b, t)
-    out.push({ note: `${'　'.repeat(depth)}回到 tokens[${i}] = ${t}:${a} ${t} ${b} = ${r}`, views: [arr(TOK, { label: 'tokens', compare: [i], dim: range(pos + 1, TOK.length - 1).filter((k) => k !== i) })] })
+    out.push({ note: `${'　'.repeat(depth)}回到 tokens[${i}] = ${t}:${a} ${t} ${b} = ${r}`, line: ({ '+': 8, '-': 9, '*': 10, '/': 11 } as Record<string, number>)[t], views: [arr(TOK, { label: 'tokens', compare: [i], dim: range(pos + 1, TOK.length - 1).filter((k) => k !== i) })] })
     return r
   }
   const ans = go(0)
-  out.push({ note: `答案 = ${ans}。遞迴的呼叫堆疊扮演了方法一裡堆疊的角色`, views: [arr(TOK, { label: 'tokens', done: range(0, TOK.length - 1) })] })
+  out.push({ note: `答案 = ${ans}。遞迴的呼叫堆疊扮演了方法一裡堆疊的角色`, line: 13, views: [arr(TOK, { label: 'tokens', done: range(0, TOK.length - 1) })] })
   return out
 }
 

@@ -10,19 +10,19 @@ function table(cells: string[][], label: string): GridViewData {
 
 function loopFig(): FigStep[] {
   return [
-    { note: 'Person 有兩列：Allen 的 personId 是 1，Bob 的 personId 是 2。每位人物都要保留。', views: [table(PERSON, 'Person：id / firstName / lastName')] },
-    { note: '先看 Allen（id 1），逐列檢查 Address；第二筆地址的 id 1 相同，找到 Leetcode、CA。', views: [table([PERSON[0]], '目前人物'), table(ADDRESS, 'Address：id / city / state')] },
-    { note: '再看 Bob（id 2），找到第一筆地址 New York、NY。', views: [table([PERSON[1]], '目前人物'), table([ADDRESS[0]], '配到的地址')] },
-    { note: '依 Person 原順序輸出兩列；沒有地址的人也要輸出，城市與州填 NULL。', views: [table([['Allen', 'Wang', 'Leetcode', 'CA'], ['Bob', 'Alice', 'New York', 'NY']], '合併結果')] },
+    { note: 'Person 有兩列：Allen 的 personId 是 1，Bob 的 personId 是 2。每位人物都要保留。', line: 3, views: [table(PERSON, 'Person：id / firstName / lastName')] },
+    { note: '先看 Allen（id 1），逐列檢查 Address；第二筆地址的 id 1 相同，找到 Leetcode、CA。', line: 7, views: [table([PERSON[0]], '目前人物'), table(ADDRESS, 'Address：id / city / state')] },
+    { note: '再看 Bob（id 2），找到第一筆地址 New York、NY。', line: 7, views: [table([PERSON[1]], '目前人物'), table([ADDRESS[0]], '配到的地址')] },
+    { note: '依 Person 原順序輸出兩列；沒有地址的人也要輸出，城市與州填 NULL。', line: 13, views: [table([['Allen', 'Wang', 'Leetcode', 'CA'], ['Bob', 'Alice', 'New York', 'NY']], '合併結果')] },
   ]
 }
 
 function hashFig(): FigStep[] {
   return [
-    { note: '先將 Address 依 personId 建成查找表：2 對應 New York、NY；1 對應 Leetcode、CA。', views: [table(ADDRESS, 'id → city / state')] },
-    { note: '讀 Allen（id 1），直接查表得到 Leetcode、CA，不必重掃地址表。', views: [table([['Allen', 'Wang', 'Leetcode', 'CA']], '第一列結果')] },
-    { note: '讀 Bob（id 2），直接查表得到 New York、NY。', views: [table([['Bob', 'Alice', 'New York', 'NY']], '第二列結果')] },
-    { note: '若查不到某個 id，人物仍保留，缺少的地址欄位以 NULL 表示。', views: [table([['John', 'Doe', 'NULL', 'NULL']], '沒有地址的情況')] },
+    { note: '先將 Address 依 personId 建成查找表：2 對應 New York、NY；1 對應 Leetcode、CA。', line: 4, views: [table(ADDRESS, 'id → city / state')] },
+    { note: '讀 Allen（id 1），直接查表得到 Leetcode、CA，不必重掃地址表。', line: 8, views: [table([['Allen', 'Wang', 'Leetcode', 'CA']], '第一列結果')] },
+    { note: '讀 Bob（id 2），直接查表得到 New York、NY。', line: 8, views: [table([['Bob', 'Alice', 'New York', 'NY']], '第二列結果')] },
+    { note: '若查不到某個 id，人物仍保留，缺少的地址欄位以 NULL 表示。', line: 8, views: [table([['John', 'Doe', 'NULL', 'NULL']], '沒有地址的情況')] },
   ]
 }
 

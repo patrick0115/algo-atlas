@@ -8,17 +8,17 @@ const T = [7, 3, 15, null, null, 9, 20]
 
 function stackFig(): FigStep[] {
   return [
-    { note: '迭代器要能「一次吐一個」中序的下一個值。用 [94](#/q/94) 迭代中序的堆疊:建構時從根一路往左 push', views: [tree(T, { cls: { 0: 'cur', 1: 'hl' } }), arr([7, 3], { label: '堆疊(右邊是頂)' })] },
-    { note: 'next():pop 出頂端 3(目前最小)回傳;如果它有右子樹,就從右孩子一路往左 push。3 沒有右子樹', views: [tree(T, { cls: { 1: 'done', 0: 'hl' } }), arr([7], { label: '堆疊' })] },
-    { note: 'next() → 7,然後從 15 一路往左 push:15、9。hasNext() = 堆疊不空', views: [tree(T, { cls: { 1: 'done', 0: 'done', 2: 'cur', 5: 'hl' } }), arr([15, 9], { label: '堆疊' })] },
-    { note: '每個節點 push、pop 各一次 → next() 平均 O(1),堆疊最多 O(h)', views: [arr([3, 7, 9, 15, 20], { label: '依序吐出', done: [0, 1, 2, 3, 4] })] },
+    { note: '迭代器要能「一次吐一個」中序的下一個值。用 [94](#/q/94) 迭代中序的堆疊:建構時從根一路往左 push', line: 4, views: [tree(T, { cls: { 0: 'cur', 1: 'hl' } }), arr([7, 3], { label: '堆疊(右邊是頂)' })] },
+    { note: 'next():pop 出頂端 3(目前最小)回傳;如果它有右子樹,就從右孩子一路往左 push。3 沒有右子樹', line: 12, views: [tree(T, { cls: { 1: 'done', 0: 'hl' } }), arr([7], { label: '堆疊' })] },
+    { note: 'next() → 7,然後從 15 一路往左 push:15、9。hasNext() = 堆疊不空', line: 13, views: [tree(T, { cls: { 1: 'done', 0: 'done', 2: 'cur', 5: 'hl' } }), arr([15, 9], { label: '堆疊' })] },
+    { note: '每個節點 push、pop 各一次 → next() 平均 O(1),堆疊最多 O(h)', line: 8, views: [arr([3, 7, 9, 15, 20], { label: '依序吐出', done: [0, 1, 2, 3, 4] })] },
   ]
 }
 
 function arrFig(): FigStep[] {
   return [
-    { note: '簡單版:建構時把整棵樹中序走訪存成陣列,用一個指標 i', views: [arr([3, 7, 9, 15, 20], { label: '中序陣列', pointers: [{ name: 'i', index: 0 }] })] },
-    { note: 'next() 回傳 a[i] 再 i + 1;hasNext() 是 i < n。每次都 O(1),但要 O(n) 空間', views: [arr([3, 7, 9, 15, 20], { label: '中序陣列', done: [0, 1], pointers: [{ name: 'i', index: 2 }] })] },
+    { note: '簡單版:建構時把整棵樹中序走訪存成陣列,用一個指標 i', line: 11, views: [arr([3, 7, 9, 15, 20], { label: '中序陣列', pointers: [{ name: 'i', index: 0 }] })] },
+    { note: 'next() 回傳 a[i] 再 i + 1;hasNext() 是 i < n。每次都 O(1),但要 O(n) 空間', line: 15, views: [arr([3, 7, 9, 15, 20], { label: '中序陣列', done: [0, 1], pointers: [{ name: 'i', index: 2 }] })] },
   ]
 }
 

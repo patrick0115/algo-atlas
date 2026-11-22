@@ -8,22 +8,22 @@ const A = [1, 2, 1, 3, 5, 6, 4]
 function bsFig(): FigStep[] {
   let lo = 0
   let hi = A.length - 1
-  const out: FigStep[] = [{ note: '想像在爬山:兩端外面都是 −∞(深谷)。站在 m,看右邊鄰居:如果右邊比較高,往右走**一定**會遇到山頂(最差也會到最右邊,它比外面的 −∞ 高)', views: [arr(A, { label: 'nums', mode: 'bars' })] }]
+  const out: FigStep[] = [{ note: '想像在爬山:兩端外面都是 −∞(深谷)。站在 m,看右邊鄰居:如果右邊比較高,往右走**一定**會遇到山頂(最差也會到最右邊,它比外面的 −∞ 高)', line: 2, views: [arr(A, { label: 'nums', mode: 'bars' })] }]
   while (lo < hi) {
     const m = (lo + hi) >> 1
     const up = A[m] < A[m + 1]
-    out.push({ note: `m = ${m}:nums[${m}] = ${A[m]} ${up ? `< 右邊 ${A[m + 1]} → 在上坡,山頂在右邊,lo = ${m + 1}` : `> 右邊 ${A[m + 1]} → 在下坡,m 或左邊有山頂,hi = ${m}`}`, views: [arr(A, { label: 'nums', mode: 'bars', range: [lo, hi], highlight: [m], compare: [m + 1] })] })
+    out.push({ note: `m = ${m}:nums[${m}] = ${A[m]} ${up ? `< 右邊 ${A[m + 1]} → 在上坡,山頂在右邊,lo = ${m + 1}` : `> 右邊 ${A[m + 1]} → 在下坡,m 或左邊有山頂,hi = ${m}`}`, line: up ? 5 : 6, views: [arr(A, { label: 'nums', mode: 'bars', range: [lo, hi], highlight: [m], compare: [m + 1] })] })
     if (up) lo = m + 1
     else hi = m
   }
-  out.push({ note: `lo = hi = ${lo}:nums[${lo}] = ${A[lo]} 比兩邊都大,是一個山頂(答案不唯一,1 也可以)`, views: [arr(A, { label: 'nums', mode: 'bars', done: [lo] })] })
+  out.push({ note: `lo = hi = ${lo}:nums[${lo}] = ${A[lo]} 比兩邊都大,是一個山頂(答案不唯一,1 也可以)`, line: 8, views: [arr(A, { label: 'nums', mode: 'bars', done: [lo] })] })
   return out
 }
 
 function linFig(): FigStep[] {
   return [
-    { note: '線性:從左往右,找第一個「比右邊大」的位置。它左邊一路都是上坡,所以它比左邊也大 → 一定是山頂', views: [arr(A, { label: 'nums', mode: 'bars', highlight: [1] })] },
-    { note: '找到 nums[1] = 2 > 1 → 回傳 1。都沒找到就是最後一個。O(n)', views: [arr(A, { label: 'nums', mode: 'bars', done: [1] })] },
+    { note: '線性:從左往右,找第一個「比右邊大」的位置。它左邊一路都是上坡,所以它比左邊也大 → 一定是山頂', line: 2, views: [arr(A, { label: 'nums', mode: 'bars', highlight: [1] })] },
+    { note: '找到 nums[1] = 2 > 1 → 回傳 1。都沒找到就是最後一個。O(n)', line: 2, views: [arr(A, { label: 'nums', mode: 'bars', done: [1] })] },
   ]
 }
 

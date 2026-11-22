@@ -58,11 +58,11 @@ const WRAP = {
 }`,
 }
 const fig = [
-  { note: '從 head=3 出發，依序經過 2、0、−4；尾端的 next 指回 2，所以走訪不會到 null。', views: [loopChain(V, 1, { subs: { 0: 'head' }, cls: { 0: 'hl', 1: 'visited' } })] },
-  { note: '尾巴接回第 1 個節點。沿 next 走會再次到 2；入口是節點本身，不是數值相同就算。', views: [loopChain(V, 1, { cls: { 1: 'hl' } })] },
-  { note: '快指針每次兩步、慢指針每次一步，兩者在環內相遇。', views: [loopChain(V, 1, { subs: { 0: 'head', 3: '相遇' }, cls: { 3: 'hl' } })] },
-  { note: '相遇後把慢指針放回 3，快指針留在 −4；兩者改成每次各走一步。', views: [loopChain(V, 1, { subs: { 0: '慢', 3: '快' }, cls: { 0: 'hl', 3: 'visited' } })] },
-  { note: '把一個指針放回 head；兩個都每次一步，再相遇處就是入口 2。', views: [loopChain(V, 1, { subs: { 1: '入口' }, cls: { 1: 'hl' } })] },
+  { note: '從 head=3 出發，依序經過 2、0、−4；尾端的 next 指回 2，所以走訪不會到 null。', line: 2, views: [loopChain(V, 1, { subs: { 0: 'head' }, cls: { 0: 'hl', 1: 'visited' } })] },
+  { note: '尾巴接回第 1 個節點。沿 next 走會再次到 2；入口是節點本身，不是數值相同就算。', line: 3, views: [loopChain(V, 1, { cls: { 1: 'hl' } })] },
+  { note: '快指針每次兩步、慢指針每次一步，兩者在環內相遇。', line: 6, views: [loopChain(V, 1, { subs: { 0: 'head', 3: '相遇' }, cls: { 3: 'hl' } })] },
+  { note: '相遇後把慢指針放回 3，快指針留在 −4；兩者改成每次各走一步。', line: 7, views: [loopChain(V, 1, { subs: { 0: '慢', 3: '快' }, cls: { 0: 'hl', 3: 'visited' } })] },
+  { note: '把一個指針放回 head；兩個都每次一步，再相遇處就是入口 2。', line: 12, views: [loopChain(V, 1, { subs: { 1: '入口' }, cls: { 1: 'hl' } })] },
 ]
 
 export const q0142: Solution = {
@@ -73,7 +73,7 @@ export const q0142: Solution = {
   constraints: ['0 ≤ 節點數 ≤ 10⁴。', '進階：O(1) 額外空間。'],
   insight: ['走過的節點若再次出現，它就是環入口。', '要省空間可用 [141](#/q/141) 的快慢指針先找到環內相遇點。', '設入口前長 a、入口到相遇點長 b、環長 c；相遇時快慢路程差是 c 的倍數，所以從 head 與相遇點同步出發，會在入口碰面。'],
   approaches: [
-    { name: 'Set 記錄節點', idea: '沿 next 走；第一個重複造訪的節點就是入口。', steps: ['建立空 set。', '逐節點檢查是否看過；若是，直接回傳該節點。', '走到 null 則無環。最後確認返回的是入口節點本身；沒有環時才返回空值。'], figure: { title: 'head = [3,2,0,-4], pos = 1', steps: [fig[0], { note: '把 3、2、0、−4 依序加入 set；每個節點第一次到訪時都還不重複。', views: [loopChain(V, 1, { cls: { 0: 'visited', 1: 'visited', 2: 'visited', 3: 'visited' } })] }, { note: '下一步又走到節點 2，它已在 set 中，因此回傳這個節點。', views: [loopChain(V, 1, { cls: { 1: 'hl' } })] }] }, complexity: { time: 'O(n)', space: 'O(n)', why: '每個節點最多放入 set 一次。' }, verdict: '直觀；set 裡要存節點身分，而非節點值。', code: {
+    { name: 'Set 記錄節點', idea: '沿 next 走；第一個重複造訪的節點就是入口。', steps: ['建立空 set。', '逐節點檢查是否看過；若是，直接回傳該節點。', '走到 null 則無環。最後確認返回的是入口節點本身；沒有環時才返回空值。'], figure: { title: 'head = [3,2,0,-4], pos = 1', steps: [{ ...fig[0], line: 3 }, { note: '把 3、2、0、−4 依序加入 set；每個節點第一次到訪時都還不重複。', line: 6, views: [loopChain(V, 1, { cls: { 0: 'visited', 1: 'visited', 2: 'visited', 3: 'visited' } })] }, { note: '下一步又走到節點 2，它已在 set 中，因此回傳這個節點。', line: 5, views: [loopChain(V, 1, { cls: { 1: 'hl' } })] }] }, complexity: { time: 'O(n)', space: 'O(n)', why: '每個節點最多放入 set 一次。' }, verdict: '直觀；set 裡要存節點身分，而非節點值。', code: {
       python: `def detectCycle(head):
     seen = set()
     while head:  # 沿 next 前進，觀察是否重遇同一個節點。

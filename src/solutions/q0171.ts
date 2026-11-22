@@ -2,16 +2,16 @@ import { arr } from '../engine/helpers'
 import type { FigStep, Solution } from './types'
 
 const leftFig: FigStep[] = [
-  { note: '"ZY" 的 Z 代表 26，答案先從 0×26+26 得到 26。', views: [arr(['Z', 'Y'], { label: '欄名', highlight: [0] }), arr([26], { label: '目前數值' })] },
-  { note: '下一個字母 Y 代表 25；原本 26 要先左移一個 26 進位，變成 26×26。', views: [arr(['Z', 'Y'], { label: '欄名', highlight: [1] }), arr([676], { label: '進位後' })] },
-  { note: '加上 Y 的 25，得到 701。', views: [arr([676, 25, 701], { label: '舊值×26 / 新位 / 結果', done: [2] })] },
-  { note: '走完字串，答案 701；這和十進位逐位讀數字的做法相同，只是底數換成 26。', views: [arr([701], { label: '答案', done: [0] })] },
+  { note: '"ZY" 的 Z 代表 26，答案先從 0×26+26 得到 26。', line: 5, views: [arr(['Z', 'Y'], { label: '欄名', highlight: [0] }), arr([26], { label: '目前數值' })] },
+  { note: '下一個字母 Y 代表 25；原本 26 要先左移一個 26 進位，變成 26×26。', line: 5, views: [arr(['Z', 'Y'], { label: '欄名', highlight: [1] }), arr([676], { label: '進位後' })] }, // TODO: 可能要拆格(第 4 行算字母值、第 5 行乘 26)
+  { note: '加上 Y 的 25，得到 701。', line: 5, views: [arr([676, 25, 701], { label: '舊值×26 / 新位 / 結果', done: [2] })] },
+  { note: '走完字串，答案 701；這和十進位逐位讀數字的做法相同，只是底數換成 26。', line: 7, views: [arr([701], { label: '答案', done: [0] })] },
 ]
 const rightFig: FigStep[] = [
-  { note: '從右邊 Y 開始，位權 1；Y=25，先得到 25。', views: [arr(['Z', 'Y'], { label: '欄名', highlight: [1] }), arr([25], { label: '累計' })] },
-  { note: '位權乘 26，變成 26；左邊 Z 代表 26。', views: [arr([26, 26], { label: '位權 / Z 的值' })] },
-  { note: '加上 26×26=676，累計 25+676=701。', views: [arr([25, 676, 701], { label: '兩位貢獻 / 總數', done: [2] })] },
-  { note: '所有位置處理完，回傳 701。', views: [arr([701], { label: '答案', done: [0] })] },
+  { note: '從右邊 Y 開始，位權 1；Y=25，先得到 25。', line: 5, views: [arr(['Z', 'Y'], { label: '欄名', highlight: [1] }), arr([25], { label: '累計' })] },
+  { note: '位權乘 26，變成 26；左邊 Z 代表 26。', line: 7, views: [arr([26, 26], { label: '位權 / Z 的值' })] },
+  { note: '加上 26×26=676，累計 25+676=701。', line: 5, views: [arr([25, 676, 701], { label: '兩位貢獻 / 總數', done: [2] })] },
+  { note: '所有位置處理完，回傳 701。', line: 10, views: [arr([701], { label: '答案', done: [0] })] },
 ]
 
 export const q0171: Solution = {

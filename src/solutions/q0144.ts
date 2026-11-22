@@ -9,25 +9,25 @@ const T = [4, 2, 6, 1, 3, 5, 7]
 function recFig(): FigStep[] {
   // 層序索引 0:4 1:2 2:6 3:1 4:3 5:5 6:7;前序 = 4 2 1 3 6 5 7
   const order = [0, 1, 3, 4, 2, 5, 6]
-  const out: FigStep[] = [{ note: '前序 = 自己 → 左子樹 → 右子樹。一走到節點就先記下它,再往下', views: [tree(T)] }]
+  const out: FigStep[] = [{ note: '前序 = 自己 → 左子樹 → 右子樹。一走到節點就先記下它,再往下', line: 9, views: [tree(T)] }]
   ;[0, 1, 3, 4, 6].forEach((k) => {
     const idx = order[k]
-    out.push({ note: `記下 ${T[idx]}${k === 0 ? '(根一定第一個)' : k === 4 ? '(左子樹全部走完,才輪到右子樹)' : ''}`, views: [tree(T, { cls: { ...Object.fromEntries(order.slice(0, k).map((i) => [i, 'done'])), [idx]: 'hl' } }), arr(order.slice(0, k + 1).map((i) => T[i]), { label: '結果' })] })
+    out.push({ note: `記下 ${T[idx]}${k === 0 ? '(根一定第一個)' : k === 4 ? '(左子樹全部走完,才輪到右子樹)' : ''}`, line: 5, views: [tree(T, { cls: { ...Object.fromEntries(order.slice(0, k).map((i) => [i, 'done'])), [idx]: 'hl' } }), arr(order.slice(0, k + 1).map((i) => T[i]), { label: '結果' })] })
   })
   return out
 }
 
 function stackFig(): FigStep[] {
   return [
-    { note: '迭代:堆疊一開始放根。每次 pop 一個,記下它,然後**先 push 右孩子、再 push 左孩子**(堆疊後進先出,左孩子會先被處理)', views: [tree(T, { cls: { 0: 'hl' } }), arr([6, 2], { label: '堆疊(右邊是頂)' }), arr([4], { label: '結果' })] },
-    { note: 'pop 2 記下,push 3、1;pop 1 記下(沒有孩子);pop 3 記下;pop 6…', views: [tree(T, { cls: { 0: 'done', 1: 'done', 3: 'done', 4: 'hl' } }), arr([6], { label: '堆疊' }), arr([4, 2, 1, 3], { label: '結果' })] },
+    { note: '迭代:堆疊一開始放根。每次 pop 一個,記下它,然後**先 push 右孩子、再 push 左孩子**(堆疊後進先出,左孩子會先被處理)', line: 3, views: [tree(T, { cls: { 0: 'hl' } }), arr([6, 2], { label: '堆疊(右邊是頂)' }), arr([4], { label: '結果' })] }, // TODO: 可能要拆格(圖已是第一輪迴圈後的狀態)
+    { note: 'pop 2 記下,push 3、1;pop 1 記下(沒有孩子);pop 3 記下;pop 6…', line: 5, views: [tree(T, { cls: { 0: 'done', 1: 'done', 3: 'done', 4: 'hl' } }), arr([6], { label: '堆疊' }), arr([4, 2, 1, 3], { label: '結果' })] }, // TODO: 可能要拆格(多輪迴圈合成一步)
   ]
 }
 
 function morrisFig(): FigStep[] {
   return [
-    { note: 'Morris 前序:和中序版幾乎一樣(用左子樹最右節點的空右指標搭回程線),差別只在**搭線的那一刻**就記下 cur', views: [tree(T, { cls: { 0: 'hl', 4: 'cur' }, subs: { 4: '3.right → 4' } }), arr([4], { label: '結果' })] },
-    { note: '沿著回程線回到 cur 時只拆線、不記(已經記過了),然後往右。O(1) 額外空間', views: [tree(T, { cls: { 0: 'done', 1: 'done', 3: 'done', 4: 'done', 2: 'hl' } }), arr([4, 2, 1, 3, 6], { label: '結果' })] },
+    { note: 'Morris 前序:和中序版幾乎一樣(用左子樹最右節點的空右指標搭回程線),差別只在**搭線的那一刻**就記下 cur', line: 13, views: [tree(T, { cls: { 0: 'hl', 4: 'cur' }, subs: { 4: '3.right → 4' } }), arr([4], { label: '結果' })] },
+    { note: '沿著回程線回到 cur 時只拆線、不記(已經記過了),然後往右。O(1) 額外空間', line: 17, views: [tree(T, { cls: { 0: 'done', 1: 'done', 3: 'done', 4: 'done', 2: 'hl' } }), arr([4, 2, 1, 3, 6], { label: '結果' })] },
   ]
 }
 

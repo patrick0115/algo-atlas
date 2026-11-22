@@ -8,22 +8,22 @@ const N = 701
 function loopFig(): FigStep[] {
   let n = N
   const res: string[] = []
-  const out: FigStep[] = [{ note: 'Excel 欄名像 26 進位,但沒有 0:A = 1 … Z = 26,接著 AA = 27。訣竅是每次先把 n 減 1,讓它變成 0 起算的 26 進位(A = 0 … Z = 25)', views: [arr([N], { label: 'n' })] }]
+  const out: FigStep[] = [{ note: 'Excel 欄名像 26 進位,但沒有 0:A = 1 … Z = 26,接著 AA = 27。訣竅是每次先把 n 減 1,讓它變成 0 起算的 26 進位(A = 0 … Z = 25)', line: 2, views: [arr([N], { label: 'n' })] }]
   while (n > 0) {
     n--
     const r = n % 26
     res.push(String.fromCharCode(65 + r))
-    out.push({ note: `n − 1 = ${n},除以 26 的餘數 ${r} → "${String.fromCharCode(65 + r)}"(寫在最前面);n = ${n} ÷ 26 = ${Math.floor(n / 26)}`, views: [arr([...res].reverse(), { label: '目前的欄名', highlight: [0] })] })
+    out.push({ note: `n − 1 = ${n},除以 26 的餘數 ${r} → "${String.fromCharCode(65 + r)}"(寫在最前面);n = ${n} ÷ 26 = ${Math.floor(n / 26)}`, line: 5, views: [arr([...res].reverse(), { label: '目前的欄名', highlight: [0] })] }) // TODO: 可能要拆格(第 4、5、6 行併成一步,n 的變化畫面上看不到)
     n = Math.floor(n / 26)
   }
-  out.push({ note: `n 變成 0,結束 → "${[...res].reverse().join('')}"`, views: [arr([...res].reverse(), { label: '答案', done: res.map((_, i) => i) })] })
+  out.push({ note: `n 變成 0,結束 → "${[...res].reverse().join('')}"`, line: 8, views: [arr([...res].reverse(), { label: '答案', done: res.map((_, i) => i) })] })
   return out
 }
 
 function recFig(): FigStep[] {
   return [
-    { note: '遞迴:title(n) = title((n − 1) ÷ 26) + 最後一個字母 chr(A + (n − 1) % 26)', views: [arr(['title(701)', '= title(26) + "Y"'], { label: '展開' })] },
-    { note: 'title(26) = title(0) + "Z" = "Z";所以 title(701) = "ZY"', views: [arr(['Z', 'Y'], { label: '答案', done: [0, 1] })] },
+    { note: '遞迴:title(n) = title((n − 1) ÷ 26) + 最後一個字母 chr(A + (n − 1) % 26)', line: 3, views: [arr(['title(701)', '= title(26) + "Y"'], { label: '展開' })] },
+    { note: 'title(26) = title(0) + "Z" = "Z";所以 title(701) = "ZY"', line: 3, views: [arr(['Z', 'Y'], { label: '答案', done: [0, 1] })] },
   ]
 }
 

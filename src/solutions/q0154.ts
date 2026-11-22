@@ -3,16 +3,16 @@ import type { FigStep, Solution } from './types'
 
 const A = [2, 2, 2, 0, 1]
 const scanFig: FigStep[] = [
-  { note: '先把第一個 2 當目前最小值。', views: [arr(A, { label: 'nums', highlight: [0] })] },
-  { note: '接下來兩個 2 沒有變小，最小值仍是 2。', views: [arr(A, { label: 'nums', done: [0, 1], highlight: [2] })] },
-  { note: '讀到 0，更新最小值為 0。', views: [arr(A, { label: 'nums', done: [0, 1, 2], highlight: [3] })] },
-  { note: '最後的 1 也不會再降低答案，所以回傳 0。', views: [arr(A, { label: 'nums', done: [3], highlight: [4] }), arr([0], { label: '最小值' })] },
+  { note: '先把第一個 2 當目前最小值。', line: 2, views: [arr(A, { label: 'nums', highlight: [0] })] },
+  { note: '接下來兩個 2 沒有變小，最小值仍是 2。', line: 4, views: [arr(A, { label: 'nums', done: [0, 1], highlight: [2] })] },
+  { note: '讀到 0，更新最小值為 0。', line: 4, views: [arr(A, { label: 'nums', done: [0, 1, 2], highlight: [3] })] },
+  { note: '最後的 1 也不會再降低答案，所以回傳 0。', line: 5, views: [arr(A, { label: 'nums', done: [3], highlight: [4] }), arr([0], { label: '最小值' })] },
 ]
 const binaryFig: FigStep[] = [
-  { note: '範圍 [0,4]；中點索引 2 是 2，右端索引 4 是 1。2>1，最小值一定在右半段，左界移到 3。', views: [arr(A, { label: 'nums', compare: [2, 4], dim: [0, 1] })] },
-  { note: '範圍 [3,4]；中點索引 3 是 0，右端是 1。0<1，最小值可能就是中點，右界移到 3。', views: [arr(A, { label: 'nums', compare: [3, 4], dim: [0, 1, 2] })] },
-  { note: '左右界相遇於索引 3，值為 0。', views: [arr(A, { label: 'nums', highlight: [3], dim: [0, 1, 2, 4] })] },
-  { note: '若中點與右端一樣，只能把右界減 1：相等值無法判斷最小值在哪邊。', views: [arr([1, 0, 1, 1, 1], { label: '重複值例子', compare: [2, 4] })] },
+  { note: '範圍 [0,4]；中點索引 2 是 2，右端索引 4 是 1。2>1，最小值一定在右半段，左界移到 3。', line: 7, views: [arr(A, { label: 'nums', compare: [2, 4], dim: [0, 1] })] },
+  { note: '範圍 [3,4]；中點索引 3 是 0，右端是 1。0<1，最小值可能就是中點，右界移到 3。', line: 9, views: [arr(A, { label: 'nums', compare: [3, 4], dim: [0, 1, 2] })] },
+  { note: '左右界相遇於索引 3，值為 0。', line: 14, views: [arr(A, { label: 'nums', highlight: [3], dim: [0, 1, 2, 4] })] },
+  { note: '若中點與右端一樣，只能把右界減 1：相等值無法判斷最小值在哪邊。', line: 11, views: [arr([1, 0, 1, 1, 1], { label: '重複值例子', compare: [2, 4] })] },
 ]
 
 export const q0154: Solution = {

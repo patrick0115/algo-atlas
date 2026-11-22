@@ -13,17 +13,17 @@ function pairFig(): FigStep[] {
     arr(st.map((p) => p[0]), { label: '值', highlight: hl && st.length ? [st.length - 1] : [] }),
     arr(st.map((p) => p[1]), { label: '到這一層為止的最小值', highlight: hl && st.length ? [st.length - 1] : [] }),
   ]
-  const out: FigStep[] = [{ note: '每一層除了存值,也存「從底部到這一層的最小值」。pop 掉上面的層,下面那層記的最小值依然正確', views: views() }]
+  const out: FigStep[] = [{ note: '每一層除了存值,也存「從底部到這一層的最小值」。pop 掉上面的層,下面那層記的最小值依然正確', line: 3, views: views() }]
   for (const o of OPS) {
     if (o[0] === 'push') {
       const m = st.length ? Math.min(o[1], st[st.length - 1][1]) : o[1]
       st.push([o[1], m])
-      out.push({ note: `${opText(o)}:這層的最小值 = min(${o[1]}, 下面那層的 ${st.length > 1 ? st[st.length - 2][1] : '(無)'}) = ${m}`, views: views(true) })
+      out.push({ note: `${opText(o)}:這層的最小值 = min(${o[1]}, 下面那層的 ${st.length > 1 ? st[st.length - 2][1] : '(無)'}) = ${m}`, line: 7, views: views(true) }) // TODO: 可能要拆格(第 7 行算 m、第 8 行 push,畫面一次顯示 push 後)
     } else if (o[0] === 'pop') {
       const p = st.pop()!
-      out.push({ note: `${opText(o)}:拿掉 (${p[0]}, ${p[1]}),下面那層記的最小值不受影響`, views: views(true) })
+      out.push({ note: `${opText(o)}:拿掉 (${p[0]}, ${p[1]}),下面那層記的最小值不受影響`, line: 12, views: views(true) })
     } else {
-      out.push({ note: `${opText(o)}:直接看頂端記的最小值 → ${st[st.length - 1][1]}`, views: views(true) })
+      out.push({ note: `${opText(o)}:直接看頂端記的最小值 → ${st[st.length - 1][1]}`, line: 20, views: views(true) })
     }
   }
   return out
@@ -33,24 +33,24 @@ function auxFig(): FigStep[] {
   const st: number[] = []
   const mins: number[] = []
   const views = () => [arr(st, { label: '主堆疊', highlight: st.length ? [st.length - 1] : [] }), arr(mins, { label: '最小值堆疊(只在出現「新低或平手」時 push)', highlight: mins.length ? [mins.length - 1] : [] })]
-  const out: FigStep[] = [{ note: '只有新的值 ≤ 目前最小值時,才放進最小值堆疊。省下「最小值一直沒變」的那些層', views: views() }]
+  const out: FigStep[] = [{ note: '只有新的值 ≤ 目前最小值時,才放進最小值堆疊。省下「最小值一直沒變」的那些層', line: 4, views: views() }]
   for (const o of OPS) {
     if (o[0] === 'push') {
       const x = o[1]
       st.push(x)
       const add = !mins.length || x <= mins[mins.length - 1]
       if (add) mins.push(x)
-      out.push({ note: `${opText(o)}:${add ? `${x} ≤ 目前最小值,也 push 到最小值堆疊` : `${x} 比目前最小值 ${mins[mins.length - 1]} 大,最小值堆疊不動`}`, views: views() })
+      out.push({ note: `${opText(o)}:${add ? `${x} ≤ 目前最小值,也 push 到最小值堆疊` : `${x} 比目前最小值 ${mins[mins.length - 1]} 大,最小值堆疊不動`}`, line: 9, views: views() })
     } else if (o[0] === 'pop') {
       const x = st.pop()!
       const rm = x === mins[mins.length - 1]
       if (rm) mins.pop()
-      out.push({ note: `${opText(o)}:彈出 ${x}${rm ? ',它就是目前最小值 → 最小值堆疊也要彈出' : ',不是目前最小值,最小值堆疊不動'}`, views: views() })
+      out.push({ note: `${opText(o)}:彈出 ${x}${rm ? ',它就是目前最小值 → 最小值堆疊也要彈出' : ',不是目前最小值,最小值堆疊不動'}`, line: 13, views: views() })
     } else {
-      out.push({ note: `${opText(o)}:最小值堆疊的頂端 → ${mins[mins.length - 1]}`, views: views() })
+      out.push({ note: `${opText(o)}:最小值堆疊的頂端 → ${mins[mins.length - 1]}`, line: 21, views: views() })
     }
   }
-  out.push({ note: '注意 push(3) 兩次時,兩個 3 都要進最小值堆疊(用 ≤ 而不是 <),不然第一次 pop 掉 3 之後就找不到另一個 3 了', views: views() })
+  out.push({ note: '注意 push(3) 兩次時,兩個 3 都要進最小值堆疊(用 ≤ 而不是 <),不然第一次 pop 掉 3 之後就找不到另一個 3 了', line: 9, views: views() })
   return out
 }
 
@@ -58,28 +58,28 @@ function diffFig(): FigStep[] {
   const st: number[] = []
   let min = 0
   const views = () => [arr(st, { label: '堆疊存的是「值 − 當時的最小值」', highlight: st.length ? [st.length - 1] : [] }), arr(st.length ? [min] : [], { label: 'min(一個變數)' })]
-  const out: FigStep[] = [{ note: '只用一個堆疊和一個變數 min:存「值 − 存入前的最小值」。差值是負的,代表這個值刷新了最小值', views: views() }]
+  const out: FigStep[] = [{ note: '只用一個堆疊和一個變數 min:存「值 − 存入前的最小值」。差值是負的,代表這個值刷新了最小值', line: 4, views: views() }]
   for (const o of OPS) {
     if (o[0] === 'push') {
       const x = o[1]
       if (!st.length) {
         st.push(0)
         min = x
-        out.push({ note: `${opText(o)}:第一個元素,存 0,min = ${x}`, views: views() })
+        out.push({ note: `${opText(o)}:第一個元素,存 0,min = ${x}`, line: 9, views: views() })
       } else {
         const d = x - min
         st.push(d)
         const old = min
         if (d < 0) min = x
-        out.push({ note: `${opText(o)}:存 ${x} − ${old} = ${d}${d < 0 ? `,負的 → 刷新 min = ${x}` : ''}`, views: views() })
+        out.push({ note: `${opText(o)}:存 ${x} − ${old} = ${d}${d < 0 ? `,負的 → 刷新 min = ${x}` : ''}`, line: d < 0 ? 15 : 14, views: views() })
       }
     } else if (o[0] === 'pop') {
       const d = st.pop()!
       const old = min
       if (d < 0) min = min - d
-      out.push({ note: `${opText(o)}:彈出差值 ${d}${d < 0 ? `,負的 → 被彈出的就是當時的最小值 ${old},還原上一個 min = ${old} − (${d}) = ${min}` : `,被彈出的值是 ${min} + ${d} = ${min + d}`}`, views: views() })
+      out.push({ note: `${opText(o)}:彈出差值 ${d}${d < 0 ? `,負的 → 被彈出的就是當時的最小值 ${old},還原上一個 min = ${old} − (${d}) = ${min}` : `,被彈出的值是 ${min} + ${d} = ${min + d}`}`, line: d < 0 ? 20 : 19, views: views() })
     } else if (o[0] === 'getMin') {
-      out.push({ note: `${opText(o)}:直接回傳 min = ${min}`, views: views() })
+      out.push({ note: `${opText(o)}:直接回傳 min = ${min}`, line: 29, views: views() })
     }
   }
   return out

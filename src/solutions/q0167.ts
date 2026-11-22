@@ -7,19 +7,19 @@ const A = [1, 3, 4, 6, 9, 11, 15]
 const T = 14
 
 function bsFig(): FigStep[] {
-  const out: FigStep[] = [{ note: `陣列有序。固定第一個數 a,另一個數一定是 ${T} − a,用二分搜尋在右邊找它`, views: [arr(A, { label: 'numbers' })] }]
+  const out: FigStep[] = [{ note: `陣列有序。固定第一個數 a,另一個數一定是 ${T} − a,用二分搜尋在右邊找它`, line: 3, views: [arr(A, { label: 'numbers' })] }]
   for (let i = 0; i < A.length; i++) {
     const need = T - A[i]
     let lo = i + 1
     let hi = A.length - 1
-    out.push({ note: `固定 numbers[${i}] = ${A[i]},要找 ${need},搜尋範圍 [${lo}, ${hi}]`, views: [arr(A, { label: 'numbers', highlight: [i], range: [lo, hi] })] })
+    out.push({ note: `固定 numbers[${i}] = ${A[i]},要找 ${need},搜尋範圍 [${lo}, ${hi}]`, line: 5, views: [arr(A, { label: 'numbers', highlight: [i], range: [lo, hi] })] })
     while (lo <= hi) {
       const mid = (lo + hi) >> 1
       if (A[mid] === need) {
-        out.push({ note: `mid = ${mid},numbers[mid] = ${A[mid]} = ${need} → 找到!回傳 [${i + 1}, ${mid + 1}](題目要 1-indexed)`, views: [arr(A, { label: 'numbers', highlight: [i, mid], range: [lo, hi] })] })
+        out.push({ note: `mid = ${mid},numbers[mid] = ${A[mid]} = ${need} → 找到!回傳 [${i + 1}, ${mid + 1}](題目要 1-indexed)`, line: 8, views: [arr(A, { label: 'numbers', highlight: [i, mid], range: [lo, hi] })] })
         return out
       }
-      out.push({ note: `mid = ${mid},numbers[mid] = ${A[mid]} ${A[mid] < need ? `< ${need} → 往右半找` : `> ${need} → 往左半找`}`, views: [arr(A, { label: 'numbers', highlight: [i], compare: [mid], range: [lo, hi] })] })
+      out.push({ note: `mid = ${mid},numbers[mid] = ${A[mid]} ${A[mid] < need ? `< ${need} → 往右半找` : `> ${need} → 往左半找`}`, line: A[mid] < need ? 9 : 10, views: [arr(A, { label: 'numbers', highlight: [i], compare: [mid], range: [lo, hi] })] })
       if (A[mid] < need) lo = mid + 1
       else hi = mid - 1
     }
@@ -31,17 +31,18 @@ function twoPtrFig(): FigStep[] {
   let l = 0
   let r = A.length - 1
   const view = (opt: Parameters<typeof arr>[1] = {}) => arr(A, { label: 'numbers', dim: [...range(0, l - 1), ...range(r + 1, A.length - 1)], pointers: [{ name: 'L', index: l }, { name: 'R', index: r, color: 'b' }], ...opt })
-  const out: FigStep[] = [{ note: 'L 指最小、R 指最大。和太小就讓 L 變大,太大就讓 R 變小', views: [view()] }]
+  const out: FigStep[] = [{ note: 'L 指最小、R 指最大。和太小就讓 L 變大,太大就讓 R 變小', line: 2, views: [view()] }]
   while (l < r) {
     const s = A[l] + A[r]
     if (s === T) {
-      out.push({ note: `${A[l]} + ${A[r]} = ${T} → 回傳 [${l + 1}, ${r + 1}]`, views: [view({ highlight: [l, r] })] })
+      out.push({ note: `${A[l]} + ${A[r]} = ${T} → 回傳 [${l + 1}, ${r + 1}]`, line: 5, views: [view({ highlight: [l, r] })] })
       return out
     }
     out.push({
       note: s < T
         ? `${A[l]} + ${A[r]} = ${s} < ${T}。${A[l]} 配最大的 ${A[r]} 都不夠,配其他數更不夠 → ${A[l]} 不可能是答案,L++`
         : `${A[l]} + ${A[r]} = ${s} > ${T}。${A[r]} 配最小的 ${A[l]} 都太大,配其他數更大 → ${A[r]} 不可能是答案,R--`,
+      line: s < T ? 6 : 7,
       views: [view({ compare: [l, r] })],
     })
     if (s < T) l++
@@ -75,7 +76,7 @@ export const q0167: Solution = {
       name: '暴力:試每一對',
       idea: '兩層迴圈,和等於 `target` 就回傳。沒有用到「有序」。',
       steps: ['`i` 從 0 開始,`j` 從 `i+1` 開始', '`numbers[i] + numbers[j] == target` → 回傳 `[i+1, j+1]`'],
-      figure: { title: `numbers = [${A.join(',')}], target = ${T}`, steps: [{ note: '和 [1. Two Sum](#/q/1) 的暴力法一樣:每一對都試,最多 n(n−1)/2 對', views: [arr(A, { label: 'numbers' })] }, { note: `1 配誰都湊不到 ${T}(要 ${T - 1});換 3:3 + 4、3 + 6、3 + 9 都不對,3 + 11 = ${T}`, views: [arr(A, { label: 'numbers', highlight: [1, 5] })] }] },
+      figure: { title: `numbers = [${A.join(',')}], target = ${T}`, steps: [{ note: '和 [1. Two Sum](#/q/1) 的暴力法一樣:每一對都試,最多 n(n−1)/2 對', line: 3, views: [arr(A, { label: 'numbers' })] }, { note: `1 配誰都湊不到 ${T}(要 ${T - 1});換 3:3 + 4、3 + 6、3 + 9 都不對,3 + 11 = ${T}`, line: 5, views: [arr(A, { label: 'numbers', highlight: [1, 5] })] }] },
       complexity: { time: 'O(n²)', space: 'O(1)', why: '最多比 n(n−1)/2 對。' },
       verdict: 'n = 3·10⁴ 會超時。只當起點。',
       code: {

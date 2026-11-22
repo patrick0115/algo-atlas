@@ -11,9 +11,9 @@ function countFig(): FigStep[] {
   const out: FigStep[] = []
   A.forEach((x, i) => {
     cnt.set(x, (cnt.get(x) ?? 0) + 1)
-    if (i === 0 || i === 3 || i === A.length - 1) out.push({ note: `看到 ${x},它的次數變成 ${cnt.get(x)}`, views: [arr(A, { label: 'nums', highlight: [i], done: Array.from({ length: i }, (_, k) => k) }), kv([...cnt.entries()], '次數', [x])] })
+    if (i === 0 || i === 3 || i === A.length - 1) out.push({ note: `看到 ${x},它的次數變成 ${cnt.get(x)}`, line: 4, views: [arr(A, { label: 'nums', highlight: [i], done: Array.from({ length: i }, (_, k) => k) }), kv([...cnt.entries()], '次數', [x])] })
   })
-  out.push({ note: `次數超過 n/2 = ${Math.floor(A.length / 2)} 的是 2(出現 ${cnt.get(2)} 次)`, views: [kv([...cnt.entries()], '次數', [2])] })
+  out.push({ note: `次數超過 n/2 = ${Math.floor(A.length / 2)} 的是 2(出現 ${cnt.get(2)} 次)`, line: 5, views: [kv([...cnt.entries()], '次數', [2])] })
   return out
 }
 
@@ -21,20 +21,22 @@ function sortFig(): FigStep[] {
   const s = [...A].sort((a, b) => a - b)
   const m = Math.floor(s.length / 2)
   return [
-    { note: '排序之後,一樣的數會排在一起', views: [arr(s, { label: '排序後' })] },
-    { note: `多數元素佔了超過一半的位置,不管它排在左邊還是右邊,一定會蓋過正中間 [${m}]。所以答案就是 s[${m}] = ${s[m]}`, views: [arr(s, { label: '排序後', highlight: [m], pointers: [{ name: 'n/2', index: m }] })] },
+    { note: '排序之後,一樣的數會排在一起', line: 2, views: [arr(s, { label: '排序後' })] },
+    { note: `多數元素佔了超過一半的位置,不管它排在左邊還是右邊,一定會蓋過正中間 [${m}]。所以答案就是 s[${m}] = ${s[m]}`, line: 3, views: [arr(s, { label: '排序後', highlight: [m], pointers: [{ name: 'n/2', index: m }] })] },
   ]
 }
 
 function bmFig(): FigStep[] {
   let cand = 0
   let c = 0
-  const out: FigStep[] = [{ note: '想像不同的數一對一「同歸於盡」:多數元素比其他人加起來還多,最後一定是它活下來。cand = 候選人,count = 它還剩幾票', views: [arr(A, { label: 'nums' }), arr(['-', 0], { label: 'cand / count' })] }]
+  const out: FigStep[] = [{ note: '想像不同的數一對一「同歸於盡」:多數元素比其他人加起來還多,最後一定是它活下來。cand = 候選人,count = 它還剩幾票', line: 2, views: [arr(A, { label: 'nums' }), arr(['-', 0], { label: 'cand / count' })] }]
   A.forEach((x, i) => {
     let note: string
+    let line = 5
     if (c === 0) {
       cand = x
       c = 1
+      line = 4
       note = `count 是 0,沒有候選人 → ${x} 當候選人,count = 1`
     } else if (x === cand) {
       c++
@@ -43,9 +45,9 @@ function bmFig(): FigStep[] {
       c--
       note = `${x} 和候選人 ${cand} 不同,互相抵消一票,count − 1 = ${c}`
     }
-    out.push({ note, views: [arr(A, { label: 'nums', highlight: [i], done: Array.from({ length: i }, (_, k) => k) }), arr([cand, c], { label: 'cand / count', highlight: [1] })] })
+    out.push({ note, line, views: [arr(A, { label: 'nums', highlight: [i], done: Array.from({ length: i }, (_, k) => k) }), arr([cand, c], { label: 'cand / count', highlight: [1] })] })
   })
-  out.push({ note: `最後的候選人 ${cand} 就是答案(題目保證多數元素一定存在)`, views: [arr([cand, c], { label: 'cand / count', done: [0] })] })
+  out.push({ note: `最後的候選人 ${cand} 就是答案(題目保證多數元素一定存在)`, line: 7, views: [arr([cand, c], { label: 'cand / count', done: [0] })] })
   return out
 }
 

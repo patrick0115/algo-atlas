@@ -11,14 +11,14 @@ const bits = (x: number) => x.toString(2).padStart(W, '0').split('')
 function loopFig(): FigStep[] {
   let n = X
   let res = 0
-  const out: FigStep[] = [{ note: `用 ${W} 位元示範(實際是 32 位元)。每一輪:拿 n 的最後一位,塞到 res 的最後面(res 先左移空出位置),然後 n 右移`, views: [arr(bits(n), { label: 'n' }), arr(bits(res), { label: 'res' })] }]
+  const out: FigStep[] = [{ note: `用 ${W} 位元示範(實際是 32 位元)。每一輪:拿 n 的最後一位,塞到 res 的最後面(res 先左移空出位置),然後 n 右移`, line: 2, views: [arr(bits(n), { label: 'n' }), arr(bits(res), { label: 'res' })] }]
   for (let i = 0; i < W; i++) {
     const b = n & 1
     res = (res << 1) | b
     n >>= 1
-    if (i < 3 || i === W - 1) out.push({ note: `第 ${i + 1} 輪:最後一位是 ${b} → res = (res << 1) | ${b}`, views: [arr(bits(n), { label: 'n', dim: range(0, i) }), arr(bits(res), { label: 'res', highlight: [W - 1] })] })
+    if (i < 3 || i === W - 1) out.push({ note: `第 ${i + 1} 輪:最後一位是 ${b} → res = (res << 1) | ${b}`, line: 4, views: [arr(bits(n), { label: 'n', dim: range(0, i) }), arr(bits(res), { label: 'res', highlight: [W - 1] })] })
   }
-  out.push({ note: `跑滿 ${W} 輪(就算 n 已經變 0 也要跑滿,前面的 0 會變成後面的 0):${X.toString(2).padStart(W, '0')} → ${res.toString(2).padStart(W, '0')}`, views: [arr(bits(X), { label: '原本' }), arr(bits(res), { label: '反轉後', done: range(0, W - 1) })] })
+  out.push({ note: `跑滿 ${W} 輪(就算 n 已經變 0 也要跑滿,前面的 0 會變成後面的 0):${X.toString(2).padStart(W, '0')} → ${res.toString(2).padStart(W, '0')}`, line: 7, views: [arr(bits(X), { label: '原本' }), arr(bits(res), { label: '反轉後', done: range(0, W - 1) })] })
   return out
 }
 
@@ -31,7 +31,7 @@ function swapFig(): FigStep[] {
   steps.push(['每 4 位裡,左右 2 位交換', x])
   x = (((x & 0xaa) >> 1) | ((x & 0x55) << 1)) & 0xff
   steps.push(['每 2 位裡,左右 1 位交換', x])
-  return steps.map(([t, v], i) => ({ note: i === 0 ? '分治:先交換左右兩半,再在每一半裡交換左右兩半……一路到單一位元。32 位元只要 5 次' : t, views: [arr(bits(v), { label: t, highlight: i === steps.length - 1 ? range(0, W - 1) : [] })] }))
+  return steps.map(([t, v], i) => ({ note: i === 0 ? '分治:先交換左右兩半,再在每一半裡交換左右兩半……一路到單一位元。32 位元只要 5 次' : t, line: [2, 4, 5, 6][i], views: [arr(bits(v), { label: t, highlight: i === steps.length - 1 ? range(0, W - 1) : [] })] }))
 }
 
 export const q0190: Solution = {

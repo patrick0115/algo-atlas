@@ -9,22 +9,30 @@ const CAP = 2
 const OPS: Op[] = [['put', 1, 1], ['put', 2, 2], ['get', 1], ['put', 3, 3], ['get', 2], ['put', 4, 4], ['get', 1], ['get', 3], ['get', 4]]
 const opText = (o: Op) => (o[0] === 'put' ? `put(${o[1]}, ${o[2]})` : `get(${o[1]})`)
 
+type Kind = 'getMiss' | 'getHit' | 'putUpdate' | 'putEvict' | 'putNew'
+type Lines = Record<'init' | Kind, number>
+// 各解法 code.javascript 的行號(方法三的圖與方法二共用 dllFig,所以另給一組)
+const LINES_LIST: Lines = { init: 3, getMiss: 9, getHit: 11, putUpdate: 19, putEvict: 18, putNew: 19 }
+const LINES_DLL: Lines = { init: 3, getMiss: 24, getHit: 26, putUpdate: 35, putEvict: 43, putNew: 40 }
+const LINES_MAP: Lines = { init: 3, getMiss: 8, getHit: 11, putUpdate: 17, putEvict: 18, putNew: 17 }
+
 /** 模擬 LRU,order 從「最舊」到「最新」 */
-function simulate(onStep: (o: Op, order: [number, number][], note: string, hl: number) => void) {
+function simulate(onStep: (o: Op, order: [number, number][], note: string, hl: number, kind: Kind) => void) {
   let order: [number, number][] = []
   for (const o of OPS) {
     const k = o[1]
     const at = order.findIndex((p) => p[0] === k)
     if (o[0] === 'get') {
       if (at < 0) {
-        onStep(o, order, `${opText(o)}:沒有這個 key → 回傳 −1`, -1)
+        onStep(o, order, `${opText(o)}:沒有這個 key → 回傳 −1`, -1, 'getMiss')
         continue
       }
       const p = order[at]
       order = [...order.slice(0, at), ...order.slice(at + 1), p]
-      onStep(o, order, `${opText(o)}:找到,值是 ${p[1]}。它剛被用過 → 搬到「最新」那一端`, order.length - 1)
+      onStep(o, order, `${opText(o)}:找到,值是 ${p[1]}。它剛被用過 → 搬到「最新」那一端`, order.length - 1, 'getHit')
     } else {
       let note = ''
+      let kind: Kind = 'putUpdate'
       if (at >= 0) {
         order = [...order.slice(0, at), ...order.slice(at + 1), [k, o[2]]]
         note = `${opText(o)}:key 已存在 → 更新值,並搬到最新`
@@ -32,21 +40,25 @@ function simulate(onStep: (o: Op, order: [number, number][], note: string, hl: n
         if (order.length === CAP) {
           note = `${opText(o)}:滿了(容量 ${CAP}),先踢掉最久沒用的 key ${order[0][0]},再放進新的`
           order = order.slice(1)
-        } else note = `${opText(o)}:還有空位,放在最新那一端`
+          kind = 'putEvict' // TODO: 可能要拆格(踢掉最舊 + 放進新的 在同一步,line 只亮踢掉那行)
+        } else {
+          note = `${opText(o)}:還有空位,放在最新那一端`
+          kind = 'putNew'
+        }
         order = [...order, [k, o[2]]]
       }
-      onStep(o, order, note, order.length - 1)
+      onStep(o, order, note, order.length - 1, kind)
     }
   }
 }
 
-function listFig(): FigStep[] {
-  const out: FigStep[] = [{ note: `容量 ${CAP}。用一個清單照「使用時間」排好:左邊最久沒用、右邊最近用過。每次 get / put 都要在清單裡**找**那個 key → O(n)`, views: [arr([], { label: '清單(左舊 → 右新)' })] }]
-  simulate((_, order, note, hl) => out.push({ note, views: [arr(order.map(([k, v]) => `${k}:${v}`), { label: '清單(左舊 → 右新)', highlight: hl >= 0 ? [hl] : [] })] }))
+function listFig(L: Lines): FigStep[] {
+  const out: FigStep[] = [{ note: `容量 ${CAP}。用一個清單照「使用時間」排好:左邊最久沒用、右邊最近用過。每次 get / put 都要在清單裡**找**那個 key → O(n)`, line: L.init, views: [arr([], { label: '清單(左舊 → 右新)' })] }]
+  simulate((_, order, note, hl, kind) => out.push({ note, line: L[kind], views: [arr(order.map(([k, v]) => `${k}:${v}`), { label: '清單(左舊 → 右新)', highlight: hl >= 0 ? [hl] : [] })] }))
   return out
 }
 
-function dllFig(): FigStep[] {
+function dllFig(L: Lines): FigStep[] {
   const view = (order: [number, number][], hl: number) => {
     const labels = ['H', ...order.map(([k, v]) => `${k}:${v}`), 'T']
     const edges: [number, number, string?][] = []
@@ -56,8 +68,8 @@ function dllFig(): FigStep[] {
       kv(order.map(([k]) => [k, `→ 節點 ${k}`]), 'map(key → 串列裡的節點)', hl >= 0 ? [order[hl][0]] : []),
     ]
   }
-  const out: FigStep[] = [{ note: 'Hash Map 負責「O(1) 找到節點」,雙向鏈結串列負責「O(1) 把節點拿出來、插到尾巴、從頭刪掉」。兩個合起來,每個操作都是 O(1)', views: view([], -1) }]
-  simulate((_, order, note, hl) => out.push({ note, views: view(order, hl) }))
+  const out: FigStep[] = [{ note: 'Hash Map 負責「O(1) 找到節點」,雙向鏈結串列負責「O(1) 把節點拿出來、插到尾巴、從頭刪掉」。兩個合起來,每個操作都是 O(1)', line: L.init, views: view([], -1) }]
+  simulate((_, order, note, hl, kind) => out.push({ note, line: L[kind], views: view(order, hl) }))
   return out
 }
 
@@ -86,7 +98,7 @@ export const q0146: Solution = {
       name: '清單照使用時間排序(O(n))',
       idea: '一個清單從舊到新排好 `(key, value)`。每次 get / put 都在清單裡線性找 key,找到就移到最後;滿了就刪第一個。',
       steps: ['`get`:線性找 key;找到就搬到最後並回傳值,否則 `-1`', '`put`:找到就更新並搬到最後', '沒找到:滿了先刪第一個,再加到最後'],
-      figure: { title: `容量 ${CAP}:${OPS.map(opText).join('、')}`, steps: listFig() },
+      figure: { title: `容量 ${CAP}:${OPS.map(opText).join('、')}`, steps: listFig(LINES_LIST) },
       complexity: { time: 'get / put O(n)', space: 'O(capacity)', why: '每次都要在清單裡找、從中間刪除。' },
       verdict: '最好懂,能確認「什麼時候要搬、要踢誰」的邏輯。但不符合 O(1) 要求,大量操作時會超時。',
       code: {
@@ -230,7 +242,7 @@ public:
       name: 'Hash Map + 雙向鏈結串列(O(1))',
       idea: '串列從 head 到 tail 依使用時間排(head 旁邊最舊)。map 存 `key → 節點`。用到一個節點:把它從原位置拆下來,接到 tail 前面。滿了:刪掉 head 後面那個。',
       steps: ['`remove(node)`:`node.prev.next = node.next`、`node.next.prev = node.prev`', '`addToEnd(node)`:插在 `tail` 前面', '`get`:不在 map → `-1`;在 → `remove` + `addToEnd`,回傳值', '`put`:已存在 → 更新值、搬到最後;否則新節點 `addToEnd`,超過容量就刪掉 `head.next`(也從 map 刪掉)'],
-      figure: { title: `容量 ${CAP}:${OPS.map(opText).join('、')}`, steps: dllFig() },
+      figure: { title: `容量 ${CAP}:${OPS.map(opText).join('、')}`, steps: dllFig(LINES_DLL) },
       complexity: { time: 'get / put O(1)', space: 'O(capacity)', why: 'Hash Map 找節點 O(1);雙向串列拆下、插入、刪頭都只改固定幾個指標。' },
       verdict: '面試的標準答案,一定要能自己寫出來。重點:① 節點要存 key(踢掉時才知道要從 map 刪哪個);② 用假的頭尾節點省掉所有邊界判斷。',
       code: {
@@ -459,7 +471,7 @@ public:
       name: '用語言內建的「有順序的 Map」',
       idea: '有些語言的 Map 會記住插入順序:Python 的 `OrderedDict`、Java 的 `LinkedHashMap`、JavaScript 的 `Map`。「搬到最新」= 刪掉再重新放進去;「最舊的」= 第一個 key。它們內部其實就是方法二的 Hash + 雙向串列。',
       steps: ['`get`:不在 → `-1`;在 → 移到最後(`move_to_end` / 刪掉再放回)', '`put`:放進去並移到最後', '超過容量 → 刪掉第一個 key'],
-      figure: { title: `容量 ${CAP}:${OPS.map(opText).join('、')}`, steps: dllFig() },
+      figure: { title: `容量 ${CAP}:${OPS.map(opText).join('、')}`, steps: dllFig(LINES_MAP) },
       complexity: { time: 'get / put O(1)', space: 'O(capacity)', why: '這些內建結構的插入、刪除、取第一個都是 O(1)。' },
       verdict: '實務上最簡單。但面試官通常會說「不要用內建的」,要你寫出方法二 —— 這個方法比較適合當作「我知道內建的原理」的補充。C 的 uthash 剛好也有插入順序,C++ 則用 `list` + `unordered_map` 拼出來。',
       code: {

@@ -6,13 +6,13 @@ import type { FigStep, Solution } from './types'
 const A = [11, 13, 15, 17, 19, 2, 5, 7]
 
 function linearFig(): FigStep[] {
-  const out: FigStep[] = [{ note: '旋轉過的有序陣列:前半段和後半段各自遞增,中間有一個「斷崖」。最小值就在斷崖之後', views: [arr(A, { label: 'nums', mode: 'bars' })] }]
+  const out: FigStep[] = [{ note: '旋轉過的有序陣列:前半段和後半段各自遞增,中間有一個「斷崖」。最小值就在斷崖之後', line: 2, views: [arr(A, { label: 'nums', mode: 'bars' })] }]
   for (let i = 1; i < A.length; i++) {
     if (A[i] < A[i - 1]) {
-      out.push({ note: `nums[${i}] = ${A[i]} < nums[${i - 1}] = ${A[i - 1]},往下掉了 → 這就是最小值`, views: [arr(A, { label: 'nums', mode: 'bars', highlight: [i], compare: [i - 1] })] })
+      out.push({ note: `nums[${i}] = ${A[i]} < nums[${i - 1}] = ${A[i - 1]},往下掉了 → 這就是最小值`, line: 3, views: [arr(A, { label: 'nums', mode: 'bars', highlight: [i], compare: [i - 1] })] })
       return out
     }
-    out.push({ note: `nums[${i}] = ${A[i]} ≥ nums[${i - 1}],還在往上`, views: [arr(A, { label: 'nums', mode: 'bars', compare: [i - 1, i] })] })
+    out.push({ note: `nums[${i}] = ${A[i]} ≥ nums[${i - 1}],還在往上`, line: 3, views: [arr(A, { label: 'nums', mode: 'bars', compare: [i - 1, i] })] })
   }
   return out
 }
@@ -29,7 +29,7 @@ function bsFig(): FigStep[] {
       compare: mid !== undefined ? [mid, hi] : [],
       pointers: [{ name: 'lo', index: lo }, { name: 'hi', index: hi, color: 'b' }, ...(mid !== undefined ? [{ name: 'mid', index: mid, color: 'c' as const }] : [])],
     })
-  const out: FigStep[] = [{ note: '最小值一定在 [lo, hi] 裡。每次拿 nums[mid] 和**最右邊** nums[hi] 比,就知道斷崖在哪一邊', views: [view()] }]
+  const out: FigStep[] = [{ note: '最小值一定在 [lo, hi] 裡。每次拿 nums[mid] 和**最右邊** nums[hi] 比,就知道斷崖在哪一邊', line: 2, views: [view()] }]
   while (lo < hi) {
     const mid = (lo + hi) >> 1
     const right = A[mid] > A[hi]
@@ -37,12 +37,13 @@ function bsFig(): FigStep[] {
       note: right
         ? `nums[mid] = ${A[mid]} > nums[hi] = ${A[hi]}:mid 還在「左邊那段高的」,斷崖在 mid 右邊 → lo = mid + 1`
         : `nums[mid] = ${A[mid]} < nums[hi] = ${A[hi]}:mid 到 hi 是遞增的一段,最小值在 mid 或它左邊 → hi = mid(mid 本身可能就是答案)`,
+      line: right ? 5 : 6,
       views: [view(mid)],
     })
     if (right) lo = mid + 1
     else hi = mid
   }
-  out.push({ note: `lo == hi = ${lo},nums[${lo}] = ${A[lo]} 就是最小值`, views: [arr(A, { label: 'nums', mode: 'bars', highlight: [lo] })] })
+  out.push({ note: `lo == hi = ${lo},nums[${lo}] = ${A[lo]} 就是最小值`, line: 8, views: [arr(A, { label: 'nums', mode: 'bars', highlight: [lo] })] })
   return out
 }
 

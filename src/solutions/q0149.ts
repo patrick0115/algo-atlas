@@ -29,7 +29,7 @@ function slopeKey(dx: number, dy: number): string {
 }
 
 function hashFig(): FigStep[] {
-  const out: FigStep[] = [{ note: '固定一個點當「軸心」,看其他點和它連線的**斜率**。斜率一樣 = 在同一條穿過軸心的直線上', views: [plane()] }]
+  const out: FigStep[] = [{ note: '固定一個點當「軸心」,看其他點和它連線的**斜率**。斜率一樣 = 在同一條穿過軸心的直線上', line: 4, views: [plane()] }]
   let best = 0
   P.forEach(([x0, y0], i) => {
     const cnt = new Map<string, number>()
@@ -42,17 +42,17 @@ function hashFig(): FigStep[] {
     best = Math.max(best, bv + 1)
     if (i <= 1) {
       const same = P.map((_, j) => j).filter((j) => j > i && slopeKey(P[j][0] - x0, P[j][1] - y0) === bk)
-      out.push({ note: `軸心 = 點 ${i}(${x0}, ${y0}):和後面每個點算斜率 Δy/Δx(約分成最簡分數)。斜率 ${bk} 出現 ${bv} 次 → 這條線上有 ${bv} + 1 = ${bv + 1} 個點`, views: [plane([i], same), kv([...cnt.entries()], '斜率 → 個數', [bk])] })
+      out.push({ note: `軸心 = 點 ${i}(${x0}, ${y0}):和後面每個點算斜率 Δy/Δx(約分成最簡分數)。斜率 ${bk} 出現 ${bv} 次 → 這條線上有 ${bv} + 1 = ${bv + 1} 個點`, line: 14, views: [plane([i], same), kv([...cnt.entries()], '斜率 → 個數', [bk])] }) // TODO: 可能要拆格
     }
   })
-  out.push({ note: `每個點都當過軸心後取最大:點 1、3、4、5 在斜率 −1 的線上,共 ${best} 個點(點 0、1、2 那條斜率 1/2 的只有 3 個)`, views: [plane([1, 3, 4, 5], [], `答案 ${best}`)] })
+  out.push({ note: `每個點都當過軸心後取最大:點 1、3、4、5 在斜率 −1 的線上,共 ${best} 個點(點 0、1、2 那條斜率 1/2 的只有 3 個)`, line: 18, views: [plane([1, 3, 4, 5], [], `答案 ${best}`)] })
   return out
 }
 
 function bruteFig(): FigStep[] {
   return [
-    { note: '暴力:任選兩點 A、B 決定一條線,再檢查其他每個點 C 在不在這條線上', views: [plane([0, 1])] },
-    { note: '判斷 C 在不在 AB 線上用**叉積**:`(B−A) × (C−A) = 0` ⇔ 共線。全是整數乘法,沒有除法也沒有誤差。點 2 共線、其他不共線 → 3 個', views: [plane([0, 1], [2])] },
+    { note: '暴力:任選兩點 A、B 決定一條線,再檢查其他每個點 C 在不在這條線上', line: 5, views: [plane([0, 1])] },
+    { note: '判斷 C 在不在 AB 線上用**叉積**:`(B−A) × (C−A) = 0` ⇔ 共線。全是整數乘法,沒有除法也沒有誤差。點 2 共線、其他不共線 → 3 個', line: 8, views: [plane([0, 1], [2])] },
   ]
 }
 

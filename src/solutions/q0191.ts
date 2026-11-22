@@ -10,29 +10,29 @@ const bin = (x: number, w = 6) => x.toString(2).padStart(w, '0').split('')
 function shiftFig(): FigStep[] {
   let x = N
   let c = 0
-  const out: FigStep[] = [{ note: `${N} 的二進位是 ${N.toString(2)}。一位一位看:x & 1 是最後一位,看完就 x >> 1 把它丟掉`, views: [arr(bin(x), { label: 'x' }), arr([c], { label: 'count' })] }]
+  const out: FigStep[] = [{ note: `${N} 的二進位是 ${N.toString(2)}。一位一位看:x & 1 是最後一位,看完就 x >> 1 把它丟掉`, line: 2, views: [arr(bin(x), { label: 'x' }), arr([c], { label: 'count' })] }]
   while (x) {
     const b = x & 1
     c += b
-    out.push({ note: `最後一位是 ${b}${b ? ' → count + 1' : ''};右移`, views: [arr(bin(x), { label: 'x', highlight: [5] }), arr([c], { label: 'count' })] })
+    out.push({ note: `最後一位是 ${b}${b ? ' → count + 1' : ''};右移`, line: 3, views: [arr(bin(x), { label: 'x', highlight: [5] }), arr([c], { label: 'count' })] })
     x >>= 1
   }
-  out.push({ note: `x 變成 0 → 共 ${c} 個 1`, views: [arr([c], { label: 'count', done: [0] })] })
+  out.push({ note: `x 變成 0 → 共 ${c} 個 1`, line: 4, views: [arr([c], { label: 'count', done: [0] })] })
   return out
 }
 
 function kernFig(): FigStep[] {
   let x = N
   let c = 0
-  const out: FigStep[] = [{ note: 'x & (x − 1) 會把**最右邊的 1** 變成 0(x − 1 會讓最右邊的 1 變 0、它右邊的 0 全變 1,& 起來就只少了那個 1)。做幾次才變 0,就有幾個 1', views: [arr(bin(x), { label: 'x' })] }]
+  const out: FigStep[] = [{ note: 'x & (x − 1) 會把**最右邊的 1** 變成 0(x − 1 會讓最右邊的 1 變 0、它右邊的 0 全變 1,& 起來就只少了那個 1)。做幾次才變 0,就有幾個 1', line: 2, views: [arr(bin(x), { label: 'x' })] }]
   while (x) {
     const y = x & (x - 1)
     const pos = 5 - Math.log2(x ^ y)
     c++
-    out.push({ note: `${x.toString(2).padStart(6, '0')} & ${(x - 1).toString(2).padStart(6, '0')} = ${y.toString(2).padStart(6, '0')}:拿掉一個 1,count = ${c}`, views: [arr(bin(x), { label: 'x', highlight: [pos] }), arr(bin(y), { label: 'x & (x − 1)', dim: range(0, 5).filter((i) => bin(y)[i] === '0') })] })
+    out.push({ note: `${x.toString(2).padStart(6, '0')} & ${(x - 1).toString(2).padStart(6, '0')} = ${y.toString(2).padStart(6, '0')}:拿掉一個 1,count = ${c}`, line: 3, views: [arr(bin(x), { label: 'x', highlight: [pos] }), arr(bin(y), { label: 'x & (x − 1)', dim: range(0, 5).filter((i) => bin(y)[i] === '0') })] })
     x = y
   }
-  out.push({ note: `只跑了 ${c} 輪(1 的個數),不是 32 輪`, views: [arr([c], { label: 'count', done: [0] })] })
+  out.push({ note: `只跑了 ${c} 輪(1 的個數),不是 32 輪`, line: 4, views: [arr([c], { label: 'count', done: [0] })] })
   return out
 }
 

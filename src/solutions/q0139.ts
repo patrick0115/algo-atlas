@@ -15,7 +15,7 @@ function dpFig(s: string, dict: string[]): FigStep[] {
   dp[0] = true
   const chars = [...s]
   const show = () => dp.map((v) => (v === true ? '✓' : v === false ? '✗' : '?'))
-  const out: FigStep[] = [{ note: 'dp[i] = 前 i 個字(s[0..i−1])能不能切成字典裡的字。dp[0] = ✓(空字串)。dp[i] = ✓ 當且僅當:存在 j,dp[j] 是 ✓,而且 s[j..i−1] 在字典裡', views: [arr(chars, { label: 's' }), kv(dict.map((w) => [w, '✓']), '字典'), arr(show(), { label: 'dp[0..n]' })] }]
+  const out: FigStep[] = [{ note: 'dp[i] = 前 i 個字(s[0..i−1])能不能切成字典裡的字。dp[0] = ✓(空字串)。dp[i] = ✓ 當且僅當:存在 j,dp[j] 是 ✓,而且 s[j..i−1] 在字典裡', line: 2, views: [arr(chars, { label: 's' }), kv(dict.map((w) => [w, '✓']), '字典'), arr(show(), { label: 'dp[0..n]' })] }]
   for (let i = 1; i <= n; i++) {
     let found = -1
     for (let j = 0; j < i; j++)
@@ -26,10 +26,11 @@ function dpFig(s: string, dict: string[]): FigStep[] {
     dp[i] = found >= 0
     out.push({
       note: found >= 0 ? `dp[${i}]:dp[${found}] 是 ✓,而且 "${s.slice(found, i)}" 在字典 → ✓` : `dp[${i}]:找不到任何 j 讓「dp[j] ✓ 且 s[j..${i - 1}] 在字典」→ ✗`,
+      line: found >= 0 ? 8 : 7,
       views: [arr(chars, { label: 's', range: found >= 0 ? [found, i - 1] : [0, i - 1], highlight: found >= 0 ? range(found, i - 1) : [] }), arr(show(), { label: 'dp', highlight: [i], compare: found >= 0 ? [found] : [] })],
     })
   }
-  out.push({ note: `dp[${n}] = ${dp[n] ? '✓ → true' : '✗ → false'}`, views: [arr(show(), { label: 'dp', done: dp[n] === true ? [n] : [] })] })
+  out.push({ note: `dp[${n}] = ${dp[n] ? '✓ → true' : '✗ → false'}`, line: 11, views: [arr(show(), { label: 'dp', done: dp[n] === true ? [n] : [] })] })
   return out
 }
 
@@ -37,7 +38,7 @@ function bfsFig(): FigStep[] {
   const set = new Set(DICT2)
   const seen = new Set<number>([0])
   let q = [0]
-  const out: FigStep[] = [{ note: '把「切到第幾個字」當成節點:從位置 0 出發,如果 s[i..j−1] 在字典裡,就能從 i 走到 j。問題變成「能不能從 0 走到 n」→ BFS', views: [arr([...S2], { label: 's', highlight: [0] })] }]
+  const out: FigStep[] = [{ note: '把「切到第幾個字」當成節點:從位置 0 出發,如果 s[i..j−1] 在字典裡,就能從 i 走到 j。問題變成「能不能從 0 走到 n」→ BFS', line: 4, views: [arr([...S2], { label: 's', highlight: [0] })] }]
   while (q.length) {
     const next: number[] = []
     for (const i of q)
@@ -47,7 +48,7 @@ function bfsFig(): FigStep[] {
           next.push(j)
         }
     if (!next.length) break
-    out.push({ note: `從 ${q.join('、')} 出發,能用一個字典字走到 ${next.join('、')}${next.includes(S2.length) ? `,其中 ${S2.length} 就是結尾 → true` : ''}`, views: [arr([...S2], { label: 's', highlight: next.filter((x) => x < S2.length) })] })
+    out.push({ note: `從 ${q.join('、')} 出發,能用一個字典字走到 ${next.join('、')}${next.includes(S2.length) ? `,其中 ${S2.length} 就是結尾 → true` : ''}`, line: 11, views: [arr([...S2], { label: 's', highlight: next.filter((x) => x < S2.length) })] }) // TODO: 可能要拆格(一層多個節點合成一步)
     if (next.includes(S2.length)) break
     q = next
   }

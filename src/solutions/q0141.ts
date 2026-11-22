@@ -8,15 +8,15 @@ const POS = 1
 
 function setFig(): FigStep[] {
   const seen: number[] = []
-  const out: FigStep[] = [{ note: `最後一個節點(${V[V.length - 1]})的 next 接回第 ${POS} 個節點(${V[POS]}),形成一個環(亮的箭頭)。沿著 next 走永遠走不完`, views: [loopChain(V, POS)] }]
+  const out: FigStep[] = [{ note: `最後一個節點(${V[V.length - 1]})的 next 接回第 ${POS} 個節點(${V[POS]}),形成一個環(亮的箭頭)。沿著 next 走永遠走不完`, line: 2, views: [loopChain(V, POS)] }]
   let i = 0
   for (;;) {
     if (seen.includes(i)) {
-      out.push({ note: `又走到節點 ${V[i]}(第 ${i} 個),它已經在 set 裡了 → 有環`, views: [loopChain(V, POS, { cls: { [i]: 'hl' } }), kv(seen.map((k) => [`節點 ${V[k]}`, '✓']), '看過的節點(存的是節點本身,不是值)', [`節點 ${V[i]}`])] })
+      out.push({ note: `又走到節點 ${V[i]}(第 ${i} 個),它已經在 set 裡了 → 有環`, line: 4, views: [loopChain(V, POS, { cls: { [i]: 'hl' } }), kv(seen.map((k) => [`節點 ${V[k]}`, '✓']), '看過的節點(存的是節點本身,不是值)', [`節點 ${V[i]}`])] })
       return out
     }
     seen.push(i)
-    out.push({ note: `走到節點 ${V[i]},沒看過 → 放進 set`, views: [loopChain(V, POS, { cls: { [i]: 'hl' } }), kv(seen.map((k) => [`節點 ${V[k]}`, '✓']), '看過的節點(存的是節點本身,不是值)', [`節點 ${V[i]}`])] })
+    out.push({ note: `走到節點 ${V[i]},沒看過 → 放進 set`, line: 5, views: [loopChain(V, POS, { cls: { [i]: 'hl' } }), kv(seen.map((k) => [`節點 ${V[k]}`, '✓']), '看過的節點(存的是節點本身,不是值)', [`節點 ${V[i]}`])] })
     i = i + 1 < V.length ? i + 1 : POS
   }
 }
@@ -25,21 +25,21 @@ function floydFig(): FigStep[] {
   const step = (i: number) => (i + 1 < V.length ? i + 1 : POS)
   let slow = 0
   let fast = 0
-  const draw = (note: string): FigStep => {
+  const draw = (note: string, line: number): FigStep => {
     const subs: Record<number, string> = {}
     subs[slow] = 'slow'
     subs[fast] = subs[fast] ? 'slow,fast' : 'fast'
-    return { note, views: [loopChain(V, POS, { subs, cls: { [slow]: 'visited', [fast]: 'hl' } })] }
+    return { note, line, views: [loopChain(V, POS, { subs, cls: { [slow]: 'visited', [fast]: 'hl' } })] }
   }
-  const out: FigStep[] = [draw('龜兔賽跑:slow 一次走一步、fast 一次走兩步。沒有環的話 fast 會先走到 null;有環的話 fast 會在環裡繞圈,最後從後面追上 slow')]
+  const out: FigStep[] = [draw('龜兔賽跑:slow 一次走一步、fast 一次走兩步。沒有環的話 fast 會先走到 null;有環的話 fast 會在環裡繞圈,最後從後面追上 slow', 2)]
   for (let k = 0; k < 10; k++) {
     slow = step(slow)
     fast = step(step(fast))
     if (slow === fast) {
-      out.push(draw(`slow 走到 ${V[slow]}、fast 走到 ${V[fast]} → 相遇了!有環`))
+      out.push(draw(`slow 走到 ${V[slow]}、fast 走到 ${V[fast]} → 相遇了!有環`, 7))
       return out
     }
-    out.push(draw(`slow 走一步到 ${V[slow]},fast 走兩步到 ${V[fast]}`))
+    out.push(draw(`slow 走一步到 ${V[slow]},fast 走兩步到 ${V[fast]}`, 5))
   }
   return out
 }

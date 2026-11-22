@@ -11,8 +11,8 @@ function copyFig(): FigStep[] {
   const res = Array(n).fill('')
   A.forEach((v, i) => (res[(i + K) % n] = v))
   return [
-    { note: `往右轉 ${K} 格 = 每個數從位置 i 搬到 (i + ${K}) mod ${n}。開一個新陣列照這個規則放`, views: [arr(A, { label: 'nums', highlight: [n - K, n - K + 1, n - K + 2] }), arr(Array(n).fill(''), { label: '新陣列' })] },
-    { note: `例如最後 ${K} 個 ${A.slice(n - K)} 繞回最前面;其他往後移 ${K} 格。最後抄回 nums → [${res}]`, views: [arr(res, { label: '新陣列', highlight: [0, 1, 2] })] },
+    { note: `往右轉 ${K} 格 = 每個數從位置 i 搬到 (i + ${K}) mod ${n}。開一個新陣列照這個規則放`, line: 3, views: [arr(A, { label: 'nums', highlight: [n - K, n - K + 1, n - K + 2] }), arr(Array(n).fill(''), { label: '新陣列' })] },
+    { note: `例如最後 ${K} 個 ${A.slice(n - K)} 繞回最前面;其他往後移 ${K} 格。最後抄回 nums → [${res}]`, line: 4, views: [arr(res, { label: '新陣列', highlight: [0, 1, 2] })] }, // TODO: 可能要拆格
   ]
 }
 
@@ -22,13 +22,13 @@ function revFig(): FigStep[] {
   const rev = (l: number, r: number) => {
     for (; l < r; l++, r--) [a[l], a[r]] = [a[r], a[l]]
   }
-  const out: FigStep[] = [{ note: `轉完的結果是「後 ${K} 個 + 前 ${n - K} 個」。用三次反轉就能原地做到`, views: [arr([...a], { label: 'nums', range: [n - K, n - 1] })] }]
+  const out: FigStep[] = [{ note: `轉完的結果是「後 ${K} 個 + 前 ${n - K} 個」。用三次反轉就能原地做到`, line: 3, views: [arr([...a], { label: 'nums', range: [n - K, n - 1] })] }]
   rev(0, n - 1)
-  out.push({ note: '① 整個反轉:後面那段跑到前面了,但兩段內部都是反的', views: [arr([...a], { label: '整個反轉', highlight: a.map((_, i) => i) })] })
+  out.push({ note: '① 整個反轉:後面那段跑到前面了,但兩段內部都是反的', line: 7, views: [arr([...a], { label: '整個反轉', highlight: a.map((_, i) => i) })] })
   rev(0, K - 1)
-  out.push({ note: `② 反轉前 ${K} 個,轉回正確順序`, views: [arr([...a], { label: `反轉 [0, ${K - 1}]`, highlight: Array.from({ length: K }, (_, i) => i) })] })
+  out.push({ note: `② 反轉前 ${K} 個,轉回正確順序`, line: 8, views: [arr([...a], { label: `反轉 [0, ${K - 1}]`, highlight: Array.from({ length: K }, (_, i) => i) })] })
   rev(K, n - 1)
-  out.push({ note: `③ 反轉後 ${n - K} 個 → [${a}],完成`, views: [arr([...a], { label: `反轉 [${K}, ${n - 1}]`, highlight: Array.from({ length: n - K }, (_, i) => K + i), done: Array.from({ length: K }, (_, i) => i) })] })
+  out.push({ note: `③ 反轉後 ${n - K} 個 → [${a}],完成`, line: 9, views: [arr([...a], { label: `反轉 [${K}, ${n - 1}]`, highlight: Array.from({ length: n - K }, (_, i) => K + i), done: Array.from({ length: K }, (_, i) => i) })] })
   return out
 }
 

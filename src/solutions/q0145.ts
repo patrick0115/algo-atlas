@@ -9,25 +9,25 @@ const T = [4, 2, 6, 1, 3, 5, 7]
 function recFig(): FigStep[] {
   // 層序索引 0:4 1:2 2:6 3:1 4:3 5:5 6:7;後序 = 1 3 2 5 7 6 4
   const order = [3, 4, 1, 5, 6, 2, 0]
-  const out: FigStep[] = [{ note: '後序 = 左子樹 → 右子樹 → 自己。一個節點要等兩個孩子都處理完才輪到它,所以根一定是最後一個', views: [tree(T)] }]
+  const out: FigStep[] = [{ note: '後序 = 左子樹 → 右子樹 → 自己。一個節點要等兩個孩子都處理完才輪到它,所以根一定是最後一個', line: 9, views: [tree(T)] }]
   ;[0, 2, 5, 6].forEach((k) => {
     const idx = order[k]
-    out.push({ note: `記下 ${T[idx]}${k === 2 ? '(左右孩子 1、3 都記完了)' : k === 6 ? '(根最後)' : ''}`, views: [tree(T, { cls: { ...Object.fromEntries(order.slice(0, k).map((i) => [i, 'done'])), [idx]: 'hl' } }), arr(order.slice(0, k + 1).map((i) => T[i]), { label: '結果' })] })
+    out.push({ note: `記下 ${T[idx]}${k === 2 ? '(左右孩子 1、3 都記完了)' : k === 6 ? '(根最後)' : ''}`, line: 7, views: [tree(T, { cls: { ...Object.fromEntries(order.slice(0, k).map((i) => [i, 'done'])), [idx]: 'hl' } }), arr(order.slice(0, k + 1).map((i) => T[i]), { label: '結果' })] })
   })
   return out
 }
 
 function revFig(): FigStep[] {
   return [
-    { note: '小技巧:前序是「自己 → 左 → 右」。把它改成「自己 → **右** → 左」(堆疊先 push 左再 push 右),得到 4 6 7 5 2 3 1', views: [tree(T), arr([4, 6, 7, 5, 2, 3, 1], { label: '自己 → 右 → 左' })] },
-    { note: '把這個結果整個反轉 → 1 3 2 5 7 6 4,剛好就是「左 → 右 → 自己」的後序', views: [arr([1, 3, 2, 5, 7, 6, 4], { label: '反轉後 = 後序', done: [0, 1, 2, 3, 4, 5, 6] })] },
+    { note: '小技巧:前序是「自己 → 左 → 右」。把它改成「自己 → **右** → 左」(堆疊先 push 左再 push 右),得到 4 6 7 5 2 3 1', line: 7, views: [tree(T), arr([4, 6, 7, 5, 2, 3, 1], { label: '自己 → 右 → 左' })] },
+    { note: '把這個結果整個反轉 → 1 3 2 5 7 6 4,剛好就是「左 → 右 → 自己」的後序', line: 10, views: [arr([1, 3, 2, 5, 7, 6, 4], { label: '反轉後 = 後序', done: [0, 1, 2, 3, 4, 5, 6] })] },
   ]
 }
 
 function oneStackFig(): FigStep[] {
   return [
-    { note: '真正的單堆疊後序:像中序一樣一路往左 push。看堆疊頂的節點:如果它有右孩子而且右孩子還沒處理過,先去右子樹', views: [tree(T, { cls: { 0: 'cur', 1: 'cur', 3: 'hl' } }), arr([4, 2, 1], { label: '堆疊' })] },
-    { note: '右孩子不存在、或剛剛才處理完(用 prev 記住上一個記下的節點)→ 現在輪到它:pop、記下、prev = 它', views: [tree(T, { cls: { 3: 'done', 4: 'done', 1: 'hl' } }), arr([4], { label: '堆疊' }), arr([1, 3, 2], { label: '結果' })] },
+    { note: '真正的單堆疊後序:像中序一樣一路往左 push。看堆疊頂的節點:如果它有右孩子而且右孩子還沒處理過,先去右子樹', line: 6, views: [tree(T, { cls: { 0: 'cur', 1: 'cur', 3: 'hl' } }), arr([4, 2, 1], { label: '堆疊' })] }, // TODO: 可能要拆格(圖只看得到一路往左 push,右孩子判斷在第 10 行)
+    { note: '右孩子不存在、或剛剛才處理完(用 prev 記住上一個記下的節點)→ 現在輪到它:pop、記下、prev = 它', line: 13, views: [tree(T, { cls: { 3: 'done', 4: 'done', 1: 'hl' } }), arr([4], { label: '堆疊' }), arr([1, 3, 2], { label: '結果' })] },
   ]
 }
 
