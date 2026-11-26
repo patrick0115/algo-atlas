@@ -16,7 +16,7 @@ const E: Entry[] = [
   [327, 'Count of Range Sum', ['merge-sort', 'prefix-sum'], '對前綴和做合併排序,兩指標數落在 [lower, upper] 的差'],
   [88, 'Merge Sorted Array', ['merge-sort', 'two-pointers'], '從尾端往前合併,不會覆蓋還沒處理的元素'],
   [21, 'Merge Two Sorted Lists', ['merge-sort', 'linked-list'], 'dummy 頭 + 每次接較小的節點'],
-  [23, 'Merge k Sorted Lists', ['heap', 'merge-sort', 'linked-list'], '最小堆放各串列頭;或兩兩分治合併'],
+  [23, 'Merge k Sorted Lists', ['heap', 'merge-sort', 'linked-list', 'heap-sort'], '最小堆放各串列頭;或兩兩分治合併'],
   [977, 'Squares of a Sorted Array', ['two-pointers', 'merge-sort'], '兩端絕對值較大者平方放到結果尾端'],
   [274, 'H-Index', ['counting-sort'], '引用數截到 n 做計數,從大往小累加到 >= h'],
   [164, 'Maximum Gap', ['counting-sort'], '桶排序:最大間距必在相鄰非空桶之間'],
@@ -201,7 +201,7 @@ const E: Entry[] = [
 
   // ===== Heap =====
   [703, 'Kth Largest Element in a Stream', ['heap'], '大小 k 的最小堆,堆頂就是答案'],
-  [1046, 'Last Stone Weight', ['heap'], '最大堆每次取兩個'],
+  [1046, 'Last Stone Weight', ['heap', 'heap-sort'], '最大堆每次取兩個'],
   [973, 'K Closest Points to Origin', ['heap', 'quick-sort'], '大小 k 的最大堆;或依距離快速選擇'],
   [621, 'Task Scheduler', ['heap', 'greedy'], '(最大頻率 − 1) × (n + 1) + 同為最大頻率的個數'],
   [355, 'Design Twitter', ['heap', 'hash-map'], '多路合併各使用者的最新推文'],
@@ -325,6 +325,9 @@ const E: Entry[] = [
   [1125, 'Smallest Sufficient Team', ['bitmask-dp'], '技能壓成 mask,dp[mask] = 最少人'],
   [526, 'Beautiful Arrangement', ['bitmask-dp', 'backtracking'], 'dp[mask]:已用數字集合,下一位置 = popcount + 1'],
   [1986, 'Minimum Number of Work Sessions to Finish the Tasks', ['bitmask-dp'], 'dp[mask] = (最少段數, 最後一段已用時間)'],
+  [118, "Pascal's Triangle", ['dp-grid'], '每格 = 左上 + 正上,一列一列往下填'],
+  [879, 'Profitable Schemes', ['knapsack', 'dp-general'], '二維 0/1 背包:人數是容量,收益超過 minProfit 一律封頂成 minProfit'],
+  [392, 'Is Subsequence', ['lcs', 'two-pointers'], 'LCS 的特例:s 是子序列 ⇔ LCS(s, t) = len(s);只要判斷時用雙指標 O(n) 就夠'],
 
   // ===== 貪心 / 區間 =====
   [55, 'Jump Game', ['greedy'], '維護最遠可達位置'],
@@ -355,6 +358,7 @@ const E: Entry[] = [
   [214, 'Shortest Palindrome', ['kmp'], 's + # + reverse(s) 的 LPS'],
   [1392, 'Longest Happy Prefix', ['kmp'], '就是 LPS 陣列最後一個值'],
   [686, 'Repeated String Match', ['kmp'], '重複 a 到長度 >= b,再多一次,用 KMP 找'],
+  [68, 'Text Justification', ['simulation', 'greedy'], '貪心決定每行放哪些字,再照規則分配空白;最後一行和只有一個字的行靠左'],
 
   // ===== 線段樹 / BIT =====
   [307, 'Range Sum Query - Mutable', ['segment-tree'], 'BIT 或線段樹:單點更新、區間查詢'],
