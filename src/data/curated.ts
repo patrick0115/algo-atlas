@@ -32,6 +32,12 @@ const E: Entry[] = [
   [969, 'Pancake Sorting', ['selection-sort'], '每回合選出最大值,翻到頂端再翻到底部歸位'],
   [1365, 'How Many Numbers Are Smaller Than the Current Number', ['counting-sort', 'prefix-sum'], '值域 0..100,計數後做前綴和'],
   [1859, 'Sorting the Sentence', ['counting-sort'], '字尾數字就是位置,直接放進對應桶'],
+  [1051, 'Height Checker', ['bubble-sort', 'counting-sort'], 'n <= 100,用氣泡排序排出期望順序,再逐格比對有幾格不同'],
+  [2500, 'Delete Greatest Value in Each Row', ['selection-sort'], '每回合從每一列選出最大值刪掉 —— 就是對每一列做選擇排序'],
+  [2659, 'Make Array Empty', ['selection-sort', 'segment-tree'], '照由小到大的順序一個一個選出最小值;用 BIT 數兩個位置之間還剩幾個數,就是轉動次數'],
+  [1389, 'Create Target Array in the Given Order', ['insertion-sort', 'simulation'], '把 nums[i] 插到 index[i],後面的往右挪一格 —— 插入排序的搬移動作'],
+  [1649, 'Create Sorted Array through Instructions', ['insertion-sort', 'segment-tree'], '插入成本 = min(比它小的個數, 比它大的個數);用 BIT 計數,不用真的搬移'],
+  [220, 'Contains Duplicate III', ['counting-sort', 'sliding-window'], '桶寬 valueDiff + 1:同一桶一定成立,只需再看左右相鄰的桶;離開視窗的桶刪掉'],
 
   // ===== 雙指標 =====
   [125, 'Valid Palindrome', ['two-pointers'], '左右夾擠,跳過非英數字元'],
@@ -76,6 +82,7 @@ const E: Entry[] = [
   [1109, 'Corporate Flight Bookings', ['difference-array'], 'diff[l] += s, diff[r+1] −= s'],
   [2381, 'Shifting Letters II', ['difference-array'], '區間位移量用差分累加'],
   [1854, 'Maximum Population Year', ['difference-array'], '出生 +1、死亡 −1,找前綴和最大年份'],
+  [995, 'Minimum Number of K Consecutive Bit Flips', ['difference-array', 'greedy', 'sliding-window'], '由左往右,遇到 0 就翻從它開始的 k 格;用差分記錄每次翻轉在哪裡結束'],
 
   // ===== 二分 =====
   [704, 'Binary Search', ['binary-search'], '閉區間 [lo, hi],while lo <= hi'],
@@ -189,6 +196,8 @@ const E: Entry[] = [
   [235, 'Lowest Common Ancestor of a Binary Search Tree', ['lca', 'bst'], '兩點都小往左、都大往右,否則就是根'],
   [236, 'Lowest Common Ancestor of a Binary Tree', ['lca', 'tree-dfs'], '左右子樹都找到 → 自己;否則回傳找到的那邊'],
   [1123, 'Lowest Common Ancestor of Deepest Leaves', ['lca', 'tree-dfs'], '回傳 (深度, LCA),左右等深則自己是 LCA'],
+  [1373, 'Maximum Sum BST in Binary Tree', ['bst', 'tree-dfs'], '後序回傳(是不是 BST、最小值、最大值、總和);左右都是 BST 且 左最大 < 根 < 右最小 才能合併'],
+  [2846, 'Minimum Edge Weight Equilibrium Queries in a Tree', ['lca', 'tree-dfs'], '記根到每個點各權重的次數;路徑次數 = cnt[u] + cnt[v] − 2·cnt[lca],答案 = 路徑邊數 − 最多的那種'],
 
   // ===== Trie =====
   [208, 'Implement Trie (Prefix Tree)', ['trie'], '每個節點 26 個子節點 + isEnd'],
@@ -212,6 +221,7 @@ const E: Entry[] = [
   [295, 'Find Median from Data Stream', ['two-heaps'], '左半最大堆、右半最小堆,大小差 <= 1'],
   [480, 'Sliding Window Median', ['two-heaps', 'sliding-window'], '雙堆 + 延遲刪除'],
   [502, 'IPO', ['two-heaps', 'greedy'], '可負擔的專案移進最大堆,取利潤最大'],
+  [2462, 'Total Cost to Hire K Workers', ['two-heaps', 'heap', 'two-pointers'], '左右各一個最小堆放前後 candidates 人,每次取兩堆頂較小的,再從中間補一個進來'],
 
   // ===== 回溯 =====
   [78, 'Subsets', ['backtracking', 'bit-manipulation'], '每個元素選或不選'],
@@ -327,6 +337,7 @@ const E: Entry[] = [
   [1986, 'Minimum Number of Work Sessions to Finish the Tasks', ['bitmask-dp'], 'dp[mask] = (最少段數, 最後一段已用時間)'],
   [118, "Pascal's Triangle", ['dp-grid'], '每格 = 左上 + 正上,一列一列往下填'],
   [879, 'Profitable Schemes', ['knapsack', 'dp-general'], '二維 0/1 背包:人數是容量,收益超過 minProfit 一律封頂成 minProfit'],
+  [674, 'Longest Continuous Increasing Subsequence', ['lis', 'dp-1d'], 'LIS 的連續版:比前一個大就 +1,否則重設為 1;不連續的版本要看前面所有數'],
   [392, 'Is Subsequence', ['lcs', 'two-pointers'], 'LCS 的特例:s 是子序列 ⇔ LCS(s, t) = len(s);只要判斷時用雙指標 O(n) 就夠'],
 
   // ===== 貪心 / 區間 =====
@@ -350,6 +361,7 @@ const E: Entry[] = [
   [252, 'Meeting Rooms', ['interval-scheduling'], '排序後檢查相鄰是否重疊'],
   [253, 'Meeting Rooms II', ['interval-scheduling', 'heap', 'difference-array'], '最小堆存結束時間;或掃描線 +1/−1'],
   [1851, 'Minimum Interval to Include Each Query', ['interval-scheduling', 'heap'], '查詢與區間都排序,最小堆依長度'],
+  [2446, 'Determine if Two Events Have Conflict', ['interval-scheduling'], '兩區間重疊 ⇔ start1 <= end2 且 start2 <= end1;HH:MM 字串可以直接比大小'],
 
   // ===== 字串 =====
   [271, 'Encode and Decode Strings', ['string-ops'], '每段寫成 長度#內容,解碼時先讀長度'],
@@ -365,6 +377,7 @@ const E: Entry[] = [
   [715, 'Range Module', ['segment-tree'], '動態開點線段樹或有序區間集合'],
   [699, 'Falling Squares', ['segment-tree'], '座標壓縮 + 區間最大值 + 區間賦值'],
   [218, 'The Skyline Problem', ['heap', 'segment-tree'], '掃描線 + 最大堆(延遲刪除)'],
+  [3477, 'Fruits Into Baskets II', ['segment-tree', 'simulation'], 'n 小可以直接模擬;線段樹存區間最大容量,優先往左子樹找第一個放得下的籃子'],
 
   // ===== 位元 / 數學 =====
   [136, 'Single Number', ['bit-manipulation'], '全部 XOR,成對的抵消'],
